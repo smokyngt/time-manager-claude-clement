@@ -19,7 +19,7 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { describeBulk } from '@/features/users/bulk-message'
-import { Checkbox } from '@/features/users/components/ui/checkbox'
+import { Checkbox } from '@/components/ui/checkbox'
 import { UserRowActions } from '@/features/users/components/user-row-actions'
 import { UsersBulkToolbar } from '@/features/users/components/users-bulk-toolbar'
 import { UsersFilters } from '@/features/users/components/users-filters'

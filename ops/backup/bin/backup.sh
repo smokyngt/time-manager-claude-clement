@@ -14,9 +14,12 @@
 #   BACKUP_GPG_PUBLIC_KEY_FILE   public key imported before gpg encryption
 #   BACKUP_S3_URI        s3://bucket/prefix for offsite copies
 #   BACKUP_S3_ENDPOINT_URL  endpoint of an S3-compatible service (MinIO, R2...)
+#   BACKUP_S3_CLIENT     aws, rclone or auto (default: aws if installed, else rclone)
 #   BACKUP_KEEP_DAILY / _WEEKLY / _MONTHLY   retention (7 / 4 / 6)
 #   BACKUP_ALERT_WEBHOOK URL called with a JSON message when a run fails
 #   BACKUP_HEARTBEAT_URL URL pinged (GET) after each successful run
+#
+# On success, BACKUP_DIR/last-success and BACKUP_DIR/metrics.prom are updated.
 set -euo pipefail
 umask 077
 
@@ -30,7 +33,7 @@ case "${1:-}" in
   "") ;;
   --prune-only) PRUNE_ONLY=true ;;
   -h | --help)
-    sed -n '2,20p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+    sed -n '2,23p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
     exit 0
     ;;
   *) die "unknown argument: $1" ;;
@@ -72,7 +75,7 @@ fi
 if $PRUNE_ONLY; then
   log "prune-only: applying retention (daily=$BACKUP_KEEP_DAILY weekly=$BACKUP_KEEP_WEEKLY monthly=$BACKUP_KEEP_MONTHLY)"
   prune_local
-  if [[ -n "$BACKUP_S3_URI" ]]; then require_cmds aws; prune_remote; fi
+  if [[ -n "$BACKUP_S3_URI" ]]; then s3_client >/dev/null; prune_remote; fi
   log "prune-only done"
   exit 0
 fi
@@ -80,7 +83,7 @@ fi
 require_cmds pg_dump pg_restore sha256sum
 [[ -z "$AGE_RECIPIENT" ]] || require_cmds age
 [[ -z "$GPG_RECIPIENT" ]] || require_cmds gpg
-[[ -z "$BACKUP_S3_URI" ]] || require_cmds aws
+[[ -z "$BACKUP_S3_URI" ]] || s3_client >/dev/null
 
 STAMP="$(date -u +%Y%m%dT%H%M%SZ)"
 NAME="$(backup_prefix)_${STAMP}.dump"
@@ -136,12 +139,14 @@ prune_local
 
 if [[ -n "$BACKUP_S3_URI" ]]; then
   log "uploading to $(s3_base)/"
-  s3 cp "$BACKUP_DIR/$FINAL" "$(s3_base)/$FINAL" --only-show-errors
-  s3 cp "$BACKUP_DIR/$FINAL.sha256" "$(s3_base)/$FINAL.sha256" --only-show-errors
+  s3_put "$BACKUP_DIR/$FINAL" "$FINAL"
+  s3_put "$BACKUP_DIR/$FINAL.sha256" "$FINAL.sha256"
   prune_remote
 fi
 
-date -u +%s >"$LAST_SUCCESS_FILE"
+NOW="$(date -u +%s)"
+printf '%s\n' "$NOW" >"$LAST_SUCCESS_FILE"
+write_metrics "$NOW" "$SIZE_FINAL" || warn "could not write $METRICS_FILE"
 log "backup OK: $FINAL"
 
 if [[ -n "${BACKUP_HEARTBEAT_URL:-}" ]] && command -v curl >/dev/null 2>&1; then

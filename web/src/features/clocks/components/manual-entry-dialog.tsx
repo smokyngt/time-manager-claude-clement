@@ -25,7 +25,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Textarea } from '@/features/clocks/components/ui/textarea'
+import { Textarea } from '@/components/ui/textarea'
 import { useCreateClock, useUpdateClock } from '@/features/clocks/hooks/use-clock-mutations'
 import { fromInputValue, toInputValue } from '@/features/clocks/lib/format'
 import { manualEntrySchema } from '@/features/clocks/manual-entry-schema'

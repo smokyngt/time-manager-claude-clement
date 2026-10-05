@@ -7,7 +7,7 @@ import type { TeamValues } from '@/features/teams/team-schema'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { ManagerSelect } from '@/features/teams/components/manager-select'
-import { Textarea } from '@/features/teams/components/ui/textarea'
+import { Textarea } from '@/components/ui/textarea'
 
 function FieldError({ message }: { message?: string }) {
   return message ? <p className="text-sm text-destructive">{message}</p> : null

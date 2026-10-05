@@ -2,13 +2,12 @@ import { TeamListError } from '@/lib/errors/domains/team.js';
 import { TeamListed } from '@/lib/events/domains/team.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { teamService } from '@/services/team/index.js';
-import { Access } from '@/utils/access.js';
-import { teamAccess } from '@/utils/access/team.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
 import type { ListBody, ListResponse } from './index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -16,7 +15,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: ListBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {TeamListError}
+ * @throws {TeamListError | UnauthorizedError}
  */
 export const list = async (
   req: FastifyRequest<{ Body: ListBody }>,
@@ -24,7 +23,7 @@ export const list = async (
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
-    teamAccess.require(actor, 'list');
+    Access.team.require(actor, 'list');
     const {
       archived,
       cursor,
@@ -52,7 +51,7 @@ export const list = async (
     await Reply.send(
       req,
       reply,
-      TeamListed({ payload: { count: result.items.length, total: result.total } }),
+      TeamListed({ payload: { actor: actor.id, count: result.items.length, total: result.total } }),
       result,
     );
   } catch (error) {

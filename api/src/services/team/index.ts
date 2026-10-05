@@ -9,74 +9,74 @@ import { update } from './update.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { Team } from '@/types/entities/team.js';
 
-export interface ArchiveParams {
+export type ArchiveParams = {
   actor: Actor;
   id: string;
-}
+};
 
-export interface ArchiveResponse {
+export type ArchiveResponse = {
   team: Team;
-}
+};
 
-export interface CreateParams {
+export type CreateParams = {
   actor: Actor;
   data: TeamCreateData;
-}
+};
 
-export interface CreateResponse {
+export type CreateResponse = {
   team: Team;
-}
+};
 
-export interface DeleteParams {
+export type DeleteParams = {
   actor: Actor;
   id: string;
-}
+};
 
-export interface DeleteResponse {
+export type DeleteResponse = {
   success: boolean;
-}
+};
 
-export interface ListParams {
+export type ListParams = {
   cursor?: string;
   filters: TeamFilters;
   limit: number;
   order: 'asc' | 'desc';
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: Team[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface RestoreParams {
+export type RestoreParams = {
   actor: Actor;
   id: string;
-}
+};
 
-export interface RestoreResponse {
+export type RestoreResponse = {
   team: Team;
-}
+};
 
-export interface RetrieveParams {
+export type RetrieveParams = {
   id: string;
-}
+};
 
-export interface RetrieveResponse {
+export type RetrieveResponse = {
   team: Team;
-}
+};
 
-export interface TeamCreateData {
+export type TeamCreateData = {
   description?: null | string;
   manager_id: string;
   name: string;
   weekly_hours_target?: number;
   work_end?: string;
   work_start?: string;
-}
+};
 
-export interface TeamFilters {
+export type TeamFilters = {
   archived?: boolean;
   created_after?: number;
   created_before?: number;
@@ -84,43 +84,33 @@ export interface TeamFilters {
   manager_id?: string;
   member_id?: string;
   visible_to?: TeamVisibility;
-}
+};
 
-export interface TeamServiceType {
-  archive: (params: ArchiveParams) => Promise<ArchiveResponse>;
-  create: (params: CreateParams) => Promise<CreateResponse>;
-  delete: (params: DeleteParams) => Promise<DeleteResponse>;
-  list: (params: ListParams) => Promise<ListResponse>;
-  restore: (params: RestoreParams) => Promise<RestoreResponse>;
-  retrieve: (params: RetrieveParams) => Promise<RetrieveResponse>;
-  update: (params: UpdateParams) => Promise<UpdateResponse>;
-}
-
-export interface TeamUpdateData {
+export type TeamUpdateData = {
   description?: null | string;
   manager_id?: string;
   name?: string;
   weekly_hours_target?: number;
   work_end?: string;
   work_start?: string;
-}
+};
 
-export interface TeamVisibility {
+export type TeamVisibility = {
   id: string;
   managed: boolean;
-}
+};
 
-export interface UpdateParams {
+export type UpdateParams = {
   actor: Actor;
   data: TeamUpdateData;
   id: string;
-}
+};
 
-export interface UpdateResponse {
+export type UpdateResponse = {
   team: Team;
-}
+};
 
-class TeamService implements TeamServiceType {
+class TeamService {
   public archive = archive;
   public create = create;
   public delete = remove;

@@ -8,33 +8,31 @@ import { update } from './update.js';
 
 import type { TeamCreateData, TeamUpdateData } from '@/services/team/index.js';
 import type { Team } from '@/types/entities/team.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export interface ArchiveParams {
+export type ArchiveParams = {
   id: string;
-}
+};
 
-export interface BulkFailure {
+export type BulkFailure = {
   code: string;
   id: string;
-}
+};
 
-export interface CreateBody extends Omit<TeamCreateData, 'manager_id'> {
+export type CreateBody = {
   manager_id?: string;
-}
+} & Omit<TeamCreateData, 'manager_id'>;
 
-export interface DeleteBody {
+export type DeleteBody = {
   ids: string[];
-}
+};
 
-export interface DeleteResponse {
+export type DeleteResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
-}
+};
 
-export interface ListBody {
+export type ListBody = {
   archived?: boolean;
   created_after?: number | string;
   created_before?: number | string;
@@ -44,66 +42,39 @@ export interface ListBody {
   manager_id?: string;
   member_id?: string;
   order?: 'asc' | 'desc';
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: Team[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface RestoreParams {
+export type RestoreParams = {
   id: string;
-}
+};
 
-export interface RetrieveParams {
+export type RetrieveParams = {
   id: string;
-}
+};
 
-export interface TeamControllerType {
-  archive: (
-    req: FastifyRequest<{ Params: ArchiveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Team> }>,
-  ) => Promise<void>;
-  create: (
-    req: FastifyRequest<{ Body: CreateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Team> }>,
-  ) => Promise<void>;
-  delete: (
-    req: FastifyRequest<{ Body: DeleteBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
-  ) => Promise<void>;
-  list: (
-    req: FastifyRequest<{ Body: ListBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
-  ) => Promise<void>;
-  restore: (
-    req: FastifyRequest<{ Params: RestoreParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Team> }>,
-  ) => Promise<void>;
-  retrieve: (
-    req: FastifyRequest<{ Params: RetrieveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Team> }>,
-  ) => Promise<void>;
-  update: (
-    req: FastifyRequest<{ Body: UpdateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
-  ) => Promise<void>;
-}
+export type TeamResponse = {
+  team: Team;
+};
 
-export interface UpdateBody {
+export type UpdateBody = {
   data: TeamUpdateData;
   ids: string[];
-}
+};
 
-export interface UpdateResponse {
+export type UpdateResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
-}
+};
 
-class TeamController implements TeamControllerType {
+class TeamController {
   public archive = archive;
   public create = create;
   public delete = remove;

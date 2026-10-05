@@ -6,34 +6,34 @@ import { TeamManagerInvalidError, TeamScheduleInvalidError } from '@/lib/errors/
 
 export class TeamValidate {
   /**
-   * @route team.validate.manager
+   * @route team.service.validate.manager
    * @param {string} id
-   * @param {string} route
    * @returns {Promise<void>}
    * @throws {TeamManagerInvalidError}
    */
-  public static async manager(id: string, route: string): Promise<void> {
+  public static async manager(id: string): Promise<void> {
     const [row] = await db
       .select({ archived_at: users.archived_at, role: users.role })
       .from(users)
       .where(eq(users.id, id))
       .limit(1);
     if (row === undefined || row.archived_at !== null || row.role === 'employee') {
-      throw TeamManagerInvalidError({ metadata: { manager_id: id, route } });
+      throw TeamManagerInvalidError({
+        metadata: { manager_id: id, route: 'team.service.validate.manager' },
+      });
     }
   }
 
   /**
-   * @route team.validate.schedule
+   * @route team.service.validate.schedule
    * @param {string} start
    * @param {string} end
-   * @param {string} route
    * @returns {void}
    * @throws {TeamScheduleInvalidError}
    */
-  public static schedule(start: string, end: string, route: string): void {
+  public static schedule(start: string, end: string): void {
     if (end <= start) {
-      throw TeamScheduleInvalidError({ metadata: { route } });
+      throw TeamScheduleInvalidError({ metadata: { route: 'team.service.validate.schedule' } });
     }
   }
 }

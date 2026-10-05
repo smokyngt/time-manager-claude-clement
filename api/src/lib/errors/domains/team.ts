@@ -1,61 +1,21 @@
-import { registerError } from '../index.js';
+import { registerError } from '@/lib/errors/base/registry.js';
 
-export const TeamArchiveError = registerError({
-  code: 'TEAM_ARCHIVE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be archived.',
-});
+export const TeamArchiveError = registerError({ code: 'team.archive.failed', defaultStatus: 500 });
 
-export const TeamCreateError = registerError({
-  code: 'TEAM_CREATE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be created.',
-});
+export const TeamCreateError = registerError({ code: 'team.create.failed', defaultStatus: 500 });
 
-export const TeamDeleteError = registerError({
-  code: 'TEAM_DELETE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be deleted.',
-});
+export const TeamDeleteError = registerError({ code: 'team.delete.failed', defaultStatus: 500 });
 
-export const TeamListError = registerError({
-  code: 'TEAM_LIST_ERROR',
-  defaultStatus: 500,
-  message: 'The teams could not be listed.',
-});
+export const TeamListError = registerError({ code: 'team.list.failed', defaultStatus: 500 });
 
-export const TeamManagerInvalidError = registerError({
-  code: 'TEAM_MANAGER_INVALID',
-  defaultStatus: 400,
-  message: 'The manager must be an active user with the manager or admin role.',
-});
+export const TeamManagerInvalidError = registerError({ code: 'team.manager.invalid', defaultStatus: 400 });
 
-export const TeamNotFoundError = registerError({
-  code: 'TEAM_NOT_FOUND',
-  defaultStatus: 404,
-  message: 'The team does not exist.',
-});
+export const TeamNotFoundError = registerError({ code: 'team.not.found', defaultStatus: 404 });
 
-export const TeamRestoreError = registerError({
-  code: 'TEAM_RESTORE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be restored.',
-});
+export const TeamRestoreError = registerError({ code: 'team.restore.failed', defaultStatus: 500 });
 
-export const TeamRetrieveError = registerError({
-  code: 'TEAM_RETRIEVE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be retrieved.',
-});
+export const TeamRetrieveError = registerError({ code: 'team.retrieve.failed', defaultStatus: 500 });
 
-export const TeamScheduleInvalidError = registerError({
-  code: 'TEAM_SCHEDULE_INVALID',
-  defaultStatus: 400,
-  message: 'The end of the working day must be after its start.',
-});
+export const TeamScheduleInvalidError = registerError({ code: 'team.schedule.invalid', defaultStatus: 400 });
 
-export const TeamUpdateError = registerError({
-  code: 'TEAM_UPDATE_ERROR',
-  defaultStatus: 500,
-  message: 'The team could not be updated.',
-});
+export const TeamUpdateError = registerError({ code: 'team.update.failed', defaultStatus: 500 });

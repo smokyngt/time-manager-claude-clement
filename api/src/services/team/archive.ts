@@ -3,8 +3,9 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db/client.js';
 import { teams } from '@/db/schema/team.js';
 import { TeamArchiveError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
+import { TeamArchived } from '@/lib/events/domains/team.js';
 import { logService } from '@/services/log/index.js';
-import { TeamMapper } from '@/utils/team-mapper.js';
+import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 
@@ -14,7 +15,7 @@ import type { ArchiveParams, ArchiveResponse } from './index.js';
  * @route team.service.archive
  * @param {ArchiveParams} params
  * @returns {Promise<ArchiveResponse>}
- * @throws {TeamArchiveError}
+ * @throws {TeamArchiveError | TeamNotFoundError}
  */
 export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> => {
   try {
@@ -28,7 +29,8 @@ export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> =
     if (row === undefined) {
       throw TeamNotFoundError({ metadata: { route: 'team.service.archive', team_id: id } });
     }
-    await logService.create({ actor, event: 'team.archived', metadata: { team_id: id } });
+    await logService.create({ actor, event: TeamArchived.code, metadata: { team_id: id } });
+
     return { team: TeamMapper.entity(row, await TeamQuery.count(id)) };
   } catch (error) {
     throw TeamArchiveError({ cause: error, metadata: { route: 'team.service.archive' } });

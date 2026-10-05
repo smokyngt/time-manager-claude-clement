@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from '@/features/teams/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
 
 export function ConfirmDialog({
   confirm_label,

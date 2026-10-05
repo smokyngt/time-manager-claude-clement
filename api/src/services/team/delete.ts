@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { db } from '@/db/client.js';
 import { teams } from '@/db/schema/team.js';
 import { TeamDeleteError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
+import { TeamDeleted } from '@/lib/events/domains/team.js';
 import { logService } from '@/services/log/index.js';
 
 import type { DeleteParams, DeleteResponse } from './index.js';
@@ -11,7 +12,7 @@ import type { DeleteParams, DeleteResponse } from './index.js';
  * @route team.service.delete
  * @param {DeleteParams} params
  * @returns {Promise<DeleteResponse>}
- * @throws {TeamDeleteError}
+ * @throws {TeamDeleteError | TeamNotFoundError}
  */
 export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
   try {
@@ -20,7 +21,8 @@ export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
     if (rows.length === 0) {
       throw TeamNotFoundError({ metadata: { route: 'team.service.delete', team_id: id } });
     }
-    await logService.create({ actor, event: 'team.deleted', metadata: { team_id: id } });
+    await logService.create({ actor, event: TeamDeleted.code, metadata: { team_id: id } });
+
     return { success: true };
   } catch (error) {
     throw TeamDeleteError({ cause: error, metadata: { route: 'team.service.delete' } });

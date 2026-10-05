@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { userName } from '@/features/teams/api/users'
-import { Checkbox } from '@/features/teams/components/ui/checkbox'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   useAddTeamMembers,
   useTeamMembers,

@@ -1,17 +1,19 @@
-import { registerEvent } from '../index.js';
+import { registerEvent } from '@/lib/events/base/registry.js';
 
-export const ClockCreated = registerEvent<{ clock_id: string }>('clock.created');
+export const ClockCreated = registerEvent<{ actor: string; clock_id: string }>({ code: 'clock.created' });
 
-export const ClockCurrent = registerEvent<{ open: boolean }>('clock.current');
+export const ClockCurrentRetrieved = registerEvent<{ actor: string; open: boolean }>({
+  code: 'clock.current.retrieved',
+});
 
-export const ClockDeleted = registerEvent<{ deleted: number; failed: number }>('clock.deleted');
+export const ClockDeleted = registerEvent<{ actor: string; deleted: number; failed: number }>({ code: 'clock.deleted' });
 
-export const ClockIn = registerEvent<{ clock_id: string }>('clock.in');
+export const ClockListed = registerEvent<{ actor: string; count: number; total: number }>({ code: 'clock.listed' });
 
-export const ClockListed = registerEvent<{ count: number; total: number }>('clock.listed');
+export const ClockRetrieved = registerEvent<{ actor: string; clock_id: string }>({ code: 'clock.retrieved' });
 
-export const ClockOut = registerEvent<{ clock_id: string }>('clock.out');
+export const ClockStarted = registerEvent<{ actor: string; clock_id: string }>({ code: 'clock.started' });
 
-export const ClockRetrieved = registerEvent<{ clock_id: string }>('clock.retrieved');
+export const ClockStopped = registerEvent<{ actor: string; clock_id: string }>({ code: 'clock.stopped' });
 
-export const ClockUpdated = registerEvent<{ failed: number; updated: number }>('clock.updated');
+export const ClockUpdated = registerEvent<{ actor: string; failed: number; updated: number }>({ code: 'clock.updated' });

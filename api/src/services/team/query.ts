@@ -1,4 +1,4 @@
-import { inArray, sql } from 'drizzle-orm';
+import { count, eq, inArray, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { teamMembers, teams } from '@/db/schema/team.js';
@@ -7,36 +7,37 @@ import type { SQL } from 'drizzle-orm';
 
 export class TeamQuery {
   /**
-   * @route team.query.count
+   * @route team.service.query.count
    * @param {string} id
    * @returns {Promise<number>}
    */
   public static async count(id: string): Promise<number> {
-    const counts = await TeamQuery.counts([id]);
+    const [row] = await db
+      .select({ total: count() })
+      .from(teamMembers)
+      .where(eq(teamMembers.team_id, id));
 
-    return counts.get(id) ?? 0;
+    return row?.total ?? 0;
   }
 
   /**
-   * @route team.query.counts
+   * @route team.service.query.counts
    * @param {string[]} ids
    * @returns {Promise<Map<string, number>>}
    */
   public static async counts(ids: string[]): Promise<Map<string, number>> {
     if (ids.length === 0) return new Map();
     const rows = await db
-      .select({
-        id: teams.id,
-        total: sql<number>`(select count(*) from ${teamMembers} where ${teamMembers.team_id} = ${teams.id})::int`,
-      })
-      .from(teams)
-      .where(inArray(teams.id, ids));
+      .select({ id: teamMembers.team_id, total: count() })
+      .from(teamMembers)
+      .where(inArray(teamMembers.team_id, ids))
+      .groupBy(teamMembers.team_id);
 
     return new Map(rows.map((row) => [row.id, row.total]));
   }
 
   /**
-   * @route team.query.member
+   * @route team.service.query.member
    * @param {string} userId
    * @returns {SQL}
    */

@@ -1,3 +1,5 @@
+import { Cipher } from '@/utils/crypto/cipher.js';
+
 import type { TeamRow } from '@/db/schema/team.js';
 import type { Team } from '@/types/entities/team.js';
 
@@ -7,16 +9,17 @@ export class TeamMapper {
    * @param {TeamRow} row
    * @param {number} memberCount
    * @returns {Team}
+   * @throws {CryptoDecryptFailedError}
    */
   public static entity(row: TeamRow, memberCount: number): Team {
     return {
       archived_at: row.archived_at,
       created_at: row.created_at,
-      description: row.description,
+      description: Cipher.nullable.open(row.description),
       id: row.id,
       manager_id: row.manager_id,
       member_count: memberCount,
-      name: row.name,
+      name: Cipher.open(row.name),
       object: 'team',
       updated_at: row.updated_at,
       weekly_hours_target: row.weekly_hours_target,

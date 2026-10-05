@@ -2,7 +2,6 @@
 # Shared helpers for the backup scripts. Meant to be sourced, never executed.
 # shellcheck shell=bash
 
-# --- logging -----------------------------------------------------------------
 SCRIPT_NAME="${SCRIPT_NAME:-$(basename "${0:-backup}")}"
 
 log() { printf '%s [%s] %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$SCRIPT_NAME" "$*"; }
@@ -13,7 +12,6 @@ die() {
   exit 1
 }
 
-# --- configuration -----------------------------------------------------------
 BACKUP_DIR="${BACKUP_DIR:-/backups}"
 BACKUP_PREFIX="${BACKUP_PREFIX:-}"
 BACKUP_KEEP_DAILY="${BACKUP_KEEP_DAILY:-7}"
@@ -22,8 +20,9 @@ BACKUP_KEEP_MONTHLY="${BACKUP_KEEP_MONTHLY:-6}"
 BACKUP_S3_URI="${BACKUP_S3_URI:-}"
 BACKUP_S3_ENDPOINT_URL="${BACKUP_S3_ENDPOINT_URL:-}"
 BACKUP_AGE_IDENTITY_FILE="${BACKUP_AGE_IDENTITY_FILE:-}"
-# shellcheck disable=SC2034 # used by backup.sh
+# shellcheck disable=SC2034 # used by backup.sh and healthcheck.sh
 LAST_SUCCESS_FILE="${BACKUP_LAST_SUCCESS_FILE:-$BACKUP_DIR/last-success}"
+METRICS_FILE="${BACKUP_METRICS_FILE:-$BACKUP_DIR/metrics.prom}"
 
 require_cmds() {
   local c
@@ -36,7 +35,6 @@ require_uint() { # name value
   [[ "$2" =~ ^[0-9]+$ ]] || die "$1 must be a non-negative integer (got '$2')"
 }
 
-# --- connection handling -----------------------------------------------------
 # Credentials only ever travel through PG* environment variables (or ~/.pgpass),
 # never through argv, so they cannot leak via `ps` or logs.
 
@@ -80,7 +78,6 @@ use_source_conn() {
 # conn_id: stable identity of the current PG* target, "host:port/db".
 conn_id() { printf '%s:%s/%s' "${PGHOST:-local}" "${PGPORT:-5432}" "${PGDATABASE:-}"; }
 
-# --- naming / listing --------------------------------------------------------
 backup_prefix() { printf '%s' "${BACKUP_PREFIX:-${PGDATABASE:-backup}}"; }
 
 # is_dump_name NAME: true for backup artifacts (not checksum or temp files).
@@ -98,7 +95,6 @@ list_local_dumps() { # newest first
   done | sort -r
 }
 
-# --- retention ---------------------------------------------------------------
 # prune_candidates: reads backup names on stdin, prints the names that fall
 # outside the daily/weekly/monthly retention window.
 #  - daily:   newest backup of each of the last N distinct days
@@ -147,20 +143,77 @@ prune_local() {
   done < <(list_local_dumps | prune_candidates)
 }
 
-# --- S3-compatible storage ---------------------------------------------------
-s3() {
-  if [[ -n "$BACKUP_S3_ENDPOINT_URL" ]]; then
-    aws --endpoint-url "$BACKUP_S3_ENDPOINT_URL" s3 "$@"
+s3_base() { printf '%s' "${BACKUP_S3_URI%/}"; }
+
+s3_client() {
+  case "${BACKUP_S3_CLIENT:-auto}" in
+    aws | rclone) printf '%s' "$BACKUP_S3_CLIENT" ;;
+    auto)
+      if command -v aws >/dev/null 2>&1; then printf aws
+      elif command -v rclone >/dev/null 2>&1; then printf rclone
+      else die "BACKUP_S3_URI is set but neither aws nor rclone is installed"
+      fi
+      ;;
+    *) die "BACKUP_S3_CLIENT must be aws, rclone or auto" ;;
+  esac
+}
+
+# s3_path [NAME]: remote location of NAME (or of the prefix itself) for the client.
+s3_path() {
+  local name="${1:-}" rest="${BACKUP_S3_URI#s3://}"
+  rest="${rest%/}"
+  if [[ "$(s3_client)" == aws ]]; then
+    printf 's3://%s%s' "$rest" "${name:+/$name}"
   else
-    aws s3 "$@"
+    local backend=":s3,env_auth=true"
+    if [[ -n "$BACKUP_S3_ENDPOINT_URL" ]]; then backend+=",provider=Other,endpoint=\"$BACKUP_S3_ENDPOINT_URL\""; fi
+    printf '%s:%s%s' "$backend" "$rest" "${name:+/$name}"
   fi
 }
 
-s3_base() { printf '%s' "${BACKUP_S3_URI%/}"; }
+s3_put() { # LOCAL_FILE NAME
+  if [[ "$(s3_client)" == aws ]]; then
+    local ep=()
+    [[ -z "$BACKUP_S3_ENDPOINT_URL" ]] || ep=(--endpoint-url "$BACKUP_S3_ENDPOINT_URL")
+    aws "${ep[@]}" s3 cp "$1" "$(s3_path "$2")" --only-show-errors
+  else
+    rclone copyto "$1" "$(s3_path "$2")"
+  fi
+}
+
+s3_get() { # NAME LOCAL_FILE
+  if [[ "$(s3_client)" == aws ]]; then
+    local ep=()
+    [[ -z "$BACKUP_S3_ENDPOINT_URL" ]] || ep=(--endpoint-url "$BACKUP_S3_ENDPOINT_URL")
+    aws "${ep[@]}" s3 cp "$(s3_path "$1")" "$2" --only-show-errors
+  else
+    rclone copyto "$(s3_path "$1")" "$2"
+  fi
+}
+
+s3_rm() { # NAME
+  if [[ "$(s3_client)" == aws ]]; then
+    local ep=()
+    [[ -z "$BACKUP_S3_ENDPOINT_URL" ]] || ep=(--endpoint-url "$BACKUP_S3_ENDPOINT_URL")
+    aws "${ep[@]}" s3 rm "$(s3_path "$1")" --only-show-errors
+  else
+    rclone deletefile "$(s3_path "$1")"
+  fi
+}
+
+s3_names() {
+  if [[ "$(s3_client)" == aws ]]; then
+    local ep=()
+    [[ -z "$BACKUP_S3_ENDPOINT_URL" ]] || ep=(--endpoint-url "$BACKUP_S3_ENDPOINT_URL")
+    aws "${ep[@]}" s3 ls "$(s3_path)/" | awk '{print $NF}'
+  else
+    rclone lsf --files-only "$(s3_path)/"
+  fi
+}
 
 s3_list_dumps() { # newest first
   local name
-  s3 ls "$(s3_base)/" | awk '{print $NF}' | while IFS= read -r name; do
+  s3_names | while IFS= read -r name; do
     if is_dump_name "$name" && [[ "$name" == "$(backup_prefix)_"* ]]; then printf '%s\n' "$name"; fi
   done | sort -r
 }
@@ -171,12 +224,11 @@ prune_remote() {
   while IFS= read -r name; do
     [[ -n "$name" ]] || continue
     log "retention: removing remote $name"
-    s3 rm "$(s3_base)/$name" --only-show-errors
-    s3 rm "$(s3_base)/$name.sha256" --only-show-errors || true
+    s3_rm "$name"
+    s3_rm "$name.sha256" || true
   done < <(printf '%s\n' "$listing" | prune_candidates)
 }
 
-# --- checksum / decryption ---------------------------------------------------
 # verify_checksum FILE: FILE.sha256 must exist and match.
 verify_checksum() {
   local f="$1"
@@ -214,7 +266,7 @@ resolve_backup() {
   local what="$1" remote="$2"
   if [[ "$remote" == true ]]; then
     [[ -n "$BACKUP_S3_URI" ]] || die "--remote needs BACKUP_S3_URI"
-    require_cmds aws
+    s3_client >/dev/null
     TMP_DIR="$(mktemp -d)"
     if [[ "$what" == "latest" ]]; then
       what="$(s3_list_dumps | sed -n 1p)"
@@ -222,8 +274,8 @@ resolve_backup() {
     fi
     what="$(basename "$what")"
     log "downloading $what from $(s3_base)/"
-    s3 cp "$(s3_base)/$what" "$TMP_DIR/$what" --only-show-errors
-    s3 cp "$(s3_base)/$what.sha256" "$TMP_DIR/$what.sha256" --only-show-errors || warn "no remote checksum file"
+    s3_get "$what" "$TMP_DIR/$what"
+    s3_get "$what.sha256" "$TMP_DIR/$what.sha256" || warn "no remote checksum file"
     FILE="$TMP_DIR/$what"
   else
     if [[ "$what" == "latest" ]]; then
@@ -250,7 +302,6 @@ admin_db() { printf '%s' "${BACKUP_ADMIN_DB:-postgres}"; }
 # quote_ident NAME: SQL-quote an identifier.
 quote_ident() { printf '"%s"' "${1//\"/\"\"}"; }
 
-# --- notifications -----------------------------------------------------------
 json_escape() {
   local s="$1"
   s="${s//\\/\\\\}"
@@ -267,4 +318,20 @@ notify_failure() { # message
   curl -fsS -m 15 -H 'Content-Type: application/json' \
     -d "{\"text\":\"$msg\",\"content\":\"$msg\"}" "$BACKUP_ALERT_WEBHOOK" >/dev/null 2>&1 ||
     warn "failed to deliver alert webhook"
+}
+
+# write_metrics TIMESTAMP SIZE_BYTES: atomically rewrite the Prometheus text file.
+# Empty arguments write the metadata only (no sample yet).
+write_metrics() {
+  local ts="$1" size="$2" tmp="$METRICS_FILE.tmp"
+  {
+    printf '# HELP tm_backup_last_success_timestamp_seconds Unix time of the last successful backup.\n'
+    printf '# TYPE tm_backup_last_success_timestamp_seconds gauge\n'
+    if [[ -n "$ts" ]]; then printf 'tm_backup_last_success_timestamp_seconds %s\n' "$ts"; fi
+    printf '# HELP tm_backup_last_size_bytes Size in bytes of the last backup file (after encryption).\n'
+    printf '# TYPE tm_backup_last_size_bytes gauge\n'
+    if [[ -n "$size" ]]; then printf 'tm_backup_last_size_bytes %s\n' "$size"; fi
+  } >"$tmp"
+  chmod 644 "$tmp"
+  mv -- "$tmp" "$METRICS_FILE"
 }

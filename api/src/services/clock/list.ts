@@ -2,8 +2,9 @@ import { and, gte, inArray, isNotNull, isNull, lte } from 'drizzle-orm';
 
 import { clocks } from '@/db/schema/clock.js';
 import { ClockListError } from '@/lib/errors/domains/clock.js';
-import { ClockMapper } from '@/utils/clock-mapper.js';
-import { Cursor } from '@/utils/cursor.js';
+import { Tracing } from '@/lib/telemetry/tracing.js';
+import { Cursor } from '@/utils/http/cursor.js';
+import { ClockMapper } from '@/utils/mappers/clock.js';
 
 import type { ListParams, ListResponse } from './index.js';
 
@@ -28,13 +29,10 @@ export const list = async (params: ListParams): Promise<ListResponse> => {
           ? isNull(clocks.clocked_out_at)
           : isNotNull(clocks.clocked_out_at),
     );
-    const page = await Cursor.paginate(clocks, {
-      cursor,
-      filters: where,
-      limit,
-      order,
-      sort: 'created_at',
-    });
+    const page = await Tracing.span('db.clock.list', () =>
+      Cursor.paginate(clocks, { cursor, filters: where, limit, order, sort: 'created_at' }),
+    );
+
     return {
       items: page.items.map((row) => ClockMapper.entity(row)),
       more: page.more,

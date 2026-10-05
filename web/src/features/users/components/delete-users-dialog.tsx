@@ -7,7 +7,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/features/users/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog'
 
 export function DeleteUsersDialog({
   count,

@@ -1,73 +1,25 @@
-import { registerError } from '../index.js';
+import { registerError } from '@/lib/errors/base/registry.js';
 
-export const ClockConflictError = registerError({
-  code: 'CLOCK_CONFLICT',
-  defaultStatus: 409,
-  message: 'The clock state does not allow this action.',
-});
+export const ClockConflictError = registerError({ code: 'clock.conflict', defaultStatus: 409 });
 
-export const ClockCreateError = registerError({
-  code: 'CLOCK_CREATE_ERROR',
-  defaultStatus: 500,
-  message: 'The clock could not be created.',
-});
+export const ClockCreateError = registerError({ code: 'clock.create.failed', defaultStatus: 500 });
 
-export const ClockCurrentError = registerError({
-  code: 'CLOCK_CURRENT_ERROR',
-  defaultStatus: 500,
-  message: 'The current clock could not be retrieved.',
-});
+export const ClockCurrentError = registerError({ code: 'clock.current.failed', defaultStatus: 500 });
 
-export const ClockDeleteError = registerError({
-  code: 'CLOCK_DELETE_ERROR',
-  defaultStatus: 500,
-  message: 'The clock could not be deleted.',
-});
+export const ClockDeleteError = registerError({ code: 'clock.delete.failed', defaultStatus: 500 });
 
-export const ClockInError = registerError({
-  code: 'CLOCK_IN_ERROR',
-  defaultStatus: 500,
-  message: 'The clock-in could not be recorded.',
-});
+export const ClockInError = registerError({ code: 'clock.in.failed', defaultStatus: 500 });
 
-export const ClockInvalidError = registerError({
-  code: 'CLOCK_INVALID',
-  defaultStatus: 400,
-  message: 'The clock timestamps are invalid.',
-});
+export const ClockInvalidError = registerError({ code: 'clock.invalid', defaultStatus: 400 });
 
-export const ClockListError = registerError({
-  code: 'CLOCK_LIST_ERROR',
-  defaultStatus: 500,
-  message: 'The clocks could not be listed.',
-});
+export const ClockListError = registerError({ code: 'clock.list.failed', defaultStatus: 500 });
 
-export const ClockNotFoundError = registerError({
-  code: 'CLOCK_NOT_FOUND',
-  defaultStatus: 404,
-  message: 'The clock does not exist.',
-});
+export const ClockNotFoundError = registerError({ code: 'clock.not.found', defaultStatus: 404 });
 
-export const ClockOutError = registerError({
-  code: 'CLOCK_OUT_ERROR',
-  defaultStatus: 500,
-  message: 'The clock-out could not be recorded.',
-});
+export const ClockOutError = registerError({ code: 'clock.out.failed', defaultStatus: 500 });
 
-export const ClockOverlapError = registerError({
-  code: 'CLOCK_OVERLAP',
-  defaultStatus: 409,
-  message: 'The clock overlaps another clock of the same user.',
-});
+export const ClockOverlapError = registerError({ code: 'clock.overlap', defaultStatus: 409 });
 
-export const ClockRetrieveError = registerError({
-  code: 'CLOCK_RETRIEVE_ERROR',
-  defaultStatus: 500,
-  message: 'The clock could not be retrieved.',
-});
+export const ClockRetrieveError = registerError({ code: 'clock.retrieve.failed', defaultStatus: 500 });
 
-export const ClockUpdateError = registerError({
-  code: 'CLOCK_UPDATE_ERROR',
-  defaultStatus: 500,
-  message: 'The clock could not be updated.',
-});
+export const ClockUpdateError = registerError({ code: 'clock.update.failed', defaultStatus: 500 });

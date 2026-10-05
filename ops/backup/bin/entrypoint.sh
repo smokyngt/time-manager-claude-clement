@@ -21,9 +21,20 @@ BACKUP_DIR="${BACKUP_DIR:-/backups}"
 mkdir -p "$BACKUP_DIR" "$(dirname "$ENV_FILE")"
 
 # crond starts jobs with an empty environment: persist ours (root-only file).
-export -p | grep -E '^declare -x (PG|POSTGRES_|DATABASE_URL|BACKUP_|AWS_|TZ=|VERIFY_|AGE_)' >"$ENV_FILE" || true
+export -p | grep -E '^declare -x (PG|POSTGRES_|DATABASE_URL|BACKUP_|AWS_|RCLONE_|TZ=|VERIFY_|AGE_)' >"$ENV_FILE" || true
 chmod 600 "$ENV_FILE"
 date +%s >"$STARTED_FILE"
+
+METRICS_FILE="${BACKUP_METRICS_FILE:-$BACKUP_DIR/metrics.prom}"
+METRICS_PORT="${BACKUP_METRICS_PORT:-9187}"
+METRICS_ROOT="${BACKUP_METRICS_ROOT:-/srv/metrics}"
+mkdir -p "$METRICS_ROOT"
+/usr/local/bin/metrics-init.sh || echo "WARN: could not initialise $METRICS_FILE" >&2
+ln -sf "$METRICS_FILE" "$METRICS_ROOT/metrics"
+ln -sf "$METRICS_FILE" "$METRICS_ROOT/metrics.prom"
+printf '.prom:text/plain; version=0.0.4; charset=utf-8\n*:text/plain; charset=utf-8\n' >"$METRICS_ROOT/httpd.conf"
+httpd -p "$METRICS_PORT" -h "$METRICS_ROOT" -c "$METRICS_ROOT/httpd.conf"
+echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) [entrypoint] metrics: http://0.0.0.0:$METRICS_PORT/metrics"
 
 mkdir -p /etc/crontabs
 printf '%s /usr/local/bin/cron-run.sh\n' "$SCHEDULE" >/etc/crontabs/root

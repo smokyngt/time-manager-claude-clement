@@ -2,8 +2,8 @@ import { and, eq, gte, inArray, isNotNull, isNull, lte, or } from 'drizzle-orm';
 
 import { teams } from '@/db/schema/team.js';
 import { TeamListError } from '@/lib/errors/domains/team.js';
-import { Cursor } from '@/utils/cursor.js';
-import { TeamMapper } from '@/utils/team-mapper.js';
+import { Cursor } from '@/utils/http/cursor.js';
+import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 
@@ -13,7 +13,7 @@ import type { ListParams, ListResponse } from './index.js';
  * @route team.service.list
  * @param {ListParams} params
  * @returns {Promise<ListResponse>}
- * @throws {TeamListError}
+ * @throws {TeamListError | ValidationError}
  */
 export const list = async (params: ListParams): Promise<ListResponse> => {
   try {
@@ -52,6 +52,7 @@ export const list = async (params: ListParams): Promise<ListResponse> => {
       sort: 'created_at',
     });
     const counts = await TeamQuery.counts(page.items.map((row) => row.id));
+
     return {
       items: page.items.map((row) => TeamMapper.entity(row, counts.get(row.id) ?? 0)),
       more: page.more,

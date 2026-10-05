@@ -1,4 +1,4 @@
-export interface Team {
+export type Team = {
   archived_at: null | number;
   created_at: number;
   description: null | string;
@@ -11,4 +11,4 @@ export interface Team {
   weekly_hours_target: number;
   work_end: string;
   work_start: string;
-}
+};

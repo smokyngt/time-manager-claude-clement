@@ -1,13 +1,13 @@
-import { ForbiddenError } from '@/lib/errors/index.js';
+import { UnauthorizedError } from '@/lib/errors/base/core.js';
 import { Membership } from '@/utils/membership.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 
 export type ClockAction = 'create' | 'delete' | 'read' | 'update';
 
-export interface ClockTarget {
+export type ClockTarget = {
   user_id: string;
-}
+};
 
 export class ClockAccess {
   /**
@@ -31,11 +31,11 @@ export class ClockAccess {
    * @param {ClockAction} action
    * @param {ClockTarget} target
    * @returns {Promise<void>}
-   * @throws {ForbiddenError}
+   * @throws {UnauthorizedError}
    */
   public async require(actor: Actor, action: ClockAction, target: ClockTarget): Promise<void> {
     if (!(await this.allow(actor, action, target))) {
-      throw ForbiddenError({
+      throw UnauthorizedError({
         metadata: {
           action,
           role: actor.role,
@@ -44,6 +44,19 @@ export class ClockAccess {
         },
       });
     }
+  }
+
+  /**
+   * @route access.clock.scope
+   * @param {Actor} actor
+   * @param {ClockTarget} target
+   * @returns {Promise<boolean>}
+   */
+  public async scope(actor: Actor, target: ClockTarget): Promise<boolean> {
+    if (actor.role === 'admin' || actor.id === target.user_id) return true;
+    if (actor.role !== 'manager') return false;
+
+    return Membership.manages(actor, target.user_id);
   }
 
   /**
@@ -60,5 +73,3 @@ export class ClockAccess {
     return requested === undefined ? [...allowed] : requested.filter((id) => allowed.has(id));
   }
 }
-
-export const clockAccess = new ClockAccess();

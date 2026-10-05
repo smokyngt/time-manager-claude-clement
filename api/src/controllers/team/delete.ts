@@ -1,15 +1,15 @@
-import { TeamDeleteError } from '@/lib/errors/domains/team.js';
-import { AppError, InternalError, ValidationError } from '@/lib/errors/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+import { TeamDeleteError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
 import { TeamDeleted } from '@/lib/events/domains/team.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { teamService } from '@/services/team/index.js';
-import { Access } from '@/utils/access.js';
-import { teamAccess } from '@/utils/access/team.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
 import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
 import type { Team } from '@/types/entities/team.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -17,7 +17,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: DeleteBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {TeamDeleteError}
+ * @throws {TeamDeleteError | UnauthorizedError | ValidationError}
  */
 export const remove = async (
   req: FastifyRequest<{ Body: DeleteBody }>,
@@ -47,7 +47,11 @@ export const remove = async (
         });
         continue;
       }
-      teamAccess.require(actor, 'delete', item.team);
+      if (!(await Access.team.scope(actor, item.team))) {
+        failed.push({ code: TeamNotFoundError.code, id: item.id });
+        continue;
+      }
+      Access.team.require(actor, 'delete', item.team);
       targets.push(item.team);
     }
     const deleted: string[] = [];
@@ -68,7 +72,9 @@ export const remove = async (
     await Reply.send(
       req,
       reply,
-      TeamDeleted({ payload: { deleted: deleted.length, failed: failed.length } }),
+      TeamDeleted({
+        payload: { actor: actor.id, deleted: deleted.length, failed: failed.length },
+      }),
       result,
     );
   } catch (error) {

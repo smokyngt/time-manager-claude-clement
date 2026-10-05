@@ -3,57 +3,62 @@ import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
 import { db } from '@/db/client.js';
 import { clocks } from '@/db/schema/clock.js';
 import { ClockInvalidError, ClockOverlapError } from '@/lib/errors/domains/clock.js';
+import { Tracing } from '@/lib/telemetry/tracing.js';
 
-export interface OverlapParams {
+export type OverlapParams = {
   clockedIn: number;
   clockedOut: null | number;
   excludeId?: string;
   userId: string;
-}
+};
 
-export interface ValidateParams {
+export type ValidateParams = {
   clockedIn: number;
   clockedOut: null | number;
   now: number;
-}
+};
 
 export class ClockRules {
   public static readonly maxDurationMs = 24 * 60 * 60 * 1000;
 
   /**
-   * @route clock.rules.overlap
+   * @route clock.service.rules.overlap
    * @param {OverlapParams} params
    * @returns {Promise<void>}
    * @throws {ClockOverlapError}
    */
   public static async overlap(params: OverlapParams): Promise<void> {
     const { clockedIn, clockedOut, excludeId, userId } = params;
-    const [row] = await db
-      .select({ id: clocks.id })
-      .from(clocks)
-      .where(
-        and(
-          eq(clocks.user_id, userId),
-          excludeId === undefined ? undefined : ne(clocks.id, excludeId),
-          clockedOut === null ? undefined : lt(clocks.clocked_in_at, clockedOut),
-          or(isNull(clocks.clocked_out_at), gt(clocks.clocked_out_at, clockedIn)),
-        ),
-      )
-      .limit(1);
+    const [row] = await Tracing.span('db.clock.overlap', () =>
+      db
+        .select({ id: clocks.id })
+        .from(clocks)
+        .where(
+          and(
+            eq(clocks.user_id, userId),
+            excludeId === undefined ? undefined : ne(clocks.id, excludeId),
+            clockedOut === null ? undefined : lt(clocks.clocked_in_at, clockedOut),
+            or(isNull(clocks.clocked_out_at), gt(clocks.clocked_out_at, clockedIn)),
+          ),
+        )
+        .limit(1),
+    );
     if (row !== undefined) {
-      throw ClockOverlapError({ metadata: { clock_id: row.id, route: 'clock.rules.overlap' } });
+      throw ClockOverlapError({
+        metadata: { clock_id: row.id, route: 'clock.service.rules.overlap', user_id: userId },
+      });
     }
   }
 
   /**
-   * @route clock.rules.validate
+   * @route clock.service.rules.validate
    * @param {ValidateParams} params
    * @returns {void}
    * @throws {ClockInvalidError}
    */
   public static validate(params: ValidateParams): void {
     const { clockedIn, clockedOut, now } = params;
-    const route = 'clock.rules.validate';
+    const route = 'clock.service.rules.validate';
     if (clockedIn > now) {
       throw ClockInvalidError({ metadata: { field: 'clocked_in_at', reason: 'future', route } });
     }

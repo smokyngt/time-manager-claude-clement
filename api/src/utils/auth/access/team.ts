@@ -1,14 +1,17 @@
-import { ForbiddenError } from '@/lib/errors/index.js';
+import { and, eq } from 'drizzle-orm';
+
+import { db } from '@/db/client.js';
+import { teamMembers } from '@/db/schema/team.js';
+import { UnauthorizedError } from '@/lib/errors/base/core.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 
 export type TeamAction = 'archive' | 'create' | 'delete' | 'list' | 'read' | 'restore' | 'update';
 
-export interface TeamTarget {
+export type TeamTarget = {
   id?: string;
-  manager_id?: string;
-  member?: boolean;
-}
+  manager_id: string;
+};
 
 const MANAGER_FIELDS = ['description', 'name', 'weekly_hours_target', 'work_end', 'work_start'];
 const ADMIN_FIELDS = [...MANAGER_FIELDS, 'manager_id'];
@@ -23,13 +26,11 @@ export class TeamAccess {
    */
   public allow(actor: Actor, action: TeamAction, target?: TeamTarget): boolean {
     if (actor.role === 'admin') return true;
-    if (action === 'list') return true;
-    if (actor.role === 'employee') return action === 'read' && target?.member === true;
+    if (action === 'list' || action === 'read') return true;
+    if (actor.role === 'employee' || action === 'delete') return false;
     if (action === 'create') return target?.manager_id === actor.id;
-    if (action === 'delete') return false;
-    if (target === undefined) return false;
-    if (this.manages(actor, target)) return true;
-    return action === 'read' && target.member === true;
+
+    return target !== undefined && this.manages(actor, target);
   }
 
   /**
@@ -41,6 +42,7 @@ export class TeamAccess {
   public fields(actor: Actor, target: TeamTarget): string[] {
     if (actor.role === 'admin') return ADMIN_FIELDS;
     if (this.manages(actor, target)) return MANAGER_FIELDS;
+
     return [];
   }
 
@@ -60,15 +62,30 @@ export class TeamAccess {
    * @param {TeamAction} action
    * @param {TeamTarget} target
    * @returns {void}
-   * @throws {ForbiddenError}
+   * @throws {UnauthorizedError}
    */
   public require(actor: Actor, action: TeamAction, target?: TeamTarget): void {
     if (!this.allow(actor, action, target)) {
-      throw ForbiddenError({
+      throw UnauthorizedError({
         metadata: { action, role: actor.role, route: 'access.team.require', target: target?.id },
       });
     }
   }
-}
 
-export const teamAccess = new TeamAccess();
+  /**
+   * @route access.team.scope
+   * @param {Actor} actor
+   * @param {Required<TeamTarget>} target
+   * @returns {Promise<boolean>}
+   */
+  public async scope(actor: Actor, target: Required<TeamTarget>): Promise<boolean> {
+    if (actor.role === 'admin' || this.manages(actor, target)) return true;
+    const [row] = await db
+      .select({ user_id: teamMembers.user_id })
+      .from(teamMembers)
+      .where(and(eq(teamMembers.team_id, target.id), eq(teamMembers.user_id, actor.id)))
+      .limit(1);
+
+    return row !== undefined;
+  }
+}

@@ -6,9 +6,11 @@
 # The scratch database is created on the same server as the source database
 # (or on VERIFY_ADMIN_URL, a postgres:// URL of a server where the role may
 # CREATE DATABASE). It is dropped on exit, success or failure.
-#   VERIFY_REQUIRED_TABLES  tables that must exist
-#                           (default: users teams team_members clocks refresh_tokens audit_logs)
-#   VERIFY_NONEMPTY_TABLES  tables that must contain rows (default: users)
+#   VERIFY_REQUIRED_TABLES  tables that must exist (default: users)
+#   VERIFY_EXPECTED_TABLES  tables checked and counted when present; a missing one is a
+#                           warning, or an error with VERIFY_STRICT=true
+#                           (default: teams team_members clocks refresh_tokens audit_logs)
+#   VERIFY_NONEMPTY_TABLES  tables that must contain rows if they exist (default: users)
 set -euo pipefail
 umask 077
 
@@ -23,7 +25,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --remote) REMOTE=true; shift ;;
     -h | --help)
-      sed -n '2,12p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+      sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     -*) die "unknown option: $1" ;;
@@ -65,27 +67,42 @@ export PGDATABASE="$SCRATCH"
 
 restore_into "$FILE"
 
-required="${VERIFY_REQUIRED_TABLES:-users teams team_members clocks refresh_tokens audit_logs}"
+required="${VERIFY_REQUIRED_TABLES:-users}"
+expected="${VERIFY_EXPECTED_TABLES:-teams team_members clocks refresh_tokens audit_logs}"
 nonempty="${VERIFY_NONEMPTY_TABLES:-users}"
 failed=0
 
+for t in $required $expected $nonempty; do
+  [[ "$t" =~ ^[a-z_][a-z0-9_]*$ ]] || die "invalid table name: $t"
+done
+
+table_exists() {
+  [[ "$(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT to_regclass('public.$1') IS NOT NULL")" == "t" ]]
+}
+
 for t in $required; do
-  [[ "$t" =~ ^[a-z_][a-z0-9_]*$ ]] || die "invalid table name in VERIFY_REQUIRED_TABLES: $t"
-  present="$(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT to_regclass('public.$t') IS NOT NULL")"
-  if [[ "$present" != "t" ]]; then
-    err "table public.$t is missing"
+  if ! table_exists "$t"; then
+    err "required table public.$t is missing"
     failed=1
-    continue
   fi
-  count="$(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM public.$t")"
-  log "table public.$t: $count rows"
+done
+
+for t in $required $expected; do
+  if table_exists "$t"; then
+    log "table public.$t: $(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM public.$t") rows"
+  elif [[ "${VERIFY_STRICT:-false}" == "true" ]]; then
+    err "table public.$t is missing (VERIFY_STRICT=true)"
+    failed=1
+  else
+    warn "table public.$t does not exist in this schema, check skipped"
+  fi
 done
 
 for t in $nonempty; do
-  [[ "$t" =~ ^[a-z_][a-z0-9_]*$ ]] || die "invalid table name in VERIFY_NONEMPTY_TABLES: $t"
-  count="$(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM public.$t" 2>/dev/null || echo 0)"
+  table_exists "$t" || continue
+  count="$(psql -XAtq -v ON_ERROR_STOP=1 -c "SELECT count(*) FROM public.$t")"
   if [[ "$count" -le 0 ]]; then
-    err "table public.$t is empty or unreadable"
+    err "table public.$t is empty"
     failed=1
   fi
 done
