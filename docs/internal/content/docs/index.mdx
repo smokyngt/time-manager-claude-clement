@@ -1,0 +1,29 @@
+---
+title: Time Manager internal documentation
+description: Engineering, operations and platform documentation for the team that builds and runs Time Manager.
+---
+
+This site is for the people who build, deploy and operate Time Manager. It describes how the system is put together and how to run it. Integrator and user documentation lives on the public site.
+
+## Documentation sites
+
+| Site | Path | Content |
+| --- | --- | --- |
+| Public documentation | `/` | Hand-written guides for users and integrators, in English and French. |
+| API reference | `/openapi` | Generated from `api/openapi.json`. |
+| Code reference | `/typedocs` | Generated from the API source with TypeDoc. |
+| Internal documentation | `/internal` | This site. |
+
+Run all four with `make docs`, or see the repository README.
+
+## Sections
+
+- **Engineering**: [architecture](/docs/engineering/architecture), [development workflow](/docs/engineering/development), the [API](/docs/engineering/api-conventions) and [web](/docs/engineering/web-conventions) conventions, the [domain](/docs/engineering/domain-model) and [data](/docs/engineering/data-model) models, [roles and scopes](/docs/engineering/roles-and-scopes), [authentication](/docs/engineering/auth-internals), [encryption](/docs/engineering/encryption) and the [technology decision](/docs/engineering/decisions).
+- **Operations**: [deployment](/docs/operations/deployment), the [configuration reference](/docs/operations/configuration), [backups](/docs/operations/backups), [key rotation](/docs/operations/key-rotation), [observability and alert runbooks](/docs/operations/observability) and [performance testing](/docs/operations/performance).
+- **Platform**: [CI/CD workflows](/docs/platform/ci-cd), the [release process](/docs/platform/release-process) and [branch protection](/docs/platform/branch-protection).
+
+## Rules for this documentation
+
+- All documentation lives in a docs site. The repository keeps markdown only for the root `README.md`, `SECURITY.md`, `CONTRIBUTING.md` and the GitHub templates.
+- Reference pages describe the system as it is. Change the page in the same pull request as the code.
+- Each topic has one page. Link to it instead of copying it.

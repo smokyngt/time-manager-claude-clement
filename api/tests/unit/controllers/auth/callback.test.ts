@@ -1,29 +1,17 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { caught, makeReply, makeReq } from '../../../helpers/fixtures.js';
-import { makeUser } from '../../../helpers/user-service.js';
+import { Fake } from '../../../support/fake.js';
+import { caught, OTHER_ID, userOf } from '../../services/user/support.js';
+import { cookieReply, installAuthService } from './support.js';
 
 import type { CallbackQuery } from '@/controllers/auth/index.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyRequest } from 'fastify';
 
-const real = { ...(await import('@/services/auth/index.js')) };
-const user = makeUser('employee', '00000000-0000-4000-8000-0000000000c1');
-const callbackService = mock((_params: { code: string; state: string }) =>
-  Promise.resolve({
-    access_token: 'access',
-    expires_in: 900,
-    refresh_expires_in: 604_800,
-    refresh_token: 'refresh-ms',
-    user,
-  }),
-);
-await mock.module('@/services/auth/index.js', () => ({
-  ...real,
-  authService: { callback: callbackService },
-}));
+const harness = await installAuthService();
+const { svc } = harness;
 
 afterAll(() => {
-  void mock.module('@/services/auth/index.js', () => real);
+  harness.restore();
 });
 
 afterEach(() => {
@@ -34,42 +22,61 @@ const { callback } = await import('@/controllers/auth/callback.js');
 
 type Req = FastifyRequest<{ Querystring: CallbackQuery }>;
 
+const run = async (query: CallbackQuery) => {
+  const reply = cookieReply();
+  const req = Object.assign(Fake.request({ query }), { cookies: { tm_oauth: 'state-cookie' } });
+  await callback(req as Req, reply);
+
+  return { reply, req };
+};
+
 describe('auth.controller.callback', () => {
-  it('sets the refresh cookie and redirects to the web callback', async () => {
-    const { fake, reply } = makeReply<FastifyReply>();
-    await callback(
-      makeReq<Req>({ cookies: { tm_oauth: 'state' }, query: { code: 'c', state: 's' } }),
-      reply,
+  it('sets the refresh cookie, clears the state cookie and redirects to the web app', async () => {
+    svc.callback.mockImplementationOnce(() =>
+      Promise.resolve({
+        access_token: 'access',
+        expires_in: 900,
+        refresh_expires_in: 604_800,
+        refresh_token: 'refresh-ms',
+        user: userOf('employee', OTHER_ID),
+      }),
     );
-    expect(fake.cookies['tm_refresh']).toBe('refresh-ms');
-    expect(fake.redirected).toBe('http://localhost:5173/auth/callback');
-    expect(fake.cleared).toContain('tm_oauth');
+    const { reply } = await run({ code: 'c', state: 's' });
+    expect(svc.callback).toHaveBeenCalledWith({ code: 'c', state: 's', state_cookie: 'state-cookie' });
+    expect(reply.cookies['tm_refresh']?.value).toBe('refresh-ms');
+    expect(reply.redirected).toBe('http://localhost:5173/auth/callback');
+    expect(reply.cleared).toContain('tm_oauth');
   });
 
-  it('redirects with the error code when the sign-in is refused', async () => {
+  it('redirects with the dotted error code when the sign-in is refused', async () => {
     const { AuthMicrosoftUnknownUserError } = await import('@/lib/errors/domains/auth.js');
-    callbackService.mockImplementationOnce(() => Promise.reject(AuthMicrosoftUnknownUserError()));
-    const { fake, reply } = makeReply<FastifyReply>();
-    await callback(makeReq<Req>({ query: { code: 'c', state: 's' } }), reply);
-    expect(fake.redirected).toBe(
-      'http://localhost:5173/auth/callback?error=AUTH_MICROSOFT_UNKNOWN_USER',
+    svc.callback.mockImplementationOnce(() => Promise.reject(AuthMicrosoftUnknownUserError()));
+    const { reply } = await run({ code: 'c', state: 's' });
+    expect(reply.redirected).toBe(
+      'http://localhost:5173/auth/callback?error=auth.microsoft.unknown.user',
     );
-    expect(fake.cookies['tm_refresh']).toBeUndefined();
+    expect(reply.cookies['tm_refresh']).toBeUndefined();
   });
 
-  it('redirects with an error when Microsoft reports a denial', async () => {
-    const { fake, reply } = makeReply<FastifyReply>();
-    await callback(makeReq<Req>({ query: { error: 'access_denied' } }), reply);
-    expect(fake.redirected).toContain('error=AUTH_MICROSOFT_REJECTED');
-    expect(callbackService).not.toHaveBeenCalled();
+  it('never logs the code or the state', async () => {
+    svc.callback.mockImplementationOnce(() => Promise.reject(new Error('boom')));
+    const { req } = await run({ code: 'secret-code', state: 'secret-state' });
+    expect(JSON.stringify(req.log.calls)).not.toContain('secret-code');
+    expect(JSON.stringify(req.log.calls)).not.toContain('secret-state');
+  });
+
+  it('redirects with an error when Microsoft reports a denial or params are missing', async () => {
+    const denied = await run({ error: 'access_denied' });
+    const missing = await run({ code: 'c' });
+    expect(denied.reply.redirected).toContain('error=auth.microsoft.rejected');
+    expect(missing.reply.redirected).toContain('error=auth.microsoft.rejected');
+    expect(svc.callback).not.toHaveBeenCalled();
   });
 
   it('answers 503 instead of redirecting when Microsoft is not configured', async () => {
     const { AuthMicrosoftUnavailableError } = await import('@/lib/errors/domains/auth.js');
-    callbackService.mockImplementationOnce(() => Promise.reject(AuthMicrosoftUnavailableError()));
-    const { reply } = makeReply<FastifyReply>();
-    const error = await caught(callback(makeReq<Req>({ query: { code: 'c', state: 's' } }), reply));
-    expect(error.code).toBe('AUTH_MICROSOFT_UNAVAILABLE');
-    expect(error.status).toBe(503);
+    svc.callback.mockImplementationOnce(() => Promise.reject(AuthMicrosoftUnavailableError()));
+    const error = await caught(run({ code: 'c', state: 's' }));
+    expect([error.code, error.status]).toEqual(['auth.microsoft.unavailable', 503]);
   });
 });

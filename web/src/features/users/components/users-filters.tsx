@@ -2,7 +2,13 @@ import type { Role, Team } from '@time-manager/sdk'
 
 import { useTranslation } from 'react-i18next'
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 export type UsersFiltersValue = { archived: boolean; role: string; teamId: string }
 

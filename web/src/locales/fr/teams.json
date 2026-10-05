@@ -1,1 +1,141 @@
-{}
+{
+  "title": "Équipes",
+  "description": "Organisez les employés en équipes",
+  "list": {
+    "label": "Équipes"
+  },
+  "actions": {
+    "new": "Nouvelle équipe",
+    "quick_view": "Aperçu",
+    "open": "Ouvrir l'équipe",
+    "back": "Toutes les équipes",
+    "dashboard": "Voir le tableau de bord"
+  },
+  "filters": {
+    "status": "Filtrer les équipes",
+    "active": "Actives",
+    "archived": "Archivées",
+    "order": "Trier les équipes",
+    "newest": "Plus récentes",
+    "oldest": "Plus anciennes"
+  },
+  "search": {
+    "label": "Rechercher des équipes",
+    "placeholder": "Rechercher des équipes…"
+  },
+  "card": {
+    "archived": "Archivée",
+    "manager": "Responsable : {{name}}",
+    "members_one": "{{count}} membre",
+    "members_other": "{{count}} membres",
+    "select": "Sélectionner {{name}}",
+    "actions": "Actions pour {{name}}"
+  },
+  "detail": {
+    "manager": "Responsable",
+    "members": "Membres",
+    "schedule": "Horaires",
+    "weekly_target": "Objectif hebdomadaire",
+    "hours_one": "{{count}} heure / semaine",
+    "hours_other": "{{count}} heures / semaine",
+    "no_description": "Aucune description"
+  },
+  "create": {
+    "title": "Nouvelle équipe",
+    "description": "Créez une équipe et définissez ses horaires de travail.",
+    "submit": "Créer l'équipe"
+  },
+  "edit": {
+    "title": "Modifier l'équipe",
+    "description": "Mettez à jour les informations et les horaires de cette équipe.",
+    "submit": "Enregistrer les modifications"
+  },
+  "form": {
+    "name": "Nom",
+    "description": "Description",
+    "manager": "Responsable",
+    "manager_placeholder": "Choisir un responsable",
+    "manager_loading": "Chargement des responsables…",
+    "weekly_hours": "Objectif d'heures par semaine",
+    "work_start": "Début de journée",
+    "work_end": "Fin de journée",
+    "errors": {
+      "name_required": "Le nom est obligatoire.",
+      "name_max": "Le nom est trop long.",
+      "description_max": "La description est trop longue.",
+      "hours_invalid": "Saisissez un nombre entier d'heures.",
+      "hours_range": "Saisissez entre 1 et 80 heures.",
+      "time_invalid": "Saisissez une heure valide.",
+      "end_after_start": "La fin doit être après le début."
+    }
+  },
+  "delete": {
+    "title_one": "Supprimer cette équipe ?",
+    "title_other": "Supprimer {{count}} équipes ?",
+    "description_one": "L'équipe et ses appartenances seront définitivement supprimées.",
+    "description_other": "Ces équipes et leurs appartenances seront définitivement supprimées."
+  },
+  "empty": {
+    "title": "Aucune équipe",
+    "description": "Les équipes que vous créez ou dont vous faites partie apparaissent ici.",
+    "archived_title": "Aucune équipe archivée",
+    "archived_description": "Les équipes archivées apparaissent ici."
+  },
+  "error": {
+    "title": "Impossible de charger l'équipe",
+    "not_found_title": "Équipe introuvable",
+    "not_found_description": "Cette équipe n'existe pas ou vous ne pouvez pas la voir."
+  },
+  "members": {
+    "title": "Membres",
+    "empty_title": "Aucun membre",
+    "empty": "Cette équipe n'a pas encore de membres.",
+    "empty_manage": "Ajoutez des employés à cette équipe.",
+    "columns": {
+      "name": "Nom",
+      "email": "E-mail",
+      "role": "Rôle",
+      "actions": "Actions"
+    },
+    "add": {
+      "open": "Ajouter des membres",
+      "title": "Ajouter des membres",
+      "description": "Sélectionnez les personnes à ajouter à cette équipe.",
+      "search": "Rechercher des utilisateurs",
+      "search_placeholder": "Nom ou e-mail",
+      "available": "Utilisateurs disponibles",
+      "none": "Aucun utilisateur à ajouter.",
+      "submit_one": "Ajouter {{count}} sélectionné",
+      "submit_other": "Ajouter {{count}} sélectionnés"
+    },
+    "remove": {
+      "title": "Retirer le membre",
+      "title_named": "Retirer {{name}} ?",
+      "description": "Cette personne ne fera plus partie de l'équipe.",
+      "label": "Retirer {{name}}"
+    }
+  },
+  "toast": {
+    "created": "{{name}} a été créée.",
+    "updated_one": "Équipe mise à jour.",
+    "updated_other": "{{count}} équipes mises à jour.",
+    "archived_one": "Équipe archivée.",
+    "archived_other": "{{count}} équipes archivées.",
+    "restored_one": "Équipe restaurée.",
+    "restored_other": "{{count}} équipes restaurées.",
+    "deleted_one": "Équipe supprimée.",
+    "deleted_other": "{{count}} équipes supprimées.",
+    "delete_pending_one": "Équipe supprimée.",
+    "delete_pending_other": "{{count}} équipes supprimées.",
+    "members_added_one": "{{count}} membre ajouté.",
+    "members_added_other": "{{count}} membres ajoutés.",
+    "members_removed_one": "{{count}} membre retiré.",
+    "members_removed_other": "{{count}} membres retirés.",
+    "partial_one": "{{count}} élément n'a pas pu être traité.",
+    "partial_other": "{{count}} éléments n'ont pas pu être traités."
+  },
+  "history": {
+    "created": "Création de {{name}}",
+    "updated": "Modification de {{name}}"
+  }
+}

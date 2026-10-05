@@ -24,10 +24,10 @@ import {
 import { UserPermissions } from '@/features/users/lib/user-permissions'
 import { UserSearch } from '@/features/users/lib/user-search'
 
-export type UserActionsMenuProps = Pick<
+export type UserActionsMenuProps = { user: User } & Pick<
   UserItemProps,
   'actor' | 'onArchive' | 'onDelete' | 'onEdit' | 'onRestore' | 'onView' | 'onViewReport'
-> & { user: User }
+>
 
 export function UserActionsMenu({
   actor,
@@ -45,10 +45,8 @@ export function UserActionsMenu({
   const canView = onView !== undefined
   const canReport = onViewReport !== undefined && UserPermissions.canReport(actor, user)
   const canEdit = onEdit !== undefined && !archived && UserPermissions.canEdit(actor, user)
-  const canArchive =
-    onArchive !== undefined && !archived && UserPermissions.canArchive(actor, user)
-  const canRestore =
-    onRestore !== undefined && archived && UserPermissions.canRestore(actor, user)
+  const canArchive = onArchive !== undefined && !archived && UserPermissions.canArchive(actor, user)
+  const canRestore = onRestore !== undefined && archived && UserPermissions.canRestore(actor, user)
   const canDelete = onDelete !== undefined && UserPermissions.canDelete(actor, user)
   const hasSafe = canView || canReport || canEdit || canArchive || canRestore
 

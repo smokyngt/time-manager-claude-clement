@@ -1,7 +1,7 @@
 import type { Team, User } from '@time-manager/sdk'
 
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 import type { TeamValues } from '@/features/teams/lib/team-schema'
@@ -47,14 +47,13 @@ export function TeamForm({
     formState: { errors, isValid },
     handleSubmit,
     register,
-    watch,
   } = useForm<TeamValues>({
     defaultValues: team ? TeamMapper.fromTeam(team) : TeamMapper.defaults(defaultManagerId),
     mode: 'onChange',
     resolver: zodResolver(teamSchema),
   })
-  const nameLength = watch('name').trim().length
-  const descriptionLength = watch('description').trim().length
+  const nameLength = useWatch({ control, name: 'name' }).trim().length
+  const descriptionLength = useWatch({ control, name: 'description' }).trim().length
 
   const message = (key: string | undefined) => (key === undefined ? null : t(key))
 

@@ -1,0 +1,175 @@
+---
+title: Development workflow
+description: Local setup, Docker stacks, scripts per package, adding an API resource, the testing strategy and troubleshooting.
+---
+
+## Repository layout
+
+| Path | Content |
+| --- | --- |
+| `api/` | Bun, Fastify 5, TypeScript, Drizzle (PostgreSQL) |
+| `web/` | React 19, Vite, TypeScript, Tailwind v4, shadcn/ui |
+| `sdks/typescript/` | `@time-manager/sdk`, the typed API client used by the web app |
+| `docs/` | Four documentation sites: `public`, `internal`, `openapi`, `typedocs` |
+| `ops/` | Backup sidecar, observability stack configuration, k6 load tests |
+| `.github/` | Workflows, issue and pull request templates |
+
+Bun is the package manager everywhere, with a committed `bun.lock` per package and no root workspace. The web app imports the SDK sources through the `@time-manager/sdk` path alias (`web/vite.config.ts`, `web/tsconfig.app.json`), so the web Docker build context is the repository root.
+
+## Prerequisites
+
+- [Bun](https://bun.sh) 1.3.x. CI uses `1.3.x` and the images use `oven/bun:1.3`.
+- Docker with Compose, or a local PostgreSQL 17.
+- Git. Node.js is not required.
+
+## Run everything in Docker
+
+```bash
+make dev
+```
+
+This runs `docker compose -f docker-compose.dev.yml up --build`. Web is on http://localhost:5173, the API on http://localhost:8000 (reference at `/docs`) and PostgreSQL on `localhost:5432`. The API container applies migrations, seeds the admin and starts in watch mode. Defaults for database credentials, throwaway JWT secrets and the seed admin (`admin@example.com` / `admin-password-dev`) are in `docker-compose.dev.yml`, so no `.env` is needed. Load demo data with `make demo`.
+
+## Run API and web on the host
+
+1. Start PostgreSQL:
+
+   ```bash
+   docker run -d --name tm-pg -e POSTGRES_USER=timemanager -e POSTGRES_PASSWORD=timemanager \
+     -e POSTGRES_DB=timemanager -p 5432:5432 postgres:17-alpine
+   ```
+
+2. Start the API:
+
+   ```bash
+   cd api
+   cp .env.example .env
+   bun install
+   bun run db:migrate
+   bun run db:seed
+   bun run dev
+   ```
+
+3. Start the web app in a second terminal:
+
+   ```bash
+   cd web
+   cp .env.example .env
+   bun install
+   bun run dev
+   ```
+
+Vite proxies `/v1` and `/docs` to `VITE_PROXY_TARGET` (default `http://localhost:8000`), so `VITE_API_URL` stays empty. Sign in with the seeded admin, then create employees and managers from the Users page.
+
+Environment files are git-ignored except `.env.example`. See the [configuration reference](/docs/operations/configuration) for every variable.
+
+## Docker stacks
+
+| Stack | File | Command | Notes |
+| --- | --- | --- | --- |
+| Development | `docker-compose.dev.yml` | `make dev` | Hot reload. Source is bind-mounted and `node_modules` stays in a container volume. Web, API and database ports are published. |
+| Production | `docker-compose.yml` | `make up` | Only `web` (nginx) is published, on `8080`. |
+
+Reset the development database with `docker compose -f docker-compose.dev.yml down -v`. `VITE_API_URL` is a build argument of the web image; leave it empty in production so the browser calls the same origin and the refresh cookie stays first-party. See [Deployment](/docs/operations/deployment).
+
+## Scripts
+
+### api
+
+| Script | What it does |
+| --- | --- |
+| `dev` | `bun --watch src/server.ts` |
+| `build` | Bundles the server and the `db` scripts (`migrate`, `seed`, `rotate`, `purge`) into `dist/` |
+| `start` | `bun dist/server.js` |
+| `typecheck` | `tsc --noEmit` |
+| `lint` | `eslint . --max-warnings=0` |
+| `test:unit` | `bun test tests/unit` |
+| `test:integration` | `bun test tests/integration`, needs PostgreSQL |
+| `openapi:generate` | Builds the app without a database and writes `api/openapi.json` |
+| `docs:typedoc` | Generates the TypeDoc data for the code reference site |
+| `db:generate` | `drizzle-kit generate`: creates a migration after a schema change |
+| `db:migrate`, `db:seed` | Run from sources |
+| `db:seed:demo` | Loads demo data (development only) |
+| `db:rotate` | Re-encrypts data with the current key, see [Key rotation](/docs/operations/key-rotation) |
+| `db:purge` | Deletes expired and long-revoked refresh tokens |
+| `db:migrate:prod`, `db:seed:prod`, `db:rotate:prod`, `db:purge:prod` | Run from `dist/`. Migrations are read from `MIGRATIONS_DIR` (default `drizzle`, relative to the working directory). |
+
+### web
+
+| Script | What it does |
+| --- | --- |
+| `dev` | Vite dev server on 5173 |
+| `build` | `tsc -b && vite build` to `dist/` |
+| `preview` | Serves the production build |
+| `typecheck` | `tsc -b --noEmit` |
+| `lint` | `eslint . --max-warnings 0` |
+| `format` | Prettier write |
+| `test:unit` | `vitest run` |
+| `test:e2e` | Playwright, specs in `web/e2e` |
+| `api:types` | `openapi-typescript ../api/openapi.json -o src/lib/api/schema.d.ts` |
+
+### sdks/typescript
+
+`build`, `typecheck`, `lint` and `test` (`bun test src`).
+
+### docs sites
+
+`bun run dev`, `bun run build` and `bun run typecheck` in each of `docs/public`, `docs/internal`, `docs/openapi` and `docs/typedocs`. `make docs` builds them all.
+
+### Make targets
+
+Run `make help` for the current list: `dev`, `up`, `down`, `logs`, `migrate`, `seed`, `demo`, `rotate-keys`, `purge-sessions`, `obs-up`, `obs-down`, `backup-up`, `backup-now`, `backup-verify`, `load-*`, `docs`, `ci`.
+
+## Add an API resource
+
+`user` is the reference implementation: read its files and keep the same shape. Replace `<entity>` with the singular name and `<entities>` with the plural.
+
+1. Entity type in `src/types/entities/<entity>.ts`: sorted keys, `object: '<entity>'`, `created_at`, `updated_at`, `archived_at` when archivable.
+2. Table in `src/db/schema/<entity>.ts`: uuid `id`, bigint timestamps, indexes including `(created_at, id)`. Export it from `src/db/schema/index.ts`, run `bun run db:generate` and commit the SQL in `api/drizzle/`.
+3. Schemas in `src/schemas/<entity>.ts`: entity schema with `additionalProperties: false` and a description and example on every property, input schemas with bounds, and a responses map built with the envelope helpers.
+4. Errors in `src/lib/errors/domains/<entity>.ts` (`<entity>.not.found`, `<entity>.conflict`, `<entity>.<op>.failed`) and events in `src/lib/events/domains/<entity>.ts`.
+5. Mapper in `src/utils/mappers/<entity>.ts`. Never return raw rows.
+6. Services in `src/services/<entity>/<op>.ts` plus `index.ts`. One params object in, one named object out, wrapped errors, `logService.create` after each mutation, `Cursor.paginate` for lists.
+7. Access rules in `src/utils/auth/authz.ts` when rules go beyond role scopes.
+8. Controllers in `src/controllers/<entity>/<op>.ts`: resolve the caller with `Access.context(req)`, authorize first, reply with `Reply.send`. Bulk endpoints dedupe ids, cap the count, check every item before mutating and return `{ success, updated|deleted, failed }`.
+9. Routes in `src/routes/<entity>/<op>.ts` with `auth({ scopes })` and a full schema, plus an `index.ts` that registers the rate limit. Export the router from `src/routes/index.ts`.
+10. Mount the router in the app with prefix `/v1/<entities>` and add the OpenAPI tag.
+11. Add scopes in `src/config/auth/scopes.ts` and grant them in `src/config/auth/roles.ts`. Update [Roles and scopes](/docs/engineering/roles-and-scopes).
+12. Tests under `tests/unit/services/<entity>/`, `tests/unit/controllers/<entity>/`, `tests/unit/routes/<entity>/` and `tests/integration/`.
+13. Verify from `api/`: `bun run typecheck && bun run lint && bun run test:unit && bun run openapi:generate`. Zero warnings.
+14. For a UI, add the SDK resource, run `bun run api:types` if needed, and add `features/<entities>` in the web app. See [Web conventions](/docs/engineering/web-conventions).
+
+Lint enforces alphabetical ordering (`eslint-plugin-perfectionist`), `.js` import extensions with `@/` aliases and a JSDoc block with `@route`, `@param`, `@returns` and `@throws` on exported functions. Run `bunx eslint . --fix` to repair ordering.
+
+## Testing strategy
+
+| Level | Tooling | Scope |
+| --- | --- | --- |
+| API unit | `bun:test`, `FakeDb` | Services, controllers, route scopes, utilities, error handler. No database needed. |
+| API integration | `bun test tests/integration` | Real PostgreSQL: migrations, constraints (unique open clock, cascades), auth flows, report SQL. |
+| Web unit | Vitest, Testing Library, jsdom | Hooks, forms, lists, pages, guards, locale parity. |
+| SDK | `bun test` | Payload conversion, HTTP client, resources. |
+| End to end | Playwright (`web/e2e`) | Login, navigation, role-restricted routes, users. Starts its own API and web server. |
+| Load | k6 (`ops/load`) | Latency and error budgets, see [Performance](/docs/operations/performance). |
+
+Run one file with `cd api && bun test tests/unit/services/user/create.test.ts` or `cd web && bunx vitest run <path>`.
+
+## Troubleshooting
+
+| Symptom | Cause and fix |
+| --- | --- |
+| `invalid configuration: ...` on start | `NODE_ENV=production` and a production check failed. See [Production checks](/docs/operations/configuration#production-checks). |
+| `error: ... is required` from `docker compose` | A required variable is missing from `.env`. |
+| `ECONNREFUSED 5432` | PostgreSQL is not running or the `DATABASE_URL` host is wrong: `localhost` on the host, `db` inside Compose. |
+| `relation "users" does not exist` | Migrations are not applied. Run `bun run db:migrate` or `make migrate`. |
+| Seed prints `SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required` | Set both variables. The seed is idempotent. |
+| Every reload returns to `/login` | The `tm_refresh` cookie is not sent. `CORS_ORIGIN` must equal the SPA origin, `VITE_API_URL` must be empty, and over plain HTTP `COOKIE_SECURE` must be `false`. |
+| `429 rate.limit.exceeded` while developing | Raise `AUTH_LOGIN_RATE_LIMIT_MAX` or the entity limit. |
+| All users share one rate-limit bucket | Behind a proxy without `TRUST_PROXY`, every request appears to come from the proxy. |
+| Microsoft button returns 503 | `MICROSOFT_CLIENT_ID` or `MICROSOFT_CLIENT_SECRET` is unset. See [Authentication internals](/docs/engineering/auth-internals#register-the-microsoft-application). |
+| Microsoft sign-in ends with `?error=auth.microsoft.unknown.user` | No user has that email. A manager or admin must create it first. |
+| `lint` fails on ordering | Run `bunx eslint . --fix` in the package. |
+| Web types miss a new endpoint | Run `bun run openapi:generate` in `api/`, then `bun run api:types` in `web/`. |
+| Hot reload misses changes in a container | `CHOKIDAR_USEPOLLING=true` is set for web. For the API confirm the `./api:/app` bind mount and rebuild after dependency changes. |
+| Port already in use | Another process uses 5173, 8000, 8080 or 5432. Stop it or change the published port. |
+| Stale dependencies after switching branches | Run `bun install` in the package. CI uses `--frozen-lockfile`, so commit `bun.lock` with dependency changes. |

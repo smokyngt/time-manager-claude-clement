@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import type { TeamValues } from '@/features/teams/lib/team-schema'
+
 import { Announcer } from '@/components/shared/announcer'
 import { BulkActionBar } from '@/components/shared/bulk-action-bar'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
@@ -54,7 +56,10 @@ import {
 } from '@/hooks'
 import { useAuth } from '@/providers/use-auth'
 
-const FILTER_DEFAULTS: Record<string, boolean | number | string> = { archived: false, order: 'desc' }
+const FILTER_DEFAULTS: Record<string, boolean | number | string> = {
+  archived: false,
+  order: 'desc',
+}
 
 export function TeamsPage() {
   const { t } = useTranslation('teams')
@@ -100,7 +105,9 @@ export function TeamsPage() {
 
   const managerNames = useMemo(
     () =>
-      Object.fromEntries(managers.users.map((manager) => [manager.id, TeamFormat.userName(manager)])),
+      Object.fromEntries(
+        managers.users.map((manager) => [manager.id, TeamFormat.userName(manager)]),
+      ),
     [managers.users],
   )
   const isManageable = useCallback(
@@ -111,10 +118,7 @@ export function TeamsPage() {
     () => pageTeams.filter((team) => selection.isSelected(team.id)).map((team) => team.id),
     [pageTeams, selection],
   )
-  const previewTeam = useMemo(
-    () => teams.find((team) => team.id === previewId),
-    [previewId, teams],
-  )
+  const previewTeam = useMemo(() => teams.find((team) => team.id === previewId), [previewId, teams])
 
   const handleSearch = useCallback(
     (value: string) => {
@@ -170,7 +174,7 @@ export function TeamsPage() {
   }, [])
 
   const handleSubmit = useCallback(
-    (values: Parameters<typeof TeamMapper.toCreate>[0]) => {
+    (values: TeamValues) => {
       if (editing) {
         const data = TeamMapper.toUpdate(values, editing, canPickManager)
         const before = TeamMapper.snapshot(editing, canPickManager)
@@ -299,11 +303,7 @@ export function TeamsPage() {
         }
         viewMode={viewMode}
       />
-      <BulkActionBar
-        count={selectedIds.length}
-        onClear={selection.clear}
-        onSelectAll={selectAll}
-      >
+      <BulkActionBar count={selectedIds.length} onClear={selection.clear} onSelectAll={selectAll}>
         {archived ? (
           <Button onClick={handleBulkRestore} size="sm" variant="outline">
             {t('common:actions.restore')}

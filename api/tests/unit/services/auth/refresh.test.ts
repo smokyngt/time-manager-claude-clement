@@ -1,21 +1,16 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeRow, OTHER_ID } from '../../../helpers/fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+import { caught, installLog, OTHER_ID, rowOf, storedOf } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
-const realLog = { ...(await import('@/services/log/index.js')) };
 const fakeDb = new FakeDb();
-const logCreate = mock(() => Promise.resolve({ success: true }));
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
-await mock.module('@/services/log/index.js', () => ({
-  ...realLog,
-  logService: { create: logCreate },
-}));
+const log = await installLog();
 
 afterAll(() => {
   void mock.module('@/db/client.js', () => realDb);
-  void mock.module('@/services/log/index.js', () => realLog);
+  log.restore();
 });
 
 afterEach(() => {
@@ -23,111 +18,117 @@ afterEach(() => {
   fakeDb.reset();
 });
 
-const { refresh } = await import('@/services/auth/refresh.js');
 const { Tokens } = await import('@/lib/auth/tokens.js');
+const { refresh } = await import('@/services/auth/refresh.js');
 
-const stored = (overrides: Record<string, unknown> = {}) => ({
-  created_at: 1,
-  expires_at: Date.now() + 60_000,
-  family_id: 'family-1',
-  id: 'token-1',
-  revoked_at: null,
-  token_hash: 'hash',
-  user_id: OTHER_ID,
-  ...overrides,
-});
+const revoked = (): boolean =>
+  fakeDb.calls.some((call) => call.op === 'update' && call.method === 'set');
+const inserted = (): boolean => fakeDb.calls.some((call) => call.op === 'insert');
 
 describe('auth.service.refresh', () => {
   it('rotates the token inside the same family', async () => {
-    fakeDb.enqueue([stored()], [{ id: 'token-1' }], [makeRow()], []);
+    const row = storedOf();
+    fakeDb.enqueue([row], [{ id: row.id }], [rowOf()], []);
     const session = await refresh({ token: 'opaque' });
     expect(session.refresh_token).not.toBe('opaque');
     expect((await Tokens.verify(session.access_token)).id).toBe(OTHER_ID);
-    const inserted = fakeDb.arg('insert', 'values') as Record<string, unknown>;
-    expect(inserted['family_id']).toBe('family-1');
-    expect(inserted['token_hash']).toBe(Tokens.hash(session.refresh_token));
+    expect(session.user.email).toBe('jane.doe@example.com');
+    const values = fakeDb.arg('insert', 'values') as Record<string, unknown>;
+    expect(values['family_id']).toBe(row.family_id);
+    expect(values['token_hash']).toBe(Tokens.hash(session.refresh_token));
     expect(typeof (fakeDb.arg('update', 'set') as Record<string, unknown>)['revoked_at']).toBe(
       'number',
     );
   });
 
+  it('issues the access token from the database role, not from a stale session', async () => {
+    const row = storedOf();
+    fakeDb.enqueue([row], [{ id: row.id }], [rowOf({ role: 'manager' })], []);
+    const session = await refresh({ token: 'opaque' });
+    expect((await Tokens.verify(session.access_token)).role).toBe('manager');
+  });
+
   it('rejects an unknown token', async () => {
     fakeDb.enqueue([]);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(error.code).toBe('auth.refresh.invalid');
     expect(error.status).toBe(401);
   });
 
   it('revokes the whole family and logs when a rotated token is reused', async () => {
-    fakeDb.enqueue([stored({ revoked_at: 5 })], []);
+    fakeDb.enqueue([storedOf({ revoked_at: 5 })], []);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(fakeDb.calls.some((call) => call.op === 'update' && call.method === 'set')).toBe(true);
-    expect(logCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ event: 'auth.refresh_reuse_detected' }),
-    );
-    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(revoked()).toBe(true);
+    expect(log.events()).toEqual(['auth.refresh_reuse_detected']);
+    expect(inserted()).toBe(false);
   });
 
-  it('accepts a just-rotated token again inside the grace window without revoking', async () => {
-    fakeDb.enqueue([stored({ revoked_at: Date.now() - 2000 })], [{ id: 'successor' }], [makeRow()], []);
+  it('accepts a just-rotated token inside the grace window without revoking', async () => {
+    fakeDb.enqueue(
+      [storedOf({ revoked_at: Date.now() - 2000 })],
+      [{ id: 'successor' }],
+      [rowOf()],
+      [],
+    );
     const session = await refresh({ token: 'opaque' });
     expect(session.refresh_token).not.toBe('opaque');
-    const inserted = fakeDb.arg('insert', 'values') as Record<string, unknown>;
-    expect(inserted['family_id']).toBe('family-1');
-    expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
-    expect(logCreate).not.toHaveBeenCalled();
+    expect((fakeDb.arg('insert', 'values') as Record<string, unknown>)['family_id']).toBe(
+      storedOf().family_id,
+    );
+    expect(revoked()).toBe(false);
+    expect(log.create).not.toHaveBeenCalled();
   });
 
-  it('does not grant the grace window to a revoked family', async () => {
-    fakeDb.enqueue([stored({ revoked_at: Date.now() - 2000 })], [], []);
+  it('does not grant the grace window when the family has no live token', async () => {
+    fakeDb.enqueue([storedOf({ revoked_at: Date.now() - 2000 })], [], []);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
-    expect(logCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ event: 'auth.refresh_reuse_detected' }),
-    );
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(inserted()).toBe(false);
+    expect(log.events()).toEqual(['auth.refresh_reuse_detected']);
   });
 
-  it('keeps reuse detection once the grace window has passed', async () => {
-    fakeDb.enqueue([stored({ revoked_at: Date.now() - 60_000 })], []);
+  it('keeps reuse detection once the 10 second grace window has passed', async () => {
+    fakeDb.enqueue([storedOf({ revoked_at: Date.now() - 11_000 })], []);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
-    expect(logCreate).toHaveBeenCalledWith(
-      expect.objectContaining({ event: 'auth.refresh_reuse_detected' }),
-    );
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(revoked()).toBe(true);
+    expect(inserted()).toBe(false);
+    expect(log.events()).toEqual(['auth.refresh_reuse_detected']);
   });
 
   it('revokes the family when the token expired', async () => {
-    fakeDb.enqueue([stored({ expires_at: 1 })], []);
+    fakeDb.enqueue([storedOf({ expires_at: 1 })], []);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(logCreate).not.toHaveBeenCalled();
-    expect(fakeDb.calls.some((call) => call.op === 'update' && call.method === 'set')).toBe(true);
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(log.create).not.toHaveBeenCalled();
+    expect(revoked()).toBe(true);
   });
 
   it('rejects when a concurrent request already claimed the token', async () => {
-    fakeDb.enqueue([stored()], [], []);
+    fakeDb.enqueue([storedOf()], [], []);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(inserted()).toBe(false);
   });
 
-  it('rejects when the user is archived or gone', async () => {
-    fakeDb.enqueue([stored()], [{ id: 'token-1' }], [makeRow({ archived_at: 1 })], []);
+  it('rejects and revokes when the user is archived or gone', async () => {
+    const row = storedOf();
+    fakeDb.enqueue([row], [{ id: row.id }], [rowOf({ archived_at: 1 })], []);
     const archived = await caught(refresh({ token: 'opaque' }));
-    fakeDb.enqueue([stored()], [{ id: 'token-1' }], [], []);
+    fakeDb.reset();
+    fakeDb.enqueue([row], [{ id: row.id }], [], []);
     const gone = await caught(refresh({ token: 'opaque' }));
-    expect(archived.code).toBe('AUTH_SESSION_INVALID');
-    expect(gone.code).toBe('AUTH_SESSION_INVALID');
+    expect(archived.code).toBe('auth.refresh.invalid');
+    expect(gone.code).toBe('auth.refresh.invalid');
+    expect(inserted()).toBe(false);
   });
 
   it('wraps unexpected failures and keeps the cause', async () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(refresh({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_REFRESH_ERROR');
+    expect(error.code).toBe('auth.refresh.failed');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('auth.service.refresh');
   });

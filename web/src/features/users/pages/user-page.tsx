@@ -1,14 +1,23 @@
 import type { User } from '@time-manager/sdk'
 
-import { ArchiveIcon, ArchiveRestoreIcon, ArrowLeftIcon, ChartColumnIcon, PencilIcon, Trash2Icon } from 'lucide-react'
+import {
+  ArchiveIcon,
+  ArchiveRestoreIcon,
+  ArrowLeftIcon,
+  ChartColumnIcon,
+  PencilIcon,
+  Trash2Icon,
+} from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams } from 'react-router'
 
+import type { UserFormValues } from '@/features/users/lib'
+
 import { ConfirmDialog, ErrorState, PageHeader, ResponsiveDetail } from '@/components/shared'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { UserDetails, UserForm } from '@/features/users/components'
 import {
@@ -28,8 +37,6 @@ import { Permission } from '@/lib/permission'
 import { RESOURCE_SCOPES } from '@/lib/scopes'
 import { useAuth } from '@/providers/use-auth'
 import { useToastActions } from '@/providers/use-toast-actions'
-
-import type { UserFormValues } from '@/features/users/lib'
 
 export function UserPage() {
   const { user: me } = useAuth()
@@ -213,18 +220,14 @@ function UserContent({ actor, userId }: { actor: Pick<User, 'id' | 'role'>; user
         </CardHeader>
         <CardContent>
           {teams.loading ? <Skeleton className="h-8 w-full" /> : null}
-          {teams.isError ? (
-            <ErrorState onRetry={() => void teams.refetch()} />
-          ) : null}
+          {teams.isError ? <ErrorState onRetry={() => void teams.refetch()} /> : null}
           {!teams.loading && !teams.isError && teams.teams.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('detail.teams_empty')}</p>
           ) : null}
           <ul className="flex flex-wrap gap-2">
             {teams.teams.map((team) => (
               <li key={team.id}>
-                <Badge variant="outline">
-                  {team.name}
-                </Badge>
+                <Badge variant="outline">{team.name}</Badge>
               </li>
             ))}
           </ul>
@@ -261,11 +264,7 @@ function UserContent({ actor, userId }: { actor: Pick<User, 'id' | 'role'>; user
           </CardContent>
         </Card>
       ) : null}
-      <ResponsiveDetail
-        onOpenChange={setEditing}
-        open={editing}
-        title={t('edit.title')}
-      >
+      <ResponsiveDetail onOpenChange={setEditing} open={editing} title={t('edit.title')}>
         <UserForm
           actor={actor}
           emailTaken={emailTaken}

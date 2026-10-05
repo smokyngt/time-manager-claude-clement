@@ -1,22 +1,18 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { caught, makeReply, makeReq } from '../../../helpers/fixtures.js';
+import { Fake } from '../../../support/fake.js';
+import { OTHER_ID } from '../../services/user/support.js';
+import { cookieReply, installAuthService } from './support.js';
 
 import type { LogoutResponse } from '@/controllers/auth/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
+import type { FastifyReply } from 'fastify';
 
-const real = { ...(await import('@/services/auth/index.js')) };
-const logoutService = mock((_params: { token: string | undefined }) =>
-  Promise.resolve({ success: true, user_id: 'user-1' }),
-);
-await mock.module('@/services/auth/index.js', () => ({
-  ...real,
-  authService: { logout: logoutService },
-}));
+const harness = await installAuthService();
+const { svc } = harness;
 
 afterAll(() => {
-  void mock.module('@/services/auth/index.js', () => real);
+  harness.restore();
 });
 
 afterEach(() => {
@@ -27,30 +23,39 @@ const { logout } = await import('@/controllers/auth/logout.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<LogoutResponse> }>;
 
+const run = async (cookies: Record<string, string>) => {
+  const reply = cookieReply<Rep>();
+  const req = Object.assign(Fake.request(), { cookies });
+  await logout(req, reply);
+
+  return { reply, req };
+};
+
 describe('auth.controller.logout', () => {
-  it('revokes from the cookie alone and clears it', async () => {
-    const { fake, reply } = makeReply<Rep>();
-    await logout(makeReq<FastifyRequest>({ cookies: { tm_refresh: 'opaque' } }), reply);
-    expect(logoutService).toHaveBeenCalledWith({ token: 'opaque' });
-    expect(fake.cleared).toContain('tm_refresh');
-    expect(fake.sent).toEqual({ data: { success: true }, event: 'auth.logged_out' });
+  it('revokes through the cookie token, clears the cookie and needs no actor', async () => {
+    svc.logout.mockImplementationOnce(() => Promise.resolve({ success: true, user_id: OTHER_ID }));
+    const { reply } = await run({ tm_refresh: 'opaque' });
+    expect(svc.logout).toHaveBeenCalledWith({ token: 'opaque' });
+    expect(reply.cleared).toContain('tm_refresh');
+    expect(reply.payload).toMatchObject({
+      data: { success: true },
+      event: { code: 'auth.logged_out', payload: { actor: OTHER_ID } },
+    });
   });
 
-  it('answers the same envelope without any cookie or bearer token', async () => {
-    logoutService.mockImplementationOnce(() => Promise.resolve({ success: true, user_id: null }));
-    const { fake, reply } = makeReply<Rep>();
-    await logout(makeReq<FastifyRequest>(), reply);
-    expect(logoutService).toHaveBeenCalledWith({ token: undefined });
-    expect(fake.sent).toEqual({ data: { success: true }, event: 'auth.logged_out' });
+  it('succeeds without a cookie and omits the actor', async () => {
+    const { reply } = await run({});
+    expect(svc.logout).toHaveBeenCalledWith({ token: undefined });
+    expect(reply.cleared).toContain('tm_refresh');
+    expect(reply.payload).toMatchObject({ data: { success: true }, event: { payload: {} } });
   });
 
-  it('wraps failures, keeps the cause and still clears the cookie', async () => {
-    const failure = new Error('db down');
-    logoutService.mockImplementationOnce(() => Promise.reject(failure));
-    const { fake, reply } = makeReply<Rep>();
-    const error = await caught(logout(makeReq<FastifyRequest>(), reply));
-    expect(error.code).toBe('AUTH_LOGOUT_ERROR');
-    expect(error.cause).toBe(failure);
-    expect(fake.cleared).toContain('tm_refresh');
+  it('still succeeds, clears the cookie and logs a warning when revocation fails', async () => {
+    svc.logout.mockImplementationOnce(() => Promise.reject(new Error('db down')));
+    const { reply, req } = await run({ tm_refresh: 'opaque' });
+    expect(reply.statusCode).toBe(200);
+    expect(reply.cleared).toContain('tm_refresh');
+    expect(reply.payload).toMatchObject({ data: { success: true } });
+    expect(req.log.calls.some((call) => call.level === 'warn')).toBe(true);
   });
 });

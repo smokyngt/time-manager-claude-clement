@@ -1,0 +1,117 @@
+---
+title: Roles and scopes
+description: The three roles, the scopes they grant, the managed-user concept and the permission matrix per endpoint.
+---
+
+Three roles exist: `employee`, `manager` and `admin`. Authorization has two stages and both must pass:
+
+1. **Scope check** in the route `auth({ scopes })` middleware. The role must grant every scope the route declares. Failure is `403 unauthorized` before the controller runs.
+2. **Controller check** with the `Access` helpers (`api/src/utils/auth/authz.ts`). It depends on the target (self, managed user, team manager) and, for updates, on which fields may change.
+
+Role definitions are in the [domain model](/docs/engineering/domain-model).
+
+## Managed user
+
+A managed user, relative to a manager, belongs to at least one non-archived team whose `manager_id` is that manager. Archiving a team ends the relationship through that team.
+
+`Membership.manages(actor, userId)` joins `team_members` and `teams` where `teams.manager_id = actor.id`, `team_members.user_id = userId` and `teams.archived_at IS NULL`. Admins manage everyone and employees manage nobody.
+
+For user administration only, a manager may also act on an unassigned employee: an employee who is in no non-archived team. This lets a manager create an employee, then place them in a team, and see who is available to add. It is implemented in the user access helper and in the `managed_by` filter of the user list. Clocks, reports and team data never use this extension.
+
+## Scopes per role
+
+Defined in `api/src/config/auth/roles.ts`.
+
+| Scope | employee | manager | admin |
+| --- | :-: | :-: | :-: |
+| `auth:self` | yes | yes | yes |
+| `users:read` | yes | yes | yes |
+| `users:write` | yes | yes | yes |
+| `users:manage` | no | yes | yes |
+| `teams:read` | yes | yes | yes |
+| `teams:manage` | no | yes | yes |
+| `clocks:read` | yes | yes | yes |
+| `clocks:write` | yes | yes | yes |
+| `clocks:manage` | no | yes | yes |
+| `reports:read` | yes | yes | yes |
+
+Scopes are coarse. Manager and admin hold the same scopes, and the difference between them is entirely in the controller checks: breadth of targets, role changes, deletions and `manager_id` assignment.
+
+## Permission matrix
+
+Legend: **Y** allowed. **own** only the caller's own record. **managed** only managed users, or teams the manager manages. **no** denied (403, or 404 when the target is outside the caller's visibility).
+
+### Auth (`/v1/auth`)
+
+| Endpoint | Scope | employee | manager | admin |
+| --- | --- | :-: | :-: | :-: |
+| `POST /login` | none | Y | Y | Y |
+| `POST /refresh` | none (cookie) | Y | Y | Y |
+| `POST /logout` | `auth:self` | Y | Y | Y |
+| `GET /me` | `auth:self` | Y | Y | Y |
+| `GET /microsoft`, `GET /microsoft/callback` | none | Y, if the user exists | Y | Y |
+
+### Users (`/v1/users`)
+
+| Endpoint | Scope | employee | manager | admin |
+| --- | --- | --- | --- | --- |
+| `POST /new` | `users:manage` | no | Employees only (role defaults to `employee`; creating a manager or admin is denied) | Any role |
+| `POST /list` | `users:manage` | no | Employees only: managed users and unassigned employees. A `role` filter other than `employee` is denied. | All, any filter |
+| `GET /:id` | `users:read` | own | Own, or an employee in scope | Y |
+| `PATCH /` (bulk) | `users:write` | Own: `first_name`, `last_name`, `phone_number`, `password` | Own (same fields), and employees in scope with `email` added | Y, with `email` and `role` added |
+| `POST /:id/archive` | `users:manage` | no | Employees in scope, never self | Y, never self |
+| `POST /:id/restore` | `users:manage` | no | Employees in scope | Y |
+| `DELETE /` (bulk) | `users:manage` | no | Employees in scope, never self | Y, never self |
+
+In bulk `PATCH` and `DELETE`, authorization is checked for every id first and one forbidden id rejects the whole request. List filters include `team_id`, `role`, `archived`, `ids`, `created_after` and `created_before`.
+
+### Teams (`/v1/teams`)
+
+| Endpoint | Scope | employee | manager | admin |
+| --- | --- | --- | --- | --- |
+| `POST /new` | `teams:manage` | no | Y, `manager_id` forced to self | Y, any `manager_id` (a manager or admin user) |
+| `POST /list` | `teams:read` | Teams they belong to | Teams they manage or belong to | All |
+| `GET /:id` | `teams:read` | If member | If manager of it or member | Y |
+| `PATCH /` (bulk) | `teams:manage` | no | Managed teams: `name`, `description`, `weekly_hours_target`, `work_start`, `work_end` | Y, with `manager_id` added |
+| `POST /:id/archive`, `POST /:id/restore` | `teams:manage` | no | Managed teams | Y |
+| `DELETE /` (bulk) | `teams:manage` | no | no | Y |
+| `POST /:id/members/add` | `teams:manage` | no | Managed teams, employees only | Y |
+| `POST /:id/members/remove` | `teams:manage` | no | Managed teams | Y |
+| `POST /:id/members/list` | `teams:read` | If member | If manager of it or member | Y |
+
+### Clocks (`/v1/clocks`)
+
+| Endpoint | Scope | employee | manager | admin |
+| --- | --- | --- | --- | --- |
+| `POST /in`, `POST /out` | `clocks:write` | own | own | own |
+| `GET /current` | `clocks:read` | own | own | own |
+| `POST /new` (manual entry) | `clocks:manage` | no | managed | Y |
+| `POST /list` | `clocks:read` | Own only (`user_ids` forced to self) | Self and managed users (requested ids are intersected with that set) | All |
+| `GET /:id` | `clocks:read` | own | Own, or clocks of managed users | Y |
+| `PATCH /` (bulk) | `clocks:manage` | no | managed | Y |
+| `DELETE /` (bulk) | `clocks:manage` | no | managed | Y |
+
+The clock access helper narrows lists: an employee gets `[self]`, an admin gets what was requested (or everything), and a manager gets self plus their managed members filtered by the request.
+
+### Reports (`/v1/reports`)
+
+| Endpoint | Scope | employee | manager | admin |
+| --- | --- | --- | --- | --- |
+| `POST /user` | `reports:read` | own | Own, or managed users | Y |
+| `POST /team` | `reports:read` | no | Teams they manage | Y |
+
+### Operational endpoints
+
+| Endpoint | Auth |
+| --- | --- |
+| `GET /health`, `GET /health/ready` | none |
+| `GET /docs`, `GET /docs/json` | none |
+| `GET /metrics` | `METRICS_TOKEN` bearer, hidden (404) in production when no token is set |
+
+## Design rules
+
+- Every route has a scope, every query is scoped to what the actor may see, and authorization runs before the service is called.
+- Role escalation is admin-only: only admins can set or change `role` and only admins can create other managers or admins.
+- Self-service is limited to non-privileged fields. An employee cannot change their own email or role.
+- Denials do not reveal why. The 403 body is generic and the action, role and target are logged as metadata only.
+- A role change applies to the next request. The `auth` middleware loads the user from the database on every request and derives scopes from the stored role, so a token never carries scopes.

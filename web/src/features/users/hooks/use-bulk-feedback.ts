@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next'
 import { UserBulk } from '@/features/users/lib/user-bulk'
 import { useToastActions } from '@/providers/use-toast-actions'
 
-type Report = { count: number; failed: readonly BulkFailure[]; title: string; success: string }
+type Report = { count: number; failed: readonly BulkFailure[]; success: string; title: string }
 
 export function useBulkFeedback() {
   const { t } = useTranslation('users')

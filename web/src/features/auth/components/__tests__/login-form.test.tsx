@@ -77,7 +77,7 @@ describe('LoginForm', () => {
   })
 
   it('shows the network error', async () => {
-    const login = vi.fn(() => Promise.reject(new NetworkError({ code: 'network', status: 0 })))
+    const login = vi.fn(() => Promise.reject(new NetworkError({})))
     setup(login)
     await fill()
     expect(await screen.findByText(i18n.t('errors:network'))).toBeVisible()

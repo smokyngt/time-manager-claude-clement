@@ -59,9 +59,7 @@ export function AddMembersDialog({
   }, [candidates, memberIds, search])
 
   const toggle = (id: string, checked: boolean) => {
-    setSelected((current) =>
-      checked ? [...current, id] : current.filter((value) => value !== id),
-    )
+    setSelected((current) => (checked ? [...current, id] : current.filter((value) => value !== id)))
   }
 
   const changeOpen = (next: boolean) => {

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 
-import { AppError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 
 import { key, snapshot } from './helpers.js';

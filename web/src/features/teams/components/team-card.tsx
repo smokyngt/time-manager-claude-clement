@@ -63,16 +63,40 @@ export const TeamCard = memo(function TeamCard({
 
   const actions: TeamAction[] = []
   if (onPreview) {
-    actions.push({ key: 'preview', label: t('actions.quick_view'), run: () => { onPreview(team) } })
+    actions.push({
+      key: 'preview',
+      label: t('actions.quick_view'),
+      run: () => {
+        onPreview(team)
+      },
+    })
   }
   if (onEdit) {
-    actions.push({ key: 'edit', label: t('common:actions.edit'), run: () => { onEdit(team) } })
+    actions.push({
+      key: 'edit',
+      label: t('common:actions.edit'),
+      run: () => {
+        onEdit(team)
+      },
+    })
   }
   if (onArchive) {
-    actions.push({ key: 'archive', label: t('common:actions.archive'), run: () => { onArchive(team) } })
+    actions.push({
+      key: 'archive',
+      label: t('common:actions.archive'),
+      run: () => {
+        onArchive(team)
+      },
+    })
   }
   if (onRestore) {
-    actions.push({ key: 'restore', label: t('common:actions.restore'), run: () => { onRestore(team) } })
+    actions.push({
+      key: 'restore',
+      label: t('common:actions.restore'),
+      run: () => {
+        onRestore(team)
+      },
+    })
   }
   if (onDelete) {
     actions.push({
@@ -136,11 +160,7 @@ export const TeamCard = memo(function TeamCard({
       {actions.length > 0 ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              aria-label={t('card.actions', { name: team.name })}
-              size="icon"
-              variant="ghost"
-            >
+            <Button aria-label={t('card.actions', { name: team.name })} size="icon" variant="ghost">
               <MoreHorizontalIcon />
             </Button>
           </DropdownMenuTrigger>

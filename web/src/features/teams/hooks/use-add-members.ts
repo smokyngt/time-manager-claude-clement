@@ -38,5 +38,5 @@ export function useAddMembers(teamId: string) {
     },
   })
 
-  return { addMembers: mutation.mutate, adding: mutation.isPending, mutation }
+  return { adding: mutation.isPending, addMembers: mutation.mutate, mutation }
 }

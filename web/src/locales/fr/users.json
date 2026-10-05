@@ -1,1 +1,124 @@
-{}
+{
+  "title": "Utilisateurs",
+  "description": "Créez, modifiez et organisez les personnes qui utilisent Time Manager.",
+  "loading": "Chargement des utilisateurs",
+  "actions": {
+    "create": "Nouvel utilisateur",
+    "open_page": "Ouvrir la page",
+    "open_report": "Voir le rapport"
+  },
+  "filters": {
+    "role": "Rôle",
+    "role_all": "Tous les rôles",
+    "status": "Statut",
+    "team": "Équipe",
+    "team_all": "Toutes les équipes"
+  },
+  "search": {
+    "label": "Rechercher des utilisateurs",
+    "placeholder": "Rechercher sur cette page par nom ou e-mail…"
+  },
+  "list": {
+    "select": "Sélectionner {{name}}",
+    "actions_for": "Actions pour {{name}}"
+  },
+  "form": {
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "email": "E-mail",
+    "phone": "Numéro de téléphone (facultatif)",
+    "role": "Rôle",
+    "password_create": "Mot de passe initial (facultatif)",
+    "password_edit": "Nouveau mot de passe",
+    "password_hint_create": "Entre {{min}} et {{max}} caractères. Laissez vide si l'utilisateur se connecte uniquement avec Microsoft.",
+    "password_hint_edit": "Laissez vide pour conserver le mot de passe actuel. Entre {{min}} et {{max}} caractères.",
+    "errors": {
+      "required": "Ce champ est obligatoire.",
+      "too_long": "Cette valeur est trop longue.",
+      "invalid_name": "Saisissez un nom valide.",
+      "invalid_email": "Saisissez une adresse e-mail valide.",
+      "invalid_phone": "Saisissez un numéro de téléphone valide.",
+      "password_length": "Le mot de passe doit contenir entre {{min}} et {{max}} caractères.",
+      "email_taken": "Cette adresse e-mail est déjà utilisée."
+    }
+  },
+  "create": {
+    "title": "Nouvel utilisateur",
+    "description_admin": "Créez un compte et choisissez son rôle.",
+    "description_manager": "Créez un compte employé.",
+    "submit": "Créer l'utilisateur"
+  },
+  "edit": {
+    "title": "Modifier l'utilisateur",
+    "submit": "Enregistrer"
+  },
+  "archive": {
+    "title_one": "Archiver {{count}} utilisateur ?",
+    "title_other": "Archiver {{count}} utilisateurs ?",
+    "description_one": "Cet utilisateur perdra l'accès jusqu'à sa restauration.",
+    "description_other": "Ces utilisateurs perdront l'accès jusqu'à leur restauration."
+  },
+  "restore": {
+    "title_one": "Restaurer {{count}} utilisateur",
+    "title_other": "Restaurer {{count}} utilisateurs"
+  },
+  "delete": {
+    "title_one": "Supprimer {{count}} utilisateur ?",
+    "title_other": "Supprimer {{count}} utilisateurs ?",
+    "description_one": "Cet utilisateur et ses données seront supprimés définitivement. Vous pouvez annuler pendant quelques secondes.",
+    "description_other": "Ces utilisateurs et leurs données seront supprimés définitivement. Vous pouvez annuler pendant quelques secondes."
+  },
+  "bulk": {
+    "archive": "Archiver la sélection",
+    "restore": "Restaurer la sélection",
+    "delete": "Supprimer la sélection"
+  },
+  "toast": {
+    "created": "{{name}} a été créé",
+    "updated_one": "{{count}} utilisateur modifié",
+    "updated_other": "{{count}} utilisateurs modifiés",
+    "archived_one": "{{count}} utilisateur archivé",
+    "archived_other": "{{count}} utilisateurs archivés",
+    "restored_one": "{{count}} utilisateur restauré",
+    "restored_other": "{{count}} utilisateurs restaurés",
+    "deleted_one": "{{count}} utilisateur supprimé",
+    "deleted_other": "{{count}} utilisateurs supprimés",
+    "partial_one": "{{count}} utilisateur n'a pas pu être traité. {{reasons}}",
+    "partial_other": "{{count}} utilisateurs n'ont pas pu être traités. {{reasons}}"
+  },
+  "undo": {
+    "created": "Création de {{name}}",
+    "updated_one": "Modification de {{count}} utilisateur",
+    "updated_other": "Modification de {{count}} utilisateurs",
+    "archived_one": "Archivage de {{count}} utilisateur",
+    "archived_other": "Archivage de {{count}} utilisateurs",
+    "restored_one": "Restauration de {{count}} utilisateur",
+    "restored_other": "Restauration de {{count}} utilisateurs"
+  },
+  "empty": {
+    "title": "Aucun utilisateur",
+    "description": "Il n'y a pas encore d'utilisateur. Créez-en un pour commencer.",
+    "filtered": "Aucun utilisateur ne correspond à ces filtres."
+  },
+  "detail": {
+    "title": "Utilisateur",
+    "profile": "Profil",
+    "email": "E-mail",
+    "phone": "Numéro de téléphone",
+    "role": "Rôle",
+    "status": "Statut",
+    "created": "Créé le",
+    "updated": "Dernière modification",
+    "teams": "Équipes",
+    "teams_empty": "Cet utilisateur n'est dans aucune équipe.",
+    "clocks": "Pointages récents",
+    "clocks_empty": "Aucun pointage pour l'instant.",
+    "clocks_report": "Rapport complet",
+    "clock_open": "En cours"
+  },
+  "page": {
+    "back": "Retour aux utilisateurs",
+    "not_found_title": "Utilisateur introuvable",
+    "not_found": "Cet utilisateur n'existe pas ou vous n'y avez pas accès."
+  }
+}

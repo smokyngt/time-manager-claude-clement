@@ -32,7 +32,11 @@ export class TeamPermission {
    * @param {Team} team
    * @returns {boolean} Administrators manage every team, managers the teams they own.
    */
-  static canManage(scopes: readonly Scope[], user: null | User, team: Pick<Team, 'managerId'>): boolean {
+  static canManage(
+    scopes: readonly Scope[],
+    user: null | User,
+    team: Pick<Team, 'managerId'>,
+  ): boolean {
     if (user === null || !Permission.scope.any(scopes, MANAGE)) {
       return false
     }

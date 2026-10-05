@@ -9,7 +9,9 @@ export function useArchiveTeam() {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    meta: { successMessage: (_data: unknown, ids: string[]) => t('toast.archived', { count: ids.length }) },
+    meta: {
+      successMessage: (_data: unknown, ids: string[]) => t('toast.archived', { count: ids.length }),
+    },
     mutationFn: async (ids: string[]) => {
       await Promise.all(ids.map((id) => sdk.teams.archive(id)))
       return ids

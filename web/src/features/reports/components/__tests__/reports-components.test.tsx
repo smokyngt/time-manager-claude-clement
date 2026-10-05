@@ -100,7 +100,7 @@ describe('TeamMembersTable', () => {
       screen
         .getAllByRole('row')
         .slice(1)
-        .map((row) => row.textContent?.slice(0, 3))
+        .map((row) => row.textContent.slice(0, 3))
     expect(names()).toEqual(['Bob', 'Ada'])
     await userEvent.click(screen.getByRole('button', { name: 'members.worked' }))
     expect(names()).toEqual(['Ada', 'Bob'])

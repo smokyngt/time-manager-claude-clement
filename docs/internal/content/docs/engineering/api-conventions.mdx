@@ -1,0 +1,270 @@
+---
+title: API conventions
+description: Binding rules for every API resource - layers, Fastify patterns, errors, encryption, naming, routes, tests and the definition of done.
+---
+
+These rules apply to every resource in `api/`. The `user` resource is the reference implementation. If the code and this page disagree, fix whichever is wrong in the same pull request.
+
+## Stack
+
+| Concern | Choice |
+| --- | --- |
+| Runtime | Bun, ESM |
+| Language | TypeScript strict, `.js` import extensions, `@/` aliases |
+| HTTP | Fastify 5: plugin encapsulation, typed route generics, JSON Schema for validation, serialization and OpenAPI |
+| Persistence | PostgreSQL and Drizzle; uuid ids, epoch-millisecond `bigint` timestamps |
+| AuthN and AuthZ | Bearer JWT, `auth({ scopes })` middleware, `Access` helpers |
+| Errors | Registered error factories and one global error handler |
+| Events | Registered event factories, returned in the response envelope and written to the audit log |
+| Observability | Request id as `correlation_id`, pino structured logs, Prometheus metrics, optional OpenTelemetry |
+| Tests | `bun:test`; integration tests against a real PostgreSQL |
+| Lint | ESLint 9 with `perfectionist`, `jsdoc`, `import-x`, `unused-imports` and Prettier |
+
+## Layers
+
+```text
+HTTP request
+  routes/<entity>/<op>.ts         contract: method, path, scopes, JSON schemas, OpenAPI
+    controllers/<entity>/<op>.ts  identity, visibility, permissions, orchestration, reply
+      services/<entity>/<op>.ts   business rules and persistence (no Fastify types)
+        db/schema/<entity>.ts     Drizzle table, indexes, constraints
+```
+
+Supporting modules:
+
+| Path | Content |
+| --- | --- |
+| `types/entities/<entity>.ts` | Entity type |
+| `schemas/<entity>.ts` | JSON Schemas: entity, bodies, params, responses, errors |
+| `lib/errors/domains/<entity>.ts` | Error factories (code and default status) |
+| `lib/events/domains/<entity>.ts` | Event factories (code and typed payload) |
+| `utils/mappers/<entity>.ts` | Row to entity: decrypts, computes derived fields |
+| `lib/errors/base/registry.ts` | `registerError`, `AppError` |
+| `lib/events/base/registry.ts` | `registerEvent` |
+| `middlewares/auth/index.ts` | `auth({ scopes })` |
+| `middlewares/error.ts` | Global error handler |
+| `utils/http/reply.ts`, `cursor.ts`, `rate-limit.ts`, `sanitizer.ts` | `Reply`, `Cursor`, `RateLimit`, `Sanitizer` |
+| `utils/auth/authz.ts` | `Access` |
+| `utils/crypto/` | `Cipher`, `Digest`, `Keys` |
+| `tests/support/` | `Fake`, `Loose`, `Prehandler`, `FakeDb` |
+
+Layer rules:
+
+- **Route**: no logic. Declares the contract and hands off to the controller.
+- **Controller**: the only layer that reads `req`. Resolves the caller, enforces visibility and permissions, calls services and replies through `Reply.send`. Never touches the database.
+- **Service**: one params object in, one named object out. No `FastifyRequest`, no reply, no permission logic beyond the visibility filter it is given. Callable from controllers, jobs, scripts and other services.
+- **DB schema**: data shape, indexes and constraints only.
+
+Each operation (`create`, `list`, `retrieve`, `update`, `archive`, `restore`, `delete`) has its own file in each layer, plus an `index.ts` per folder that holds the types and the class grouping the operations. Cross-module imports go through barrels.
+
+## Fastify patterns
+
+### App-level setup
+
+- Ajv: `allErrors`, `coerceTypes`, `removeAdditional`, keyword `example`. Unknown fields are stripped silently, so `additionalProperties: false` on every input schema is what protects the handler.
+- `genReqId` honors a valid `x-request-id` (up to 128 characters of `[A-Za-z0-9_-]`) and otherwise generates a UUID. The id is echoed in the `x-request-id` response header and becomes `correlation_id` in every body.
+- Hooks, in order:
+  - `onRequest`: child logger with ip, method, request id, trace id and redacted url, stored in the request context.
+  - `preValidation`: rejects JSON deeper than `JSON_BODY_MAX_DEPTH` with `validation.error` and sanitizes bodies with `Sanitizer.body` (trims strings, strips control characters, drops `__proto__`, `constructor` and `prototype` keys).
+  - route-level `auth(...)`: authenticates and stores `user` and `scopes` in the request context.
+  - `onResponse`: request metrics.
+- `@fastify/request-context` is the per-request store. Read the caller with `Access.context(req)`.
+- `setErrorHandler` is the only place that turns a thrown value into an HTTP error response.
+
+### One plugin per route
+
+Each route file exports a `FastifyPluginAsync` that registers exactly one route. The resource `index.ts` registers a scoped rate limit and then each operation.
+
+### Typed generics
+
+```ts
+fastify.post<{ Body: CreateTeamBody; Reply: ReplyEnvelope<CreateTeamResponse> }>(...)
+```
+
+The controller signature repeats the same types.
+
+### Schema-first contracts
+
+- `body` and `params` validate input. Failures never reach the controller and return `400 validation.error` with `errors: [{ code, path, params }]`.
+- `response` serializes output: only declared fields are sent, so hash and secret columns cannot leak. Entity schemas use `additionalProperties: false` and list every public field.
+- Declare every status a handler can produce (200, 400, 401, 403, 404, 409, 429, 500 as relevant), each as `{ content: { 'application/json': { schema } }, description }`.
+
+### Auth on the route, authorization in the controller
+
+- `auth({ scopes: ['teams:manage'] })` is the coarse gate: valid token, active user, scope held. `scopes: []` means authenticated with no specific scope.
+- The controller checks the resource itself through `Access` (`Access.user`, `Access.team`, `Access.clock`, `Access.role`).
+
+### Uniform replies
+
+Handlers never call `reply.send` directly. They call `Reply.send(req, reply, event, data)`:
+
+```json
+{
+  "data": { "team": { "id": "...", "object": "team" } },
+  "event": {
+    "code": "team.created",
+    "correlation_id": "<req.id>",
+    "metadata": {},
+    "payload": { "actor": "...", "team_id": "..." }
+  },
+  "timestamp": 1760000000000
+}
+```
+
+`data` is always a named object: `{ team }`, `{ items, more, next, total }`, `{ success, updated, failed }`, `{ clock }`.
+
+## Errors
+
+### Factories
+
+`registerError({ code, defaultStatus })` returns a factory. Codes are dotted lowercase: `<entity>.<action>.failed`, `<entity>.not.found`, `<entity>.conflict`. Registering the same code with a different status throws at boot.
+
+```ts
+throw TeamNotFoundError({ metadata: { team_id: id } });
+throw TeamCreateError({ cause: error, metadata: { route: 'team.service.create' } });
+```
+
+Factory options: `cause`, `metadata`, `status`, `message`, `correlation_id`, `instance`, `retry_after`, `mergeCauseMetadata`.
+
+Core errors:
+
+| Factory | Code | Status |
+| --- | --- | --- |
+| `ValidationError` | `validation.error` | 400 |
+| `InvalidJsonError` | `json.invalid` | 400 |
+| `TokenAuthenticationError` | `token.authentication.failed` | 401 |
+| `UnauthorizedError` | `unauthorized` | 403 |
+| `NotFoundError` | `route.not.found` | 404 |
+| `DuplicateKeyError` | `duplicate.key` | 409 |
+| `PayloadTooLargeError` | `payload.too.large` | 413 |
+| `RateLimitError` | `rate.limit.exceeded` | 429 |
+| `InternalError` | `internal.unexpected` | 500 |
+
+### Wrapping rule
+
+Every controller and service body is wrapped:
+
+```ts
+try {
+  // ...
+} catch (error) {
+  throw TeamCreateError({ cause: error, metadata: { route: 'team.controller.create' } });
+}
+```
+
+- A cause that is already an `AppError`, with no `status`, `message` or `correlation_id` passed, is returned unchanged. A 404 stays a 404.
+- A plain `Error` becomes a new `AppError` with the wrapper's code and default status, the original kept as `cause`, and metadata merged and JSON-sanitized.
+
+### Global error handler
+
+| Thrown | Response |
+| --- | --- |
+| Ajv validation failure | `400 validation.error` with `errors[]` (`{ code, path, params }`, params in snake_case) |
+| JSON syntax error | `400 json.invalid` |
+| Body above the limit | `413 payload.too.large` |
+| PostgreSQL `23505` in the cause chain | `409 duplicate.key` |
+| `AppError` | its own code and status |
+| Object whose `code` is registered | that code, with the object's status or the registered default |
+| Anything else | `500 internal.unexpected` |
+
+Problem body: `{ code, correlation_id, instance, status, timestamp, errors? }`. `metadata` and `stack` are added outside production only. The handler logs `warn` for 4xx and `error` for 5xx with the flattened cause chain, increments `tm_errors_total` and sets `Retry-After` from `retry_after`.
+
+### Rules
+
+- Never `throw new Error()` in request code and never `reply.code(4xx).send()` by hand.
+- Metadata holds ids, counts, reasons and the route. Never names, notes, emails or tokens.
+- Visibility-scoped lookups make out-of-scope ids look like `<entity>.not.found` (404). `unauthorized` (403) means visible but not allowed.
+- Declare an error response schema for every error status, using the factory's `.code` and `.defaultStatus`.
+- Best-effort side effects inside a mutation are caught locally and logged with a warning.
+
+## Encryption of user text
+
+Free text supplied by users (`first_name`, `last_name`, `phone_number`, `email`, team `name` and `description`, clock `note`) is stored encrypted with `Cipher.seal` and decrypted in the mapper with `Cipher.open`. Values that must be looked up or be unique get a `<field>_hash` column computed with `Digest` on the normalized value, such as `email_hash` on the lowercased email. Hash columns never appear in response schemas. See [Encryption](/docs/engineering/encryption).
+
+## Conventions
+
+### Data and naming
+
+- snake_case for every wire and database field. camelCase only for locals created by renaming during destructuring.
+- Every entity has `id` (uuid), `object: '<entity>'`, `created_at`, `updated_at` (milliseconds) and `archived_at` when archivable.
+- Declare types with `type X = { ... }`, not `interface`.
+- Use classes, not object literals, for services, controllers and utilities, with short noun names and single-word methods.
+- Named exports only. Alias reserved words (`deleteRoute`, `remove`).
+
+### Code style
+
+Enforced by lint:
+
+- Alphabetical order for object keys, type members, class members, union members, variable declarations and schema properties.
+- Imports in groups separated by blank lines: external, `@/` aliases, relative, then `import type`.
+- Explicit `public` and explicit return types on exported functions.
+- A blank line before `return` and between logical steps. Guard clauses.
+- No `any`. No non-null assertions unless the schema guarantees the value.
+- One contract: no backward-compatibility shims, legacy flags or fallback chains.
+
+### JSDoc and comments
+
+```ts
+/**
+ * @route <entity>.<layer>.<op>
+ * @param {<Type>} <name>
+ * @returns {Promise<<Type>>}
+ * @throws {<ErrorA> | <ErrorB>}
+ */
+```
+
+`@route` equals the `route` in error metadata and `@throws` lists every factory that can escape. No prose in JSDoc and no inline comments. User-facing documentation lives in the JSON Schemas (`title`, `description`, `example`).
+
+### Security checklist
+
+- Every query is filtered by what the actor may see.
+- Every route has `auth({ scopes })`, except login, refresh, logout, Microsoft, health and metrics.
+- Every resource-level action checks rights in the controller through `Access`.
+- Every input schema has `additionalProperties: false`, length, format and pattern bounds, and array caps.
+- Free text is encrypted and hash columns never appear in responses.
+- Response schemas list only public fields.
+- Logs, error metadata and event payloads contain ids and counts only.
+- Bulk endpoints check every item's access before mutating any.
+
+## Routes
+
+| Operation | Method | Path | Input |
+| --- | --- | --- | --- |
+| create | POST | `/new` | body |
+| list | POST | `/list` | body: filters plus `cursor`, `limit`, `order`, `skip`, `date`, `archived` |
+| retrieve | GET | `/:id` | params |
+| update | PATCH | `/` | body `{ ids, data }` |
+| archive | POST | `/:id/archive` | params |
+| restore | POST | `/:id/restore` | params |
+| delete | DELETE | `/` | body `{ ids }` |
+
+Router `index.ts`:
+
+```ts
+const teams: FastifyPluginAsync = async (fastify) => {
+  await fastify.register(rateLimit, {
+    errorResponseBuilder: RateLimit.error,
+    keyGenerator: RateLimit.key,
+    max: Config.store.number('TEAM_RATE_LIMIT_MAX', 6000),
+    timeWindow: Config.store.text('TEAM_RATE_LIMIT_WINDOW', '1 minute'),
+  });
+  await fastify.register(create);
+};
+
+export { teams };
+```
+
+`routes/index.ts` exports `teams as teamRouter`. The app mounts it with `prefix: '/v1/teams'` and adds the OpenAPI tag.
+
+Bulk controllers dedupe with `[...new Set(ids)]`, reject empty input or more than 100 ids, retrieve and authorize every target before mutating, mutate with `Promise.all` catching per item, reply `{ success: failed.length === 0, updated|deleted, failed: [{ id, code }] }` and log counts and ids.
+
+## Tests
+
+- `tests/unit/services/<entity>/<op>.test.ts`: snapshot the real module before `mock.module`, restore it in `afterAll`, import the unit under test after mocking and call `mock.clearAllMocks()` in `afterEach`. Cover the happy path, not found, error wrapping (domain code, status, `cause` kept) and the audit log call.
+- `tests/unit/controllers/<entity>/<op>.test.ts`: replace service methods with `mock(...)` and restore them in `afterAll`. Build requests with `Fake.request({ actor, body, params, scopes })` and `Fake.reply()`. Cover forbidden (403), out-of-scope (404), not found stays 404, params passed to the service, and bulk requests never mutating when one item fails access.
+- `tests/unit/routes/<entity>/index.test.ts`: `Prehandler.install()`, `Prehandler.allowed(route, scope)`, `Prehandler.denied(route, scope)` and `Prehandler.unauthenticated(route)`.
+- `tests/integration/<entity>.test.ts`: real PostgreSQL.
+
+## Definition of done
+
+From `api/`: `bun run typecheck`, `bun run lint`, `bun run test:unit` and `bun run openapi:generate` pass without warnings, the spec shows the tag and every route with request, response and error schemas, and `bun run test:integration` passes against PostgreSQL.

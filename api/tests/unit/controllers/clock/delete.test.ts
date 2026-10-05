@@ -63,7 +63,7 @@ describe('clock.controller.delete', () => {
 
   it('lets a manager process clocks of managed users only, reporting the rest as not found', async () => {
     seed();
-    managed.add(B);
+    managed.add(OTHER_ID);
     const reply = await run(actorOf('manager'), { ids: [A, B] });
     expect(svc.delete).toHaveBeenCalledTimes(1);
     expect(reply.payload).toMatchObject({

@@ -18,7 +18,8 @@ export function useUpdateTeam() {
 
   const mutation = useMutation({
     meta: {
-      successMessage: (data: BulkUpdateResponse) => t('toast.updated', { count: data.updated.length }),
+      successMessage: (data: BulkUpdateResponse) =>
+        t('toast.updated', { count: data.updated.length }),
     },
     mutationFn: async ({ data, ids }: UpdateTeamVariables) => {
       const result = await sdk.teams.update(ids, data)

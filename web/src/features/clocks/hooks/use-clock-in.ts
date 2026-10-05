@@ -30,7 +30,7 @@ export function useClockIn() {
       await queryClient.cancelQueries({ queryKey: QueryKeys.currentClock() })
       const previous = queryClient.getQueryData<Clock | null>(QueryKeys.currentClock())
       const now = Date.now()
-      queryClient.setQueryData<Clock | null>(QueryKeys.currentClock(), {
+      const optimistic: Clock = {
         clockedInAt: now,
         clockedOutAt: null,
         createdAt: now,
@@ -41,7 +41,8 @@ export function useClockIn() {
         source: 'clock',
         updatedAt: null,
         userId: user?.id ?? '',
-      })
+      }
+      queryClient.setQueryData<Clock | null>(QueryKeys.currentClock(), optimistic)
       return { previous }
     },
     onSettled: async () => {

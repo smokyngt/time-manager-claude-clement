@@ -401,9 +401,9 @@ export class Demo {
         .insert(teams)
         .values(
           Demo.TEAMS.map((team) => ({
-            description: `${team.name} demo team`,
+            description: Cipher.seal(`${team.name} demo team`),
             manager_id: managerRows[team.manager]?.id ?? '',
-            name: team.name,
+            name: Cipher.seal(team.name),
             weekly_hours_target: team.target,
             work_end: team.work_end,
             work_start: team.work_start,
@@ -434,6 +434,7 @@ export class Demo {
         }).map((clock) => ({
           ...clock,
           created_at: clock.clocked_out_at ?? clock.clocked_in_at,
+          note: Cipher.nullable.seal(clock.note),
           user_id: employee.id,
         }));
       });

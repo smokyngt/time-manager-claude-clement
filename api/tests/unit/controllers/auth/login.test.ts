@@ -1,109 +1,99 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { Limiter } from '@/lib/auth/limiter.js';
-
-import { caught, makeReply, makeReq } from '../../../helpers/fixtures.js';
-import { makeUser } from '../../../helpers/user-service.js';
+import { Fake } from '../../../support/fake.js';
+import { caught, OTHER_ID, userOf } from '../../services/user/support.js';
+import { cookieReply, installAuthService } from './support.js';
 
 import type { LoginBody, SessionResponse } from '@/controllers/auth/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
-const real = { ...(await import('@/services/auth/index.js')) };
-const user = makeUser('employee', '00000000-0000-4000-8000-0000000000c1');
-const session = {
-  access_token: 'access',
-  expires_in: 900,
-  refresh_expires_in: 604_800,
-  refresh_token: 'refresh-secret',
-  user,
-};
-const login = mock((_params: LoginBody) => Promise.resolve(session));
-await mock.module('@/services/auth/index.js', () => ({
-  ...real,
-  authService: { login },
-}));
+const harness = await installAuthService();
+const { svc } = harness;
 
 afterAll(() => {
-  void mock.module('@/services/auth/index.js', () => real);
+  harness.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
-  Limiter.reset();
 });
 
-const { login: controller } = await import('@/controllers/auth/login.js');
+const { login } = await import('@/controllers/auth/login.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<SessionResponse> }>;
 type Req = FastifyRequest<{ Body: LoginBody }>;
 
+const session = (role: 'admin' | 'employee' | 'manager' = 'employee') => ({
+  access_token: 'access',
+  expires_in: 900,
+  refresh_expires_in: 604_800,
+  refresh_token: 'refresh',
+  user: userOf(role, OTHER_ID),
+});
+
+const run = async () => {
+  const reply = cookieReply<Rep>();
+  await login(
+    Fake.request({ body: { email: 'jane.doe@example.com', password: 'pw' } }) as Req,
+    reply,
+  );
+
+  return reply;
+};
+
 describe('auth.controller.login', () => {
-  it('sets the refresh cookie and never puts the refresh token in the body', async () => {
-    const { fake, reply } = makeReply<Rep>();
-    await controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'pw' } }), reply);
-    expect(fake.cookies['tm_refresh']).toBe('refresh-secret');
-    expect(fake.sent).toEqual({
-      data: { access_token: 'access', expires_in: 900, token_type: 'Bearer', user },
-      event: 'auth.logged_in',
+  it('sets the refresh cookie and replies with the named session and scopes', async () => {
+    svc.login.mockImplementationOnce(() => Promise.resolve(session('manager')));
+    const reply = await run();
+    expect(svc.login).toHaveBeenCalledWith({ email: 'jane.doe@example.com', password: 'pw' });
+    expect(reply.cookies['tm_refresh']?.value).toBe('refresh');
+    expect(reply.cookies['tm_refresh']?.options).toMatchObject({
+      httpOnly: true,
+      maxAge: 604_800,
+      path: '/v1/auth',
+      sameSite: 'lax',
     });
-    expect(JSON.stringify(fake.sent)).not.toContain('refresh-secret');
+    expect(reply.payload).toMatchObject({
+      data: {
+        access_token: 'access',
+        expires_in: 900,
+        token_type: 'Bearer',
+        user: { id: OTHER_ID },
+      },
+      event: { code: 'auth.logged_in', correlation_id: 'req-test', payload: { actor: OTHER_ID } },
+    });
+    const { data } = reply.payload as ReplyEnvelope<SessionResponse>;
+    expect(data.scopes).toContain('teams:manage');
+    expect(data).not.toHaveProperty('refresh_token');
   });
 
-  it('keeps the 401 raised by the service', async () => {
-    const { AuthInvalidCredentialsError } = await import('@/lib/errors/domains/auth.js');
-    login.mockImplementationOnce(() => Promise.reject(AuthInvalidCredentialsError()));
-    const { fake, reply } = makeReply<Rep>();
-    const error = await caught(
-      controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'pw' } }), reply),
+  it('gives an employee only employee scopes', async () => {
+    svc.login.mockImplementationOnce(() => Promise.resolve(session()));
+    const reply = await run();
+    const { data } = reply.payload as ReplyEnvelope<SessionResponse>;
+    expect(data.scopes).toContain('auth:self');
+    expect(data.scopes).not.toContain('users:manage');
+  });
+
+  it('keeps the credential and rate limit errors raised by the service', async () => {
+    const { AuthCredentialsInvalidError, AuthRateLimitedError } = await import(
+      '@/lib/errors/domains/auth.js'
     );
-    expect(error.code).toBe('AUTH_INVALID_CREDENTIALS');
-    expect(error.status).toBe(401);
-    expect(fake.cookies['tm_refresh']).toBeUndefined();
+    svc.login.mockImplementationOnce(() => Promise.reject(AuthCredentialsInvalidError()));
+    const invalid = await caught(run());
+    svc.login.mockImplementationOnce(() => Promise.reject(AuthRateLimitedError()));
+    const limited = await caught(run());
+    expect([invalid.code, invalid.status]).toEqual(['auth.credentials.invalid', 401]);
+    expect([limited.code, limited.status]).toEqual(['auth.rate.limited', 429]);
   });
 
-  it('wraps unexpected failures and keeps the cause', async () => {
+  it('wraps unexpected failures with the controller route and keeps the cause', async () => {
     const failure = new Error('boom');
-    login.mockImplementationOnce(() => Promise.reject(failure));
-    const { reply } = makeReply<Rep>();
-    const error = await caught(
-      controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'pw' } }), reply),
-    );
-    expect(error.code).toBe('AUTH_LOGIN_ERROR');
+    svc.login.mockImplementationOnce(() => Promise.reject(failure));
+    const error = await caught(run());
+    expect(error.code).toBe('auth.login.failed');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('auth.controller.login');
-  });
-  it('blocks an account after repeated failures whatever the ip, and recovers on success', async () => {
-    const { AuthInvalidCredentialsError } = await import('@/lib/errors/domains/auth.js');
-    const attempt = async (email: string): Promise<string> => {
-      const { reply } = makeReply<Rep>();
-      const error = await caught(
-        controller(makeReq<Req>({ body: { email, password: 'bad' } }), reply),
-      );
-      return error.code;
-    };
-    for (let index = 0; index < 5; index += 1) {
-      login.mockImplementationOnce(() => Promise.reject(AuthInvalidCredentialsError()));
-      expect(await attempt(index % 2 === 0 ? 'Victim@B.co' : 'victim@b.co')).toBe(
-        'AUTH_INVALID_CREDENTIALS',
-      );
-    }
-    expect(await attempt('VICTIM@b.co')).toBe('RATE_LIMITED');
-    expect(login).toHaveBeenCalledTimes(5);
-    const { fake, reply } = makeReply<Rep>();
-    await controller(makeReq<Req>({ body: { email: 'other@b.co', password: 'pw' } }), reply);
-    expect(fake.cookies['tm_refresh']).toBe('refresh-secret');
-  });
-
-  it('clears the failure counter after a successful login', async () => {
-    const { AuthInvalidCredentialsError } = await import('@/lib/errors/domains/auth.js');
-    for (let index = 0; index < 4; index += 1) {
-      login.mockImplementationOnce(() => Promise.reject(AuthInvalidCredentialsError()));
-      const { reply } = makeReply<Rep>();
-      await caught(controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'x' } }), reply));
-    }
-    const { reply } = makeReply<Rep>();
-    await controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'pw' } }), reply);
-    expect(Limiter.blocked('a@b.co')).toBe(false);
   });
 });

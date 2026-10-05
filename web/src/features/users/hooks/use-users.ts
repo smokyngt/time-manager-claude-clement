@@ -2,8 +2,8 @@ import type { Role, User } from '@time-manager/sdk'
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { sdk } from '@/config/sdk'
 import { QueryKeys } from '@/config/query-keys'
+import { sdk } from '@/config/sdk'
 
 export type UsersFilters = {
   archived?: boolean

@@ -63,7 +63,7 @@ describe('clock.controller.update', () => {
 
   it('lets a manager process clocks of managed users only, reporting the rest as not found', async () => {
     seed();
-    managed.add(B);
+    managed.add(OTHER_ID);
     const reply = await run(actorOf('manager'), { data: { note: null }, ids: [A, B] });
     expect(svc.update).toHaveBeenCalledTimes(1);
     expect(reply.payload).toMatchObject({

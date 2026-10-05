@@ -1,21 +1,16 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, OTHER_ID } from '../../../helpers/fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+import { caught, installLog, OTHER_ID, storedOf } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
-const realLog = { ...(await import('@/services/log/index.js')) };
 const fakeDb = new FakeDb();
-const logCreate = mock(() => Promise.resolve({ success: true }));
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
-await mock.module('@/services/log/index.js', () => ({
-  ...realLog,
-  logService: { create: logCreate },
-}));
+const log = await installLog();
 
 afterAll(() => {
   void mock.module('@/db/client.js', () => realDb);
-  void mock.module('@/services/log/index.js', () => realLog);
+  log.restore();
 });
 
 afterEach(() => {
@@ -27,28 +22,29 @@ const { logout } = await import('@/services/auth/logout.js');
 
 describe('auth.service.logout', () => {
   it('revokes the family of the presented token and writes an audit log', async () => {
-    fakeDb.enqueue([{ family_id: 'family-1', user_id: OTHER_ID }], []);
+    const row = storedOf({ user_id: OTHER_ID });
+    fakeDb.enqueue([row], []);
     const result = await logout({ token: 'opaque' });
     expect(result).toEqual({ success: true, user_id: OTHER_ID });
     expect(fakeDb.calls.some((call) => call.op === 'update' && call.method === 'set')).toBe(true);
-    expect(logCreate).toHaveBeenCalledWith({
+    expect(log.create).toHaveBeenCalledWith({
       actor: null,
       event: 'auth.logged_out',
-      metadata: { family_id: 'family-1', user_id: OTHER_ID },
+      metadata: { family_id: row.family_id, user_id: OTHER_ID },
     });
   });
 
   it('succeeds without touching anything for an unknown token', async () => {
     fakeDb.enqueue([]);
     const result = await logout({ token: 'opaque' });
-    expect(result).toEqual({ success: true, user_id: null });
+    expect(result).toEqual({ success: true, user_id: undefined });
     expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
-    expect(logCreate).not.toHaveBeenCalled();
+    expect(log.create).not.toHaveBeenCalled();
   });
 
   it('succeeds without a cookie', async () => {
-    const result = await logout({ token: undefined });
-    expect(result).toEqual({ success: true, user_id: null });
+    expect(await logout({ token: undefined })).toEqual({ success: true, user_id: undefined });
+    expect(await logout({ token: '' })).toEqual({ success: true, user_id: undefined });
     expect(fakeDb.calls).toHaveLength(0);
   });
 
@@ -56,7 +52,7 @@ describe('auth.service.logout', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(logout({ token: 'opaque' }));
-    expect(error.code).toBe('AUTH_LOGOUT_ERROR');
+    expect(error.code).toBe('auth.logout.failed');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('auth.service.logout');
   });

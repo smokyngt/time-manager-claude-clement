@@ -6,12 +6,18 @@ import { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
-import type { UserFormValues } from '@/features/users/lib/user-schema'
 import type { UserActor, UserField } from '@/features/users/lib/user-permissions'
+import type { UserFormValues } from '@/features/users/lib/user-schema'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 import { LIMITS } from '@/config/limits'
 import { UserFormField } from '@/features/users/components/user-form-field'
 import { UserPayload } from '@/features/users/lib/user-payload'

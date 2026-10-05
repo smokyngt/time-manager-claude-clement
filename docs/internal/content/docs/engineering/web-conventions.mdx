@@ -1,0 +1,113 @@
+---
+title: Web conventions
+description: Binding rules for the web app and the TypeScript SDK - stack, structure, server state, errors, components, translations, tests.
+---
+
+These rules apply to `web/` and `sdks/typescript/`. The `teams` feature is the primary reference and `users` the secondary one. If the code and this page disagree, fix whichever is wrong in the same pull request.
+
+## Stack
+
+| Concern | Choice |
+| --- | --- |
+| Build | Vite, ESM, TypeScript strict, `@/` alias |
+| UI | React 19 function components and hooks |
+| Server state | TanStack Query v5. Server data never goes into a global store. |
+| Client state | Zustand (`src/stores/`): auth session (access token in memory only), UI preferences (`persist`), undo history |
+| API access | `@time-manager/sdk`, one instance in `@/config/sdk` |
+| Routing | React Router v8 data router, lazy pages, guards as layout routes |
+| Forms | Controlled inputs; react-hook-form and zod for larger forms; limits from `@/config/limits` |
+| Components | Radix primitives wrapped in `src/components/ui/*` (shadcn), Tailwind v4, `cn()`, lucide icons |
+| Charts | recharts with CSS-variable colors |
+| i18n | i18next and react-i18next, one namespace per feature, `en` and `fr`, key parity tested |
+| Tests | Vitest and Testing Library (unit), Playwright (`e2e/`) |
+| Lint | ESLint 9, typescript-eslint, react, react-hooks, perfectionist, Prettier |
+
+## Structure
+
+```text
+src/
+  config/
+    sdk.ts            the single TimeManagerClient instance (token getter, refresh, logout)
+    query.ts          QueryClient, QueryEvents, global error and success hooks, staleTime defaults
+    query-keys.ts     QueryKeys: every cache key
+    limits.ts         input limits shared with the API
+  features/<feature>/
+    components/       feature components and an index.ts barrel
+    hooks/            data hooks (queries, mutations)
+    lib/              pure helpers (no React)
+    pages/            route-level pages and an index.ts barrel (lazy-loaded)
+  components/ui/      design-system primitives
+  components/shared/  ListToolbar, SearchInput, Pagination, ConfirmDialog, ErrorState, Empty,
+                      ResponsiveDetail, BulkActionBar, PageHeader, Announcer
+  hooks/              useOptimisticCache, useUndo, useListPagination, useCursorPagination,
+                      useMultiSelect, useDebouncedValue, useDocumentTitle, useMultiParams,
+                      useViewMode, useRovingTabindex, keyboard shortcut hooks
+  lib/                pure utilities as classes (Errors, Permission, Scopes, Duration, Dates, cn)
+  providers/          AuthProvider (useAuth), ToastProvider, ErrorBoundary, ThemeProvider, I18nProvider
+  router/             route tree, lazy loader, guards (AuthGuard, GuestGuard, PermissionGuard)
+  stores/             Zustand stores
+  locales/{en,fr}/    one JSON namespace per feature, plus common.json and errors.json
+  test-support/       TestI18n, query wrapper, auth, clock, keyboard and toast helpers
+```
+
+Data flow: page, feature hooks, `sdk.<resource>.<op>()`, API. Hooks own query keys, invalidation, optimistic updates and success messages. Pages own page state, permissions and shortcuts. Components take data and callbacks through props, and a missing callback hides the action (`onDelete={canManage ? handleDelete : undefined}`).
+
+## SDK
+
+- The API speaks snake_case. The SDK converts both directions (`Payload.serialize` and `Payload.deserialize`) and unwraps the `{ data, event, timestamp }` envelope, returning `data`. The web app never converts case and never types against snake_case.
+- `HttpClient`: base URL, `credentials: 'include'`, bearer from a token getter, JSON, timeout with `AbortController`, single-flight refresh on `token.authentication.failed` followed by one retry, and an `onLogout` callback when refresh fails.
+- Errors: `TimeManagerError` (`code`, `status`, `correlationId`, `metadata`) and the subclasses `AuthenticationError` (401), `ForbiddenError` (403), `NotFoundError` (404), `ConflictError` (409), `ValidationError` (400, `errors`), `RateLimitError` (429, `retryAfter`), `ServerError` (5xx) and `NetworkError` (`isTimeout`). `ErrorCodes` lists every API code.
+- Resources: `auth`, `users`, `teams`, `teamMembers`, `clocks`, `reports`, one class each in `src/resources/`. Methods mirror the API: `create`, `list`, `retrieve`, `update(ids, data)`, `archive`, `restore`, `delete(ids)`, plus `clocks.in/out/current`, `teamMembers.add/remove/list`, `reports.user/team` and `auth.login/refresh/logout/me/microsoftUrl`.
+- Public types are `interface` with a doc comment on the type and on every field. Tests live in `src/__tests__/`.
+
+## Server state
+
+- Every cache key comes from `QueryKeys` and keys are hierarchical: `teams(filters)`, `team(id)`, `teamMembers(id)`, `clocks(filters)`, `currentClock()`, `userReport(params)`, `teamReport(params)`, `users(filters)`, `user(id)`, `me()`.
+- Global behavior (`config/query.ts`): an auth error retries once after a refresh. Retryable errors (network, 5xx, 429) retry up to 2 times with exponential backoff capped at 30 seconds. Mutations never retry. Failed queries are toasted through `QueryEvents.errors` unless `meta: { suppressError: true }`. Mutations without `onError` are toasted globally. `meta: { successMessage }` toasts success.
+- Query hooks return a stable empty constant and a small named object (`{ teams, loading, loaded, isError, refetch }`).
+- Delete order: cancel queries, remove the detail query, navigate, invalidate lists.
+- List pages delete optimistically behind an undo toast (`useOptimisticCache` and `useUndo().deferAction`). Create and update push undo entries.
+
+## Errors
+
+| Situation | What to do |
+| --- | --- |
+| Query fails | Global toast, and render `<ErrorState onRetry>` in place of the content |
+| Inline query failure | `meta: { suppressError: true }` and render the error |
+| Mutation fails, generic toast is fine | No `onError` |
+| Mutation needs context (dialog) | `onError: (err) => showError(t('create.title'), Errors.translate(err))` and keep the dialog open |
+| A specific code changes the UI | `Errors.code.check(err, 'clock.conflict')` and inline feedback |
+| Any error to text | `Errors.translate(err)`. Every API code is in `locales/{en,fr}/errors.json`. |
+| Auth and session | Never in features. The SDK refreshes and logout redirects to `/login?redirect=...` |
+| Forbidden routes | `<PermissionGuard scope={...} />` renders `AccessDenied`. In pages hide actions with `Permission.scope.any(scopes, [...])`. |
+| Render errors | The app error boundary only |
+
+Never show raw messages, statuses or codes to the user.
+
+## Components, pages and routing
+
+- One form component serves create and edit. It validates limits client-side (`aria-invalid`, `role="alert"`, disabled submit), trims text and never calls the SDK.
+- Lists show skeletons while loading and `Empty` when empty, support grid and list modes through `useViewMode`, use a roving tabindex and `memo` cards, render actions in `DropdownMenu` and `ContextMenu` only when the callback exists, send destructive actions through `ConfirmDialog variant="destructive"` and take bulk selection props.
+- Pages follow one structure: document title, search with debounce, order, URL filters (`useMultiParams`), pagination, multi-select and dialogs; data hooks and mutations; permissions; memoized derived data and callbacks; shortcuts; then `ListToolbar`, `ErrorState`, the list, `BulkActionBar`, `Pagination`, dialogs and `ResponsiveDetail`. Selection counts are announced with `Announcer.say`.
+- Routes live in `router/index.tsx`, load pages lazily and are guarded by `PermissionGuard`. Deep-linkable state belongs in the URL.
+
+## Translations
+
+`src/locales/{en,fr}/<namespace>.json` have identical keys and each namespace is registered in `lib/i18n.ts`. Keys are lowercase snake_case grouped by area (`title`, `actions.*`, `form.*`, `create.*`, `edit.*`, `delete.*`, `bulk.*`, `toast.*`, `empty.*`, `error.*`, `search.*`). Plurals ship `_one` and `_other` in both languages. Cross-namespace keys use a prefix (`common:actions.delete`, `errors:team.not.found`). Parity and key-format tests fail the build.
+
+## Code conventions
+
+- `type`, not `interface`, except for SDK public types. Separate `import type` statements. No `any`. Unused arguments are prefixed `_`. Non-null assertions only behind an `enabled` guard. Use SDK entity types and never redefine API shapes.
+- Import order: side-effect, builtin, external, `@/`, parent, sibling, index, then `import type`. Named imports are sorted.
+- Prettier: 100 columns, single quotes, semicolons, trailing commas, 2 spaces, LF. ESLint enforces `curly: all`, `eqeqeq`, `object-shorthand` and no `console.log`.
+- React: named `function` components, `memo(function Name(...))` for list items, hooks in `use-x.ts` returning named objects, exhaustive dependencies, Tailwind tokens with `cn()`, full accessibility, and every visible string through `t()`.
+- Utilities are classes with static members (`Errors.translate`, `Permission.scope.any`, `QueryKeys.teams`, `Duration.format`). JSDoc only on those static methods, with `@route client.<area>.<class>.<method>`. No JSDoc on components or hooks and no inline comments.
+- One contract: no fallbacks for old shapes.
+
+## Tests
+
+Tests live next to the code in `__tests__/`. Mock the SDK with `vi.hoisted` and `vi.mock('@/config/sdk', ...)`, use the real `queryClient` cleared in `beforeEach`, and assert global toasts through `QueryEvents`. `TestI18n.module()` makes `t('key')` return the key. Cover hooks (SDK call, invalidation, navigation, a single toast, the error path), forms (limits, trimming, disabled submit, edit prefill), lists (skeletons, empty, hidden actions, bulk toggle), pages (permission-gated actions), `lib/` helpers and locale parity.
+
+## Definition of done
+
+From `web/`: `bun run typecheck`, `bun run lint`, `bun run test:unit` and `bun run build`. From `sdks/typescript/`: `bun run typecheck`, `bun run lint`, `bun test` and `bun run build`. Then run the app and check every flow in both languages and both themes, including undo, empty and error states, and a user without the write scope.

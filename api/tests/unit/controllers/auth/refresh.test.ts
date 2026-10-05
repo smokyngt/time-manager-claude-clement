@@ -1,68 +1,83 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { caught, makeReply, makeReq } from '../../../helpers/fixtures.js';
-import { makeUser } from '../../../helpers/user-service.js';
+import { Fake } from '../../../support/fake.js';
+import { caught, OTHER_ID, userOf } from '../../services/user/support.js';
+import { cookieReply, installAuthService } from './support.js';
 
 import type { SessionResponse } from '@/controllers/auth/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
+import type { FastifyReply } from 'fastify';
 
-const real = { ...(await import('@/services/auth/index.js')) };
-const user = makeUser('employee', '00000000-0000-4000-8000-0000000000c1');
-const refresh = mock((_params: { token: string }) =>
-  Promise.resolve({
-    access_token: 'access-2',
-    expires_in: 900,
-    refresh_expires_in: 604_800,
-    refresh_token: 'refresh-2',
-    user,
-  }),
-);
-await mock.module('@/services/auth/index.js', () => ({
-  ...real,
-  authService: { refresh },
-}));
+const harness = await installAuthService();
+const { svc } = harness;
 
 afterAll(() => {
-  void mock.module('@/services/auth/index.js', () => real);
+  harness.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
 });
 
-const { refresh: controller } = await import('@/controllers/auth/refresh.js');
+const { refresh } = await import('@/controllers/auth/refresh.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<SessionResponse> }>;
-type Req = FastifyRequest;
+
+const run = async (token?: string) => {
+  const reply = cookieReply<Rep>();
+  const req = Object.assign(Fake.request(), { cookies: token === undefined ? {} : { tm_refresh: token } });
+  await refresh(req, reply);
+
+  return reply;
+};
 
 describe('auth.controller.refresh', () => {
-  it('rotates the cookie and returns a new access token', async () => {
-    const { fake, reply } = makeReply<Rep>();
-    await controller(makeReq<Req>({ cookies: { tm_refresh: 'refresh-1' } }), reply);
-    expect(refresh).toHaveBeenCalledWith({ token: 'refresh-1' });
-    expect(fake.cookies['tm_refresh']).toBe('refresh-2');
-    expect(fake.sent).toMatchObject({
-      data: { access_token: 'access-2' },
-      event: 'auth.refreshed',
+  it('rotates the cookie and replies with the session and scopes', async () => {
+    svc.refresh.mockImplementationOnce(() =>
+      Promise.resolve({
+        access_token: 'access2',
+        expires_in: 900,
+        refresh_expires_in: 604_800,
+        refresh_token: 'refresh2',
+        user: userOf('employee', OTHER_ID),
+      }),
+    );
+    const reply = await run('refresh1');
+    expect(svc.refresh).toHaveBeenCalledWith({ token: 'refresh1' });
+    expect(reply.cookies['tm_refresh']?.value).toBe('refresh2');
+    expect(reply.payload).toMatchObject({
+      data: { access_token: 'access2', scopes: expect.any(Array), token_type: 'Bearer' },
+      event: { code: 'auth.refreshed' },
     });
   });
 
-  it('rejects a missing cookie with 401 and clears it', async () => {
-    const { fake, reply } = makeReply<Rep>();
-    const error = await caught(controller(makeReq<Req>(), reply));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(error.status).toBe(401);
-    expect(fake.cleared).toContain('tm_refresh');
-    expect(refresh).not.toHaveBeenCalled();
+  it('rejects a missing cookie with auth.refresh.invalid and clears it', async () => {
+    const reply = cookieReply<Rep>();
+    const req = Object.assign(Fake.request(), { cookies: {} });
+    const error = await caught(refresh(req, reply));
+    expect([error.code, error.status]).toEqual(['auth.refresh.invalid', 401]);
+    expect(reply.cleared).toContain('tm_refresh');
+    expect(svc.refresh).not.toHaveBeenCalled();
   });
 
   it('clears the cookie when the service rejects the token', async () => {
-    const { AuthSessionInvalidError } = await import('@/lib/errors/domains/auth.js');
-    refresh.mockImplementationOnce(() => Promise.reject(AuthSessionInvalidError()));
-    const { fake, reply } = makeReply<Rep>();
-    const error = await caught(controller(makeReq<Req>({ cookies: { tm_refresh: 'old' } }), reply));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
-    expect(fake.cleared).toContain('tm_refresh');
+    const { AuthRefreshInvalidError } = await import('@/lib/errors/domains/auth.js');
+    svc.refresh.mockImplementationOnce(() => Promise.reject(AuthRefreshInvalidError()));
+    const reply = cookieReply<Rep>();
+    const req = Object.assign(Fake.request(), { cookies: { tm_refresh: 'old' } });
+    const error = await caught(refresh(req, reply));
+    expect(error.code).toBe('auth.refresh.invalid');
+    expect(reply.cleared).toContain('tm_refresh');
+  });
+
+  it('wraps unexpected failures and keeps the cause', async () => {
+    const failure = new Error('boom');
+    svc.refresh.mockImplementationOnce(() => Promise.reject(failure));
+    const reply = cookieReply<Rep>();
+    const req = Object.assign(Fake.request(), { cookies: { tm_refresh: 'old' } });
+    const error = await caught(refresh(req, reply));
+    expect(error.code).toBe('auth.refresh.failed');
+    expect(error.cause).toBe(failure);
+    expect(error.metadata['route']).toBe('auth.controller.refresh');
   });
 });

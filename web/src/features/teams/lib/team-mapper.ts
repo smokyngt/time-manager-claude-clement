@@ -79,7 +79,9 @@ export class TeamMapper {
   static toUpdate(values: TeamValues, team: Team, withManager: boolean): TeamUpdateData {
     return {
       description: values.description === '' ? null : values.description,
-      ...(withManager && values.managerId !== team.managerId ? { managerId: values.managerId } : {}),
+      ...(withManager && values.managerId !== team.managerId
+        ? { managerId: values.managerId }
+        : {}),
       name: values.name,
       weeklyHoursTarget: values.weeklyHoursTarget,
       workEnd: values.workEnd,

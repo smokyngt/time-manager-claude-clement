@@ -1,13 +1,12 @@
-import { useQuery } from '@tanstack/react-query'
+import { skipToken, useQuery } from '@tanstack/react-query'
 
-import { sdk } from '@/config/sdk'
 import { QueryKeys } from '@/config/query-keys'
+import { sdk } from '@/config/sdk'
 import { Errors } from '@/lib/errors'
 
 export function useUser(id: string | undefined) {
   const query = useQuery({
-    enabled: id !== undefined,
-    queryFn: async () => (await sdk.users.retrieve(id!)).user,
+    queryFn: id === undefined ? skipToken : async () => (await sdk.users.retrieve(id)).user,
     queryKey: QueryKeys.user(id ?? ''),
   })
 

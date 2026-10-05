@@ -1,0 +1,6 @@
+secrets/*
+!secrets/.gitkeep
+*.init.json
+*.tmp
+tls/*
+!tls/.gitkeep

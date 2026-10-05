@@ -1,1 +1,124 @@
-{}
+{
+  "title": "Users",
+  "description": "Create, edit and organize the people who use Time Manager.",
+  "loading": "Loading users",
+  "actions": {
+    "create": "New user",
+    "open_page": "Open full page",
+    "open_report": "View report"
+  },
+  "filters": {
+    "role": "Role",
+    "role_all": "All roles",
+    "status": "Status",
+    "team": "Team",
+    "team_all": "All teams"
+  },
+  "search": {
+    "label": "Search users",
+    "placeholder": "Search this page by name or email…"
+  },
+  "list": {
+    "select": "Select {{name}}",
+    "actions_for": "Actions for {{name}}"
+  },
+  "form": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "email": "Email",
+    "phone": "Phone number (optional)",
+    "role": "Role",
+    "password_create": "Initial password (optional)",
+    "password_edit": "New password",
+    "password_hint_create": "Between {{min}} and {{max}} characters. Leave empty if the user signs in with Microsoft only.",
+    "password_hint_edit": "Leave empty to keep the current password. Between {{min}} and {{max}} characters.",
+    "errors": {
+      "required": "This field is required.",
+      "too_long": "This value is too long.",
+      "invalid_name": "Enter a valid name.",
+      "invalid_email": "Enter a valid email address.",
+      "invalid_phone": "Enter a valid phone number.",
+      "password_length": "The password must be between {{min}} and {{max}} characters.",
+      "email_taken": "This email is already in use."
+    }
+  },
+  "create": {
+    "title": "New user",
+    "description_admin": "Create an account and choose its role.",
+    "description_manager": "Create an employee account.",
+    "submit": "Create user"
+  },
+  "edit": {
+    "title": "Edit user",
+    "submit": "Save changes"
+  },
+  "archive": {
+    "title_one": "Archive {{count}} user?",
+    "title_other": "Archive {{count}} users?",
+    "description_one": "This user will lose access until restored.",
+    "description_other": "These users will lose access until restored."
+  },
+  "restore": {
+    "title_one": "Restore {{count}} user",
+    "title_other": "Restore {{count}} users"
+  },
+  "delete": {
+    "title_one": "Delete {{count}} user?",
+    "title_other": "Delete {{count}} users?",
+    "description_one": "This user and their data will be permanently deleted. You can undo for a few seconds.",
+    "description_other": "These users and their data will be permanently deleted. You can undo for a few seconds."
+  },
+  "bulk": {
+    "archive": "Archive selected",
+    "restore": "Restore selected",
+    "delete": "Delete selected"
+  },
+  "toast": {
+    "created": "{{name}} was created",
+    "updated_one": "{{count}} user updated",
+    "updated_other": "{{count}} users updated",
+    "archived_one": "{{count}} user archived",
+    "archived_other": "{{count}} users archived",
+    "restored_one": "{{count}} user restored",
+    "restored_other": "{{count}} users restored",
+    "deleted_one": "{{count}} user deleted",
+    "deleted_other": "{{count}} users deleted",
+    "partial_one": "{{count}} user could not be processed. {{reasons}}",
+    "partial_other": "{{count}} users could not be processed. {{reasons}}"
+  },
+  "undo": {
+    "created": "Create {{name}}",
+    "updated_one": "Update {{count}} user",
+    "updated_other": "Update {{count}} users",
+    "archived_one": "Archive {{count}} user",
+    "archived_other": "Archive {{count}} users",
+    "restored_one": "Restore {{count}} user",
+    "restored_other": "Restore {{count}} users"
+  },
+  "empty": {
+    "title": "No users found",
+    "description": "There are no users yet. Create one to get started.",
+    "filtered": "No users match these filters."
+  },
+  "detail": {
+    "title": "User",
+    "profile": "Profile",
+    "email": "Email",
+    "phone": "Phone number",
+    "role": "Role",
+    "status": "Status",
+    "created": "Created",
+    "updated": "Last updated",
+    "teams": "Teams",
+    "teams_empty": "This user is not in any team.",
+    "clocks": "Recent clocks",
+    "clocks_empty": "No clock entries yet.",
+    "clocks_report": "Full report",
+    "clock_open": "In progress"
+  },
+  "page": {
+    "back": "Back to users",
+    "not_found_title": "User not found",
+    "not_found": "This user does not exist or you cannot access it."
+  }
+}

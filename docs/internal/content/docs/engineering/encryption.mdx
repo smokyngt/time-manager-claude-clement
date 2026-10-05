@@ -1,0 +1,57 @@
+---
+title: Encryption
+description: Field-level encryption of personal data at rest - what is encrypted, the sealed format, configuration, backups and limitations.
+---
+
+User-supplied personal text is encrypted by the application before it reaches PostgreSQL, so a leaked dump, replica or backup does not expose it without the keys.
+
+## What is encrypted
+
+| Table | Encrypted columns |
+| --- | --- |
+| `users` | `email`, `first_name`, `last_name`, `phone_number` |
+| `teams` | `name`, `description` |
+| `clocks` | `note` |
+
+Values that must be looked up or kept unique use a keyed hash column instead, for example `users.email_hash`, computed with `Digest.email`. Hash columns never appear in API responses. Rows are mapped to entities in `utils/mappers/<entity>.ts`, where values are decrypted.
+
+## Format
+
+```text
+v1.<keyId>.<iv b64url>.<tag b64url>.<ciphertext b64url>
+```
+
+- Algorithm: AES-256-GCM with a random 12-byte IV per value and a 16-byte tag.
+- Additional authenticated data: `time-manager:v1`.
+- `keyId` selects the key (current or previous), which makes rotation possible without downtime.
+- Tampering, a wrong key or a malformed value raises `crypto.decrypt.failed` (HTTP 500).
+
+API (`api/src/utils/crypto`): `Cipher.seal`, `Cipher.open`, `Cipher.rotate`, `Cipher.current` and the `Cipher.nullable.*` variants. `Digest.hash(value, purpose)` is HMAC-SHA256 (hex) with a sub-key derived per purpose, and `Digest.email` normalizes and hashes an email.
+
+## Configuration
+
+| Variable | Meaning |
+| --- | --- |
+| `ENCRYPTION_KEY` | Current key: base64, exactly 32 bytes. Required in production. |
+| `ENCRYPTION_KEY_ID` | Id of the current key. Default `k1`, pattern `[A-Za-z0-9_-]{1,32}`. |
+| `ENCRYPTION_KEYS_PREVIOUS` | Optional comma list `id:base64` of retired keys that stay readable. |
+| `HASH_KEY` | HMAC key: base64, at least 32 bytes. Required in production. |
+
+Generate each key with `openssl rand -base64 32`, using different values for `ENCRYPTION_KEY` and `HASH_KEY`.
+
+Outside production, missing keys fall back to deterministic development keys derived from a fixed label. They are public and must never protect real data. In production, `Config.validate()` calls `Keys.validate()`, so a missing or malformed key stops the API from starting.
+
+Rotation procedure: [Key rotation](/docs/operations/key-rotation).
+
+## Backups
+
+- Dumps contain ciphertext only. Store the keys (`ENCRYPTION_KEY`, every id in `ENCRYPTION_KEYS_PREVIOUS`, `HASH_KEY`) in a secret manager separate from the dumps and their storage. A backup together with its keys defeats the encryption.
+- Losing a key makes the values sealed with it permanently unrecoverable. Back keys up before the first production write and after each rotation.
+- To restore an old dump, the key ids used in it must still be configured, as current or previous. See [Backups](/docs/operations/backups).
+
+## Limitations
+
+- No `ORDER BY`, `LIKE`, range or full-text search on encrypted columns, because ciphertext is random per value.
+- Equality lookups work only through hash columns such as `email_hash`.
+- Sorting and substring search happen client-side after decryption, or need dedicated hashed or derived columns.
+- Encryption protects data at rest. The application holds plaintext in memory and in API responses.

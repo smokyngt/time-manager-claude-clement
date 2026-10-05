@@ -1,4 +1,10 @@
-import { ArchiveIcon, ArchiveRestoreIcon, LayoutDashboardIcon, PencilIcon, Trash2Icon } from 'lucide-react'
+import {
+  ArchiveIcon,
+  ArchiveRestoreIcon,
+  LayoutDashboardIcon,
+  PencilIcon,
+  Trash2Icon,
+} from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 

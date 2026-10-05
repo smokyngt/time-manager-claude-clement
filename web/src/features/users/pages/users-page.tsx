@@ -5,6 +5,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router'
 
+import type { UserFormValues } from '@/features/users/lib'
+
 import {
   Announcer,
   ConfirmDialog,
@@ -37,11 +39,7 @@ import {
   useUpdateUsers,
   useUsers,
 } from '@/features/users/hooks'
-import {
-  UserPayload,
-  UserPermissions,
-  UserSearch,
-} from '@/features/users/lib'
+import { UserPayload, UserPermissions, UserSearch } from '@/features/users/lib'
 import {
   useClearSelectionShortcut,
   useCursorPagination,
@@ -62,9 +60,8 @@ import { Permission } from '@/lib/permission'
 import { RESOURCE_SCOPES } from '@/lib/scopes'
 import { useAuth } from '@/providers/use-auth'
 
-import type { UserFormValues } from '@/features/users/lib'
-
-type Panel = { kind: 'create' } | { kind: 'edit'; userId: string } | { kind: 'view'; userId: string }
+type Panel =
+  { kind: 'create' } | { kind: 'edit'; userId: string } | { kind: 'view'; userId: string }
 
 type Confirm = { ids: string[]; kind: 'archive' | 'delete' }
 
@@ -93,7 +90,7 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
   const searchRef = useRef<HTMLInputElement>(null)
   const announced = useRef(0)
 
-  const { reset: _reset, set, values } = useMultiParams(PARAM_DEFAULTS)
+  const { set, values } = useMultiParams(PARAM_DEFAULTS)
   const [search, setSearch] = useState('')
   const debouncedSearch = useDebouncedValue(search)
   const pagination = useCursorPagination()
@@ -105,13 +102,15 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
   const isAdmin = actor.role === 'admin'
   const role = isAdmin && isRole(values.role) ? values.role : undefined
   const teamId = values.teamId === '' ? undefined : values.teamId
-  const { fetching, isError, error, loaded, loading, more, next, refetch, total, users } = useUsers({
-    archived: values.archived,
-    cursor: pagination.cursor,
-    limit: LIMITS.pageSize.default,
-    role,
-    teamId,
-  })
+  const { error, fetching, isError, loaded, loading, more, next, refetch, total, users } = useUsers(
+    {
+      archived: values.archived,
+      cursor: pagination.cursor,
+      limit: LIMITS.pageSize.default,
+      role,
+      teamId,
+    },
+  )
   const { teams } = useTeamOptions()
   const create = useCreateUser()
   const update = useUpdateUsers()
@@ -135,11 +134,13 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
     [selection, visible],
   )
   const deletableIds = useMemo(
-    () => selectedUsers.filter((item) => UserPermissions.canDelete(actor, item)).map((item) => item.id),
+    () =>
+      selectedUsers.filter((item) => UserPermissions.canDelete(actor, item)).map((item) => item.id),
     [actor, selectedUsers],
   )
   const panelUser = useMemo(
-    () => (panel && panel.kind !== 'create' ? users.find((item) => item.id === panel.userId) : undefined),
+    () =>
+      panel && panel.kind !== 'create' ? users.find((item) => item.id === panel.userId) : undefined,
     [panel, users],
   )
   const dialogsClosed = panel === null && confirm === null
@@ -156,7 +157,9 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
     }
     announced.current = selection.count
     Announcer.say(
-      selection.count === 0 ? tc('bulk.announce_cleared') : tc('bulk.selected', { count: selection.count }),
+      selection.count === 0
+        ? tc('bulk.announce_cleared')
+        : tc('bulk.selected', { count: selection.count }),
     )
   }, [selection.count, tc])
 
@@ -215,19 +218,31 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
   const handleView = useCallback((target: User) => {
     setPanel({ kind: 'view', userId: target.id })
   }, [])
-  const handleEdit = useCallback((target: User) => {
-    update.reset()
-    setPanel({ kind: 'edit', userId: target.id })
-  }, [update])
-  const handleArchive = useCallback((target: User) => {
-    requestArchive([target.id])
-  }, [requestArchive])
-  const handleRestoreOne = useCallback((target: User) => {
-    handleRestore([target.id])
-  }, [handleRestore])
-  const handleDelete = useCallback((target: User) => {
-    requestDelete([target.id])
-  }, [requestDelete])
+  const handleEdit = useCallback(
+    (target: User) => {
+      update.reset()
+      setPanel({ kind: 'edit', userId: target.id })
+    },
+    [update],
+  )
+  const handleArchive = useCallback(
+    (target: User) => {
+      requestArchive([target.id])
+    },
+    [requestArchive],
+  )
+  const handleRestoreOne = useCallback(
+    (target: User) => {
+      handleRestore([target.id])
+    },
+    [handleRestore],
+  )
+  const handleDelete = useCallback(
+    (target: User) => {
+      requestDelete([target.id])
+    },
+    [requestDelete],
+  )
   const handleReport = useCallback(
     (target: User) => {
       void navigate(`/reports/users/${target.id}`)
@@ -286,19 +301,26 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
   )
 
   useSearchHotkey(searchRef)
-  useSelectAllShortcut(() => {
-    selection.selectAll(selectableIds)
-  }, dialogsClosed && selectableIds.length > 0)
+  useSelectAllShortcut(
+    () => {
+      selection.selectAll(selectableIds)
+    },
+    dialogsClosed && selectableIds.length > 0,
+  )
   useClearSelectionShortcut(selection.clear, dialogsClosed && selection.count > 0)
-  useDeleteShortcut(() => {
-    requestDelete(deletableIds)
-  }, dialogsClosed && deletableIds.length > 0)
+  useDeleteShortcut(
+    () => {
+      requestDelete(deletableIds)
+    },
+    dialogsClosed && deletableIds.length > 0,
+  )
 
   const emailTaken =
     Errors.code.check(create.error, 'user.conflict') ||
     Errors.code.check(update.error, 'user.conflict') ||
     (update.data?.failed.some((item) => item.code === 'user.conflict') ?? false)
-  const filtering = debouncedSearch !== '' || values.archived || role !== undefined || teamId !== undefined
+  const filtering =
+    debouncedSearch !== '' || values.archived || role !== undefined || teamId !== undefined
   const busy = archive.isPending || restore.isPending
   const bulkArchive = !values.archived && selectedUsers.length > 0
   const ItemComponent = viewMode === 'grid' ? UserCard : UserRow
@@ -319,7 +341,11 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
             </Button>
           ) : undefined
         }
-        description={debouncedSearch ? tc('search.no_results', { query: debouncedSearch }) : t(filtering ? 'empty.filtered' : 'empty.description')}
+        description={
+          debouncedSearch
+            ? tc('search.no_results', { query: debouncedSearch })
+            : t(filtering ? 'empty.filtered' : 'empty.description')
+        }
         icon={UsersIcon}
         title={t('empty.title')}
       />
@@ -371,12 +397,7 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
       />
       <ListToolbar
         filters={
-          <UsersFilters
-            onChange={changeFilters}
-            showRole={isAdmin}
-            teams={teams}
-            value={values}
-          />
+          <UsersFilters onChange={changeFilters} showRole={isAdmin} teams={teams} value={values} />
         }
         onViewModeChange={setViewMode}
         search={
@@ -442,7 +463,9 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
             ? t('create.title')
             : panel?.kind === 'edit'
               ? t('edit.title')
-              : t('detail.title')
+              : panelUser
+                ? UserSearch.name(panelUser)
+                : t('detail.title')
         }
       >
         {panel?.kind === 'create' ? (
@@ -473,7 +496,6 @@ function UsersContent({ actor }: { actor: Pick<User, 'id' | 'role'> }) {
         ) : null}
         {panel?.kind === 'view' && panelUser ? (
           <div className="space-y-4">
-            <p className="text-lg font-semibold">{UserSearch.name(panelUser)}</p>
             <UserDetails user={panelUser} />
             <div className="flex justify-end">
               <Button asChild variant="outline">

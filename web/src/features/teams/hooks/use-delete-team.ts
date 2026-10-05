@@ -19,7 +19,8 @@ export function useDeleteTeam(options: DeleteTeamOptions = {}) {
 
   const mutation = useMutation({
     meta: {
-      successMessage: (data: BulkDeleteResponse) => t('toast.deleted', { count: data.deleted.length }),
+      successMessage: (data: BulkDeleteResponse) =>
+        t('toast.deleted', { count: data.deleted.length }),
     },
     mutationFn: async (ids: string[]) => {
       const result = await sdk.teams.delete(ids)
@@ -43,5 +44,10 @@ export function useDeleteTeam(options: DeleteTeamOptions = {}) {
     },
   })
 
-  return { deleteTeams: mutation.mutate, deleteTeamsAsync: mutation.mutateAsync, deleting: mutation.isPending, mutation }
+  return {
+    deleteTeams: mutation.mutate,
+    deleteTeamsAsync: mutation.mutateAsync,
+    deleting: mutation.isPending,
+    mutation,
+  }
 }

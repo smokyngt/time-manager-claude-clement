@@ -1,1 +1,141 @@
-{}
+{
+  "title": "Teams",
+  "description": "Organize employees into teams",
+  "list": {
+    "label": "Teams"
+  },
+  "actions": {
+    "new": "New team",
+    "quick_view": "Quick view",
+    "open": "Open team",
+    "back": "All teams",
+    "dashboard": "View dashboard"
+  },
+  "filters": {
+    "status": "Filter teams",
+    "active": "Active",
+    "archived": "Archived",
+    "order": "Sort teams",
+    "newest": "Newest first",
+    "oldest": "Oldest first"
+  },
+  "search": {
+    "label": "Search teams",
+    "placeholder": "Search teams…"
+  },
+  "card": {
+    "archived": "Archived",
+    "manager": "Manager: {{name}}",
+    "members_one": "{{count}} member",
+    "members_other": "{{count}} members",
+    "select": "Select {{name}}",
+    "actions": "Actions for {{name}}"
+  },
+  "detail": {
+    "manager": "Manager",
+    "members": "Members",
+    "schedule": "Schedule",
+    "weekly_target": "Weekly target",
+    "hours_one": "{{count}} hour / week",
+    "hours_other": "{{count}} hours / week",
+    "no_description": "No description"
+  },
+  "create": {
+    "title": "New team",
+    "description": "Create a team and set its working schedule.",
+    "submit": "Create team"
+  },
+  "edit": {
+    "title": "Edit team",
+    "description": "Update the details and schedule of this team.",
+    "submit": "Save changes"
+  },
+  "form": {
+    "name": "Name",
+    "description": "Description",
+    "manager": "Manager",
+    "manager_placeholder": "Select a manager",
+    "manager_loading": "Loading managers…",
+    "weekly_hours": "Weekly hours target",
+    "work_start": "Work day start",
+    "work_end": "Work day end",
+    "errors": {
+      "name_required": "Name is required.",
+      "name_max": "Name is too long.",
+      "description_max": "Description is too long.",
+      "hours_invalid": "Enter a whole number of hours.",
+      "hours_range": "Enter between 1 and 80 hours.",
+      "time_invalid": "Enter a valid time.",
+      "end_after_start": "The end must be after the start."
+    }
+  },
+  "delete": {
+    "title_one": "Delete this team?",
+    "title_other": "Delete {{count}} teams?",
+    "description_one": "The team and its memberships will be permanently deleted.",
+    "description_other": "These teams and their memberships will be permanently deleted."
+  },
+  "empty": {
+    "title": "No teams yet",
+    "description": "Teams you create or belong to appear here.",
+    "archived_title": "No archived teams",
+    "archived_description": "Archived teams appear here."
+  },
+  "error": {
+    "title": "The team could not be loaded",
+    "not_found_title": "Team not found",
+    "not_found_description": "This team does not exist or you cannot see it."
+  },
+  "members": {
+    "title": "Members",
+    "empty_title": "No members",
+    "empty": "This team has no members yet.",
+    "empty_manage": "Add employees to this team.",
+    "columns": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "actions": "Actions"
+    },
+    "add": {
+      "open": "Add members",
+      "title": "Add members",
+      "description": "Select the people to add to this team.",
+      "search": "Search users",
+      "search_placeholder": "Name or email",
+      "available": "Available users",
+      "none": "No users available to add.",
+      "submit_one": "Add {{count}} selected",
+      "submit_other": "Add {{count}} selected"
+    },
+    "remove": {
+      "title": "Remove member",
+      "title_named": "Remove {{name}}?",
+      "description": "They will no longer be part of this team.",
+      "label": "Remove {{name}}"
+    }
+  },
+  "toast": {
+    "created": "{{name}} was created.",
+    "updated_one": "Team updated.",
+    "updated_other": "{{count}} teams updated.",
+    "archived_one": "Team archived.",
+    "archived_other": "{{count}} teams archived.",
+    "restored_one": "Team restored.",
+    "restored_other": "{{count}} teams restored.",
+    "deleted_one": "Team deleted.",
+    "deleted_other": "{{count}} teams deleted.",
+    "delete_pending_one": "Team deleted.",
+    "delete_pending_other": "{{count}} teams deleted.",
+    "members_added_one": "{{count}} member added.",
+    "members_added_other": "{{count}} members added.",
+    "members_removed_one": "{{count}} member removed.",
+    "members_removed_other": "{{count}} members removed.",
+    "partial_one": "{{count}} item could not be processed.",
+    "partial_other": "{{count}} items could not be processed."
+  },
+  "history": {
+    "created": "Create {{name}}",
+    "updated": "Edit {{name}}"
+  }
+}

@@ -1,0 +1,73 @@
+---
+title: Technology decisions
+description: ADR 0001 - the technology stack, scored with a weighted decision matrix.
+---
+
+**ADR 0001: stack for the backend, frontend and data layer.** Status: accepted.
+
+## Context
+
+The application lets employees clock in and out and lets managers manage teams and view KPIs (hours worked, lateness, averages), so date and time handling and aggregation matter. Fixed constraints: Docker and Docker Compose for deployment, GitHub Actions for CI, JWT access tokens with rotating refresh tokens, and Microsoft OAuth 2.0.
+
+## Criteria
+
+Weights were fixed before scoring. Scores run from 1 (poor) to 5 (excellent). The weighted total is the sum of score times weight, with a maximum of 5 x 16 = 80.
+
+| ID | Criterion | Weight |
+| --- | --- | :-: |
+| C1 | Team experience | 3 |
+| C2 | Ecosystem quality (OAuth 2.0 providers, charting libraries) | 3 |
+| C3 | Date and time handling and aggregation | 3 |
+| C4 | Docker deployment complexity (higher is simpler) | 2 |
+| C5 | Community and long-term viability | 2 |
+| C6 | Learning value | 1 |
+| C7 | Type safety and developer experience | 2 |
+
+## Options
+
+### Backend
+
+| Option | C1 (x3) | C2 (x3) | C3 (x3) | C4 (x2) | C5 (x2) | C6 (x1) | C7 (x2) | Total /80 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| Bun and Fastify 5 (TypeScript) | 4 | 5 | 4 | 4 | 4 | 4 | 5 | **69** |
+| Python FastAPI | 3 | 4 | 5 | 4 | 5 | 3 | 3 | **63** |
+| Java Spring Boot | 2 | 5 | 4 | 3 | 5 | 4 | 4 | **61** |
+| Go Gin | 2 | 3 | 3 | 5 | 4 | 5 | 4 | **55** |
+
+Bun and Fastify lead on team experience, ecosystem fit and type safety. FastAPI is strongest on data handling but costs a language switch. Spring Boot is mature but heavy for the team and the Docker footprint. Gin is lean but has a thinner OAuth and ORM ecosystem.
+
+### Frontend
+
+| Option | C1 (x3) | C2 (x3) | C3 (x3) | C4 (x2) | C5 (x2) | C6 (x1) | C7 (x2) | Total /80 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| React 19 and Vite | 5 | 5 | 5 | 4 | 5 | 3 | 4 | **74** |
+| Vue.js 3 | 2 | 4 | 4 | 4 | 4 | 4 | 4 | **58** |
+| Angular | 1 | 4 | 4 | 3 | 4 | 4 | 5 | **55** |
+| Svelte and SvelteKit | 1 | 3 | 3 | 4 | 3 | 4 | 4 | **47** |
+| Flutter (mobile only) | 1 | 3 | 3 | 3 | 4 | 5 | 4 | **48** |
+
+React wins on team experience and ecosystem: shadcn/ui, TanStack Query and recharts all target React. Flutter was scored for completeness as a possible mobile client and does not fit a browser SPA.
+
+### Data access (all on PostgreSQL)
+
+| Option | C1 (x3) | C2 (x3) | C3 (x3) | C4 (x2) | C5 (x2) | C6 (x1) | C7 (x2) | Total /80 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| PostgreSQL and Drizzle | 4 | 4 | 4 | 5 | 3 | 4 | 5 | **66** |
+| PostgreSQL and Prisma | 3 | 5 | 4 | 3 | 5 | 3 | 5 | **65** |
+| PostgreSQL and TypeORM | 3 | 3 | 3 | 4 | 3 | 2 | 3 | **49** |
+
+Drizzle and Prisma are close. Drizzle gives SQL-level control over date truncation and aggregation, a lighter image and no code-generation step. Prisma is the fallback. TypeORM trails on type safety and maintenance momentum.
+
+## Decision
+
+Use TypeScript on Bun with Fastify 5 for the backend, React 19 with Vite for the frontend, and PostgreSQL with Drizzle ORM for data.
+
+Two criteria drove the decision. Date and time handling and aggregation (weight 3): clock-in records, lateness and averages need reliable timestamps, time zones and SQL grouping, which PostgreSQL and Drizzle's typed queries handle well, and recharts gives managers a mature charting layer. Team experience (weight 3): the team already knows TypeScript, and one language with shared types across API and SPA reduces onboarding time and integration bugs.
+
+The data is relational by nature: users belong to teams, teams have managers and clocks reference users. Joins, constraints and KPI aggregate queries are simpler in SQL than in a document store, so a relational database was chosen over MongoDB.
+
+## Consequences
+
+- Bun's ecosystem is younger than Node.js. Some libraries may behave differently and its long-term support is less proven. Mitigations: avoid Bun-only APIs where practical, pin Bun and dependency versions, run CI on Bun, and keep the option to switch the Docker base image to Node.js, which should need only a Dockerfile change and a regenerated lockfile.
+- Drizzle requires explicit migrations (`db:generate`) committed to the repository.
+- Validation exists twice (JSON Schema on the API, zod in the SPA). The OpenAPI document and the SDK keep the contract in one place.

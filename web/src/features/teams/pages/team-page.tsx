@@ -1,9 +1,12 @@
 import type { TeamMember } from '@time-manager/sdk'
 
+import { ForbiddenError, NotFoundError } from '@time-manager/sdk'
 import { ArrowLeftIcon, UserPlusIcon } from 'lucide-react'
 import { useCallback, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link, useParams } from 'react-router'
+
+import type { TeamValues } from '@/features/teams/lib/team-schema'
 
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
 import { ErrorState } from '@/components/shared/error-state'
@@ -58,19 +61,22 @@ export function TeamPage() {
   const { archiveTeams } = useArchiveTeam()
   const { restoreTeams } = useRestoreTeam()
   const { deleteTeams, deleting } = useDeleteTeam({ navigateTo: '/teams' })
-  const { addMembers, adding } = useAddMembers(teamId)
+  const { adding, addMembers } = useAddMembers(teamId)
   const { removeMembers, removing: removingPending } = useRemoveMembers(teamId)
   const undo = useUndo()
   const history = useTeamHistory()
 
-  const memberIds = useMemo(() => new Set(members.members.map((member) => member.id)), [members.members])
+  const memberIds = useMemo(
+    () => new Set(members.members.map((member) => member.id)),
+    [members.members],
+  )
   const managerName = useMemo(() => {
     const manager = managers.users.find((candidate) => candidate.id === team?.managerId)
     return manager ? TeamFormat.userName(manager) : undefined
   }, [managers.users, team?.managerId])
 
   const handleSubmit = useCallback(
-    (values: Parameters<typeof TeamMapper.toUpdate>[0]) => {
+    (values: TeamValues) => {
       if (!team) {
         return
       }
@@ -112,7 +118,7 @@ export function TeamPage() {
   }
 
   if (isError || !team) {
-    const missing = Errors404.is(error)
+    const missing = error instanceof NotFoundError || error instanceof ForbiddenError
     return (
       <div className="space-y-4">
         {back}
@@ -248,7 +254,9 @@ export function TeamPage() {
           }
         }}
         open={removing !== null}
-        title={t('members.remove.title_named', { name: removing ? TeamFormat.userName(removing) : '' })}
+        title={t('members.remove.title_named', {
+          name: removing ? TeamFormat.userName(removing) : '',
+        })}
         variant="destructive"
       />
       <ConfirmDialog

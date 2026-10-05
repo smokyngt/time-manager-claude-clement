@@ -1,57 +1,61 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor, makeRow, OTHER_ID } from '../../../helpers/fixtures.js';
+import { UserNotFoundError } from '@/lib/errors/domains/user.js';
 
-const realDb = { ...(await import('@/db/client.js')) };
-const realLog = { ...(await import('@/services/log/index.js')) };
-const fakeDb = new FakeDb();
-const logCreate = mock(() => Promise.resolve({ success: true }));
-await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
-await mock.module('@/services/log/index.js', () => ({
-  ...realLog,
-  logService: { create: logCreate },
+import { actorOf } from '../user/support.js';
+import { caught, OTHER_ID } from './support.js';
+
+import type { User } from '@/types/entities/user.js';
+
+const real = { ...(await import('@/services/user/index.js')) };
+const retrieve = mock((_params: { id: string }): Promise<{ user: User }> => Promise.reject(new Error('unset')));
+await mock.module('@/services/user/index.js', () => ({
+  ...real,
+  userService: { ...real.userService, retrieve },
 }));
 
 afterAll(() => {
-  void mock.module('@/db/client.js', () => realDb);
-  void mock.module('@/services/log/index.js', () => realLog);
+  void mock.module('@/services/user/index.js', () => real);
 });
 
 afterEach(() => {
   mock.clearAllMocks();
-  fakeDb.reset();
 });
 
 const { me } = await import('@/services/auth/me.js');
+const { userOf } = await import('../user/support.js');
 
-const actor = makeActor('employee', OTHER_ID);
+const actor = actorOf('employee', OTHER_ID);
 
 describe('auth.service.me', () => {
   it('returns the current user', async () => {
-    fakeDb.enqueue([makeRow()]);
+    retrieve.mockImplementationOnce(() => Promise.resolve({ user: userOf('employee', OTHER_ID) }));
     const { user } = await me({ actor });
     expect(user.id).toBe(OTHER_ID);
-    expect(user).not.toHaveProperty('password_hash');
+    expect(retrieve).toHaveBeenCalledWith({ id: OTHER_ID });
   });
 
-  it('treats a deleted user as an invalid session', async () => {
-    fakeDb.enqueue([]);
+  it('treats a deleted user as an invalid token', async () => {
+    retrieve.mockImplementationOnce(() => Promise.reject(UserNotFoundError()));
     const error = await caught(me({ actor }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(error.code).toBe('token.authentication.failed');
     expect(error.status).toBe(401);
   });
 
-  it('treats an archived user as an invalid session', async () => {
-    fakeDb.enqueue([makeRow({ archived_at: 1 })]);
+  it('treats an archived user as an invalid token', async () => {
+    retrieve.mockImplementationOnce(() =>
+      Promise.resolve({ user: userOf('employee', OTHER_ID, { archived_at: 1 }) }),
+    );
     const error = await caught(me({ actor }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(error.code).toBe('token.authentication.failed');
   });
 
-  it('wraps unexpected failures', async () => {
-    fakeDb.enqueue(new Error('db down'));
+  it('wraps unexpected failures and keeps the cause', async () => {
+    const failure = new Error('db down');
+    retrieve.mockImplementationOnce(() => Promise.reject(failure));
     const error = await caught(me({ actor }));
-    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(error.code).toBe('auth.me.failed');
+    expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('auth.service.me');
   });
 });
