@@ -1,0 +1,44 @@
+---
+title: Microsoft sign-in
+description: Register a Microsoft Entra ID application and enable single sign-on for your users.
+---
+
+Microsoft sign-in is optional. Users sign in with their Microsoft account, but only if an administrator or manager has already created a Time Manager user with the same email address. There is no automatic signup, and roles always come from Time Manager.
+
+## Register the application
+
+You need an account that can create app registrations in your Microsoft Entra ID tenant.
+
+1. In the Azure portal, open Microsoft Entra ID, then App registrations, then New registration.
+2. Name the application, for example `Time Manager`.
+3. Choose "Accounts in this organizational directory only" (single tenant).
+4. Add a Web redirect URI that matches your deployment exactly:
+   - Local stack: `http://localhost:8080/v1/auth/microsoft/callback`
+   - Production: `https://your-domain/v1/auth/microsoft/callback`
+5. After registering, copy the Application (client) ID and the Directory (tenant) ID from the Overview page.
+6. Under Certificates and secrets, create a client secret and copy its Value immediately. It is shown once and it expires, so schedule a rotation.
+7. The default delegated `User.Read` permission is enough. No admin consent is required.
+
+## Configure Time Manager
+
+Set these variables in `.env`, then restart the API:
+
+```text
+MICROSOFT_CLIENT_ID=<application id>
+MICROSOFT_CLIENT_SECRET=<secret value>
+MICROSOFT_TENANT_ID=<directory id>
+MICROSOFT_REDIRECT_URI=https://your-domain/v1/auth/microsoft/callback
+OAUTH_STATE_SECRET=<random string of at least 32 characters>
+```
+
+`MICROSOFT_TENANT_ID` must be your tenant GUID. Values such as `common` are rejected, so that only your directory can sign in. See [configuration](./configuration) for the other variables.
+
+## Troubleshooting
+
+| Symptom | Cause |
+| --- | --- |
+| The sign-in button answers `auth.microsoft.unavailable` | The client id, secret or tenant id is missing or invalid. |
+| Sign-in ends with `auth.microsoft.unknown.user` | No Time Manager user has that email. Create the user first. |
+| `AADSTS50011` | The redirect URI differs from the registration. Copy it exactly, including scheme and port. |
+| `AADSTS7000215` | Wrong secret. Use the secret Value, not the Secret ID. |
+| `AADSTS700016` | The client id or tenant id does not match the registration. |

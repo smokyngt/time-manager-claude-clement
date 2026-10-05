@@ -40,7 +40,7 @@ describe('auth.controller.me', () => {
   });
 
   it('requires an authenticated caller', async () => {
-    const error = await caught(me(Fake.request(), cookieReply<Rep>()));
+    const error = await caught(me(Fake.request(), cookieReply<Rep>().reply));
     expect(error.code).toBe('token.authentication.failed');
     expect(error.status).toBe(401);
     expect(svc.me).not.toHaveBeenCalled();

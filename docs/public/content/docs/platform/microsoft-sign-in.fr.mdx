@@ -1,0 +1,44 @@
+---
+title: Connexion Microsoft
+description: Inscrivez une application Microsoft Entra ID et activez l'authentification unique pour vos utilisateurs.
+---
+
+La connexion Microsoft est facultative. Les utilisateurs se connectent avec leur compte Microsoft, mais seulement si un administrateur ou un manager a déjà créé un utilisateur Time Manager avec la même adresse e-mail. Il n'y a pas d'inscription automatique, et les rôles viennent toujours de Time Manager.
+
+## Inscrire l'application
+
+Il faut un compte qui peut créer des inscriptions d'application dans votre tenant Microsoft Entra ID.
+
+1. Dans le portail Azure, ouvrez Microsoft Entra ID, puis Inscriptions d'applications, puis Nouvelle inscription.
+2. Nommez l'application, par exemple `Time Manager`.
+3. Choisissez « Comptes dans cet annuaire organisationnel uniquement » (un seul tenant).
+4. Ajoutez un URI de redirection Web qui correspond exactement à votre déploiement :
+   - Pile locale : `http://localhost:8080/v1/auth/microsoft/callback`
+   - Production : `https://your-domain/v1/auth/microsoft/callback`
+5. Après l'inscription, copiez l'ID d'application (client) et l'ID d'annuaire (tenant) depuis la page Vue d'ensemble.
+6. Dans Certificats et secrets, créez un secret client et copiez sa Valeur immédiatement. Elle n'est affichée qu'une fois et le secret expire : planifiez sa rotation.
+7. L'autorisation déléguée `User.Read` par défaut suffit. Aucun consentement administrateur n'est requis.
+
+## Configurer Time Manager
+
+Définissez ces variables dans `.env`, puis redémarrez l'API :
+
+```text
+MICROSOFT_CLIENT_ID=<application id>
+MICROSOFT_CLIENT_SECRET=<secret value>
+MICROSOFT_TENANT_ID=<directory id>
+MICROSOFT_REDIRECT_URI=https://your-domain/v1/auth/microsoft/callback
+OAUTH_STATE_SECRET=<random string of at least 32 characters>
+```
+
+`MICROSOFT_TENANT_ID` doit être le GUID de votre tenant. Les valeurs comme `common` sont refusées, afin que seul votre annuaire puisse se connecter. Voir [configuration](./configuration) pour les autres variables.
+
+## Dépannage
+
+| Symptôme | Cause |
+| --- | --- |
+| Le bouton de connexion répond `auth.microsoft.unavailable` | L'identifiant client, le secret ou l'identifiant de tenant est absent ou invalide. |
+| La connexion se termine par `auth.microsoft.unknown.user` | Aucun utilisateur Time Manager n'a cet e-mail. Créez d'abord l'utilisateur. |
+| `AADSTS50011` | L'URI de redirection diffère de l'inscription. Copiez-la exactement, schéma et port compris. |
+| `AADSTS7000215` | Mauvais secret. Utilisez la Valeur du secret, pas l'ID du secret. |
+| `AADSTS700016` | L'identifiant client ou de tenant ne correspond pas à l'inscription. |

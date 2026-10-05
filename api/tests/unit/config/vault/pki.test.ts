@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, jest, mock } from 'bun:test';
 
-import { environment, fixture, stub } from './fixture.js';
+import { environment, failure, fixture, stub } from './fixture.js';
 
 import type { Fixture } from './fixture.js';
 
@@ -61,7 +61,7 @@ describe('VaultPki', () => {
 
   it('refuses to issue when disabled and to serve creds before issuance', async () => {
     process.env['VAULT_PKI_ENABLED'] = 'false';
-    await expect(ctx.config.pki.issue()).rejects.toThrow('PKI is disabled');
+    expect((await failure(ctx.config.pki.issue())).message).toContain('PKI is disabled');
     expect(() => ctx.config.pki.creds()).toThrow('PKI certificate has not been issued');
   });
 
@@ -104,6 +104,6 @@ describe('VaultPki', () => {
 
   it('rejects an incomplete reply', async () => {
     stub(ctx, 'write', () => Promise.resolve(({ data: { certificate: 'x' } })));
-    await expect(ctx.config.pki.issue()).rejects.toThrow('incomplete certificate');
+    expect((await failure(ctx.config.pki.issue())).message).toContain('incomplete certificate');
   });
 });

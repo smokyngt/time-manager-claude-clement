@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 
 import { initialize } from '@/config/vault/initialize.js';
 
-import { document, environment, fixture, healthy, rejection, stub } from './fixture.js';
+import { document, failure, environment, fixture, healthy, rejection, stub } from './fixture.js';
 
 import type { Fixture } from './fixture.js';
 
@@ -47,51 +47,49 @@ describe('initialize', () => {
   it.each([401, 403])('fails fast with an actionable message on HTTP %d', async (status) => {
     stub(ctx, 'lookupSelf', () => Promise.reject(rejection(status)));
     const run = initialize(ctx.config);
-    await expect(run).rejects.toThrow(/^Vault initialization failed: token rejected by Vault/);
-    await expect(run).rejects.toThrow(`HTTP ${status}`);
+    expect((await failure(run)).message).toMatch(/^Vault initialization failed: token rejected by Vault/);
+    expect((await failure(run)).message).toContain(`HTTP ${status}`);
     expect(ctx.mocks.read).not.toHaveBeenCalled();
   });
 
   it('requires VAULT_TOKEN', async () => {
     delete process.env['VAULT_TOKEN'];
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault initialization failed: VAULT_TOKEN is required');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed: VAULT_TOKEN is required');
   });
 
   it('refuses a sealed Vault', async () => {
     stub(ctx, 'health', () => Promise.resolve(({ ...healthy, sealed: true })));
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault initialization failed: Vault is sealed');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed: Vault is sealed');
     expect(ctx.mocks.read).not.toHaveBeenCalled();
   });
 
   it('refuses an uninitialized Vault', async () => {
     stub(ctx, 'health', () => Promise.resolve(({ ...healthy, initialized: false })));
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault is not initialized');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault is not initialized');
   });
 
   it('refuses http in production', async () => {
     process.env['NODE_ENV'] = 'production';
-    await expect(initialize(ctx.config)).rejects.toThrow(
-      'Vault initialization failed: VAULT_URL must use https in production',
-    );
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed: VAULT_URL must use https in production');
     expect(ctx.mocks.lookupSelf).not.toHaveBeenCalled();
   });
 
   it('fails production boot when VAULT_URL is missing', async () => {
     process.env['NODE_ENV'] = 'production';
     delete process.env['VAULT_URL'];
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault initialization failed: VAULT_URL is required');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed: VAULT_URL is required');
   });
 
   it('fails production boot when the document is missing', async () => {
     process.env['NODE_ENV'] = 'production';
     process.env['VAULT_URL'] = 'https://vault:8200';
     stub(ctx, 'read', () => Promise.reject(rejection(404)));
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault initialization failed');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed');
   });
 
   it('wraps read failures', async () => {
     stub(ctx, 'read', () => Promise.reject(rejection(500)));
-    await expect(initialize(ctx.config)).rejects.toThrow('Vault initialization failed: Vault request failed');
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault initialization failed: Vault request failed');
   });
 
   it('loads from env only when Vault is disabled outside production', async () => {
@@ -130,10 +128,12 @@ describe('initialize in production', () => {
   });
 
   it('composes DATABASE_URL from the Vault postgres document', async () => {
-    ctx.config.client.read = mock(async (path: string) =>
-      path.endsWith('databases/postgres')
-        ? document({ database: 'tm', host: 'db', password: 'p@ss', username: 'app' })
-        : document({}),
+    stub(ctx, 'read', (path: string) =>
+      Promise.resolve(
+        path.endsWith('databases/postgres')
+          ? document({ database: 'tm', host: 'db', password: 'p@ss', username: 'app' })
+          : document({}),
+      ),
     );
     await initialize(ctx.config);
     expect(ctx.config.store.get('DATABASE_URL')).toBe('postgres://app:p%40ss@db:5432/tm');
@@ -145,8 +145,10 @@ describe('dev seeding', () => {
     process.env['JWT_ACCESS_SECRET'] = 'env-access';
     process.env['JWT_REFRESH_SECRET'] = 'env-refresh';
     process.env['METRICS_TOKEN'] = 'env-metrics';
-    ctx.config.client.read = mock(async () =>
-      document({ CORS_ORIGIN: 'https://app', JWT_REFRESH_SECRET: 'vault-refresh' }, 4),
+    stub(ctx, 'read', () =>
+      Promise.resolve(
+        document({ CORS_ORIGIN: 'https://app', JWT_REFRESH_SECRET: 'vault-refresh' }, 4),
+      ),
     );
     await initialize(ctx.config);
     expect(ctx.mocks.write).toHaveBeenCalledTimes(1);

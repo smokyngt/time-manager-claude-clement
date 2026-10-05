@@ -56,3 +56,13 @@ export const environment = (): (() => void) => {
     process.env = { ...saved };
   };
 };
+
+export const failure = async (promise: Promise<unknown>): Promise<Error> => {
+  try {
+    await promise;
+  } catch (error) {
+    return error as Error;
+  }
+
+  throw new Error('expected the promise to reject');
+};

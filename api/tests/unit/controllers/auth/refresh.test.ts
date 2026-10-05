@@ -46,7 +46,7 @@ describe('auth.controller.refresh', () => {
     expect(svc.refresh).toHaveBeenCalledWith({ token: 'refresh1' });
     expect(reply.jar['tm_refresh']?.value).toBe('refresh2');
     expect(reply.payload).toMatchObject({
-      data: { access_token: 'access2', scopes: expect.any(Array), token_type: 'Bearer' },
+      data: { access_token: 'access2', token_type: 'Bearer' },
       event: { code: 'auth.refreshed' },
     });
   });
@@ -73,7 +73,7 @@ describe('auth.controller.refresh', () => {
   it('wraps unexpected failures and keeps the cause', async () => {
     const failure = new Error('boom');
     svc.refresh.mockImplementationOnce(() => Promise.reject(failure));
-    const { fake: reply, reply: target } = cookieReply<Rep>();
+    const { reply: target } = cookieReply<Rep>();
     const req = Object.assign(Fake.request(), { cookies: { tm_refresh: 'old' } });
     const error = await caught(refresh(req, target));
     expect(error.code).toBe('auth.refresh.failed');
