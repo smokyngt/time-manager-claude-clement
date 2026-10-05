@@ -6,8 +6,7 @@ import { me } from './me.js';
 import { refresh } from './refresh.js';
 
 import type { SessionResult } from './session.js';
-import type { Actor } from '@/types/entities/index.js';
-import type { User } from '@/types/entities/index.js';
+import type { Actor, User  } from '@/types/entities/index.js';
 
 export type { SessionResult } from './session.js';
 

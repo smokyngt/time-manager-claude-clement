@@ -15,7 +15,7 @@ import {
   UnauthorizedErrorSchema,
   ValidationErrorSchema,
 } from './base/envelope.js';
-import { RequestLimits } from './common.js';
+import { IdArraySchema, RequestLimits } from './common.js';
 import { UserSchema } from './user.js';
 
 import type { JsonSchema } from './base/envelope.js';
@@ -30,13 +30,6 @@ const userIdList = (description: string): JsonSchema => ({
   items: { format: 'uuid', type: 'string' },
   maxItems: RequestLimits.bulk,
   minItems: 1,
-  type: 'array',
-});
-
-const idArray = (description: string): JsonSchema => ({
-  description,
-  example: [USER_ID],
-  items: { format: 'uuid', type: 'string' },
   type: 'array',
 });
 
@@ -126,7 +119,7 @@ export const TeamMemberAddDataSchema = {
   additionalProperties: false,
   description: 'Outcome of adding members to a team.',
   properties: {
-    added: idArray('Identifiers of the users that became members.'),
+    added: IdArraySchema('Identifiers of the users that became members.', [USER_ID]),
     failed: failedArray,
     success: { description: 'True when no id failed.', example: true, type: 'boolean' },
   },
@@ -139,7 +132,7 @@ export const TeamMemberRemoveDataSchema = {
   description: 'Outcome of removing members from a team.',
   properties: {
     failed: failedArray,
-    removed: idArray('Identifiers of the users that were removed from the team.'),
+    removed: IdArraySchema('Identifiers of the users that were removed from the team.', [USER_ID]),
     success: { description: 'True when no id failed.', example: true, type: 'boolean' },
   },
   required: ['failed', 'removed', 'success'],

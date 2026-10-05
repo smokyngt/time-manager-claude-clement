@@ -1,4 +1,4 @@
-import { clock } from '@/controllers/index.js';
+import { clockController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { ClockCreateBodySchema, ClockResponses } from '@/schemas/index.js';
 
@@ -21,7 +21,7 @@ const create: FastifyPluginAsync = async (fastify) => {
         tags: ['clocks'],
       },
     },
-    clock.create,
+    clockController.create,
   );
 };
 

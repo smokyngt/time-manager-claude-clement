@@ -2,11 +2,10 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/index.js';
-import { UserDeleteError, UserNotFoundError } from '@/lib/errors/index.js';
 import { Sessions } from '@/lib/auth/sessions.js';
+import { UserDeleteError, UserNotFoundError } from '@/lib/errors/index.js';
 import { UserDeleted } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
-
 
 import type { DeleteUserParams, DeleteUserResponse } from './index.js';
 

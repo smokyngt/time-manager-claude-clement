@@ -6,9 +6,8 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { BulkFailure } from '@/types/entities/index.js';
 import type { UserCreateData, UserUpdateData } from '@/services/index.js';
-import type { Role, User } from '@/types/entities/index.js';
+import type { BulkFailure, Role, User  } from '@/types/entities/index.js';
 
 export type ArchiveUserParams = {
   id: string;

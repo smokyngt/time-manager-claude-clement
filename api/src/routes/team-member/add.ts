@@ -1,4 +1,4 @@
-import { teamMember } from '@/controllers/index.js';
+import { teamMemberController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberAddBodySchema,
@@ -26,7 +26,7 @@ const add: FastifyPluginAsync = async (fastify) => {
         tags: ['team-members'],
       },
     },
-    teamMember.add,
+    teamMemberController.add,
   );
 };
 

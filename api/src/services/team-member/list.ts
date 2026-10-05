@@ -1,8 +1,7 @@
 import { eq, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers } from '@/db/schema/index.js';
-import { users } from '@/db/schema/index.js';
+import { teamMembers, users  } from '@/db/schema/index.js';
 import { TeamMemberListError } from '@/lib/errors/index.js';
 import { Cursor } from '@/utils/http/cursor.js';
 import { UserMapper } from '@/utils/mappers/user.js';

@@ -1,14 +1,12 @@
-import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/index.js';
-import { AppError } from '@/lib/errors/index.js';
-import { UserDeleteError, UserNotFoundError } from '@/lib/errors/index.js';
+import { AppError, InternalError, UnauthorizedError, UserDeleteError , UserNotFoundError, ValidationError  } from '@/lib/errors/index.js';
 import { UserDeleted } from '@/lib/events/index.js';
 import { RequestLimits } from '@/schemas/index.js';
 import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, DeleteUsersBody, DeleteUsersResponse } from './index.js';
-import type { User } from '@/types/entities/index.js';
+import type { DeleteUsersBody, DeleteUsersResponse } from './index.js';
+import type { BulkFailure, User } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

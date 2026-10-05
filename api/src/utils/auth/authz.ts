@@ -5,8 +5,7 @@ import { TeamAccess } from '@/utils/auth/access/team.js';
 import { UserAccess } from '@/utils/auth/access/user.js';
 
 import type { Scope } from '@/config/auth/scopes.js';
-import type { Actor } from '@/types/entities/index.js';
-import type { Role } from '@/types/entities/index.js';
+import type { Actor, Role  } from '@/types/entities/index.js';
 import type { FastifyRequest } from 'fastify';
 
 export type AccessContext = {

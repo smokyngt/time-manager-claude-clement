@@ -1,14 +1,12 @@
-import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/index.js';
-import { AppError } from '@/lib/errors/index.js';
-import { TeamNotFoundError, TeamUpdateError } from '@/lib/errors/index.js';
+import { AppError, InternalError, TeamNotFoundError, TeamUpdateError , UnauthorizedError, ValidationError  } from '@/lib/errors/index.js';
 import { TeamUpdated } from '@/lib/events/index.js';
 import { RequestLimits } from '@/schemas/index.js';
 import { teamService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, UpdateTeamsBody, UpdateTeamsResponse } from './index.js';
-import type { Team } from '@/types/entities/index.js';
+import type { UpdateTeamsBody, UpdateTeamsResponse } from './index.js';
+import type { BulkFailure, Team } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

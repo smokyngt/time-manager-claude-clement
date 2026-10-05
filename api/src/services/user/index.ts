@@ -6,8 +6,7 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { Actor } from '@/types/entities/index.js';
-import type { Role, User } from '@/types/entities/index.js';
+import type { Actor, Role, User  } from '@/types/entities/index.js';
 
 export type ArchiveUserParams = {
   actor: Actor;

@@ -3,10 +3,8 @@ import { list } from './list.js';
 import { remove } from './remove.js';
 import { team } from './team.js';
 
-import type { BulkFailure } from '@/types/entities/index.js';
 import type { TeamRow } from '@/db/schema/index.js';
-import type { Actor } from '@/types/entities/index.js';
-import type { Role, User } from '@/types/entities/index.js';
+import type { Actor, BulkFailure , Role, User  } from '@/types/entities/index.js';
 
 export type AddTeamMembersParams = {
   actor: Actor;

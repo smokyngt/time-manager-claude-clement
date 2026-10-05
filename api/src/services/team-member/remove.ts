@@ -9,7 +9,8 @@ import {
 import { TeamMembersRemoved } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
 
-import type { BulkFailure, RemoveTeamMembersParams, RemoveTeamMembersResponse } from './index.js';
+import type { RemoveTeamMembersParams, RemoveTeamMembersResponse } from './index.js';
+import type { BulkFailure } from '@/types/entities/index.js';
 
 /**
  * @route team.member.service.remove

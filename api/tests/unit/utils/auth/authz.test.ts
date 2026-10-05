@@ -1,48 +1,47 @@
 import { describe, expect, it } from 'bun:test';
 
-import { Access } from '@/utils/access.js';
+import { Access } from '@/utils/auth/authz.js';
 
+import { Fake } from '../../../support/fake.js';
 import {
   ADMIN_ID,
   EMPLOYEE_ID,
-  makeActor,
-  makeReq,
   MANAGER_ID,
   OTHER_ID,
-} from '../../helpers/fixtures.js';
+  actorOf,
+} from '../../services/user/support.js';
 
 describe('Access.context', () => {
-  it('returns the actor', () => {
-    const actor = makeActor('admin');
-    expect(Access.context(makeReq({ actor }))).toEqual({ actor });
+  it('returns the actor and the scopes', () => {
+    const actor = actorOf('admin');
+    expect(Access.context(Fake.request({ actor, scopes: ['users:manage'] }))).toEqual({
+      actor,
+      scopes: ['users:manage'],
+    });
   });
 
-  it('throws UNAUTHORIZED without an actor', () => {
-    expect(() => Access.context(makeReq())).toThrow();
+  it('throws token.authentication.failed without an actor', () => {
+    expect(() => Access.context(Fake.request())).toThrow('token.authentication.failed');
   });
 });
 
 describe('Access.role.require', () => {
   it('returns the actor when the role is allowed', () => {
-    const actor = makeActor('manager');
-    expect(Access.role.require(makeReq({ actor }), ['admin', 'manager'])).toBe(actor);
+    const actor = actorOf('manager');
+    expect(Access.role.require(Fake.request({ actor }), ['admin', 'manager'])).toBe(actor);
   });
 
-  it('throws FORBIDDEN otherwise', () => {
-    let code = '';
-    try {
-      Access.role.require(makeReq({ actor: makeActor('employee') }), ['admin', 'manager']);
-    } catch (error) {
-      code = (error as { code: string }).code;
-    }
-    expect(code).toBe('FORBIDDEN');
+  it('throws unauthorized otherwise', () => {
+    expect(() =>
+      Access.role.require(Fake.request({ actor: actorOf('employee') }), ['admin', 'manager']),
+    ).toThrow('unauthorized');
   });
 });
 
 describe('Access.user.allow', () => {
-  const admin = makeActor('admin');
-  const manager = makeActor('manager');
-  const employee = makeActor('employee');
+  const admin = actorOf('admin');
+  const manager = actorOf('manager');
+  const employee = actorOf('employee');
 
   it('gives admins everything except self archive and delete', () => {
     expect(Access.user.allow(admin, 'delete', { id: OTHER_ID, role: 'manager' })).toBe(true);
@@ -72,24 +71,24 @@ describe('Access.user.allow', () => {
 
 describe('Access.user.fields and reach', () => {
   it('restricts self updates to harmless fields', () => {
-    const fields = Access.user.fields(makeActor('admin'), { id: ADMIN_ID, role: 'admin' });
+    const fields = Access.user.fields(actorOf('admin'), { id: ADMIN_ID, role: 'admin' });
     expect(fields).not.toContain('role');
     expect(fields).not.toContain('email');
   });
 
   it('lets admins change roles of others but not managers', () => {
-    expect(Access.user.fields(makeActor('admin'), { id: OTHER_ID, role: 'employee' })).toContain(
+    expect(Access.user.fields(actorOf('admin'), { id: OTHER_ID, role: 'employee' })).toContain(
       'role',
     );
     expect(
-      Access.user.fields(makeActor('manager'), { id: OTHER_ID, role: 'employee' }),
+      Access.user.fields(actorOf('manager'), { id: OTHER_ID, role: 'employee' }),
     ).not.toContain('role');
-    expect(Access.user.fields(makeActor('manager'), { id: ADMIN_ID, role: 'admin' })).toEqual([]);
+    expect(Access.user.fields(actorOf('manager'), { id: ADMIN_ID, role: 'admin' })).toEqual([]);
   });
 
   it('only lets employees reach themselves', () => {
-    expect(Access.user.reach(makeActor('employee'), EMPLOYEE_ID)).toBe(true);
-    expect(Access.user.reach(makeActor('employee'), OTHER_ID)).toBe(false);
-    expect(Access.user.reach(makeActor('manager'), OTHER_ID)).toBe(true);
+    expect(Access.user.reach(actorOf('employee'), EMPLOYEE_ID)).toBe(true);
+    expect(Access.user.reach(actorOf('employee'), OTHER_ID)).toBe(false);
+    expect(Access.user.reach(actorOf('manager'), OTHER_ID)).toBe(true);
   });
 });

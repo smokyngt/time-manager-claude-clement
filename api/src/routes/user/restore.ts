@@ -1,4 +1,4 @@
-import { user } from '@/controllers/index.js';
+import { userController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { UserIdParamsSchema, UserResponses } from '@/schemas/index.js';
 
@@ -21,7 +21,7 @@ const restore: FastifyPluginAsync = async (fastify) => {
         tags: ['users'],
       },
     },
-    user.restore,
+    userController.restore,
   );
 };
 

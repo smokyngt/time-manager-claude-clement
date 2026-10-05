@@ -1,5 +1,4 @@
-import { ValidationError } from '@/lib/errors/index.js';
-import { TeamMemberAddError } from '@/lib/errors/index.js';
+import { TeamMemberAddError, ValidationError  } from '@/lib/errors/index.js';
 import { TeamMembersAdded } from '@/lib/events/index.js';
 import { RequestLimits } from '@/schemas/index.js';
 import { teamMemberService } from '@/services/index.js';

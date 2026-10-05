@@ -1,4 +1,4 @@
-import { user } from '@/controllers/index.js';
+import { userController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { UserDeleteBodySchema, UserResponses } from '@/schemas/index.js';
 
@@ -21,7 +21,7 @@ const deleteRoute: FastifyPluginAsync = async (fastify) => {
         tags: ['users'],
       },
     },
-    user.delete,
+    userController.delete,
   );
 };
 

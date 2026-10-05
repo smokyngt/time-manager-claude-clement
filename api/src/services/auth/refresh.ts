@@ -1,8 +1,7 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/index.js';
-import { users } from '@/db/schema/index.js';
+import { refreshTokens, users  } from '@/db/schema/index.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { AuthRefreshError, AuthRefreshInvalidError } from '@/lib/errors/index.js';
 import { AuthRefreshReused } from '@/lib/events/index.js';

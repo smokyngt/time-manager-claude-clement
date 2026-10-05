@@ -1,19 +1,17 @@
 import { inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers } from '@/db/schema/index.js';
-import { users } from '@/db/schema/index.js';
-import { UnauthorizedError } from '@/lib/errors/index.js';
-import {
-  TeamMemberAddError,
+import { teamMembers, users  } from '@/db/schema/index.js';
+import { TeamMemberAddError,
   TeamMemberTeamArchivedError,
   TeamMemberUserArchivedError,
   TeamMemberUserNotFoundError,
-} from '@/lib/errors/index.js';
+  UnauthorizedError } from '@/lib/errors/index.js';
 import { TeamMembersAdded } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
 
-import type { AddTeamMembersParams, AddTeamMembersResponse, BulkFailure } from './index.js';
+import type { AddTeamMembersParams, AddTeamMembersResponse } from './index.js';
+import type { BulkFailure } from '@/types/entities/index.js';
 
 /**
  * @route team.member.service.add

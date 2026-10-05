@@ -1,7 +1,6 @@
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/index.js';
-import { DuplicateKeyError } from '@/lib/errors/index.js';
-import { UserCreateError } from '@/lib/errors/index.js';
+import { DuplicateKeyError, UserCreateError  } from '@/lib/errors/index.js';
 import { UserCreated } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';

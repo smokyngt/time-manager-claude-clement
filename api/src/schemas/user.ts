@@ -1,5 +1,4 @@
-import { DuplicateKeyError, InternalError } from '@/lib/errors/index.js';
-import { UserNotFoundError } from '@/lib/errors/index.js';
+import { DuplicateKeyError, InternalError, UserNotFoundError  } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -10,9 +9,9 @@ import {
 } from '@/schemas/base/envelope.js';
 import { ROLES } from '@/types/entities/index.js';
 
-import { DateBoundAnyOf, NAME_PATTERN, PHONE_PATTERN, RequestLimits } from './common.js';
+import { BulkFailureSchema, DateBoundSchema, IdArraySchema, NAME_PATTERN, PHONE_PATTERN, RequestLimits } from './common.js';
 
-import type { JsonSchema } from './common.js';
+import type { JsonSchema } from './base/envelope.js';
 
 const ID_EXAMPLE = '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10';
 const OTHER_ID_EXAMPLE = '7c9e6679-7425-40de-944b-e07fc1f90ae7';
@@ -40,25 +39,6 @@ const idsProperty = {
   maxItems: RequestLimits.bulk,
   minItems: 1,
   type: 'array',
-} as const;
-
-const BulkFailureSchema = {
-  additionalProperties: false,
-  properties: {
-    code: {
-      description: 'Error code explaining the failure.',
-      example: UserNotFoundError.code,
-      type: 'string',
-    },
-    id: {
-      description: 'Identifier that failed.',
-      example: OTHER_ID_EXAMPLE,
-      format: 'uuid',
-      type: 'string',
-    },
-  },
-  required: ['code', 'id'],
-  type: 'object',
 } as const;
 
 const emailProperty = {
@@ -189,8 +169,8 @@ export const UserListBodySchema = {
       example: false,
       type: 'boolean',
     },
-    created_after: DateBoundAnyOf,
-    created_before: DateBoundAnyOf,
+    created_after: DateBoundSchema,
+    created_before: DateBoundSchema,
     cursor: {
       description: 'Opaque cursor returned as next by a previous call.',
       example: 'MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA',
@@ -271,17 +251,10 @@ export const UserDeleteBodySchema = {
   type: 'object',
 } as const;
 
-const idArray = (description: string): JsonSchema => ({
-  description,
-  example: ID_LIST_EXAMPLE,
-  items: { example: ID_EXAMPLE, format: 'uuid', type: 'string' },
-  type: 'array',
-});
-
 const failedArray = {
   description: 'Identifiers that could not be processed, with the reason.',
   example: FAILED_EXAMPLE,
-  items: BulkFailureSchema,
+  items: BulkFailureSchema(UserNotFoundError.code, OTHER_ID_EXAMPLE),
   type: 'array',
 } as const;
 
@@ -323,7 +296,7 @@ export const UserUpdateDataResponseSchema = {
   properties: {
     failed: failedArray,
     success: { description: 'True when every id was updated.', example: true, type: 'boolean' },
-    updated: idArray('Identifiers that were updated.'),
+    updated: IdArraySchema('Identifiers that were updated.', ID_LIST_EXAMPLE),
   },
   required: ['failed', 'success', 'updated'],
   type: 'object',
@@ -333,7 +306,7 @@ export const UserDeleteDataResponseSchema = {
   additionalProperties: false,
   description: 'Outcome of the bulk deletion.',
   properties: {
-    deleted: idArray('Identifiers that were deleted.'),
+    deleted: IdArraySchema('Identifiers that were deleted.', ID_LIST_EXAMPLE),
     failed: failedArray,
     success: { description: 'True when every id was deleted.', example: true, type: 'boolean' },
   },

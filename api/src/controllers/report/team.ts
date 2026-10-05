@@ -1,5 +1,4 @@
-import { UnauthorizedError } from '@/lib/errors/index.js';
-import { ReportTeamError, ReportTeamNotFoundError } from '@/lib/errors/index.js';
+import { ReportTeamError, ReportTeamNotFoundError, UnauthorizedError  } from '@/lib/errors/index.js';
 import { ReportTeamGenerated } from '@/lib/events/index.js';
 import { reportService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';

@@ -1,5 +1,4 @@
-import { UnauthorizedError } from '@/lib/errors/index.js';
-import { UserNotFoundError, UserRetrieveError } from '@/lib/errors/index.js';
+import { UnauthorizedError, UserNotFoundError, UserRetrieveError  } from '@/lib/errors/index.js';
 import { UserRetrieved } from '@/lib/events/index.js';
 import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';

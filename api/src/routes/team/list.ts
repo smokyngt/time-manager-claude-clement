@@ -1,4 +1,4 @@
-import { team } from '@/controllers/index.js';
+import { teamController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { TeamListBodySchema, TeamResponses } from '@/schemas/index.js';
 
@@ -21,7 +21,7 @@ const list: FastifyPluginAsync = async (fastify) => {
         tags: ['teams'],
       },
     },
-    team.list,
+    teamController.list,
   );
 };
 

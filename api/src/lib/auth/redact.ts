@@ -8,19 +8,21 @@ export type RedactedRequest = {
   url: string | undefined;
 };
 
+export type RedactInput = {
+  hostname?: string;
+  ip?: string;
+  method: string;
+  socket?: { remotePort?: number };
+  url?: string;
+};
+
 export class Redact {
   /**
    * @route redact.request
-   * @param {{ hostname?: string; ip?: string; method: string; socket?: { remotePort?: number }; url?: string }} req
+   * @param {RedactInput} req
    * @returns {RedactedRequest}
    */
-  public static request(req: {
-    hostname?: string;
-    ip?: string;
-    method: string;
-    socket?: { remotePort?: number };
-    url?: string;
-  }): RedactedRequest {
+  public static request(req: RedactInput): RedactedRequest {
     return {
       host: req.hostname,
       method: req.method,

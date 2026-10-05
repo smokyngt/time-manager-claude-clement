@@ -1,8 +1,7 @@
 import { createHash } from 'node:crypto';
 
-import { Config } from '@/config/index.js';
-import { AppError } from '@/lib/errors/index.js';
-import { CryptoKeyInvalidError } from '@/lib/errors/index.js';
+import { store } from '@/config/store.js';
+import { AppError, CryptoKeyInvalidError  } from '@/lib/errors/index.js';
 
 export type KeyEntry = { id: string; key: Buffer };
 
@@ -18,10 +17,10 @@ export class Keys {
    * @returns {KeyEntry}
    */
   public static current(): KeyEntry {
-    const id = Keys.identifier(Config.store.text('ENCRYPTION_KEY_ID', 'k1'), 'ENCRYPTION_KEY_ID');
-    const raw = Config.store.optional('ENCRYPTION_KEY');
+    const id = Keys.identifier(store.text('ENCRYPTION_KEY_ID', 'k1'), 'ENCRYPTION_KEY_ID');
+    const raw = store.optional('ENCRYPTION_KEY');
     if (raw === undefined) {
-      if (Config.production()) throw Keys.invalid('ENCRYPTION_KEY is required');
+      if (store.production()) throw Keys.invalid('ENCRYPTION_KEY is required');
       return { id, key: Keys.derive('encryption') };
     }
     const key = Keys.decode(raw, 'ENCRYPTION_KEY');
@@ -35,9 +34,9 @@ export class Keys {
    * @returns {Buffer}
    */
   public static digest(): Buffer {
-    const raw = Config.store.optional('HASH_KEY');
+    const raw = store.optional('HASH_KEY');
     if (raw === undefined) {
-      if (Config.production()) throw Keys.invalid('HASH_KEY is required');
+      if (store.production()) throw Keys.invalid('HASH_KEY is required');
       return Keys.derive('hash');
     }
     const key = Keys.decode(raw, 'HASH_KEY');
@@ -62,9 +61,9 @@ export class Keys {
    * @returns {KeyEntry[]}
    */
   public static previous(): KeyEntry[] {
-    const raw = Config.store.optional('ENCRYPTION_KEYS_PREVIOUS');
+    const raw = store.optional('ENCRYPTION_KEYS_PREVIOUS');
     if (raw === undefined) return [];
-    const currentId = Config.store.text('ENCRYPTION_KEY_ID', 'k1');
+    const currentId = store.text('ENCRYPTION_KEY_ID', 'k1');
     const seen = new Set<string>([currentId]);
     const entries: KeyEntry[] = [];
     for (const item of raw.split(',')) {
@@ -90,7 +89,7 @@ export class Keys {
    * @returns {string[]}
    */
   public static validate(): string[] {
-    if (!Config.production()) return [];
+    if (!store.production()) return [];
     const problems: string[] = [];
     const checks: (() => unknown)[] = [
       (): unknown => Keys.current(),

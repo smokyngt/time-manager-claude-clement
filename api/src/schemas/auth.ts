@@ -1,11 +1,9 @@
 import { SCOPES } from '@/config/auth/scopes.js';
-import { InternalError } from '@/lib/errors/index.js';
-import {
-  AuthCredentialsInvalidError,
+import { AuthCredentialsInvalidError,
   AuthMicrosoftUnavailableError,
   AuthRateLimitedError,
   AuthRefreshInvalidError,
-} from '@/lib/errors/index.js';
+  InternalError } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -16,7 +14,7 @@ import {
 
 import { UserSchema } from './user.js';
 
-import type { JsonSchema } from './common.js';
+import type { JsonSchema } from './base/envelope.js';
 
 export const AuthLoginBodySchema = {
   additionalProperties: false,

@@ -1,10 +1,8 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/index.js';
-import { users } from '@/db/schema/index.js';
-import { ClockCreateError } from '@/lib/errors/index.js';
-import { UserNotFoundError } from '@/lib/errors/index.js';
+import { clocks, users  } from '@/db/schema/index.js';
+import { ClockCreateError, UserNotFoundError  } from '@/lib/errors/index.js';
 import { ClockCreated } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Audit } from '@/services/log/audit.js';

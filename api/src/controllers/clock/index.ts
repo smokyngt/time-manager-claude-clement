@@ -7,9 +7,8 @@ import { clockOut } from './out.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { BulkFailure } from '@/types/entities/index.js';
 import type { ClockCreateData, ClockUpdateData } from '@/services/index.js';
-import type { Clock } from '@/types/entities/index.js';
+import type { BulkFailure, Clock  } from '@/types/entities/index.js';
 
 export type ClockInBody = {
   note?: string;

@@ -1,4 +1,4 @@
-import { report } from '@/controllers/index.js';
+import { reportController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { ReportResponses, ReportUserBodySchema } from '@/schemas/index.js';
 
@@ -22,7 +22,7 @@ const user: FastifyPluginAsync = async (fastify) => {
         tags: ['reports'],
       },
     },
-    report.user,
+    reportController.user,
   );
 };
 

@@ -1,8 +1,7 @@
 import { and, eq, gte, inArray, isNotNull, isNull, lte, notInArray, or } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers, teams } from '@/db/schema/index.js';
-import { users } from '@/db/schema/index.js';
+import { teamMembers, teams, users  } from '@/db/schema/index.js';
 import { UserListError } from '@/lib/errors/index.js';
 import { Cursor } from '@/utils/http/cursor.js';
 import { UserMapper } from '@/utils/mappers/user.js';

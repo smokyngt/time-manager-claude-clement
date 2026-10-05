@@ -3,13 +3,14 @@ import { trace } from '@opentelemetry/api';
 import { Config } from '@/config/index.js';
 import { Redact } from '@/lib/auth/redact.js';
 
+import type { RedactedRequest, RedactInput } from '@/lib/auth/redact.js';
 import type { IncomingMessage } from 'node:http';
 
 export type LoggerOptions = {
   level: string;
   mixin: () => TraceFields;
   redact: { censor: string; paths: string[] };
-  serializers: { req: typeof Redact.request };
+  serializers: { req: (req: RedactInput) => RedactedRequest };
   transport?: { options: { colorize: boolean; translateTime: string }; target: string };
 };
 
@@ -49,7 +50,7 @@ export class Telemetry {
       level: Config.store.text('LOG_LEVEL', 'info'),
       mixin: () => Telemetry.trace(),
       redact: { censor: '[redacted]', paths: [...Telemetry.redacted] },
-      serializers: { req: Redact.request },
+      serializers: { req: (req) => Redact.request(req) },
     };
     if (Config.store.text('NODE_ENV', 'development') === 'development') {
       options.transport = {

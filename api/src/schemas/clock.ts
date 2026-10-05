@@ -1,11 +1,8 @@
-import { InternalError } from '@/lib/errors/index.js';
-import {
-  ClockConflictError,
+import { ClockConflictError,
   ClockInvalidError,
   ClockNotFoundError,
   ClockOverlapError,
-} from '@/lib/errors/index.js';
-import { UserNotFoundError } from '@/lib/errors/index.js';
+  InternalError, UserNotFoundError  } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -16,9 +13,9 @@ import {
 } from '@/schemas/base/envelope.js';
 import { CLOCK_SOURCES } from '@/types/entities/index.js';
 
-import { DateBoundAnyOf, RequestLimits } from './common.js';
+import { BulkFailureSchema, DateBoundSchema, IdArraySchema, RequestLimits } from './common.js';
 
-import type { JsonSchema } from './common.js';
+import type { JsonSchema } from './base/envelope.js';
 
 const ID_EXAMPLE = '5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77';
 const OTHER_ID_EXAMPLE = '9a2e4c1b-6f3d-4e8a-b7c5-1d0f2a3b4c5d';
@@ -59,25 +56,6 @@ const idsProperty = {
   maxItems: RequestLimits.bulk,
   minItems: 1,
   type: 'array',
-} as const;
-
-const BulkFailureSchema = {
-  additionalProperties: false,
-  properties: {
-    code: {
-      description: 'Error code explaining the failure.',
-      example: ClockNotFoundError.code,
-      type: 'string',
-    },
-    id: {
-      description: 'Identifier that failed.',
-      example: OTHER_ID_EXAMPLE,
-      format: 'uuid',
-      type: 'string',
-    },
-  },
-  required: ['code', 'id'],
-  type: 'object',
 } as const;
 
 const clockedInProperty = {
@@ -232,7 +210,7 @@ export const ClockListBodySchema = {
       minLength: 1,
       type: 'string',
     },
-    from: { ...DateBoundAnyOf, description: 'Lower bound on clocked_in_at, inclusive.' },
+    from: { ...DateBoundSchema, description: 'Lower bound on clocked_in_at, inclusive.' },
     limit: {
       default: RequestLimits.limitDefault,
       description: 'Page size.',
@@ -253,7 +231,7 @@ export const ClockListBodySchema = {
       example: 'desc',
       type: 'string',
     },
-    to: { ...DateBoundAnyOf, description: 'Upper bound on clocked_in_at, inclusive.' },
+    to: { ...DateBoundSchema, description: 'Upper bound on clocked_in_at, inclusive.' },
     user_ids: {
       description:
         'Restrict to these users. Employees always get their own clocks, managers are limited to themselves and the users they manage.',
@@ -294,17 +272,10 @@ export const ClockDeleteBodySchema = {
   type: 'object',
 } as const;
 
-const idArray = (description: string): JsonSchema => ({
-  description,
-  example: ID_LIST_EXAMPLE,
-  items: { example: ID_EXAMPLE, format: 'uuid', type: 'string' },
-  type: 'array',
-});
-
 const failedArray = {
   description: 'Identifiers that could not be processed, with the reason.',
   example: FAILED_EXAMPLE,
-  items: BulkFailureSchema,
+  items: BulkFailureSchema(ClockNotFoundError.code, OTHER_ID_EXAMPLE),
   type: 'array',
 } as const;
 
@@ -362,7 +333,7 @@ export const ClockUpdateDataResponseSchema = {
   properties: {
     failed: failedArray,
     success: { description: 'True when every id was updated.', example: true, type: 'boolean' },
-    updated: idArray('Identifiers that were updated.'),
+    updated: IdArraySchema('Identifiers that were updated.', ID_LIST_EXAMPLE),
   },
   required: ['failed', 'success', 'updated'],
   type: 'object',
@@ -372,7 +343,7 @@ export const ClockDeleteDataResponseSchema = {
   additionalProperties: false,
   description: 'Outcome of the bulk deletion.',
   properties: {
-    deleted: idArray('Identifiers that were deleted.'),
+    deleted: IdArraySchema('Identifiers that were deleted.', ID_LIST_EXAMPLE),
     failed: failedArray,
     success: { description: 'True when every id was deleted.', example: true, type: 'boolean' },
   },

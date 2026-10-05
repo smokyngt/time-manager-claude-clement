@@ -2,8 +2,7 @@ import { add } from './add.js';
 import { list } from './list.js';
 import { remove } from './remove.js';
 
-import type { BulkFailure } from '@/types/entities/index.js';
-import type { User } from '@/types/entities/index.js';
+import type { BulkFailure, User  } from '@/types/entities/index.js';
 
 export type AddTeamMembersBody = {
   user_ids: string[];

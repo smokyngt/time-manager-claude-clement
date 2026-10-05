@@ -1,7 +1,6 @@
 import { db } from '@/db/client.js';
 import { clocks } from '@/db/schema/index.js';
-import { DuplicateKeyError } from '@/lib/errors/index.js';
-import { ClockConflictError, ClockInError } from '@/lib/errors/index.js';
+import { ClockConflictError, ClockInError, DuplicateKeyError  } from '@/lib/errors/index.js';
 import { ClockStarted } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Audit } from '@/services/log/audit.js';

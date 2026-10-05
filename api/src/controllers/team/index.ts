@@ -6,9 +6,8 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { BulkFailure } from '@/types/entities/index.js';
 import type { TeamCreateData, TeamUpdateData } from '@/services/index.js';
-import type { Team } from '@/types/entities/index.js';
+import type { BulkFailure, Team  } from '@/types/entities/index.js';
 
 export type ArchiveTeamParams = {
   id: string;

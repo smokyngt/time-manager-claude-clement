@@ -1,5 +1,4 @@
-import { ValidationError } from '@/lib/errors/index.js';
-import { TeamMemberRemoveError } from '@/lib/errors/index.js';
+import { TeamMemberRemoveError, ValidationError  } from '@/lib/errors/index.js';
 import { TeamMembersRemoved } from '@/lib/events/index.js';
 import { RequestLimits } from '@/schemas/index.js';
 import { teamMemberService } from '@/services/index.js';

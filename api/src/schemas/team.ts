@@ -1,5 +1,4 @@
-import { InternalError } from '@/lib/errors/index.js';
-import { TeamManagerInvalidError, TeamNotFoundError, TeamScheduleInvalidError } from '@/lib/errors/index.js';
+import { InternalError, TeamManagerInvalidError, TeamNotFoundError, TeamScheduleInvalidError  } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -9,9 +8,9 @@ import {
   ValidationErrorSchema,
 } from '@/schemas/base/envelope.js';
 
-import { DateBoundAnyOf, RequestLimits } from './common.js';
+import { BulkFailureSchema, DateBoundSchema, IdArraySchema, RequestLimits } from './common.js';
 
-import type { JsonSchema } from './common.js';
+import type { JsonSchema } from './base/envelope.js';
 
 const ID_EXAMPLE = '5d1f2c88-3a41-4b7e-8f0a-6c2d9e7b4a31';
 const MANAGER_ID_EXAMPLE = '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10';
@@ -44,25 +43,6 @@ const idsProperty = {
   maxItems: RequestLimits.bulk,
   minItems: 1,
   type: 'array',
-} as const;
-
-const BulkFailureSchema = {
-  additionalProperties: false,
-  properties: {
-    code: {
-      description: 'Error code explaining the failure.',
-      example: TeamNotFoundError.code,
-      type: 'string',
-    },
-    id: {
-      description: 'Identifier that failed.',
-      example: OTHER_ID_EXAMPLE,
-      format: 'uuid',
-      type: 'string',
-    },
-  },
-  required: ['code', 'id'],
-  type: 'object',
 } as const;
 
 const descriptionProperty = {
@@ -193,8 +173,8 @@ export const TeamListBodySchema = {
       example: false,
       type: 'boolean',
     },
-    created_after: DateBoundAnyOf,
-    created_before: DateBoundAnyOf,
+    created_after: DateBoundSchema,
+    created_before: DateBoundSchema,
     cursor: {
       description: 'Opaque cursor returned as next by a previous call.',
       example: 'MTc2NzIyNTYwMDAwMC41ZDFmMmM4OC0zYTQxLTRiN2UtOGYwYS02YzJkOWU3YjRhMzE',
@@ -263,17 +243,10 @@ export const TeamDeleteBodySchema = {
   type: 'object',
 } as const;
 
-const idArray = (description: string): JsonSchema => ({
-  description,
-  example: ID_LIST_EXAMPLE,
-  items: { example: ID_EXAMPLE, format: 'uuid', type: 'string' },
-  type: 'array',
-});
-
 const failedArray = {
   description: 'Identifiers that could not be processed, with the reason.',
   example: FAILED_EXAMPLE,
-  items: BulkFailureSchema,
+  items: BulkFailureSchema(TeamNotFoundError.code, OTHER_ID_EXAMPLE),
   type: 'array',
 } as const;
 
@@ -315,7 +288,7 @@ export const TeamUpdateDataResponseSchema = {
   properties: {
     failed: failedArray,
     success: { description: 'True when every id was updated.', example: true, type: 'boolean' },
-    updated: idArray('Identifiers that were updated.'),
+    updated: IdArraySchema('Identifiers that were updated.', ID_LIST_EXAMPLE),
   },
   required: ['failed', 'success', 'updated'],
   type: 'object',
@@ -325,7 +298,7 @@ export const TeamDeleteDataResponseSchema = {
   additionalProperties: false,
   description: 'Outcome of the bulk deletion.',
   properties: {
-    deleted: idArray('Identifiers that were deleted.'),
+    deleted: IdArraySchema('Identifiers that were deleted.', ID_LIST_EXAMPLE),
     failed: failedArray,
     success: { description: 'True when every id was deleted.', example: true, type: 'boolean' },
   },

@@ -1,4 +1,4 @@
-import { teamMember } from '@/controllers/index.js';
+import { teamMemberController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberIdParamsSchema,
@@ -25,7 +25,7 @@ const remove: FastifyPluginAsync = async (fastify) => {
         tags: ['team-members'],
       },
     },
-    teamMember.remove,
+    teamMemberController.remove,
   );
 };
 

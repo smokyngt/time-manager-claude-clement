@@ -1,6 +1,6 @@
 import fp from 'fastify-plugin';
 
-import { NotFoundError, UnauthorizedError } from '@/lib/errors/index.js';
+import { NotFoundError, TokenAuthenticationError } from '@/lib/errors/index.js';
 import { Metrics } from '@/lib/telemetry/metrics.js';
 
 export type MetricsOptions = {
@@ -14,7 +14,7 @@ export type MetricsOptions = {
  * @param {MetricsOptions} options
  * @param {() => void} done
  * @returns {void}
- * @throws {NotFoundError | UnauthorizedError}
+ * @throws {NotFoundError | TokenAuthenticationError}
  */
 export const metrics = fp<MetricsOptions>(
   (app, options, done): void => {
@@ -28,7 +28,7 @@ export const metrics = fp<MetricsOptions>(
           token: options.token,
         });
         if (gate === 'hide') throw NotFoundError({ metadata: { route: 'plugins.metrics' } });
-        if (gate === 'deny') throw UnauthorizedError({ metadata: { route: 'plugins.metrics' } });
+        if (gate === 'deny') throw TokenAuthenticationError({ metadata: { route: 'plugins.metrics' } });
         const scrape = await Metrics.scrape(req.headers.accept);
 
         return reply.type(scrape.type).send(scrape.body);

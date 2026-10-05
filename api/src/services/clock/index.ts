@@ -7,8 +7,7 @@ import { clockOut } from './out.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { Actor } from '@/types/entities/index.js';
-import type { Clock } from '@/types/entities/index.js';
+import type { Actor, Clock  } from '@/types/entities/index.js';
 
 export type ClockCreateData = {
   clocked_in_at: number;

@@ -1,4 +1,4 @@
-import { team } from '@/controllers/index.js';
+import { teamController } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import { TeamResponses, TeamUpdateBodySchema } from '@/schemas/index.js';
 
@@ -21,7 +21,7 @@ const update: FastifyPluginAsync = async (fastify) => {
         tags: ['teams'],
       },
     },
-    team.update,
+    teamController.update,
   );
 };
 

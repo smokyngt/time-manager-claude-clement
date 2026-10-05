@@ -1,5 +1,4 @@
-import { UnauthorizedError } from '@/lib/errors/index.js';
-import { UserListError } from '@/lib/errors/index.js';
+import { UnauthorizedError, UserListError  } from '@/lib/errors/index.js';
 import { UserListed } from '@/lib/events/index.js';
 import { RequestLimits } from '@/schemas/index.js';
 import { userService } from '@/services/index.js';

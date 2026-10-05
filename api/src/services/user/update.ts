@@ -2,13 +2,11 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/index.js';
-import { DuplicateKeyError } from '@/lib/errors/index.js';
-import {
+import { Sessions } from '@/lib/auth/sessions.js';
+import { DuplicateKeyError,
   UserNotFoundError,
   UserPasswordInvalidError,
-  UserUpdateError,
-} from '@/lib/errors/index.js';
-import { Sessions } from '@/lib/auth/sessions.js';
+  UserUpdateError } from '@/lib/errors/index.js';
 import { UserUpdated } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
@@ -16,7 +14,6 @@ import { Digest } from '@/utils/crypto/digest.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
-
 
 import type { UpdateUserParams, UpdateUserResponse } from './index.js';
 import type { UserInsert } from '@/db/schema/index.js';

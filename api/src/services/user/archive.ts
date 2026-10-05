@@ -2,12 +2,11 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/index.js';
-import { UserArchiveError, UserNotFoundError } from '@/lib/errors/index.js';
 import { Sessions } from '@/lib/auth/sessions.js';
+import { UserArchiveError, UserNotFoundError } from '@/lib/errors/index.js';
 import { UserArchived } from '@/lib/events/index.js';
 import { Audit } from '@/services/log/audit.js';
 import { UserMapper } from '@/utils/mappers/user.js';
-
 
 import type { ArchiveUserParams, ArchiveUserResponse } from './index.js';
 

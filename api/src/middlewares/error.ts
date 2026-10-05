@@ -1,13 +1,12 @@
 import {
+  AppError,
   DuplicateKeyError,
   InternalError,
   InvalidJsonError,
   NotFoundError,
   PayloadTooLargeError,
-  RateLimitError,
-  ValidationError,
+  RateLimitError, Registry, ValidationError 
 } from '@/lib/errors/index.js';
-import { AppError, Registry } from '@/lib/errors/index.js';
 import { Metrics } from '@/lib/telemetry/metrics.js';
 
 import type { ErrorDetail, ErrorEnvelope } from '@/types/misc/reply.js';

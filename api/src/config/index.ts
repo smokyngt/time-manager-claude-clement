@@ -2,62 +2,16 @@ import { isIP } from 'node:net';
 
 import { Keys } from '@/utils/crypto/keys.js';
 
+import { store } from './store.js';
+
 export type TrustProxy = (address: string, hop: number) => boolean;
-
-class ConfigStore {
-  /**
-   * @route config.store.flag
-   * @param {string} name
-   * @param {boolean} fallback
-   * @returns {boolean}
-   */
-  public flag(name: string, fallback: boolean): boolean {
-    const raw = process.env[name];
-    if (raw === undefined || raw === '') return fallback;
-    return raw === 'true' || raw === '1';
-  }
-
-  /**
-   * @route config.store.number
-   * @param {string} name
-   * @param {number} fallback
-   * @returns {number}
-   */
-  public number(name: string, fallback: number): number {
-    const raw = process.env[name];
-    if (raw === undefined || raw === '') return fallback;
-    const value = Number(raw);
-    return Number.isFinite(value) ? value : fallback;
-  }
-
-  /**
-   * @route config.store.optional
-   * @param {string} name
-   * @returns {string | undefined}
-   */
-  public optional(name: string): string | undefined {
-    const raw = process.env[name];
-    return raw === undefined || raw === '' ? undefined : raw;
-  }
-
-  /**
-   * @route config.store.text
-   * @param {string} name
-   * @param {string} fallback
-   * @returns {string}
-   */
-  public text(name: string, fallback: string): string {
-    const raw = process.env[name];
-    return raw === undefined || raw === '' ? fallback : raw;
-  }
-}
 
 const PLACEHOLDER = /change[-_]?me|dev[-_]?only/i;
 const TENANT_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const LOCAL_HOSTS = ['127.0.0.1', '::1', '[::1]', 'localhost'];
 
 export class Config {
-  public static readonly store = new ConfigStore();
+  public static readonly store = store;
 
   /**
    * @route config.address
@@ -78,7 +32,7 @@ export class Config {
    * @returns {boolean}
    */
   public static production(): boolean {
-    return Config.store.text('NODE_ENV', 'development') === 'production';
+    return store.production();
   }
 
   /**

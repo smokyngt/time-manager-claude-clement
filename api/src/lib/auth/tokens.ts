@@ -5,8 +5,7 @@ import { TokenAuthenticationError } from '@/lib/errors/index.js';
 import { ROLES } from '@/types/entities/index.js';
 import { Duration } from '@/utils/duration.js';
 
-import type { Actor } from '@/types/entities/index.js';
-import type { Role } from '@/types/entities/index.js';
+import type { Actor, Role  } from '@/types/entities/index.js';
 
 const ISSUER = 'time-manager';
 const AUDIENCE = 'time-manager-web';
