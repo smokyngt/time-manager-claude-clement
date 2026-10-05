@@ -165,16 +165,7 @@
     @apply border-border outline-ring;
   }
   body {
-    @apply bg-background font-sans text-sm text-foreground antialiased;
-  }
-  :where(h1) {
-    @apply text-2xl font-semibold tracking-tight;
-  }
-  :where(h2) {
-    @apply text-base font-semibold;
-  }
-  :where(h3) {
-    @apply text-sm font-semibold;
+    @apply bg-background font-sans text-foreground antialiased;
   }
   :where(table, .tabular) {
     font-variant-numeric: tabular-nums;

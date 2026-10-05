@@ -3,10 +3,10 @@ import { authController } from '@/controllers/auth/index.js';
 import { AuthLoginBodySchema, AuthResponses } from '@/schemas/auth.js';
 
 import type { LoginBody, SessionResponse } from '@/controllers/auth/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const loginRoute: FastifyPluginAsync = async (fastify) => {
+const login: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: LoginBody; Reply: ReplyEnvelope<SessionResponse> }>(
     '/login',
     {
@@ -19,7 +19,7 @@ export const loginRoute: FastifyPluginAsync = async (fastify) => {
       schema: {
         body: AuthLoginBodySchema,
         description:
-          'Returns an access token in the body and sets the httpOnly tm_refresh cookie scoped to /v1/auth.',
+          'Returns an access token in the body and sets the httpOnly tm_refresh cookie scoped to /v1/auth. Limited per IP and per account.',
         response: AuthResponses.login,
         summary: 'Sign in with email and password',
         tags: ['auth'],
@@ -28,3 +28,5 @@ export const loginRoute: FastifyPluginAsync = async (fastify) => {
     authController.login,
   );
 };
+
+export { login };

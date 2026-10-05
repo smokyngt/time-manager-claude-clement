@@ -2,10 +2,10 @@ import { authController } from '@/controllers/auth/index.js';
 import { AuthResponses } from '@/schemas/auth.js';
 
 import type { LogoutResponse } from '@/controllers/auth/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const logoutRoute: FastifyPluginAsync = async (fastify) => {
+const logout: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Reply: ReplyEnvelope<LogoutResponse> }>(
     '/logout',
     {
@@ -20,3 +20,5 @@ export const logoutRoute: FastifyPluginAsync = async (fastify) => {
     authController.logout,
   );
 };
+
+export { logout };

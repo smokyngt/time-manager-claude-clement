@@ -1,6 +1,6 @@
 import type { Granularity } from '@time-manager/sdk'
 
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 
 import { Dates } from '@/lib/dates'
@@ -18,5 +18,5 @@ export function usePeriodLabels() {
   )
   const unit = useCallback((granularity: Granularity) => t(`unit.${granularity}`), [t])
 
-  return { axis, full, unit }
+  return useMemo(() => ({ axis, full, unit }), [axis, full, unit])
 }

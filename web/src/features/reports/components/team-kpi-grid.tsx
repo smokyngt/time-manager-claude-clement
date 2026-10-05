@@ -1,3 +1,5 @@
+import type { TeamReportKpis } from '@time-manager/sdk'
+
 import {
   AlarmClockIcon,
   ClockIcon,
@@ -7,54 +9,60 @@ import {
   TrendingUpIcon,
   UsersIcon,
 } from 'lucide-react'
-
-import type { TeamKpis } from '@/features/reports/api/types'
+import { useTranslation } from 'react-i18next'
 
 import { KpiCard } from '@/features/reports/components/kpi-card'
 import { KPI_GRID_CLASS } from '@/features/reports/components/kpi-grid'
-import { formatDuration, formatPercent, formatSignedDuration } from '@/features/reports/lib/format'
+import { formatPercent, overtimeTone, signedDuration } from '@/features/reports/lib/kpi'
+import { Duration } from '@/lib/duration'
 
-export function TeamKpiGrid({ kpis }: { kpis: TeamKpis }) {
-  const overtime_tone =
-    kpis.overtime_ms < 0 ? 'negative' : kpis.overtime_ms > 0 ? 'positive' : undefined
+export type TeamKpiGridProps = {
+  complete: boolean
+  kpis: TeamReportKpis
+}
+
+export function TeamKpiGrid({ complete, kpis }: TeamKpiGridProps) {
+  const { i18n, t } = useTranslation('reports')
+  const locale = i18n.resolvedLanguage ?? i18n.language
+
   return (
     <div className={KPI_GRID_CLASS}>
       <KpiCard
-        hint={`${kpis.active_members} of ${kpis.member_count} members active`}
+        hint={t('kpi.members.hint', { active: kpis.activeMembers, total: kpis.memberCount })}
         icon={UsersIcon}
-        label="Members"
-        value={String(kpis.member_count)}
+        label={t('kpi.members.label')}
+        value={String(kpis.memberCount)}
       />
       <KpiCard
-        hint="all members"
+        hint={t('kpi.worked_team.hint')}
         icon={ClockIcon}
-        label="Worked hours"
-        value={formatDuration(kpis.worked_ms)}
+        label={t('kpi.worked_team.label')}
+        value={Duration.short(kpis.workedMs)}
       />
       <KpiCard
-        hint="per member and day"
+        hint={t('kpi.average_team.hint')}
         icon={TimerIcon}
-        label="Average per day"
-        value={formatDuration(kpis.average_daily_ms)}
+        label={t('kpi.average_team.label')}
+        value={Duration.short(kpis.averageDailyMs)}
       />
       <KpiCard
-        hint={kpis.overtime_ms < 0 ? 'under target' : 'over target'}
-        icon={kpis.overtime_ms < 0 ? TrendingDownIcon : TrendingUpIcon}
-        label="Overtime"
-        tone={overtime_tone}
-        value={formatSignedDuration(kpis.overtime_ms)}
+        hint={kpis.overtimeMs < 0 ? t('kpi.overtime.under') : t('kpi.overtime.over')}
+        icon={kpis.overtimeMs < 0 ? TrendingDownIcon : TrendingUpIcon}
+        label={t('kpi.overtime.label')}
+        tone={overtimeTone(kpis.overtimeMs, complete)}
+        value={signedDuration(kpis.overtimeMs)}
       />
       <KpiCard
-        hint="of days worked"
+        hint={t('kpi.lateness.hint')}
         icon={PercentIcon}
-        label="Lateness rate"
-        value={formatPercent(kpis.lateness_rate)}
+        label={t('kpi.lateness.label')}
+        value={formatPercent(kpis.latenessRate, locale)}
       />
       <KpiCard
-        hint="more than 5 min late"
+        hint={t('kpi.late_days.hint')}
         icon={AlarmClockIcon}
-        label="Late days"
-        value={String(kpis.late_days)}
+        label={t('kpi.late_days.label')}
+        value={String(kpis.lateDays)}
       />
     </div>
   )

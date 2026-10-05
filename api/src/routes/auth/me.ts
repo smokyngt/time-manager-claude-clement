@@ -1,18 +1,18 @@
 import { authController } from '@/controllers/auth/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { AuthResponses } from '@/schemas/auth.js';
 
-import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { MeResponse } from '@/controllers/auth/index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const meRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.get<{ Reply: ReplyEnvelope<User> }>(
+const me: FastifyPluginAsync = async (fastify) => {
+  fastify.get<{ Reply: ReplyEnvelope<MeResponse> }>(
     '/me',
     {
       preHandler: auth({ scopes: ['auth:self'] }),
       schema: {
-        description: 'Returns the user owning the access token.',
+        description: 'Returns the user owning the access token and the scopes of their role.',
         response: AuthResponses.me,
         security: [{ bearerAuth: [] }],
         summary: 'Get the current user',
@@ -22,3 +22,5 @@ export const meRoute: FastifyPluginAsync = async (fastify) => {
     authController.me,
   );
 };
+
+export { me };
