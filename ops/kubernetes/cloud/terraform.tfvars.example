@@ -1,0 +1,11 @@
+app_host         = "time-manager.example.com"
+grafana_host     = "grafana.time-manager.example.com"
+seed_admin_email = "admin@example.com"
+acme_email       = "ops@example.com"
+
+data_node_selector = { "node-role/data" = "true" }
+data_tolerations   = [{ key = "dedicated", value = "data", effect = "NoSchedule" }]
+
+postgres_backup_destination = "s3://time-manager-backups/postgres"
+
+enable_vault_config = false

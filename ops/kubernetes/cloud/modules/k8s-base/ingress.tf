@@ -97,9 +97,12 @@ resource "helm_release" "ingress_nginx" {
 
 resource "kubernetes_ingress_v1" "web" {
   metadata {
-    name        = "time-manager-web"
-    namespace   = local.ns.app
-    annotations = local.ingress_common_annotations
+    name      = "time-manager-web"
+    namespace = local.ns.app
+    annotations = merge(
+      local.ingress_common_annotations,
+      { "cert-manager.io/cluster-issuer" = local.public_cluster_issuer },
+    )
   }
 
   spec {
@@ -177,11 +180,10 @@ resource "kubernetes_ingress_v1" "api_login" {
     name      = "time-manager-api-login"
     namespace = local.ns.app
     annotations = merge(
-      local.ingress_api_annotations,
+      { for k, v in local.ingress_api_annotations : k => v if k != "nginx.ingress.kubernetes.io/limit-rps" },
       {
         "nginx.ingress.kubernetes.io/limit-rpm"              = tostring(var.ingress_login_limit_rpm)
         "nginx.ingress.kubernetes.io/limit-burst-multiplier" = "1"
-        "nginx.ingress.kubernetes.io/limit-rps"              = ""
       },
     )
   }
