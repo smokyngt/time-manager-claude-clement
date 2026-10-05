@@ -130,7 +130,7 @@ describe('queryClient', () => {
     })
 
     it('toasts a function success message with data and variables', async () => {
-      const observer = new MutationObserver(queryClient, {
+      const observer = new MutationObserver<{ name: string }, Error, { n: number }>(queryClient, {
         meta: {
           successMessage: (data: { name: string }, variables: { n: number }) =>
             `${data.name}-${String(variables.n)}`,

@@ -40,7 +40,6 @@ export default tseslint.config(
   {
     files: [
       'src/components/ui/**',
-      'src/routes.tsx',
       'src/providers/index.tsx',
       'src/router/**',
       'src/test-support/**',
