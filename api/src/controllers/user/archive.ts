@@ -1,4 +1,4 @@
-import { UserNotFoundError, UserArchiveError } from '@/lib/errors/domains/user.js';
+import { UserArchiveError, UserNotFoundError } from '@/lib/errors/domains/user.js';
 import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserArchived } from '@/lib/events/domains/user.js';
 import { userService } from '@/services/user/index.js';

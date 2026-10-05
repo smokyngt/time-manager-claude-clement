@@ -1,8 +1,8 @@
 import { Cookies } from '@/lib/auth/cookies.js';
 import { Limiter } from '@/lib/auth/limiter.js';
 import { AuthLoginError } from '@/lib/errors/domains/auth.js';
-import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
 import { RateLimitError } from '@/lib/errors/index.js';
+import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
 import { authService } from '@/services/auth/index.js';
 import { Reply } from '@/utils/reply.js';
 

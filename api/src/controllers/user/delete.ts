@@ -1,4 +1,4 @@
-import { UserNotFoundError, UserDeleteError } from '@/lib/errors/domains/user.js';
+import { UserDeleteError, UserNotFoundError } from '@/lib/errors/domains/user.js';
 import { AppError, ForbiddenError, InternalError, ValidationError } from '@/lib/errors/index.js';
 import { UserDeleted } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
