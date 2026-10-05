@@ -30,6 +30,7 @@ export default tseslint.config(
       ...reactHooks.configs.recommended.rules,
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-extraneous-class': ['error', { allowStaticOnly: true }],
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
       'perfectionist/sort-modules': 'off',
       'perfectionist/sort-imports': ['error', { internalPattern: ['^@/.+'] }],
@@ -37,7 +38,14 @@ export default tseslint.config(
     },
   },
   {
-    files: ['src/components/ui/**', 'src/routes.tsx', '**/*.test.{ts,tsx}'],
+    files: [
+      'src/components/ui/**',
+      'src/routes.tsx',
+      'src/providers/index.tsx',
+      'src/router/**',
+      'src/test-support/**',
+      '**/*.test.{ts,tsx}',
+    ],
     rules: { 'react-refresh/only-export-components': 'off' },
   },
   {

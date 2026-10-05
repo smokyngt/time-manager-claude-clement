@@ -1,4 +1,11 @@
-import { ArchiveIcon, ArchiveRestoreIcon, FileBarChartIcon, MoreHorizontalIcon, PencilIcon, Trash2Icon } from 'lucide-react'
+import {
+  ArchiveIcon,
+  ArchiveRestoreIcon,
+  FileBarChartIcon,
+  MoreHorizontalIcon,
+  PencilIcon,
+  Trash2Icon,
+} from 'lucide-react'
 import { useState } from 'react'
 import { Link } from 'react-router'
 

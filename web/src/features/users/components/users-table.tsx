@@ -74,7 +74,8 @@ export function UsersTable() {
   const users: UserRecord[] = query.data?.pages.flatMap((page) => page.items) ?? []
   const total = query.data?.pages[0]?.total ?? 0
   const selectable = users.filter((user) => canArchive(actor, user))
-  const all_selected = selectable.length > 0 && selectable.every((user) => selected.includes(user.id))
+  const all_selected =
+    selectable.length > 0 && selectable.every((user) => selected.includes(user.id))
   const bulk_pending = archive.isPending || restore.isPending || remove.isPending
 
   function changeFilters(next: UserFilters) {
@@ -196,7 +197,10 @@ export function UsersTable() {
             </TableHeader>
             <TableBody>
               {users.map((user) => (
-                <TableRow data-state={selected.includes(user.id) ? 'selected' : undefined} key={user.id}>
+                <TableRow
+                  data-state={selected.includes(user.id) ? 'selected' : undefined}
+                  key={user.id}
+                >
                   <TableCell>
                     <Checkbox
                       aria-label={`Select ${user.first_name} ${user.last_name}`}

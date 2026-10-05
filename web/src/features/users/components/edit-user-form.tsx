@@ -62,7 +62,11 @@ export function EditUserForm({
       ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
         {show('first_name') ? (
-          <FormField error={errors.first_name?.message} id="edit-user-first_name" label="First name">
+          <FormField
+            error={errors.first_name?.message}
+            id="edit-user-first_name"
+            label="First name"
+          >
             <Input
               aria-invalid={Boolean(errors.first_name)}
               id="edit-user-first_name"

@@ -1,0 +1,64 @@
+---
+title: Sauvegardes
+description: Planifiez des sauvegardes PostgreSQL avec rétention, chiffrement facultatif et copies hors site, et restaurez-en une.
+---
+
+Le module de sauvegarde exécute un conteneur qui exporte la base de données selon un calendrier, vérifie l'export avec une somme de contrôle, conserve un historique tournant et peut copier chaque export hors site.
+
+## Activer les sauvegardes
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d
+```
+
+Par défaut, une sauvegarde s'exécute chaque jour à 02:15 et est stockée dans le volume `backups`. Le conteneur ne reçoit que les identifiants de la base de données, jamais les secrets JWT.
+
+## Configurer
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `BACKUP_SCHEDULE` | `15 2 * * *` | Expression cron du calendrier. |
+| `BACKUP_TZ` | `UTC` | Fuseau horaire du calendrier. |
+| `BACKUP_RUN_ON_START` | `false` | Exécuter une sauvegarde au démarrage du conteneur. |
+| `BACKUP_KEEP_DAILY` | `7` | Sauvegardes quotidiennes à conserver. |
+| `BACKUP_KEEP_WEEKLY` | `4` | Sauvegardes hebdomadaires à conserver. |
+| `BACKUP_KEEP_MONTHLY` | `6` | Sauvegardes mensuelles à conserver. |
+| `BACKUP_COMPRESSION` | `6` | Niveau de compression. |
+| `BACKUP_AGE_RECIPIENT` | vide | Destinataire `age`. Chiffre les exports en `*.dump.age`. |
+| `BACKUP_ENCRYPTION_RECIPIENT` | vide | Destinataire GnuPG, en alternative. |
+| `BACKUP_S3_URI` | vide | `s3://bucket/prefix` pour les copies hors site. |
+| `BACKUP_S3_ENDPOINT_URL` | vide | Point d'accès d'un service compatible S3. |
+| `BACKUP_ALERT_WEBHOOK` | vide | URL appelée avec un message JSON lorsqu'une exécution échoue. |
+| `BACKUP_HEARTBEAT_URL` | vide | URL sollicitée après chaque exécution réussie. |
+| `BACKUP_MAX_AGE_HOURS` | `26` | Le conteneur se déclare défaillant lorsque la dernière sauvegarde est plus ancienne. |
+
+Définissez `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` et `AWS_DEFAULT_REGION` pour les copies hors site.
+
+## Restaurer
+
+Restaurez d'abord dans une base de test, pour vérifier la sauvegarde :
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml \
+  run --rm restore latest --target postgres://user:password@host:5432/scratch --create
+```
+
+Le script de restauration vérifie la somme de contrôle, puis restaure dans une seule transaction. Options utiles :
+
+| Option | Signification |
+| --- | --- |
+| `latest` ou un nom de fichier | Quelle sauvegarde restaurer. |
+| `--target URL` | La base dans laquelle restaurer. Sans cette option, la cible est la base de production. |
+| `--remote` | Récupérer d'abord la sauvegarde depuis `BACKUP_S3_URI`. |
+| `--create` | Créer la base cible si elle n'existe pas. |
+| `--force` | Autoriser la restauration par-dessus la base de production. |
+
+Les sauvegardes chiffrées exigent la clé privée correspondante. Montez le fichier d'identité `age` pour le service `restore`.
+
+## Conserver les clés
+
+Une base restaurée contient des données personnelles sous forme chiffrée. Conservez une copie de `ENCRYPTION_KEY`, `ENCRYPTION_KEYS_PREVIOUS` et `HASH_KEY` dans votre processus de sauvegarde, faute de quoi les données restaurées sont illisibles. Voir la [configuration](./configuration).
+
+## Tester vos sauvegardes
+
+Restaurez régulièrement une sauvegarde récente dans une base de test, et vérifiez que l'application démarre dessus.

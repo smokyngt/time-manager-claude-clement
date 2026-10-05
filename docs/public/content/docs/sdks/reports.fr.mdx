@@ -1,0 +1,49 @@
+---
+title: Rapports
+description: Calculez les KPI d'un utilisateur ou d'une équipe sur une plage de dates.
+---
+
+Un rapport résume le temps travaillé sur une plage, pour un utilisateur ou une équipe. La ressource `reports` encapsule `/v1/reports` et est en lecture seule. La définition de chaque KPI se trouve dans les [KPI](../getting-started/concepts/kpis).
+
+## Comportement
+
+- Les deux méthodes exigent le scope `reports:read` et prennent `from`, `to` et une `granularity` valant `day`, `week` ou `month`. `from` et `to` sont des millisecondes epoch ; `from` est inclus et `to` est exclu.
+- La plage ne peut pas dépasser 366 jours. Une plage plus longue échoue avec `report.invalid` (400).
+- `user` est disponible pour l'utilisateur lui-même, pour son manager et pour les admins. Un utilisateur que vous ne pouvez pas voir renvoie `user.not.found` (404).
+- `team` est disponible pour le manager de l'équipe et pour les admins. Les employés ne peuvent pas lire les rapports d'équipe. Une équipe inconnue ou invisible renvoie `report.team.not.found` (404).
+- Les rapports utilisent les pointages fermés. Un pointage ouvert compte jusqu'à l'heure courante.
+- Le rapport d'utilisateur renvoie `kpis` (`workedMs`, `daysWorked`, `averageDailyMs`, `targetMs`, `overtimeMs`, `lateDays`, `latenessRate`) et une `series` de `{ periodStart, workedMs, late }`. Les périodes sans travail sont présentes avec des zéros.
+- Le rapport d'équipe renvoie `kpis` (`workedMs`, `averageDailyMs`, `memberCount`, `activeMembers`, `lateDays`, `latenessRate`, `overtimeMs`), une `series` de `{ periodStart, workedMs }` et un tableau `members` avec une entrée par membre.
+- `targetMs` et le seuil de retard proviennent des équipes non archivées de l'utilisateur. Voir les [équipes](./teams).
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// User report
+const { report } = await client.reports.user({
+  userId: 'user-id',
+  from: 1767225600000, // 2026-01-01T00:00:00Z
+  to: 1769904000000, // 2026-02-01T00:00:00Z
+  granularity: 'week',
+});
+console.log(report.kpis.workedMs, report.kpis.overtimeMs, report.kpis.latenessRate);
+for (const point of report.series) {
+  console.log(point.periodStart, point.workedMs, point.late);
+}
+
+// Team report
+const teamReport = await client.reports.team({
+  teamId: 'team-id',
+  from: 1767225600000,
+  to: 1769904000000,
+  granularity: 'day',
+});
+console.log(teamReport.report.kpis.activeMembers);
+for (const member of teamReport.report.members) {
+  console.log(member.firstName, member.workedMs, member.overtimeMs);
+}
+```
+
+</Tab>
+</Tabs>

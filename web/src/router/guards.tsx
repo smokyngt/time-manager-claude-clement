@@ -2,8 +2,8 @@ import type { Scope } from '@time-manager/sdk'
 
 import { Navigate, Outlet, useLocation, useSearchParams } from 'react-router'
 
-import { AccessDenied } from '@/components/shared/access-denied'
 import { FullPageSpinner } from '@/components/layout/full-page-spinner'
+import { AccessDenied } from '@/components/shared/access-denied'
 import { AuthRedirect } from '@/lib/auth-redirect'
 import { Permission } from '@/lib/permission'
 import { useAuth } from '@/providers/use-auth'
@@ -36,7 +36,7 @@ export function GuestGuard() {
 
 export type PermissionGuardProps = {
   mode?: 'all' | 'any'
-  scope: Scope | readonly Scope[]
+  scope: readonly Scope[] | Scope
 }
 
 export function PermissionGuard({ mode = 'any', scope }: PermissionGuardProps) {

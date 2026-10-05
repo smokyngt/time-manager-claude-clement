@@ -4,7 +4,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ToastCapture } from '@/test-support/test-toast'
 
-import { QueryEvents, queryClient, STALE_TIMES } from '@/config/query'
+import { queryClient, QueryEvents, STALE_TIMES } from '@/config/query'
 import { QueryKeys } from '@/config/query-keys'
 import { TestQuery } from '@/test-support/test-query'
 import { TestToast } from '@/test-support/test-toast'
@@ -70,7 +70,7 @@ describe('queryClient', () => {
   describe('query errors', () => {
     it('toasts a failed query once with translated text', async () => {
       await queryClient
-        .fetchQuery({ queryFn: () => Promise.reject(notFound), queryKey: ['t1'], retry: false })
+        .query({ queryFn: () => Promise.reject(notFound), queryKey: ['t1'], retry: false })
         .catch(() => undefined)
       expect(toasts.errors).toHaveLength(1)
       expect(toasts.errors[0]).toMatchObject({
@@ -81,7 +81,7 @@ describe('queryClient', () => {
 
     it('honours meta.suppressError', async () => {
       await queryClient
-        .fetchQuery({
+        .query({
           meta: { suppressError: true },
           queryFn: () => Promise.reject(notFound),
           queryKey: ['t2'],
@@ -94,7 +94,7 @@ describe('queryClient', () => {
     it('does not toast auth errors', async () => {
       const error = new AuthenticationError({ code: 'token.authentication.failed', status: 401 })
       await queryClient
-        .fetchQuery({ queryFn: () => Promise.reject(error), queryKey: ['t3'], retry: false })
+        .query({ queryFn: () => Promise.reject(error), queryKey: ['t3'], retry: false })
         .catch(() => undefined)
       expect(toasts.errors).toHaveLength(0)
     })

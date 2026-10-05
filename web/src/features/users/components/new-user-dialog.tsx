@@ -110,7 +110,11 @@ export function NewUserDialog({ actorRole }: { actorRole: Role }) {
             </p>
           ) : null}
           <div className="grid gap-4 sm:grid-cols-2">
-            <FormField error={errors.first_name?.message} id="new-user-first_name" label="First name">
+            <FormField
+              error={errors.first_name?.message}
+              id="new-user-first_name"
+              label="First name"
+            >
               <Input
                 aria-invalid={Boolean(errors.first_name)}
                 autoComplete="off"

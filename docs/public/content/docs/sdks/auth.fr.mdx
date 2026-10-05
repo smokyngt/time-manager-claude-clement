@@ -1,0 +1,50 @@
+---
+title: Authentification
+description: Connectez-vous avec un mot de passe, rafraîchissez la session, déconnectez-vous, lisez l'utilisateur courant et démarrez la connexion Microsoft.
+---
+
+La ressource `auth` encapsule les routes `/v1/auth`. Elle connecte un utilisateur, maintient la session et renvoie qui est connecté. Les comptes sont créés par un manager ou un admin ; il n'existe pas de méthode d'inscription.
+
+## Comportement
+
+- `login` renvoie la session : `accessToken`, `expiresIn` (secondes), `tokenType`, `scopes` et `user`. Le SDK ne stocke pas le jeton. Placez `session.accessToken` là où votre `getToken` le lit. L'API définit aussi un cookie de rafraîchissement `httpOnly`.
+- Des identifiants erronés, et des e-mails qui n'existent pas, échouent tous deux avec `auth.invalid.credentials` (401). Les utilisateurs archivés ne peuvent pas se connecter. La connexion est limitée par défaut à 10 requêtes par minute et par adresse IP.
+- `refresh` renouvelle la session grâce au cookie. Vous l'appelez rarement : le SDK rafraîchit de lui-même lorsqu'une requête renvoie `401`. Les rafraîchissements concurrents partagent une seule requête. Un jeton de rafraîchissement réutilisé ou expiré échoue avec `auth.session.invalid` (401).
+- `me` renvoie l'`user` connecté et les `scopes` du jeton courant.
+- `logout` termine la session et efface le cookie. Supprimez ensuite votre jeton d'accès.
+- La connexion Microsoft ne fonctionne que pour les utilisateurs qui existent déjà. `microsoftUrl` renvoie l'URL vers laquelle naviguer dans le navigateur ; ne l'appelez pas avec `fetch`. Un compte inconnu échoue avec `auth.microsoft.unknown.user` (403), et un serveur sans configuration Microsoft répond `auth.microsoft.unavailable` (503).
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Sign in
+const session = await client.auth.login({
+  email: 'jane.doe@example.com',
+  password: 'correct-horse-battery',
+});
+accessToken = session.accessToken;
+console.log(session.expiresIn, session.scopes);
+
+// Read the current user and scopes
+const { user, scopes } = await client.auth.me();
+console.log(user.role, scopes.includes('teams:manage'));
+
+// Refresh explicitly (the SDK also does this on 401)
+const renewed = await client.auth.refresh();
+accessToken = renewed.accessToken;
+
+// Start Microsoft sign-in in the browser
+window.location.assign(client.auth.microsoftUrl());
+
+// Sign out
+await client.auth.logout();
+accessToken = null;
+```
+
+</Tab>
+</Tabs>
+
+## Étape suivante
+
+Gérez `AuthenticationError` et `onLogout` comme décrit dans la [gestion des erreurs](./error-handling). Pour les points d'accès et la durée des jetons, voir l'[authentification de l'API](../api/authentication).

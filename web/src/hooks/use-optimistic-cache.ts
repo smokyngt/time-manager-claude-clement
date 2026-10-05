@@ -12,7 +12,7 @@ export function useOptimisticCache<T extends { id: string }>(queryKey: QueryKey)
 
   const snapshot = useCallback(async (): Promise<CacheSnapshot> => {
     await queryClient.cancelQueries({ queryKey })
-    return queryClient.getQueriesData<unknown>({ queryKey })
+    return queryClient.getQueriesData({ queryKey })
   }, [queryClient, queryKey])
 
   const remove = useCallback(

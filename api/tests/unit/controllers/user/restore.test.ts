@@ -2,9 +2,9 @@ import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { Fake } from '../../../support/fake.js';
 import { actorOf, ADMIN_ID, caught, MISSING_ID, OTHER_ID, userOf } from '../../services/user/support.js';
-
 import { installMembership, installUserService } from './support.js';
 
+import type { FakeReply } from '../../../support/fake.js';
 import type { RestoreParams, UserResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -33,8 +33,8 @@ type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
 type Req = FastifyRequest<{ Params: RestoreParams }>;
 
 const run = async (actor: Actor | undefined, id: string) => {
-  const reply = Fake.reply<Rep>();
-  await restore(Fake.request({ actor, params: { id } }) as Req, reply);
+  const reply: FakeReply = Fake.reply();
+  await restore(Fake.request({ actor, params: { id } }) as Req, reply as unknown as Rep);
 
   return reply;
 };

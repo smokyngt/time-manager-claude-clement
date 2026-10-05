@@ -1,0 +1,73 @@
+---
+title: Gestion des erreurs
+description: Les classes d'erreur levées par le SDK, la lecture de code, status et correlationId, et la gestion des conflits, des échecs de validation et des limites de débit.
+---
+
+Chaque échec lève une sous-classe de `TimeManagerError`. Raisonnez sur la classe pour la catégorie et sur `code` pour la cause exacte. N'affichez jamais `code`, `status` ni le message brut aux utilisateurs finaux.
+
+## Classes d'erreur
+
+| Classe | Statut | Propriétés supplémentaires |
+| --- | --- | --- |
+| `AuthenticationError` | 401 | |
+| `ForbiddenError` | 403 | |
+| `NotFoundError` | 404 | |
+| `ConflictError` | 409 | |
+| `ValidationError` | 400 | `errors` : la liste des échecs par champ, chacun avec `code`, `path` et `params` |
+| `RateLimitError` | 429 | `retryAfter` : secondes à attendre, ou `null` |
+| `ServerError` | 5xx | |
+| `NetworkError` | 0 | `isTimeout` : `true` lorsque le délai d'expiration du SDK a interrompu la requête |
+
+Toutes partagent `code`, `status`, `correlationId`, `instance` et `metadata`. `metadata` est vide en production. `ErrorCodes` liste chaque code de l'API : vous pouvez donc comparer à `ErrorCodes.ClockConflict` plutôt qu'à une chaîne.
+
+Une méthode en masse ne lève pas d'erreur pour les éléments qui échouent. Elle se résout avec un tableau `failed` de `{ id, code }`. Vérifiez-le après chaque appel en masse.
+
+## Comportement
+
+- Un `403` signifie que vous voyez l'enregistrement mais n'avez pas le droit de faire cela. Un `404` couvre aussi les enregistrements que vous ne pouvez pas voir.
+- Un `409` avec `clock.conflict` signifie que le pointage est déjà ouvert (pointage d'arrivée) ou n'est pas ouvert (pointage de départ). Un `409` avec `clock.overlap` signifie que la saisie chevauche un autre pointage de l'utilisateur.
+- Un `400` avec `report.invalid` signifie que la plage du rapport dépasse 366 jours.
+- Journalisez `correlationId` avec chaque erreur. C'est l'identifiant dont le support a besoin pour retrouver la requête.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+import {
+  ConflictError,
+  ErrorCodes,
+  NetworkError,
+  RateLimitError,
+  TimeManagerError,
+  ValidationError,
+} from '@time-manager/sdk';
+
+try {
+  await client.clocks.in();
+} catch (error) {
+  if (error instanceof ConflictError && error.code === ErrorCodes.ClockConflict) {
+    console.log('Already clocked in');
+  } else if (error instanceof ValidationError) {
+    for (const issue of error.errors) {
+      console.log(issue.path, issue.code, issue.params);
+    }
+  } else if (error instanceof RateLimitError) {
+    await new Promise((resolve) => setTimeout(resolve, (error.retryAfter ?? 1) * 1000));
+  } else if (error instanceof NetworkError) {
+    console.log(error.isTimeout ? 'Timed out' : 'Offline');
+  } else if (error instanceof TimeManagerError) {
+    console.error(error.status, error.code, error.correlationId);
+  } else {
+    throw error;
+  }
+}
+```
+
+</Tab>
+</Tabs>
+
+## Sessions
+
+Vous ne gérez pas vous-même les jetons d'accès expirés. Le SDK rafraîchit et rejoue une fois. Si le rafraîchissement échoue, il appelle `onLogout` et lève une `AuthenticationError` ; renvoyez alors l'utilisateur vers la page de connexion. Voir l'[authentification](./auth).
+
+La liste complète des codes se trouve dans les [erreurs de l'API](../api/errors).

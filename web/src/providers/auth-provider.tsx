@@ -21,13 +21,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const boot = async () => {
       try {
         const session = await sdk.auth.refresh()
-        useAuthStore
-          .getState()
-          .setSession({
-            accessToken: session.accessToken,
-            scopes: session.scopes,
-            user: session.user,
-          })
+        useAuthStore.getState().setSession({
+          accessToken: session.accessToken,
+          scopes: session.scopes,
+          user: session.user,
+        })
         const me = await sdk.auth.me()
         useAuthStore.getState().setUser(me.user)
       } catch {
@@ -59,11 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const logout = useCallback(async () => {
-    try {
-      await sdk.auth.logout()
-    } finally {
-      useAuthStore.getState().clear()
-    }
+    await sdk.auth.logout().catch(() => undefined)
+    useAuthStore.getState().clear()
   }, [])
 
   const loginWithMicrosoft = useCallback((redirect?: string) => {

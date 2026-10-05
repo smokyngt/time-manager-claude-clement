@@ -1,0 +1,40 @@
+---
+title: Membres d'équipe
+description: Ajoutez des utilisateurs à une équipe, retirez-les, et listez les membres d'une équipe.
+---
+
+Un membre d'équipe est un utilisateur qui appartient à une équipe. La ressource `teamMembers` encapsule `/v1/teams/:id/members` et prend toujours l'identifiant de l'équipe en premier.
+
+## Comportement
+
+- `add` et `remove` exigent le scope `teams:manage`. Les admins peuvent modifier toutes les équipes. Les managers peuvent modifier uniquement les équipes qu'ils gèrent, et ne peuvent ajouter que des employés.
+- Les deux méthodes sont en masse. Elles acceptent de 1 à 100 identifiants d'utilisateur, ignorent les doublons et renvoient `{ success, failed }` ainsi que `added` ou `removed`. Lisez `failed` pour le résultat par utilisateur, par exemple `team.member.user.not.found` (404) pour un utilisateur inconnu.
+- Ajouter à une équipe archivée échoue avec `team.member.team.archived` (409). Ajouter un utilisateur archivé échoue avec `team.member.user.archived` (409). Une équipe inconnue renvoie `team.member.team.not.found` (404).
+- Un utilisateur peut appartenir à plusieurs équipes.
+- `list` renvoie les membres sous forme d'utilisateurs, avec `cursor`, `limit` (de 1 à 100, 25 par défaut) et `order`. Toute personne qui peut voir l'équipe peut lister ses membres : son manager, ses membres et les admins.
+- Retirer un membre ne supprime ni l'utilisateur ni ses pointages. Si l'utilisateur n'est dans aucune autre équipe de ce manager, le manager ne le gère plus.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Add members
+const added = await client.teamMembers.add('team-id', ['user-id', 'other-user-id']);
+console.log(added.added);
+for (const failure of added.failed) {
+  console.warn(failure.id, failure.code);
+}
+
+// List members
+const page = await client.teamMembers.list('team-id', { limit: 50, order: 'asc' });
+console.log(page.total, page.items.map((member) => member.email));
+
+// Remove members
+const removed = await client.teamMembers.remove('team-id', ['other-user-id']);
+console.log(removed.removed, removed.success);
+```
+
+</Tab>
+</Tabs>
+
+Pour l'équipe elle-même, voir les [équipes](./teams).

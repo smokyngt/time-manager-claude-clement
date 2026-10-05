@@ -1,0 +1,51 @@
+---
+title: Observabilité
+description: Journaux, métriques, traces et alertes avec la stack Grafana facultative, et points d'accès de santé.
+---
+
+L'API est observable d'emblée : journaux structurés, métriques Prometheus, traces OpenTelemetry facultatives et points d'accès de santé. Un module facultatif exécute la stack complète avec Grafana.
+
+## Points d'accès de santé
+
+| Point d'accès | Signification |
+| --- | --- |
+| `GET /health` | Le processus tourne. Il ne vérifie pas les dépendances. |
+| `GET /health/ready` | `200` lorsque les dépendances sont disponibles, `503` lorsqu'une ne l'est pas. |
+
+Utilisez `/health` pour la vivacité et `/health/ready` pour la disponibilité.
+
+## Journaux et corrélation
+
+L'API écrit des journaux JSON structurés. Chaque requête porte un identifiant de requête, renvoyé dans l'en-tête `x-request-id` et sous la forme `correlation_id` dans chaque réponse et erreur. Pour examiner un problème, demandez le `correlation_id` et recherchez-le dans les journaux. Les journaux contiennent des identifiants et des compteurs, pas de noms, d'e-mails ni de jetons.
+
+## Métriques
+
+`GET /metrics` sert les métriques Prometheus. Lorsque `METRICS_TOKEN` est défini, les requêtes doivent envoyer `Authorization: Bearer <METRICS_TOKEN>`. Sans jeton, le point d'accès est ouvert hors production et répond `404` en production.
+
+## Traces
+
+Définissez `OTEL_EXPORTER_OTLP_ENDPOINT` pour envoyer les traces OpenTelemetry. `OTEL_SERVICE_NAME` définit le nom du service, `time-manager-api` dans la stack.
+
+## La stack Grafana
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+```
+
+Le module démarre Grafana, Prometheus, Tempo, Loki, Alloy, Alertmanager et un exporteur PostgreSQL. Seul Grafana est publié, sur `127.0.0.1:3000` par défaut.
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD` | aucun, requis | Identifiants admin de Grafana. |
+| `METRICS_TOKEN` | aucun, requis | Jeton qu'Alloy utilise pour lire `/metrics`. |
+| `GRAFANA_BIND`, `GRAFANA_PORT` | `127.0.0.1`, `3000` | Où Grafana écoute. |
+| `GRAFANA_ROOT_URL` | `http://localhost:3000` | URL publique de Grafana. |
+| `GRAFANA_COOKIE_SECURE` | `false` | Mettez `true` derrière HTTPS. |
+| `ALERT_WEBHOOK_URL` | vide | Destination des alertes d'Alertmanager. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://alloy:4318` | Destination des traces. |
+
+Prometheus conserve 15 jours de métriques.
+
+<Callout type="warn">
+Alloy lit les journaux des conteneurs via le socket Docker, ce qui donne un accès équivalent à root sur l'hôte. Limitez qui peut modifier les fichiers Compose, ou utilisez un autre collecteur de journaux.
+</Callout>

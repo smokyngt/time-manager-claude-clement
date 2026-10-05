@@ -1,7 +1,8 @@
+import type { ReactNode } from 'react'
+
 import { act, renderHook } from '@testing-library/react'
 import { MemoryRouter } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import type { ReactNode } from 'react'
 
 import { useCursorPagination } from '@/hooks/use-cursor-pagination'
 import { useDebouncedValue } from '@/hooks/use-debounced-value'
@@ -60,9 +61,14 @@ describe('useDebouncedValue', () => {
 describe('useDocumentTitle', () => {
   it('sets and restores the title', () => {
     document.title = 'before'
-    const { rerender, unmount } = renderHook(({ title }) => useDocumentTitle(title), {
-      initialProps: { title: 'Teams' },
-    })
+    const { rerender, unmount } = renderHook(
+      ({ title }) => {
+        useDocumentTitle(title)
+      },
+      {
+        initialProps: { title: 'Teams' },
+      },
+    )
     expect(document.title).toBe('Teams · Time Manager')
     rerender({ title: 'Users' })
     expect(document.title).toBe('Users · Time Manager')

@@ -1,7 +1,7 @@
-import { llmsOutput, textResponse } from '@/lib/llms';
+import { llmsIndex, textResponse } from '@/lib/llms';
 
 export const revalidate = false;
 
 export async function GET() {
-  return textResponse(await llmsOutput.index('fr'));
+  return textResponse(await llmsIndex('fr'));
 }

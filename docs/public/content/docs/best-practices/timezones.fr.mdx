@@ -1,0 +1,49 @@
+---
+title: Fuseaux horaires
+description: Comment Time Manager stocke les instants, interprète les horaires de travail et découpe les jours des rapports, et comment afficher correctement les heures.
+---
+
+## Les instants sont en UTC
+
+Chaque horodatage de l'API, comme `clocked_in_at`, `created_at`, `from` et `to`, est une valeur en millisecondes epoch en UTC. Il identifie un instant précis, indépendant de tout fuseau horaire. Stockez-le et envoyez-le tel quel, et ne convertissez qu'à l'affichage.
+
+```ts
+const clock = (await client.clocks.current()).clock;
+if (clock !== null) {
+  const local = new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    timeZone: 'Europe/Paris',
+  }).format(clock.clockedInAt);
+}
+```
+
+## Le fuseau horaire de l'entreprise
+
+Les heures de la journée sont différentes. `work_start` et `work_end` sont des chaînes `HH:MM` sans date : elles ont donc besoin d'un fuseau horaire. L'API les lit dans le fuseau horaire de l'entreprise, `APP_TIMEZONE`, qui vaut `Europe/Paris` par défaut. Le même fuseau détermine :
+
+- À quel jour du calendrier appartient un pointage, pour `days_worked`.
+- Quand un pointage d'arrivée compte comme un retard : plus de 5 minutes après `work_start`.
+- Où commencent les intervalles `day`, `week` et `month` d'un rapport.
+
+Choisissez `APP_TIMEZONE` une fois, avant de collecter des données, et conservez-le. Le changer plus tard déplace les limites de jour des pointages existants et modifie les rapports passés.
+
+## Plages de rapport
+
+Construisez `from` et `to` à partir des minuits locaux dans le fuseau horaire de l'entreprise, pas des minuits UTC. Sinon, un intervalle de jour peut commencer à 01:00 ou 02:00 en heure locale.
+
+$$
+\text{to} - \text{from} \le 366 \times 86\,400\,000 \text{ ms}
+$$
+
+## Heure d'été
+
+Les jours de changement d'heure, un jour du calendrier dure 23 ou 25 heures. Calculez les plages avec une bibliothèque de dates qui connaît le fuseau horaire, plutôt qu'en ajoutant `86_400_000` à un horodatage. Un pointage reste limité à 24 heures de durée.
+
+## Pointages à cheval sur minuit
+
+Un pointage qui commence avant minuit et se termine après est autorisé, tant qu'il dure au plus 24 heures.
+
+## Équipes dans d'autres fuseaux horaires
+
+Il y a un seul fuseau horaire d'entreprise par instance. Si vos équipes travaillent dans des fuseaux différents, définissez le `work_start` et le `work_end` de chaque équipe dans le fuseau horaire de l'entreprise, en convertissant depuis l'heure locale.

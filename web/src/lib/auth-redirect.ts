@@ -3,6 +3,20 @@ const STORAGE_KEY = 'tm-auth-redirect'
 
 export class AuthRedirect {
   /**
+   * @route client.lib.authRedirect.consume
+   * @returns {string} The stored target (default `/`), which is then forgotten.
+   */
+  static consume(): string {
+    const value = AuthRedirect.peek()
+    try {
+      sessionStorage.removeItem(STORAGE_KEY)
+    } catch {
+      return value
+    }
+    return value
+  }
+
+  /**
    * @route client.lib.authRedirect.loginUrl
    * @param {string} current Path with search of the page the user was on.
    * @returns {string} `/login` carrying a sanitized `redirect` parameter.
@@ -10,6 +24,18 @@ export class AuthRedirect {
   static loginUrl(current: string): string {
     const target = AuthRedirect.sanitize(current)
     return target === '/' ? '/login' : `/login?redirect=${encodeURIComponent(target)}`
+  }
+
+  /**
+   * @route client.lib.authRedirect.peek
+   * @returns {string} The stored target, `/` when none.
+   */
+  static peek(): string {
+    try {
+      return AuthRedirect.sanitize(sessionStorage.getItem(STORAGE_KEY))
+    } catch {
+      return '/'
+    }
   }
 
   /**
@@ -25,32 +51,6 @@ export class AuthRedirect {
       return '/'
     }
     return path
-  }
-
-  /**
-   * @route client.lib.authRedirect.consume
-   * @returns {string} The stored target (default `/`), which is then forgotten.
-   */
-  static consume(): string {
-    const value = AuthRedirect.peek()
-    try {
-      sessionStorage.removeItem(STORAGE_KEY)
-    } catch {
-      return value
-    }
-    return value
-  }
-
-  /**
-   * @route client.lib.authRedirect.peek
-   * @returns {string} The stored target, `/` when none.
-   */
-  static peek(): string {
-    try {
-      return AuthRedirect.sanitize(sessionStorage.getItem(STORAGE_KEY))
-    } catch {
-      return '/'
-    }
   }
 
   /**

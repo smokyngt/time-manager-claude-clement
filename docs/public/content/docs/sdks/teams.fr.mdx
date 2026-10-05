@@ -1,0 +1,60 @@
+---
+title: Équipes
+description: Créez, listez, lisez, mettez à jour, archivez, restaurez et supprimez des équipes.
+---
+
+Une équipe regroupe des utilisateurs sous un manager et définit la journée de travail et l'objectif d'heures hebdomadaires que les rapports utilisent. La ressource `teams` encapsule `/v1/teams`. Pour gérer l'appartenance à une équipe, utilisez les [membres d'équipe](./team-members).
+
+## Comportement
+
+- Créer une équipe exige le scope `teams:manage`. Un manager devient toujours le manager de l'équipe qu'il crée, quel que soit le `managerId` envoyé. Un admin peut définir n'importe quel `managerId`, qui doit être un `manager` ou un `admin` actif ; sinon la requête échoue avec `team.manager.invalid` (400).
+- `weeklyHoursTarget` est un entier de 1 à 80 et vaut 35 par défaut. `workStart` et `workEnd` sont des chaînes `HH:MM` dans le fuseau horaire de l'entreprise, et valent `09:00` et `17:00` par défaut. Un `workEnd` qui n'est pas postérieur à `workStart` échoue avec `team.schedule.invalid` (400).
+- Un nom d'équipe contient de 1 à 100 caractères, une description jusqu'à 500.
+- Visibilité : un admin voit toutes les équipes. Un manager voit les équipes qu'il gère ou auxquelles il appartient. Un employé voit les équipes auxquelles il appartient. Une équipe que vous ne pouvez pas voir renvoie `team.not.found` (404).
+- `list` accepte `ids`, `managerId`, `memberId`, `archived`, `createdAfter` et `createdBefore`, ainsi que `cursor`, `limit` et `order`.
+- `update` est une opération en masse. Elle accepte jusqu'à 100 identifiants et les mêmes `data` pour tous, et renvoie `{ success, updated, failed }`. Les managers modifient les équipes qu'ils gèrent. Seul un admin peut changer `managerId`. Passez `description: null` pour effacer la description.
+- `archive` conserve l'équipe et met fin à la relation de gestion via elle ; `restore` la ramène. Archiver ne supprime pas l'appartenance.
+- `delete` est définitif et en masse, et seuls les admins peuvent l'effectuer. Les identifiants qui n'existent pas apparaissent dans `failed` avec `team.not.found`.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Create
+const { team } = await client.teams.create({
+  name: 'Customer support',
+  description: 'Customer support team of the Paris office.',
+  managerId: 'manager-id',
+  weeklyHoursTarget: 35,
+  workStart: '09:00',
+  workEnd: '17:00',
+});
+console.log(team.id, team.memberCount);
+
+// List
+const page = await client.teams.list({ memberId: 'user-id', archived: false });
+console.log(page.total, page.items.map((item) => item.name));
+
+// Retrieve
+const found = await client.teams.retrieve('team-id');
+console.log(found.team.workStart, found.team.workEnd);
+
+// Update the schedule of several teams
+const result = await client.teams.update(['team-id', 'other-team-id'], {
+  workStart: '08:30',
+  workEnd: '16:30',
+  weeklyHoursTarget: 32,
+});
+console.log(result.updated, result.failed);
+
+// Archive and restore
+await client.teams.archive('team-id');
+await client.teams.restore('team-id');
+
+// Delete permanently (admins only)
+const removed = await client.teams.delete(['team-id']);
+console.log(removed.deleted);
+```
+
+</Tab>
+</Tabs>

@@ -1,0 +1,45 @@
+---
+title: Sécurité
+description: Comment stocker les jetons, protéger les secrets, appliquer le moindre privilège et exploiter un déploiement sûr.
+---
+
+## Jetons côté client
+
+- Gardez le jeton d'accès en mémoire. Ne le placez pas dans `localStorage`, `sessionStorage` ni dans un cookie lisible par des scripts.
+- Ne touchez jamais au jeton de rafraîchissement. Il vit dans un cookie `httpOnly`, que JavaScript ne peut pas lire.
+- Laissez le SDK rafraîchir la session. N'écrivez pas votre propre boucle de nouvelle tentative pour `401`.
+- À la déconnexion, supprimez le jeton d'accès et appelez `auth.logout`.
+- Ne journalisez ni les jetons, ni les mots de passe, ni les corps de requête complets.
+
+## Moindre privilège
+
+- Donnez aux personnes le rôle le plus bas dont elles ont besoin. Seuls les admins peuvent créer des managers ou des admins.
+- Créez une équipe avant d'y ajouter des personnes, et placez les employés sous le manager qui les suit. Un manager ne voit que les pointages et les rapports des personnes qu'il gère.
+- Archivez plutôt que de supprimer lorsque vous devez conserver l'historique. Les utilisateurs archivés ne peuvent pas se connecter.
+
+## Gestion des erreurs
+
+- Affichez des messages clairs. N'affichez pas `code`, `status` ni le message brut de l'API aux utilisateurs finaux.
+- Traitez `404` et `403` comme des réponses normales sur les accès. N'essayez pas de deviner quels enregistrements existent.
+- Gardez `correlationId` dans vos journaux pour relier un incident à une requête.
+
+## Secrets sur votre serveur
+
+- Gardez les secrets dans `.env` ou dans le coffre de secrets de votre plateforme. Ne les versionnez jamais.
+- Utilisez des valeurs différentes pour `JWT_ACCESS_SECRET` et `JWT_REFRESH_SECRET`. Générez chacune avec un générateur aléatoire, d'au moins 32 caractères.
+- Changer `JWT_REFRESH_SECRET` déconnecte tout le monde. Changer `JWT_ACCESS_SECRET` invalide les jetons d'accès dans la limite de leur durée de vie.
+- Si un secret fuite, changez-le d'abord, puis nettoyez l'historique.
+- Conservez `ENCRYPTION_KEY` en sécurité et sauvegardée. Sans elle, les données personnelles stockées sont illisibles.
+
+## Déploiement
+
+- Servez l'application en HTTPS et définissez `COOKIE_SECURE=true`.
+- Limitez `CORS_ORIGIN` à votre véritable origine web.
+- Ne publiez pas la base de données. Dans la stack par défaut, seul le conteneur web est exposé.
+- Protégez `/metrics` avec `METRICS_TOKEN`, et gardez Grafana sur l'interface de bouclage ou derrière votre propre authentification.
+- Conservez les limites de débit de la connexion. Elles ralentissent les tentatives de devinette de mots de passe. Voir les [limites de débit](../api/rate-limits).
+- Testez vos [sauvegardes](../platform/backups) en les restaurant.
+
+## Connexion Microsoft
+
+Utilisez une inscription d'application mono-tenant pour n'accepter que les personnes de votre organisation. Créez l'utilisateur dans Time Manager avant sa première connexion Microsoft, car l'API ne crée pas de compte à la première connexion.

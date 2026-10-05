@@ -36,17 +36,17 @@ export function ChangePasswordForm({
   }
 
   return (
-    <form
-      className="grid gap-4"
-      noValidate
-      onSubmit={(event) => void handleSubmit(submit)(event)}
-    >
+    <form className="grid gap-4" noValidate onSubmit={(event) => void handleSubmit(submit)(event)}>
       {formError ? (
         <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
           {formError}
         </p>
       ) : null}
-      <FormField error={errors.new_password?.message} id="profile-new-password" label="New password">
+      <FormField
+        error={errors.new_password?.message}
+        id="profile-new-password"
+        label="New password"
+      >
         <Input
           aria-invalid={Boolean(errors.new_password)}
           autoComplete="new-password"

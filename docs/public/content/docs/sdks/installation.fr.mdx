@@ -1,0 +1,74 @@
+---
+title: Installation et configuration du client
+description: Installez @time-manager/sdk, créez un TimeManagerClient, branchez les callbacks de jeton et découvrez comment le SDK met en forme les requêtes et les réponses.
+---
+
+`@time-manager/sdk` est un client TypeScript typé pour l'API Time Manager. Il expose un seul `TimeManagerClient` avec six ressources : `auth`, `users`, `teams`, `teamMembers`, `clocks` et `reports`.
+
+<Callout type="warn">
+Le paquet est privé et se trouve dans le dépôt sous `sdks/typescript`. Tant qu'il n'est pas publié dans un registre, dépendez-en par un chemin de workspace ou un alias de chemin, comme le fait l'application web.
+</Callout>
+
+## Installer
+
+```bash
+bun add @time-manager/sdk
+```
+
+Le SDK utilise le `fetch` global : il fonctionne dans les navigateurs, avec Bun et avec Node.js 18 ou supérieur.
+
+## Créer le client
+
+Le client ne stocke aucun jeton. Vous lui donnez une fonction `getToken`, qu'il appelle avant chaque requête.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+import { TimeManagerClient } from '@time-manager/sdk';
+
+let accessToken: string | null = null;
+
+export const client = new TimeManagerClient({
+  baseUrl: 'https://time.example.com',
+  getToken: () => accessToken,
+  onTokenRefresh: (token) => {
+    accessToken = token;
+  },
+  onLogout: () => {
+    accessToken = null;
+    window.location.assign('/login');
+  },
+  timeoutMs: 10_000,
+});
+```
+
+</Tab>
+</Tabs>
+
+| Option | Type | Signification |
+| --- | --- | --- |
+| `baseUrl` | `string` | L'origine de l'API sans barre oblique finale. Une chaîne vide désigne la même origine. |
+| `getToken` | `() => string \| null` | Renvoie le jeton d'accès courant, ou `null` lorsque l'utilisateur est déconnecté. |
+| `onTokenRefresh` | `(token, session) => void` | Appelée avec le nouveau jeton d'accès après un rafraîchissement réussi. |
+| `onLogout` | `() => void` | Appelée lorsqu'un rafraîchissement échoue et que la session est terminée. |
+| `fetch` | `typeof fetch` | Un `fetch` personnalisé, pour les tests ou des environnements particuliers. |
+| `timeoutMs` | `number` | Délai d'expiration d'une requête, `15000` par défaut. |
+
+## Ce que le SDK fait pour vous
+
+- Il convertit `camelCase` en `snake_case` dans les requêtes et inversement dans les réponses. Vous écrivez `firstName` ; l'API reçoit `first_name`.
+- Il retire l'enveloppe de la réponse et renvoie `data` : un objet nommé comme `{ team }`, une page `{ items, more, next, total }`, ou un résultat en masse.
+- Il envoie le jeton Bearer et le cookie de rafraîchissement (`credentials: 'include'`).
+- Lorsqu'une requête échoue avec `token.authentication.failed` (401), il rafraîchit la session une fois, de façon partagée entre les requêtes concurrentes, puis rejoue la requête. Si le rafraîchissement échoue, il appelle `onLogout` et lève une `AuthenticationError`.
+- Il interrompt une requête après `timeoutMs` et lève une `NetworkError` avec `isTimeout` activé.
+- Il lève une erreur typée pour chaque réponse non `2xx`. Voir la [gestion des erreurs](./error-handling).
+
+## Conventions des guides
+
+- Les méthodes qui modifient plusieurs enregistrements prennent d'abord `ids` puis les données : `users.update(ids, data)`.
+- Les listes renvoient `{ items, more, next, total }`. Passez `cursor` pour obtenir la page suivante.
+- Une méthode en masse se résout même lorsque certains identifiants échouent. Lisez `failed`.
+- Les horodatages sont des nombres en millisecondes epoch. Les filtres de date acceptent aussi des objets `Date` et des chaînes ISO.
+
+Poursuivez avec la [gestion des erreurs](./error-handling) et l'[authentification](./auth).

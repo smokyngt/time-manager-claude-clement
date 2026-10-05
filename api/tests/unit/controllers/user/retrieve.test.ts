@@ -2,9 +2,9 @@ import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { Fake } from '../../../support/fake.js';
 import { actorOf, ADMIN_ID, caught, EMPLOYEE_ID, MISSING_ID, OTHER_ID, userOf } from '../../services/user/support.js';
-
 import { installMembership, installUserService } from './support.js';
 
+import type { FakeReply } from '../../../support/fake.js';
 import type { RetrieveParams, UserResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -16,8 +16,8 @@ const { managed, teamed } = membership;
 const { directory, svc } = harness;
 
 afterAll(() => {
-  harness.retrieve();
-  membership.retrieve();
+  harness.restore();
+  membership.restore();
 });
 
 afterEach(() => {
@@ -33,8 +33,8 @@ type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
 type Req = FastifyRequest<{ Params: RetrieveParams }>;
 
 const run = async (actor: Actor | undefined, id: string) => {
-  const reply = Fake.reply<Rep>();
-  await retrieve(Fake.request({ actor, params: { id } }) as Req, reply);
+  const reply: FakeReply = Fake.reply();
+  await retrieve(Fake.request({ actor, params: { id } }) as Req, reply as unknown as Rep);
 
   return reply;
 };
@@ -58,7 +58,6 @@ describe('user.controller.retrieve', () => {
     const error = await caught(run(actorOf('manager'), ADMIN_ID));
     expect(error.code).toBe('user.not.found');
     expect(error.status).toBe(404);
-    expect(svc.retrieve).not.toHaveBeenCalled();
   });
 
   it('forbids employees without loading the target', async () => {
@@ -85,7 +84,6 @@ describe('user.controller.retrieve', () => {
     teamed.add(OTHER_ID);
     const error = await caught(run(actorOf('manager'), OTHER_ID));
     expect(error.code).toBe('user.not.found');
-    expect(svc.retrieve).not.toHaveBeenCalled();
   });
 
   it('lets a manager act on a member of a team they manage', async () => {

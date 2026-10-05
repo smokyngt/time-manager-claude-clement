@@ -8,7 +8,9 @@ import { passwordSchema } from '@/features/profile/schemas'
 
 describe('passwordSchema', () => {
   it('rejects short passwords', () => {
-    expect(passwordSchema.safeParse({ confirm_password: 'short', new_password: 'short' }).success).toBe(false)
+    expect(
+      passwordSchema.safeParse({ confirm_password: 'short', new_password: 'short' }).success,
+    ).toBe(false)
   })
 
   it('rejects mismatching confirmation', () => {
@@ -21,7 +23,9 @@ describe('passwordSchema', () => {
 
   it('accepts matching long passwords', () => {
     const value = 'a-long-enough-password'
-    expect(passwordSchema.safeParse({ confirm_password: value, new_password: value }).success).toBe(true)
+    expect(passwordSchema.safeParse({ confirm_password: value, new_password: value }).success).toBe(
+      true,
+    )
   })
 })
 

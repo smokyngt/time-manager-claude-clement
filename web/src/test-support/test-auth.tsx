@@ -1,11 +1,11 @@
-import type { Role, Scope, User } from '@time-manager/sdk'
 import type { RenderResult } from '@testing-library/react'
+import type { Role, Scope, User } from '@time-manager/sdk'
 import type { ReactNode } from 'react'
 
 import { QueryClientProvider } from '@tanstack/react-query'
 import { render } from '@testing-library/react'
-import { vi } from 'vitest'
 import { MemoryRouter } from 'react-router'
+import { vi } from 'vitest'
 
 import type { AuthContextValue } from '@/providers/use-auth'
 

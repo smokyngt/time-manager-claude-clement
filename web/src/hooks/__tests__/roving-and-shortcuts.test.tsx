@@ -72,7 +72,9 @@ describe('Keyboard.isTyping', () => {
 describe('shortcuts', () => {
   it('Delete and Backspace trigger onDelete outside inputs', () => {
     const onDelete = vi.fn()
-    renderHook(() => useDeleteShortcut(onDelete))
+    renderHook(() => {
+      useDeleteShortcut(onDelete)
+    })
     TestKeyboard.press('Delete')
     TestKeyboard.press('Backspace')
     expect(onDelete).toHaveBeenCalledTimes(2)
@@ -85,14 +87,18 @@ describe('shortcuts', () => {
 
   it('can be disabled', () => {
     const onDelete = vi.fn()
-    renderHook(() => useDeleteShortcut(onDelete, false))
+    renderHook(() => {
+      useDeleteShortcut(onDelete, false)
+    })
     TestKeyboard.press('Delete')
     expect(onDelete).not.toHaveBeenCalled()
   })
 
   it('Ctrl/Cmd+A selects all', () => {
     const onSelectAll = vi.fn()
-    renderHook(() => useSelectAllShortcut(onSelectAll))
+    renderHook(() => {
+      useSelectAllShortcut(onSelectAll)
+    })
     TestKeyboard.press('a')
     expect(onSelectAll).not.toHaveBeenCalled()
     TestKeyboard.press('a', { ctrl: true })
@@ -102,7 +108,9 @@ describe('shortcuts', () => {
 
   it('Escape clears the selection', () => {
     const onClear = vi.fn()
-    renderHook(() => useClearSelectionShortcut(onClear))
+    renderHook(() => {
+      useClearSelectionShortcut(onClear)
+    })
     TestKeyboard.press('Escape')
     expect(onClear).toHaveBeenCalledTimes(1)
   })

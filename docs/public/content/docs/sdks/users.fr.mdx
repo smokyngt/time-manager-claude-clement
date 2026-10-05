@@ -1,0 +1,69 @@
+---
+title: Utilisateurs
+description: Créez, listez, lisez, mettez à jour, archivez, restaurez et supprimez des utilisateurs.
+---
+
+Un utilisateur est une personne qui se connecte à Time Manager : un `employee`, un `manager` ou un `admin`. Les utilisateurs appartiennent à des équipes et possèdent des pointages. La ressource `users` encapsule `/v1/users`.
+
+## Comportement
+
+- Créer un utilisateur exige le scope `users:manage`. Un manager peut créer uniquement des employés, et `role` vaut `employee` par défaut. Seul un admin peut créer un manager ou un admin. Le `password` est facultatif à la création.
+- Les e-mails sont uniques et stockés en minuscules. Un second utilisateur avec le même e-mail échoue avec `user.conflict` (409).
+- La visibilité dépend du rôle. Un admin voit tous les utilisateurs. Un manager voit les employés qu'il gère ainsi que les employés non affectés. Un employé ne peut lire que son propre enregistrement. Un utilisateur que vous ne pouvez pas voir renvoie `user.not.found` (404).
+- `update` et `delete` sont des opérations en masse : elles acceptent jusqu'à 100 identifiants et renvoient un résultat avec `failed`. L'accès à chaque identifiant est vérifié d'abord ; un identifiant sur lequel vous n'avez pas le droit d'agir rejette toute la requête avec 403. Les identifiants que vous ne pouvez pas voir apparaissent dans `failed` avec `user.not.found`.
+- Les employés et les managers peuvent modifier leurs propres `firstName`, `lastName`, `phoneNumber` et `password`. Les managers peuvent aussi modifier l'`email` des employés de leur périmètre. Seuls les admins peuvent changer `role`. Passez `phoneNumber: null` pour effacer le numéro de téléphone.
+- `archive` désactive un utilisateur et conserve son historique. Les utilisateurs archivés ne peuvent pas se connecter, et vous pouvez les `restore`. `delete` est définitif. Vous ne pouvez pas vous archiver ni vous supprimer vous-même.
+- `list` accepte les filtres `ids`, `teamId`, `role`, `archived`, `createdAfter` et `createdBefore`, ainsi que `cursor`, `limit` (de 1 à 100, 25 par défaut) et `order`. Un manager ne voit toujours que des employés.
+- Les noms contiennent de 1 à 100 caractères. Un mot de passe contient de 10 à 128 caractères. Un numéro de téléphone contient de 6 à 20 caractères.
+- La connexion Microsoft ne fonctionne que pour les utilisateurs enregistrés : créez donc d'abord l'utilisateur.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Create
+const { user } = await client.users.create({
+  email: 'jane.doe@example.com',
+  firstName: 'Jane',
+  lastName: 'Doe',
+  phoneNumber: '+33 6 12 34 56 78',
+  password: 'correct-horse-battery',
+  role: 'employee',
+});
+
+// List
+const page = await client.users.list({
+  teamId: 'team-id',
+  archived: false,
+  order: 'asc',
+  limit: 50,
+});
+console.log(page.total, page.items[0]?.email);
+if (page.more) {
+  const next = await client.users.list({ teamId: 'team-id', cursor: page.next ?? undefined });
+}
+
+// Retrieve
+const found = await client.users.retrieve('user-id');
+console.log(found.user.firstName);
+
+// Update: the same change for several users
+const updated = await client.users.update(['user-id', 'other-user-id'], {
+  phoneNumber: null,
+  lastName: 'Martin',
+});
+if (!updated.success) {
+  console.log(updated.failed); // [{ id, code }]
+}
+
+// Archive and restore
+await client.users.archive('user-id');
+await client.users.restore('user-id');
+
+// Delete permanently
+const removed = await client.users.delete(['user-id']);
+console.log(removed.deleted, removed.failed);
+```
+
+</Tab>
+</Tabs>

@@ -20,7 +20,15 @@ const target: UserRecord = {
 }
 
 function setup(actor: { id: string; role: Role }, user: UserRecord = target, onSubmit = vi.fn()) {
-  render(<EditUserForm actor={actor} onCancel={vi.fn()} onSubmit={onSubmit} pending={false} user={user} />)
+  render(
+    <EditUserForm
+      actor={actor}
+      onCancel={vi.fn()}
+      onSubmit={onSubmit}
+      pending={false}
+      user={user}
+    />,
+  )
   return onSubmit
 }
 

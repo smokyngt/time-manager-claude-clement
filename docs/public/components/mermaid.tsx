@@ -20,7 +20,7 @@ export function Mermaid({ chart }: { chart: string }) {
           securityLevel: 'strict',
           theme: resolvedTheme === 'dark' ? 'dark' : 'default',
         });
-        const result = await mermaid.render(`mermaid-${id}`, chart.replaceAll('\\n', '\n'));
+        const result = await mermaid.render(`mermaid-${id}`, chart);
         if (!cancelled) setSvg(result.svg);
       } catch {
         if (!cancelled) setFailed(true);

@@ -20,8 +20,12 @@ describe('useAuthStore', () => {
       scopes: ['teams:read'],
       user,
     })
-    expect(JSON.stringify({ ...localStorage })).not.toContain('tok')
-    expect(JSON.stringify({ ...sessionStorage })).not.toContain('tok')
+    expect(
+      JSON.stringify(Object.keys(localStorage).map((key) => localStorage.getItem(key))),
+    ).not.toContain('tok')
+    expect(
+      JSON.stringify(Object.keys(sessionStorage).map((key) => sessionStorage.getItem(key))),
+    ).not.toContain('tok')
   })
 
   it('updates the token and the user separately', () => {

@@ -1,0 +1,67 @@
+---
+title: Pointages
+description: Pointez l'arrivée et le départ, lisez le pointage courant, créez des saisies manuelles, listez, lisez, corrigez et supprimez des pointages.
+---
+
+Un pointage est une période de travail d'un utilisateur. La ressource `clocks` encapsule `/v1/clocks`. Les utilisateurs pointent eux-mêmes leur arrivée et leur départ ; les managers et les admins peuvent ajouter et corriger des saisies pour les personnes qu'ils gèrent.
+
+## Comportement
+
+- `in` et `out` agissent sur l'appelant et exigent `clocks:write`. Les deux acceptent une `note` facultative d'au plus 500 caractères.
+- Un utilisateur a au plus un pointage ouvert. `in` alors qu'un pointage est ouvert, et `out` alors qu'aucun ne l'est, échouent avec `clock.conflict` (409).
+- `current` renvoie `{ clock }`, où `clock` vaut `null` lorsque l'utilisateur n'a pas pointé. `clockedOutAt` et `durationMs` valent `null` tant qu'un pointage est ouvert.
+- `create` ajoute une saisie manuelle avec `source: 'manual'`. Elle exige `clocks:manage` : les managers peuvent la faire pour les utilisateurs qu'ils gèrent, les admins pour tout le monde. `clockedOutAt` doit être postérieur à `clockedInAt`, aucun des deux ne peut être dans le futur, et une saisie ne peut pas durer plus de 24 heures ; sinon la requête échoue avec `clock.invalid` (400). Une saisie qui chevauche un autre pointage du même utilisateur échoue avec `clock.overlap` (409).
+- `list` accepte `userIds`, `from` et `to` (bornes sur `clockedInAt`, sous forme de nombres, d'objets `Date` ou de chaînes ISO), `open`, `cursor`, `limit` et `order`. Les employés obtiennent toujours leurs propres pointages. Les managers obtiennent les leurs et ceux des utilisateurs gérés. Les admins obtiennent ceux de tout le monde.
+- `retrieve` fonctionne pour le propriétaire, le manager du propriétaire et les admins. Un pointage que vous ne pouvez pas voir renvoie `clock.not.found` (404).
+- `update` et `delete` sont en masse (de 1 à 100 identifiants), exigent `clocks:manage` et renvoient un résultat avec `failed`. Une correction qui chevauche un autre pointage apparaît dans `failed` avec `clock.overlap`. `delete` est définitif.
+- Une note est visible du propriétaire, de son manager et des admins.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Clock in and out
+const { clock } = await client.clocks.in({ note: 'Starting at the office' });
+const closed = await client.clocks.out({ note: 'Done for the day' });
+console.log(closed.clock.durationMs);
+
+// Current clock
+const current = await client.clocks.current();
+console.log(current.clock === null ? 'Clocked out' : current.clock.clockedInAt);
+
+// Create a manual entry for a managed user
+const manual = await client.clocks.create({
+  userId: 'user-id',
+  clockedInAt: 1767600000000, // 2026-01-05T08:00:00Z
+  clockedOutAt: 1767628800000, // 2026-01-05T16:00:00Z
+  note: 'Forgot to clock in',
+});
+
+// List
+const page = await client.clocks.list({
+  userIds: ['user-id'],
+  from: 1767225600000,
+  to: new Date('2026-02-01T00:00:00Z'),
+  open: false,
+  order: 'asc',
+});
+console.log(page.total, page.items[0]?.durationMs);
+
+// Retrieve
+const found = await client.clocks.retrieve('clock-id');
+console.log(found.clock.source);
+
+// Correct several clocks
+const result = await client.clocks.update(['clock-id'], {
+  clockedOutAt: 1767632400000,
+  note: 'Corrected by the manager',
+});
+console.log(result.updated, result.failed);
+
+// Delete permanently
+const removed = await client.clocks.delete(['clock-id']);
+console.log(removed.deleted);
+```
+
+</Tab>
+</Tabs>

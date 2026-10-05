@@ -1,7 +1,6 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { FakeDb } from '../../../support/db.js';
-
 import { actorOf, caught, MISSING_ID, OTHER_ID, rowOf } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
@@ -43,7 +42,7 @@ describe('user.service.update', () => {
       data: { email: 'NEW@Example.com', first_name: 'Janet', phone_number: null },
       id: OTHER_ID,
     });
-    const values = fakeDb.arg('update', 'set') as Record<string, string | null>;
+    const values = fakeDb.arg('update', 'set') as Record<string, null | string>;
     expect(Cipher.open(values['email'] ?? '')).toBe('new@example.com');
     expect(values['email_hash']).toBe(Digest.email('new@example.com'));
     expect(Cipher.open(values['first_name'] ?? '')).toBe('Janet');

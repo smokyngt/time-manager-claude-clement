@@ -1,0 +1,86 @@
+---
+title: Configuration
+description: Chaque variable d'environnement de l'API, de la base de données et du build web, avec ses valeurs par défaut.
+---
+
+Vous configurez la stack avec des variables d'environnement, généralement dans un fichier `.env` placé à côté de `docker-compose.yml`. Ne versionnez jamais ce fichier.
+
+En production (`NODE_ENV=production`), l'API refuse de démarrer si un secret requis est absent ou trop court.
+
+## Base de données
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | aucun, requis | Identifiants de la base de données. Compose construit `DATABASE_URL` à partir d'eux. |
+| `DATABASE_URL` | aucun | Chaîne de connexion, lorsque vous exécutez l'API hors de Compose. |
+| `DATABASE_POOL_MAX` | `10` | Nombre maximal de connexions à la base de données. |
+
+## API
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `NODE_ENV` | `production` | Environnement. |
+| `PORT` | `8000` | Port d'écoute de l'API. |
+| `LOG_LEVEL` | `info` | Verbosité des journaux. |
+| `APP_TIMEZONE` | `Europe/Paris` | Fuseau horaire de l'entreprise utilisé pour `work_start`, `work_end` et les jours des rapports. |
+| `TRUST_PROXY` | `true` | Lire l'adresse du client depuis le reverse proxy. |
+| `COOKIE_SECURE` | `false` | Mettez `true` derrière HTTPS pour que le cookie de rafraîchissement soit `Secure`. |
+| `CORS_ORIGIN` | `http://localhost:8080` | Origine autorisée à appeler l'API avec des identifiants. |
+| `WEB_URL` | `http://localhost:8080` | Où l'API redirige le navigateur après la connexion Microsoft. |
+| `JSON_BODY_MAX_DEPTH` | `10` | Profondeur maximale d'imbrication JSON. |
+
+## Secrets
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `JWT_ACCESS_SECRET` | aucun, requis | Signe les jetons d'accès. Au moins 32 caractères en production. |
+| `JWT_REFRESH_SECRET` | aucun, requis | Protège les jetons de rafraîchissement. Au moins 32 caractères. Utilisez une valeur différente du secret d'accès. |
+| `JWT_ACCESS_TTL` | `15m` | Durée de vie du jeton d'accès. |
+| `JWT_REFRESH_TTL` | `7d` | Durée de vie du jeton de rafraîchissement. |
+| `ENCRYPTION_KEY` | aucun, requis en production | Clé pour les données personnelles au repos : base64, exactement 32 octets. |
+| `ENCRYPTION_KEY_ID` | `k1` | Identifiant de la clé de chiffrement courante. |
+| `ENCRYPTION_KEYS_PREVIOUS` | aucun | Clés retirées, sous forme de liste `id:base64` séparée par des virgules, encore utilisées pour lire les anciennes données. |
+| `HASH_KEY` | aucun, requis en production | Clé des hachages de recherche : base64, au moins 32 octets. |
+
+<Callout type="warn">
+Perdre `ENCRYPTION_KEY` rend les données personnelles illisibles. Conservez-la avec vos sauvegardes, mais séparément des dumps de la base.
+</Callout>
+
+## Initialisation de l'admin
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `SEED_ADMIN_EMAIL` | aucun, requis | E-mail du premier admin. |
+| `SEED_ADMIN_PASSWORD` | aucun, requis | Mot de passe du premier admin. |
+
+## Connexion Microsoft
+
+Toutes facultatives. Sans les deux premières, `GET /v1/auth/microsoft` répond `auth.microsoft.unavailable` (503).
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `MICROSOFT_CLIENT_ID` | vide | Identifiant d'application (client) de votre inscription d'application Microsoft Entra ID. |
+| `MICROSOFT_CLIENT_SECRET` | vide | Valeur du secret client. Il expire : planifiez sa rotation. |
+| `MICROSOFT_TENANT_ID` | `common` | Identifiant de l'annuaire (tenant). Utilisez l'identifiant de votre tenant pour limiter la connexion à votre organisation. |
+| `MICROSOFT_REDIRECT_URI` | `http://localhost:8080/v1/auth/microsoft/callback` | Doit correspondre exactement à l'URI de redirection de l'inscription d'application. |
+
+## Limites de débit
+
+| Variable | Défaut |
+| --- | --- |
+| `USER_RATE_LIMIT_MAX`, `USER_RATE_LIMIT_WINDOW` | `100`, `1 minute` |
+| `AUTH_RATE_LIMIT_MAX`, `AUTH_RATE_LIMIT_WINDOW` | `100`, `1 minute` |
+| `AUTH_LOGIN_RATE_LIMIT_MAX`, `AUTH_LOGIN_RATE_LIMIT_WINDOW` | `10`, `1 minute` |
+| `AUTH_ACCOUNT_RATE_LIMIT_MAX`, `AUTH_ACCOUNT_RATE_LIMIT_WINDOW` | `5`, `15m` |
+
+Voir les [limites de débit](../api/rate-limits).
+
+## Build web
+
+| Variable | Défaut | Signification |
+| --- | --- | --- |
+| `VITE_API_URL` | vide | Origine de l'API intégrée au moment du build. Vide signifie la même origine, que nginx redirige. |
+
+## Sauvegardes et observabilité
+
+Les variables de sauvegarde sont dans les [sauvegardes](./backups). `METRICS_TOKEN` et les variables `GRAFANA_*` sont dans l'[observabilité](./observability).

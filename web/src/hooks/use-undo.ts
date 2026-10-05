@@ -34,35 +34,36 @@ export function useUndo() {
 
   const deferAction = useCallback(
     (action: DeferredAction) => {
+      const delay = action.delay ?? DEFAULT_DELAY_MS
       let settled = false
-      let toastId: number | string | undefined
-      const commit = () => {
+      const timer = setTimeout(() => {
+        commit()
+      }, delay)
+      const toastId = toasts.showUndo(
+        action.message,
+        () => {
+          if (claim()) {
+            void action.onUndo()
+          }
+        },
+        { duration: delay },
+      )
+      function claim() {
         if (settled) {
-          return
+          return false
         }
         settled = true
         clearTimeout(timer)
         pending.delete(commit)
-        if (toastId !== undefined) {
-          toasts.dismiss(toastId)
-        }
-        void action.onCommit()
+        return true
       }
-      const timer = setTimeout(commit, action.delay ?? DEFAULT_DELAY_MS)
+      function commit() {
+        if (claim()) {
+          toasts.dismiss(toastId)
+          void action.onCommit()
+        }
+      }
       pending.add(commit)
-      toastId = toasts.showUndo(
-        action.message,
-        () => {
-          if (settled) {
-            return
-          }
-          settled = true
-          clearTimeout(timer)
-          pending.delete(commit)
-          void action.onUndo()
-        },
-        { duration: action.delay ?? DEFAULT_DELAY_MS },
-      )
       return commit
     },
     [toasts],
