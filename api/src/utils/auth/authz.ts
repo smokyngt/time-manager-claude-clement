@@ -1,7 +1,7 @@
 import { TokenAuthenticationError, UnauthorizedError } from '@/lib/errors/base/core.js';
 import { ClockAccess } from '@/utils/auth/access/clock.js';
-import { TeamAccess } from '@/utils/auth/access/team.js';
 import { TeamMemberAccess } from '@/utils/auth/access/team-member.js';
+import { TeamAccess } from '@/utils/auth/access/team.js';
 import { UserAccess } from '@/utils/auth/access/user.js';
 
 import type { Scope } from '@/config/auth/scopes.js';

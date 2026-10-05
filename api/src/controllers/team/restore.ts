@@ -1,4 +1,4 @@
-import { TeamRestoreError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
+import { TeamNotFoundError, TeamRestoreError } from '@/lib/errors/domains/team.js';
 import { TeamRestored } from '@/lib/events/domains/team.js';
 import { teamService } from '@/services/team/index.js';
 import { Access } from '@/utils/auth/authz.js';

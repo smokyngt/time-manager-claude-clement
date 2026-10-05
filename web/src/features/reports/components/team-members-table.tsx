@@ -1,9 +1,11 @@
+import type { TeamReportMember } from '@time-manager/sdk'
+
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react'
-import { useState } from 'react'
+import { memo, useCallback, useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
-import type { TeamMemberReport } from '@/features/reports/api/types'
-import type { MemberSortKey } from '@/features/reports/lib/sort-members'
+import type { MemberSortKey, SortDirection } from '@/features/reports/lib/sort-members'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,96 +16,115 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
-import { formatDuration, formatSignedDuration } from '@/features/reports/lib/format'
+import { signedDuration } from '@/features/reports/lib/kpi'
 import { sortMembers } from '@/features/reports/lib/sort-members'
-import { cn } from '@/lib/utils'
+import { Duration } from '@/lib/duration'
+import { Permission } from '@/lib/permission'
+import { RESOURCE_SCOPES } from '@/lib/scopes'
+import { useAuth } from '@/providers/use-auth'
 
 const COLUMNS: { key: MemberSortKey; label: string }[] = [
-  { key: 'worked_ms', label: 'Worked' },
-  { key: 'overtime_ms', label: 'Overtime' },
-  { key: 'late_days', label: 'Late days' },
+  { key: 'workedMs', label: 'worked' },
+  { key: 'overtimeMs', label: 'overtime' },
+  { key: 'lateDays', label: 'late_days' },
 ]
 
-export function TeamMembersTable({ members }: { members: TeamMemberReport[] }) {
-  const [sort, setSort] = useState<{ direction: 'asc' | 'desc'; key: MemberSortKey }>({
-    direction: 'desc',
-    key: 'worked_ms',
-  })
-  const rows = sortMembers(members, sort.key, sort.direction)
+type MemberRowProps = {
+  canOpen: boolean
+  member: TeamReportMember
+}
 
-  function toggle(key: MemberSortKey) {
+const MemberRow = memo(function MemberRow({ canOpen, member }: MemberRowProps) {
+  const name = `${member.firstName} ${member.lastName}`
+
+  return (
+    <TableRow>
+      <TableCell className="font-medium">
+        {canOpen ? (
+          <Link
+            className="underline-offset-4 hover:underline"
+            to={`/reports/users/${member.userId}`}
+          >
+            {name}
+          </Link>
+        ) : (
+          name
+        )}
+      </TableCell>
+      <TableCell className="text-right tabular-nums">{Duration.short(member.workedMs)}</TableCell>
+      <TableCell className="text-right tabular-nums">{signedDuration(member.overtimeMs)}</TableCell>
+      <TableCell className="text-right tabular-nums">{member.lateDays}</TableCell>
+      <TableCell className="text-right tabular-nums">{member.daysWorked}</TableCell>
+    </TableRow>
+  )
+})
+
+export type TeamMembersTableProps = {
+  members: TeamReportMember[]
+}
+
+export function TeamMembersTable({ members }: TeamMembersTableProps) {
+  const { t } = useTranslation('reports')
+  const { scopes } = useAuth()
+  const canOpen = Permission.scope.any(scopes, [RESOURCE_SCOPES.reports.read])
+  const [sort, setSort] = useState<{ direction: SortDirection; key: MemberSortKey }>({
+    direction: 'desc',
+    key: 'workedMs',
+  })
+  const rows = useMemo(
+    () => sortMembers(members, sort.key, sort.direction),
+    [members, sort.direction, sort.key],
+  )
+
+  const toggle = useCallback((key: MemberSortKey) => {
     setSort((current) => ({
       direction: current.key === key && current.direction === 'desc' ? 'asc' : 'desc',
       key,
     }))
-  }
+  }, [])
 
   return (
     <div className="rounded-xl border bg-card">
-      <Table>
+      <Table aria-label={t('members.label')}>
         <TableHeader>
           <TableRow>
-            <TableHead>Member</TableHead>
-            {COLUMNS.map((column) => (
-              <TableHead
-                aria-sort={
-                  sort.key === column.key
-                    ? sort.direction === 'asc'
-                      ? 'ascending'
-                      : 'descending'
-                    : 'none'
-                }
-                className="text-right"
-                key={column.key}
-              >
-                <Button
-                  className="-mr-2.5"
-                  onClick={() => {
-                    toggle(column.key)
-                  }}
-                  size="sm"
-                  variant="ghost"
+            <TableHead>{t('members.member')}</TableHead>
+            {COLUMNS.map((column) => {
+              const active = sort.key === column.key
+              return (
+                <TableHead
+                  aria-sort={
+                    active ? (sort.direction === 'asc' ? 'ascending' : 'descending') : 'none'
+                  }
+                  className="text-right"
+                  key={column.key}
                 >
-                  {column.label}
-                  {sort.key === column.key ? (
-                    sort.direction === 'asc' ? (
-                      <ArrowUpIcon aria-hidden className="size-3.5" />
-                    ) : (
-                      <ArrowDownIcon aria-hidden className="size-3.5" />
-                    )
-                  ) : null}
-                </Button>
-              </TableHead>
-            ))}
-            <TableHead className="text-right">Days worked</TableHead>
+                  <Button
+                    className="-mr-2.5"
+                    onClick={() => {
+                      toggle(column.key)
+                    }}
+                    size="sm"
+                    variant="ghost"
+                  >
+                    {t(`members.${column.label}`)}
+                    {active ? (
+                      sort.direction === 'asc' ? (
+                        <ArrowUpIcon aria-hidden className="size-3.5" />
+                      ) : (
+                        <ArrowDownIcon aria-hidden className="size-3.5" />
+                      )
+                    ) : null}
+                  </Button>
+                </TableHead>
+              )
+            })}
+            <TableHead className="text-right">{t('members.days_worked')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {rows.map((member) => (
-            <TableRow key={member.user_id}>
-              <TableCell className="font-medium">
-                <Link
-                  className="underline-offset-4 hover:underline"
-                  to={`/reports/users/${member.user_id}`}
-                >
-                  {member.first_name} {member.last_name}
-                </Link>
-              </TableCell>
-              <TableCell className="text-right tabular-nums">
-                {formatDuration(member.worked_ms)}
-              </TableCell>
-              <TableCell
-                className={cn(
-                  'text-right tabular-nums',
-                  member.overtime_ms < 0 && 'text-destructive',
-                  member.overtime_ms > 0 && 'text-emerald-700 dark:text-emerald-400',
-                )}
-              >
-                {formatSignedDuration(member.overtime_ms)}
-              </TableCell>
-              <TableCell className="text-right tabular-nums">{member.late_days}</TableCell>
-              <TableCell className="text-right tabular-nums">{member.days_worked}</TableCell>
-            </TableRow>
+            <MemberRow canOpen={canOpen} key={member.userId} member={member} />
           ))}
         </TableBody>
       </Table>

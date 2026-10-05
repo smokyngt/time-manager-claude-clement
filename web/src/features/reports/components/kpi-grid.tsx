@@ -12,7 +12,12 @@ import {
 import { useTranslation } from 'react-i18next'
 
 import { KpiCard } from '@/features/reports/components/kpi-card'
-import { formatPercent, overtimeTone, signedDuration, userOvertime } from '@/features/reports/lib/kpi'
+import {
+  formatPercent,
+  overtimeTone,
+  signedDuration,
+  userOvertime,
+} from '@/features/reports/lib/kpi'
 import { Duration } from '@/lib/duration'
 
 export const KPI_GRID_CLASS = 'grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-4'

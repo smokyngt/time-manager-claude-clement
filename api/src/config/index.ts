@@ -120,14 +120,6 @@ export class Config {
   }
 
   /**
-   * @route config.web
-   * @returns {string}
-   */
-  public static web(): string {
-    return Config.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
-  }
-
-  /**
    * @route config.tenant
    * @returns {string | undefined}
    */
@@ -181,5 +173,13 @@ export class Config {
     problems.push(...Keys.validate());
 
     return problems;
+  }
+
+  /**
+   * @route config.web
+   * @returns {string}
+   */
+  public static web(): string {
+    return Config.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
   }
 }

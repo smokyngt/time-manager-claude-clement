@@ -57,7 +57,8 @@ export function elapsedFraction(from: number, to: number, now: number) {
 export function buildChartPoints(series: SeriesPoint[], range: SeriesRange): ChartPoint[] {
   const total = countWeekdays(range.from, range.to)
   return series.map((point, index) => {
-    const next = series[index + 1]?.periodStart ?? nextPeriodStart(point.periodStart, range.granularity)
+    const next =
+      series[index + 1]?.periodStart ?? nextPeriodStart(point.periodStart, range.granularity)
     const start = Math.max(point.periodStart, range.from)
     const end = Math.min(next - 1, range.to, range.now)
     const weekdays = end < start ? 0 : countWeekdays(start, end)

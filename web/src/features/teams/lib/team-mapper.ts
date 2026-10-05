@@ -38,12 +38,13 @@ export class TeamMapper {
   /**
    * @route client.features.teams.teamMapper.snapshot
    * @param {Team} team
+   * @param {boolean} withManager
    * @returns {TeamUpdateData} Every editable field of the team, used to undo an update.
    */
-  static snapshot(team: Team): TeamUpdateData {
+  static snapshot(team: Team, withManager: boolean): TeamUpdateData {
     return {
       description: team.description,
-      managerId: team.managerId,
+      ...(withManager ? { managerId: team.managerId } : {}),
       name: team.name,
       weeklyHoursTarget: team.weeklyHoursTarget,
       workEnd: team.workEnd,

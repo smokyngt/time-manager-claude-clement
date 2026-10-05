@@ -1,8 +1,7 @@
 import type { UserReportKpis } from '@time-manager/sdk'
 
-import { Duration } from '@/lib/duration'
-
 import { elapsedFraction } from '@/features/reports/lib/series'
+import { Duration } from '@/lib/duration'
 
 export type Tone = 'negative' | 'positive'
 

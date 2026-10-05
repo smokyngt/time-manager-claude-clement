@@ -15,7 +15,13 @@ export type KpiCardProps = {
   value: string
 }
 
-export const KpiCard = memo(function KpiCard({ hint, icon: Icon, label, tone, value }: KpiCardProps) {
+export const KpiCard = memo(function KpiCard({
+  hint,
+  icon: Icon,
+  label,
+  tone,
+  value,
+}: KpiCardProps) {
   return (
     <Card>
       <CardContent className="flex items-start justify-between gap-3">

@@ -7,19 +7,19 @@ import { Slot } from 'radix-ui'
 import { cn } from '@/lib/utils'
 
 export const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     defaultVariants: { size: 'default', variant: 'default' },
     variants: {
       size: {
-        default: 'h-9 px-4 py-2',
-        icon: 'size-9',
+        default: 'h-9 px-4 py-2 pointer-coarse:h-11',
+        icon: 'size-9 pointer-coarse:size-11',
         lg: 'h-11 px-6',
-        sm: 'h-8 gap-1.5 px-3',
+        sm: 'h-8 gap-1.5 px-3 pointer-coarse:h-11',
       },
       variant: {
         default: 'bg-primary text-primary-foreground shadow-xs hover:bg-primary/90',
-        destructive: 'bg-destructive text-white shadow-xs hover:bg-destructive/90',
+        destructive: 'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
         ghost: 'hover:bg-accent hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
         outline: 'border bg-card shadow-xs hover:bg-accent hover:text-accent-foreground',

@@ -1,10 +1,9 @@
 import { jwtVerify, SignJWT } from 'jose';
 
 import { Config } from '@/config/index.js';
+import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
 import { ROLES } from '@/types/entities/user.js';
 import { Duration } from '@/utils/duration.js';
-
-import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 import type { Role } from '@/types/entities/user.js';

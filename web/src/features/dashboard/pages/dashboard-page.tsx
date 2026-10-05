@@ -1,25 +1,35 @@
-import { PageHeader } from '@/components/layout/page-header'
-import { ClockCard } from '@/features/clocks/components/clock-card'
-import { MyReport } from '@/features/reports/pages/my-report'
-import { useAuth } from '@/lib/auth/use-auth'
+import { useTranslation } from 'react-i18next'
+
+import { PageHeader } from '@/components/shared'
+import { ClockCard } from '@/features/clocks/components'
+import { MyReport } from '@/features/dashboard/components'
+import { useDocumentTitle } from '@/hooks'
+import { Permission } from '@/lib/permission'
+import { RESOURCE_SCOPES } from '@/lib/scopes'
+import { useAuth } from '@/providers/use-auth'
 
 export function DashboardPage() {
-  const { user } = useAuth()
+  const { t } = useTranslation('dashboard')
+  const { scopes, user } = useAuth()
+  useDocumentTitle(t('title'))
+  const canViewReports = Permission.scope.any(scopes, [RESOURCE_SCOPES.reports.read])
 
   return (
-    <>
+    <div className="space-y-6">
       <PageHeader
-        description="Here is an overview of your working time"
-        title={user ? `Hello, ${user.first_name}` : 'Dashboard'}
+        description={t('subtitle')}
+        title={user ? t('greeting', { name: user.firstName }) : t('title')}
       />
       <div className="grid gap-6 lg:grid-cols-5">
         <div className="lg:col-span-2">
           <ClockCard />
         </div>
-        <div className="lg:col-span-3">
-          <MyReport />
-        </div>
+        {user && canViewReports ? (
+          <div className="lg:col-span-3">
+            <MyReport userId={user.id} />
+          </div>
+        ) : null}
       </div>
-    </>
+    </div>
   )
 }

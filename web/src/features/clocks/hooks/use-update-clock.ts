@@ -27,7 +27,10 @@ export function useUpdateClock() {
   }
 
   const mutation = useMutation<BulkUpdateResponse, Error, Variables>({
-    meta: { successMessage: (result: BulkUpdateResponse) => (result.success ? t('toast.updated') : t('toast.update_failed')) },
+    meta: {
+      successMessage: (result: BulkUpdateResponse) =>
+        result.success ? t('toast.updated') : t('toast.update_failed'),
+    },
     mutationFn: ({ clock, entry }) =>
       sdk.clocks.update([clock.id], {
         clockedInAt: entry.clockedInAt,

@@ -1,8 +1,8 @@
 import { createHash } from 'node:crypto';
 
 import { Config } from '@/config/index.js';
-import { CryptoKeyInvalidError } from '@/lib/errors/domains/crypto.js';
 import { AppError } from '@/lib/errors/base/registry.js';
+import { CryptoKeyInvalidError } from '@/lib/errors/domains/crypto.js';
 
 export type KeyEntry = { id: string; key: Buffer };
 

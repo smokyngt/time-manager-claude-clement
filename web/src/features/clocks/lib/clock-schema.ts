@@ -22,7 +22,11 @@ export const clockSchema = z
       context.addIssue({ code: 'custom', message: 'form.errors.in_future', path: ['clockedInAt'] })
     }
     if (Dates.isFuture(end)) {
-      context.addIssue({ code: 'custom', message: 'form.errors.out_future', path: ['clockedOutAt'] })
+      context.addIssue({
+        code: 'custom',
+        message: 'form.errors.out_future',
+        path: ['clockedOutAt'],
+      })
     }
     if (end <= start) {
       context.addIssue({

@@ -1,47 +1,56 @@
+import { BarChart3Icon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+
+import { Empty, ErrorState } from '@/components/shared'
 import { KpiGrid } from '@/features/reports/components/kpi-grid'
 import { LatenessChart } from '@/features/reports/components/lateness-chart'
 import { PeriodPicker } from '@/features/reports/components/period-picker'
-import {
-  ReportEmpty,
-  ReportError,
-  ReportSkeleton,
-} from '@/features/reports/components/report-states'
+import { ReportSkeleton } from '@/features/reports/components/report-skeleton'
 import { WorkedHoursChart } from '@/features/reports/components/worked-hours-chart'
 import { usePeriod } from '@/features/reports/hooks/use-period'
-import { useUserReport } from '@/features/reports/hooks/use-reports'
+import { useUserReport } from '@/features/reports/hooks/use-user-report'
 
-export function UserReportView({ user_id }: { user_id: string }) {
-  const { auto, period, setState, state } = usePeriod()
-  const query = useUserReport(
+export type UserReportViewProps = {
+  userId: string
+}
+
+export function UserReportView({ userId }: UserReportViewProps) {
+  const { t } = useTranslation('reports')
+  const { auto, change, now, period, state } = usePeriod()
+  const { error, isError, loading, refetch, report } = useUserReport(
     period.error
       ? null
-      : { from: period.from, granularity: period.granularity, to: period.to, user_id },
+      : { from: period.from, granularity: period.granularity, to: period.to, userId },
   )
-  const report = query.data
 
   return (
-    <div className="space-y-4">
-      <PeriodPicker
-        auto_granularity={auto}
-        error={period.error}
-        onChange={setState}
-        value={state}
-      />
-      {period.error ? null : query.isError ? (
-        <ReportError error={query.error} onRetry={() => void query.refetch()} />
-      ) : !report ? (
+    <div className="space-y-6">
+      <PeriodPicker autoGranularity={auto} error={period.error} onChange={change} value={state} />
+      {period.error ? null : isError ? (
+        <ErrorState
+          error={error}
+          onRetry={() => {
+            void refetch()
+          }}
+        />
+      ) : loading || !report ? (
         <ReportSkeleton />
-      ) : report.kpis.days_worked === 0 && report.kpis.worked_ms === 0 ? (
-        <ReportEmpty message="No time tracked in this period." />
+      ) : report.kpis.daysWorked === 0 && report.kpis.workedMs === 0 ? (
+        <Empty
+          description={t('user.empty_description')}
+          icon={BarChart3Icon}
+          title={t('user.empty_title')}
+        />
       ) : (
         <>
-          <KpiGrid kpis={report.kpis} />
+          <KpiGrid kpis={report.kpis} now={now} range={{ from: report.from, to: report.to }} />
           <div className="grid gap-4 lg:grid-cols-2">
             <WorkedHoursChart
               from={report.from}
               granularity={report.granularity}
+              now={now}
               series={report.series}
-              target_ms={report.kpis.target_ms}
+              targetMs={report.kpis.targetMs}
               to={report.to}
             />
             <LatenessChart granularity={report.granularity} series={report.series} />

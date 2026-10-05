@@ -70,6 +70,14 @@ export class Limiter {
   }
 
   /**
+   * @route limiter.reset
+   * @returns {void}
+   */
+  public static reset(): void {
+    Limiter.entries.clear();
+  }
+
+  /**
    * @route limiter.retry
    * @param {string} email
    * @returns {number}
@@ -79,14 +87,6 @@ export class Limiter {
     if (entry === undefined) return 1;
 
     return Math.max(1, Math.ceil((entry.reset - Date.now()) / 1000));
-  }
-
-  /**
-   * @route limiter.reset
-   * @returns {void}
-   */
-  public static reset(): void {
-    Limiter.entries.clear();
   }
 
   private static prune(now: number): void {

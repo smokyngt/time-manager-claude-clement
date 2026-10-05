@@ -12,7 +12,7 @@ import {
 import { Reply } from '@/utils/http/reply.js';
 
 import { Prehandler } from '../../../support/prehandler.js';
-import { teamOf, TEAM_ID } from '../../services/team/support.js';
+import { TEAM_ID, teamOf } from '../../services/team/support.js';
 
 import type { PrehandlerRoute } from '../../../support/prehandler.js';
 import type { AppEvent } from '@/lib/events/base/registry.js';

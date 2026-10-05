@@ -38,7 +38,11 @@ export function LatenessChart({ granularity, series }: LatenessChartProps) {
       title={t('chart.lateness.title')}
     >
       <ResponsiveContainer height="100%" width="100%">
-        <BarChart accessibilityLayer data={data} margin={{ bottom: 0, left: -20, right: 8, top: 8 }}>
+        <BarChart
+          accessibilityLayer
+          data={data}
+          margin={{ bottom: 0, left: -20, right: 8, top: 8 }}
+        >
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
           <XAxis
             axisLine={false}

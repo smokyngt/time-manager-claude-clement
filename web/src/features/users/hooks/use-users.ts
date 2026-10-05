@@ -1,73 +1,38 @@
-import type { InfiniteData } from '@tanstack/react-query'
+import type { Role, User } from '@time-manager/sdk'
 
-import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import type { UserFilters, UserPage, UserUpdateData } from '@/features/users/types'
+import { sdk } from '@/config/sdk'
+import { QueryKeys } from '@/config/query-keys'
 
-import {
-  archiveUsers,
-  createUser,
-  deleteUsers,
-  getUser,
-  listUsers,
-  restoreUsers,
-  updateUsers,
-} from '@/features/users/api/users'
-
-export const USERS_QUERY_KEY = ['users'] as const
-
-export function useArchiveUsers() {
-  const invalidate = useInvalidateUsers()
-  return useMutation({ mutationFn: archiveUsers, onSettled: invalidate })
+export type UsersFilters = {
+  archived?: boolean
+  cursor?: string
+  limit?: number
+  role?: Role
+  teamId?: string
 }
 
-export function useCreateUser() {
-  const invalidate = useInvalidateUsers()
-  return useMutation({ mutationFn: createUser, onSuccess: invalidate })
-}
+const EMPTY: User[] = []
 
-export function useDeleteUsers() {
-  const invalidate = useInvalidateUsers()
-  return useMutation({ mutationFn: deleteUsers, onSettled: invalidate })
-}
-
-export function useRestoreUsers() {
-  const invalidate = useInvalidateUsers()
-  return useMutation({ mutationFn: restoreUsers, onSettled: invalidate })
-}
-
-export function useUpdateUsers() {
-  const invalidate = useInvalidateUsers()
-  return useMutation({
-    mutationFn: ({ data, ids }: { data: UserUpdateData; ids: string[] }) => updateUsers(ids, data),
-    onSettled: invalidate,
+export function useUsers(filters: UsersFilters = {}, options: { enabled?: boolean } = {}) {
+  const query = useQuery({
+    enabled: options.enabled ?? true,
+    placeholderData: keepPreviousData,
+    queryFn: () => sdk.users.list(filters),
+    queryKey: QueryKeys.users({ ...filters }),
   })
-}
 
-export function useUser(id: string | undefined) {
-  return useQuery({
-    enabled: id !== undefined,
-    queryFn: () => getUser(id ?? ''),
-    queryKey: [...USERS_QUERY_KEY, 'detail', id],
-  })
-}
-
-export function useUsers(filters: UserFilters) {
-  return useInfiniteQuery<
-    UserPage,
-    Error,
-    InfiniteData<UserPage, string | undefined>,
-    readonly unknown[],
-    string | undefined
-  >({
-    getNextPageParam: (page) => (page.more ? (page.next ?? undefined) : undefined),
-    initialPageParam: undefined,
-    queryFn: ({ pageParam }) => listUsers(filters, pageParam),
-    queryKey: [...USERS_QUERY_KEY, 'list', filters],
-  })
-}
-
-function useInvalidateUsers() {
-  const query_client = useQueryClient()
-  return () => query_client.invalidateQueries({ queryKey: USERS_QUERY_KEY })
+  return {
+    error: query.error,
+    fetching: query.isFetching,
+    isError: query.isError,
+    loaded: query.isSuccess,
+    loading: query.isPending,
+    more: query.data?.more ?? false,
+    next: query.data?.next ?? null,
+    refetch: query.refetch,
+    total: query.data?.total ?? 0,
+    users: query.data?.items ?? EMPTY,
+  }
 }

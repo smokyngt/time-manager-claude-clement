@@ -12,8 +12,8 @@ import {
   AuthMicrosoftUnknownUserError,
 } from '@/lib/errors/domains/auth.js';
 import { AuthLoggedIn, AuthMicrosoftLinked } from '@/lib/events/domains/auth.js';
-import { Digest } from '@/utils/crypto/digest.js';
 import { logService } from '@/services/log/index.js';
+import { Digest } from '@/utils/crypto/digest.js';
 
 import { Session } from './session.js';
 

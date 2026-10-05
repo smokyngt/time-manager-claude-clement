@@ -26,6 +26,10 @@ export function CardHeader({ className, ...props }: ComponentProps<'div'>) {
   return <div className={cn('flex flex-col gap-1 px-5', className)} {...props} />
 }
 
-export function CardTitle({ className, ...props }: ComponentProps<'h3'>) {
-  return <h3 className={cn('leading-none font-semibold', className)} {...props} />
+export function CardTitle({
+  as: Heading = 'h2',
+  className,
+  ...props
+}: { as?: 'h2' | 'h3' | 'h4' } & ComponentProps<'h2'>) {
+  return <Heading className={cn('text-base leading-none font-semibold', className)} {...props} />
 }

@@ -9,8 +9,8 @@ import {
   MANAGER_ID,
   MISSING_ID,
   OTHER_MANAGER_ID,
-  teamOf,
   TEAM_ID,
+  teamOf,
 } from '../../services/team/support.js';
 import { installMembers, installTeamService } from './support.js';
 

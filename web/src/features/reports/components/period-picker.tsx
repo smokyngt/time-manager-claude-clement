@@ -1,5 +1,8 @@
-import type { Granularity } from '@/features/reports/api/types'
-import type { PeriodPreset, PeriodState } from '@/features/reports/lib/period'
+import type { Granularity } from '@time-manager/sdk'
+
+import { useTranslation } from 'react-i18next'
+
+import type { PeriodError, PeriodState } from '@/features/reports/lib/period'
 
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -10,69 +13,69 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { PERIOD_PRESETS } from '@/features/reports/lib/period'
+import {
+  GRANULARITIES,
+  isGranularityChoice,
+  isPreset,
+  MAX_RANGE_DAYS,
+  PERIOD_PRESETS,
+} from '@/features/reports/lib/period'
 
-const AUTO = 'auto'
-
-const GRANULARITIES: { label: string; value: Granularity }[] = [
-  { label: 'By day', value: 'day' },
-  { label: 'By week', value: 'week' },
-  { label: 'By month', value: 'month' },
-]
-
-export function PeriodPicker({
-  auto_granularity,
-  error,
-  onChange,
-  value,
-}: {
-  auto_granularity: Granularity
-  error: null | string
-  onChange: (value: PeriodState) => void
+export type PeriodPickerProps = {
+  autoGranularity: Granularity
+  error: null | PeriodError
+  onChange: (patch: Partial<PeriodState>) => void
   value: PeriodState
-}) {
+}
+
+export function PeriodPicker({ autoGranularity, error, onChange, value }: PeriodPickerProps) {
+  const { t } = useTranslation('reports')
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex flex-wrap items-end gap-3">
-        <div className="space-y-1.5">
-          <Label htmlFor="period-preset">Period</Label>
+        <div className="space-y-2">
+          <Label htmlFor="period-preset">{t('period.label')}</Label>
           <Select
             onValueChange={(preset) => {
-              onChange({ ...value, preset: preset as PeriodPreset })
+              if (isPreset(preset)) {
+                onChange({ preset })
+              }
             }}
             value={value.preset}
           >
-            <SelectTrigger className="w-44" id="period-preset">
+            <SelectTrigger className="w-48" id="period-preset">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {PERIOD_PRESETS.map((preset) => (
-                <SelectItem key={preset.value} value={preset.value}>
-                  {preset.label}
+                <SelectItem key={preset} value={preset}>
+                  {t(`period.presets.${preset}`)}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
         </div>
-        <div className="space-y-1.5">
-          <Label htmlFor="period-granularity">Group</Label>
+        <div className="space-y-2">
+          <Label htmlFor="period-granularity">{t('period.group')}</Label>
           <Select
             onValueChange={(granularity) => {
-              onChange({
-                ...value,
-                granularity: granularity === AUTO ? null : (granularity as Granularity),
-              })
+              if (isGranularityChoice(granularity)) {
+                onChange({ granularity })
+              }
             }}
-            value={value.granularity ?? AUTO}
+            value={value.granularity}
           >
-            <SelectTrigger className="w-40" id="period-granularity">
+            <SelectTrigger className="w-44" id="period-granularity">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value={AUTO}>{`Auto (${auto_granularity})`}</SelectItem>
+              <SelectItem value="auto">
+                {t('period.auto', { granularity: t(`unit.${autoGranularity}`) })}
+              </SelectItem>
               {GRANULARITIES.map((granularity) => (
-                <SelectItem key={granularity.value} value={granularity.value}>
-                  {granularity.label}
+                <SelectItem key={granularity} value={granularity}>
+                  {t(`period.granularity.${granularity}`)}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -80,26 +83,26 @@ export function PeriodPicker({
         </div>
         {value.preset === 'custom' ? (
           <>
-            <div className="space-y-1.5">
-              <Label htmlFor="period-from">From</Label>
+            <div className="space-y-2">
+              <Label htmlFor="period-from">{t('period.from')}</Label>
               <Input
                 id="period-from"
                 onChange={(event) => {
-                  onChange({ ...value, custom_from: event.target.value })
+                  onChange({ from: event.target.value })
                 }}
                 type="date"
-                value={value.custom_from}
+                value={value.from}
               />
             </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="period-to">To</Label>
+            <div className="space-y-2">
+              <Label htmlFor="period-to">{t('period.to')}</Label>
               <Input
                 id="period-to"
                 onChange={(event) => {
-                  onChange({ ...value, custom_to: event.target.value })
+                  onChange({ to: event.target.value })
                 }}
                 type="date"
-                value={value.custom_to}
+                value={value.to}
               />
             </div>
           </>
@@ -107,7 +110,7 @@ export function PeriodPicker({
       </div>
       {error ? (
         <p className="text-sm text-destructive" role="alert">
-          {error}
+          {t(`period.errors.${error}`, { days: MAX_RANGE_DAYS })}
         </p>
       ) : null}
     </div>

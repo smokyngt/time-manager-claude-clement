@@ -20,9 +20,9 @@ export class ProfileSchemas {
   /**
    * @route client.features.profile.lib.profileSchemas.password
    * @param {TFunction} t Profile namespace translator.
-   * @returns {z.ZodType<PasswordValues>}
+   * @returns {z.ZodType<PasswordValues, PasswordValues>}
    */
-  static password(t: TFunction): z.ZodType<PasswordValues> {
+  static password(t: TFunction): z.ZodType<PasswordValues, PasswordValues> {
     return z
       .object({
         confirmPassword: z.string().min(1, t('validation.confirm_required')),
@@ -41,9 +41,9 @@ export class ProfileSchemas {
   /**
    * @route client.features.profile.lib.profileSchemas.profile
    * @param {TFunction} t Profile namespace translator.
-   * @returns {z.ZodType<ProfileValues>}
+   * @returns {z.ZodType<ProfileValues, ProfileValues>}
    */
-  static profile(t: TFunction): z.ZodType<ProfileValues> {
+  static profile(t: TFunction): z.ZodType<ProfileValues, ProfileValues> {
     const name = (max: number) =>
       z
         .string()
