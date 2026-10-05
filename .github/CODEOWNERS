@@ -1,0 +1,7 @@
+# Default owner (replace with a team, e.g. @org/maintainers, once available)
+*                 @smokyngt
+/api/             @smokyngt
+/web/             @smokyngt
+/.github/         @smokyngt
+/docs/            @smokyngt
+/docker-compose*.yml @smokyngt

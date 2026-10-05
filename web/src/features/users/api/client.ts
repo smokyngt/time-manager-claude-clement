@@ -20,7 +20,7 @@ interface Json<T> {
 type Envelope<T> = Json<{ data: T; event: null | string }>
 
 interface IdParams {
-  parameters: { path: { id: string }; query?: never; header?: never; cookie?: never }
+  parameters: { cookie?: never; header?: never; path: { id: string }; query?: never; }
 }
 
 interface Operation<Body, Data> {

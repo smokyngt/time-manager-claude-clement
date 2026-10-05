@@ -57,7 +57,7 @@ describe('UsersBulkToolbar', () => {
     expect(handlers.onDelete).not.toHaveBeenCalled()
     const dialog = await screen.findByRole('alertdialog')
     expect(dialog).toHaveTextContent('Delete 2 users?')
-    await userEvent.click(screen.getByRole('button', { name: 'Delete', description: '' }))
+    await userEvent.click(screen.getByRole('button', { description: '', name: 'Delete' }))
     expect(handlers.onDelete).toHaveBeenCalledOnce()
   })
 

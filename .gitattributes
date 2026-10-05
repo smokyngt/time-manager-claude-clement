@@ -1,0 +1,15 @@
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+
+bun.lock linguist-generated=true -diff
+**/bun.lock linguist-generated=true -diff
+api/openapi.json linguist-generated=true
+web/src/lib/api/schema.d.ts linguist-generated=true
+api/drizzle/meta/** linguist-generated=true

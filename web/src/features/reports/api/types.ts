@@ -83,6 +83,7 @@ export interface UserReport {
 export interface UserReportParams {
   from: number
   granularity: Granularity
+  to: number
   user_id: string
 }
 

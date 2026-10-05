@@ -37,7 +37,9 @@ export function PeriodPicker({
         <div className="space-y-1.5">
           <Label htmlFor="period-preset">Period</Label>
           <Select
-            onValueChange={(preset) => { onChange({ ...value, preset: preset as PeriodPreset }); }}
+            onValueChange={(preset) => {
+              onChange({ ...value, preset: preset as PeriodPreset })
+            }}
             value={value.preset}
           >
             <SelectTrigger className="w-44" id="period-preset">
@@ -55,11 +57,12 @@ export function PeriodPicker({
         <div className="space-y-1.5">
           <Label htmlFor="period-granularity">Group</Label>
           <Select
-            onValueChange={(granularity) => { onChange({
+            onValueChange={(granularity) => {
+              onChange({
                 ...value,
                 granularity: granularity === AUTO ? null : (granularity as Granularity),
-              }); }
-            }
+              })
+            }}
             value={value.granularity ?? AUTO}
           >
             <SelectTrigger className="w-40" id="period-granularity">
@@ -81,7 +84,9 @@ export function PeriodPicker({
               <Label htmlFor="period-from">From</Label>
               <Input
                 id="period-from"
-                onChange={(event) => { onChange({ ...value, custom_from: event.target.value }); }}
+                onChange={(event) => {
+                  onChange({ ...value, custom_from: event.target.value })
+                }}
                 type="date"
                 value={value.custom_from}
               />
@@ -90,7 +95,9 @@ export function PeriodPicker({
               <Label htmlFor="period-to">To</Label>
               <Input
                 id="period-to"
-                onChange={(event) => { onChange({ ...value, custom_to: event.target.value }); }}
+                onChange={(event) => {
+                  onChange({ ...value, custom_to: event.target.value })
+                }}
                 type="date"
                 value={value.custom_to}
               />

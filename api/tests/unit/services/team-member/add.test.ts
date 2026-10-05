@@ -10,6 +10,7 @@ import {
   MISSING_ID,
   OTHER_ID,
 } from '../../../helpers/fixtures.js';
+import './conflict.js';
 import { makeTeam, TEAM_ID } from './team.js';
 
 const realDb = { ...(await import('@/db/client.js')) };

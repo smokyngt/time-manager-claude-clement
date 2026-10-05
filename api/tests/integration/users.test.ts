@@ -5,7 +5,12 @@ import { Harness } from './setup.js';
 import type { User } from '@/types/entities/user.js';
 
 interface BulkBody {
-  data: { deleted?: string[]; failed: { code: string; id: string }[]; success: boolean; updated?: string[] };
+  data: {
+    deleted?: string[];
+    failed: { code: string; id: string }[];
+    success: boolean;
+    updated?: string[];
+  };
 }
 
 interface ErrorBody {

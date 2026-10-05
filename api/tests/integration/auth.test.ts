@@ -169,11 +169,10 @@ describe('auth', () => {
   describe('logout', () => {
     test('revokes the refresh token family', async () => {
       const member = await Harness.member('employee');
-      const result = await Harness.call<{ data: { success: boolean } }>(
-        'POST',
-        '/v1/auth/logout',
-        { cookie: member.refresh, token: member.access_token },
-      );
+      const result = await Harness.call<{ data: { success: boolean } }>('POST', '/v1/auth/logout', {
+        cookie: member.refresh,
+        token: member.access_token,
+      });
       expect(result.status).toBe(200);
       expect(result.body.data.success).toBe(true);
       const refreshed = await Harness.call<ErrorBody>('POST', '/v1/auth/refresh', {

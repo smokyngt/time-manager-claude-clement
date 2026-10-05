@@ -65,7 +65,7 @@ function useClockAction(config: ActionConfig) {
       query_client.setQueryData(CURRENT_CLOCK_QUERY_KEY, context?.previous ?? null)
       toast.error(getClockErrorMessage(error, config.conflict_message))
     },
-    onMutate: async (note) => {
+    onMutate: async (note): Promise<{ previous: Clock | null | undefined }> => {
       await query_client.cancelQueries({ queryKey: CURRENT_CLOCK_QUERY_KEY })
       const previous = query_client.getQueryData<Clock | null>(CURRENT_CLOCK_QUERY_KEY)
       query_client.setQueryData(CURRENT_CLOCK_QUERY_KEY, config.optimistic(note))

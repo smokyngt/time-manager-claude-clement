@@ -1,3 +1,5 @@
+import type { Role } from '@/features/users/types'
+
 import {
   Select,
   SelectContent,
@@ -5,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import type { Role } from '@/features/users/types'
 
 const LABELS: Record<Role, string> = {
   admin: 'Admin',

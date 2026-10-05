@@ -1,0 +1,21 @@
+api:
+  - changed-files:
+      - any-glob-to-any-file: "api/**"
+web:
+  - changed-files:
+      - any-glob-to-any-file: "web/**"
+devops:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".github/**"
+          - "docker-compose*.yml"
+          - "Makefile"
+          - "**/Dockerfile*"
+          - "**/nginx.conf"
+          - ".editorconfig"
+          - ".gitattributes"
+docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**"
+          - "**/*.md"

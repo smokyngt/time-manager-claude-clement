@@ -1,0 +1,49 @@
+version: 2
+updates:
+  # Bun projects: Dependabot's "bun" ecosystem reads bun.lock.
+  - package-ecosystem: bun
+    directory: /api
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(api)"
+    labels: [dependencies, api]
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: bun
+    directory: /web
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    commit-message:
+      prefix: "chore(web)"
+    labels: [dependencies, web]
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+  - package-ecosystem: docker
+    directory: /api
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore(api)"
+    labels: [dependencies, devops]
+  - package-ecosystem: docker
+    directory: /web
+    schedule:
+      interval: weekly
+    commit-message:
+      prefix: "chore(web)"
+    labels: [dependencies, devops]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "ci"
+    labels: [dependencies, devops]
+    groups:
+      actions:
+        patterns: ["*"]

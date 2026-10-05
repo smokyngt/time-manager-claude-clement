@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import { AlertCircleIcon, ClockIcon, Loader2Icon } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import type { Clock } from '@/features/clocks/api/types'
 import type { RangePreset } from '@/features/clocks/lib/ranges'
@@ -63,7 +63,7 @@ export function ClocksPage() {
   const [selected_user, setSelectedUser] = useState<null | string>(null)
   const [editing, setEditing] = useState<Clock | null>(null)
   const [deleting, setDeleting] = useState<Clock | null>(null)
-  const users_query = useUsers()
+  const users_query = useUsers({ archived: false, role: 'all' })
   const target_id = selected_user ?? own_id
 
   const range = useMemo(
@@ -87,12 +87,20 @@ export function ClocksPage() {
 
   const user_options = useMemo(
     () =>
-      (users_query.data ?? []).map((item) => ({
+      (users_query.data?.pages.flatMap((page) => page.items) ?? []).map((item) => ({
         id: item.id,
         label: `${item.first_name} ${item.last_name}`,
       })),
     [users_query.data],
   )
+
+  const { fetchNextPage: fetchMoreUsers, hasNextPage: has_more_users } = users_query
+
+  useEffect(() => {
+    if (can_manage && has_more_users && !users_query.isFetchingNextPage) {
+      void fetchMoreUsers()
+    }
+  }, [can_manage, has_more_users, users_query.isFetchingNextPage, fetchMoreUsers])
 
   const clocks = useMemo(() => data?.pages.flatMap((page) => page.items) ?? [], [data])
   const total_ms = clocks.reduce((sum, clock) => sum + (clock.duration_ms ?? 0), 0)

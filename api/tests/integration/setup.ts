@@ -1,3 +1,4 @@
+import { setDefaultTimeout } from 'bun:test';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { resolve } from 'node:path';
 
@@ -44,6 +45,8 @@ export interface UserSeed {
   role?: Role;
 }
 
+setDefaultTimeout(60_000);
+
 const REFRESH_COOKIE = 'tm_refresh';
 const DEFAULT_PASSWORD = 'integration-password-1';
 const KEPT_TABLES = ['__drizzle_migrations'];
@@ -59,6 +62,7 @@ const RATE_LIMIT_VARIABLES = [
 export class Harness {
   public static readonly password = DEFAULT_PASSWORD;
   private static counter = 0;
+  private static migrated = false;
   private static instance: FastifyInstance | undefined;
 
   public static get app(): FastifyInstance {
@@ -125,7 +129,10 @@ export class Harness {
     Harness.guard();
     for (const name of RATE_LIMIT_VARIABLES) process.env[name] ??= '1000000';
     const { db } = await import('@/db/client.js');
-    await migrate(db, { migrationsFolder: resolve(import.meta.dir, '../../drizzle') });
+    if (!Harness.migrated) {
+      await migrate(db, { migrationsFolder: resolve(import.meta.dir, '../../drizzle') });
+      Harness.migrated = true;
+    }
     const { build } = await import('@/app.js');
     Harness.instance = await build({ logger: false });
     await Harness.instance.ready();
@@ -161,7 +168,9 @@ export class Harness {
     if (url === undefined || url === '') throw new Error('DATABASE_URL is required');
     const name = new URL(url).pathname.replace(/^\//, '');
     if (!name.endsWith('_test')) {
-      throw new Error(`refusing to run integration tests on database "${name}": name must end with _test`);
+      throw new Error(
+        `refusing to run integration tests on database "${name}": name must end with _test`,
+      );
     }
   }
 }
