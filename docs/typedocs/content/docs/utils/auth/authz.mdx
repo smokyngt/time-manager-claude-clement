@@ -2,7 +2,7 @@
 
 ### Access
 
-Defined in: [utils/auth/authz.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L43)
+Defined in: [utils/auth/authz.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L43)
 
 #### Constructors
 
@@ -20,11 +20,11 @@ new Access(): Access;
 
 | Property | Modifier | Type | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="property-clock"></a> `clock` | `readonly` | [`ClockAccess`](access/clock.mdx#clockaccess) | [utils/auth/authz.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L44) |
-| <a id="property-role"></a> `role` | `readonly` | `RoleAccess` | [utils/auth/authz.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L45) |
-| <a id="property-team"></a> `team` | `readonly` | [`TeamAccess`](access/team.mdx#teamaccess) | [utils/auth/authz.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L46) |
-| <a id="property-teammember"></a> `teamMember` | `readonly` | [`TeamMemberAccess`](access/team-member.mdx#teammemberaccess) | [utils/auth/authz.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L47) |
-| <a id="property-user"></a> `user` | `readonly` | [`UserAccess`](access/user.mdx#useraccess) | [utils/auth/authz.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L48) |
+| <a id="property-clock"></a> `clock` | `readonly` | [`ClockAccess`](access/clock.mdx#clockaccess) | [utils/auth/authz.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L44) |
+| <a id="property-role"></a> `role` | `readonly` | `RoleAccess` | [utils/auth/authz.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L45) |
+| <a id="property-team"></a> `team` | `readonly` | [`TeamAccess`](access/team.mdx#teamaccess) | [utils/auth/authz.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L46) |
+| <a id="property-teammember"></a> `teamMember` | `readonly` | [`TeamMemberAccess`](access/team-member.mdx#teammemberaccess) | [utils/auth/authz.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L47) |
+| <a id="property-user"></a> `user` | `readonly` | [`UserAccess`](access/user.mdx#useraccess) | [utils/auth/authz.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L48) |
 
 #### Methods
 
@@ -34,7 +34,7 @@ new Access(): Access;
 static context(req): AccessContext;
 ```
 
-Defined in: [utils/auth/authz.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L56)
+Defined in: [utils/auth/authz.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L56)
 
 ###### Parameters
 
@@ -60,11 +60,11 @@ access.context
 type AccessContext = object;
 ```
 
-Defined in: [utils/auth/authz.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L11)
+Defined in: [utils/auth/authz.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L11)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-actor"></a> `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | [utils/auth/authz.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L12) |
-| <a id="property-scopes"></a> `scopes` | readonly [`Scope`](../../config/auth/scopes.mdx#scope)[] | [utils/auth/authz.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/authz.ts#L13) |
+| <a id="property-actor"></a> `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | [utils/auth/authz.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L12) |
+| <a id="property-scopes"></a> `scopes` | readonly [`Scope`](../../config/auth/scopes.mdx#scope)[] | [utils/auth/authz.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/utils/auth/authz.ts#L13) |

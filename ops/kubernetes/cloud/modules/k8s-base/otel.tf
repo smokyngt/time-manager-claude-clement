@@ -56,6 +56,8 @@ locals {
     seccompProfile           = { type = "RuntimeDefault" }
   }
 
+  alloy_logs_rbac_rules = [{ apiGroups = [""], resources = ["pods", "pods/log", "namespaces"], verbs = ["get", "list", "watch"] }]
+
   alloy_storage_volume = { name = "storage", emptyDir = { sizeLimit = "256Mi" } }
   alloy_storage_mount  = { name = "storage", mountPath = "/tmp/alloy" }
 
@@ -127,8 +129,8 @@ locals {
     }
     rbac = {
       create       = true
-      rules        = [{ apiGroups = [""], resources = ["pods", "pods/log", "namespaces"], verbs = ["get", "list", "watch"] }]
-      clusterRules = []
+      rules        = local.alloy_logs_rbac_rules
+      clusterRules = local.alloy_logs_rbac_rules
     }
     service        = { enabled = false }
     serviceAccount = { create = true }

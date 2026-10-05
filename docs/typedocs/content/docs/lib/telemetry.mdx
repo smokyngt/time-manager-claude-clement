@@ -2,7 +2,7 @@
 
 ### Telemetry
 
-Defined in: [lib/telemetry/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L21)
+Defined in: [lib/telemetry/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L21)
 
 #### Constructors
 
@@ -20,7 +20,7 @@ new Telemetry(): Telemetry;
 
 | Property | Modifier | Type | Defined in |
 | ------ | ------ | ------ | ------ |
-| <a id="property-redacted"></a> `redacted` | `readonly` | readonly `string`[] | [lib/telemetry/index.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L22) |
+| <a id="property-redacted"></a> `redacted` | `readonly` | readonly `string`[] | [lib/telemetry/index.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L22) |
 
 #### Methods
 
@@ -30,7 +30,7 @@ new Telemetry(): Telemetry;
 static id(req): string;
 ```
 
-Defined in: [lib/telemetry/index.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L37)
+Defined in: [lib/telemetry/index.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L37)
 
 ###### Parameters
 
@@ -52,7 +52,7 @@ telemetry.id
 static logger(): LoggerOptions;
 ```
 
-Defined in: [lib/telemetry/index.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L48)
+Defined in: [lib/telemetry/index.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L48)
 
 ###### Returns
 
@@ -68,7 +68,7 @@ telemetry.logger
 static trace(): TraceFields;
 ```
 
-Defined in: [lib/telemetry/index.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L69)
+Defined in: [lib/telemetry/index.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L69)
 
 ###### Returns
 
@@ -84,7 +84,7 @@ telemetry.trace
 static valid(value): boolean;
 ```
 
-Defined in: [lib/telemetry/index.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L81)
+Defined in: [lib/telemetry/index.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L81)
 
 ###### Parameters
 
@@ -108,24 +108,24 @@ telemetry.valid
 type LoggerOptions = object;
 ```
 
-Defined in: [lib/telemetry/index.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L9)
+Defined in: [lib/telemetry/index.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L9)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-level"></a> `level` | `string` | [lib/telemetry/index.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L10) |
-| <a id="property-mixin"></a> `mixin` | () => [`TraceFields`](#tracefields) | [lib/telemetry/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L11) |
-| <a id="property-redact"></a> `redact` | `object` | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L12) |
-| `redact.censor` | `string` | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L12) |
-| `redact.paths` | `string`[] | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L12) |
-| <a id="property-serializers"></a> `serializers` | `object` | [lib/telemetry/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L13) |
-| `serializers.req` | (`req`) => [`RedactedRequest`](auth/redact.mdx#redactedrequest) | [lib/telemetry/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L13) |
-| <a id="property-transport"></a> `transport?` | `object` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L14) |
-| `transport.options` | `object` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L14) |
-| `transport.options.colorize` | `boolean` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L14) |
-| `transport.options.translateTime` | `string` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L14) |
-| `transport.target` | `string` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L14) |
+| <a id="property-level"></a> `level` | `string` | [lib/telemetry/index.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L10) |
+| <a id="property-mixin"></a> `mixin` | () => [`TraceFields`](#tracefields) | [lib/telemetry/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L11) |
+| <a id="property-redact"></a> `redact` | `object` | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L12) |
+| `redact.censor` | `string` | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L12) |
+| `redact.paths` | `string`[] | [lib/telemetry/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L12) |
+| <a id="property-serializers"></a> `serializers` | `object` | [lib/telemetry/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L13) |
+| `serializers.req` | (`req`) => [`RedactedRequest`](auth/redact.mdx#redactedrequest) | [lib/telemetry/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L13) |
+| <a id="property-transport"></a> `transport?` | `object` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L14) |
+| `transport.options` | `object` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L14) |
+| `transport.options.colorize` | `boolean` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L14) |
+| `transport.options.translateTime` | `string` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L14) |
+| `transport.target` | `string` | [lib/telemetry/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L14) |
 
 ***
 
@@ -135,11 +135,11 @@ Defined in: [lib/telemetry/index.ts:9](https://github.com/smokyngt/time-manager-
 type TraceFields = object;
 ```
 
-Defined in: [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L17)
+Defined in: [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L17)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-span_id"></a> `span_id?` | `string` | [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L17) |
-| <a id="property-trace_id"></a> `trace_id?` | `string` | [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/index.ts#L17) |
+| <a id="property-span_id"></a> `span_id?` | `string` | [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L17) |
+| <a id="property-trace_id"></a> `trace_id?` | `string` | [lib/telemetry/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/telemetry/index.ts#L17) |

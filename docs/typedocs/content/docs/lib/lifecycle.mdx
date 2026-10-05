@@ -2,7 +2,7 @@
 
 ### Lifecycle
 
-Defined in: [lib/lifecycle/index.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L24)
+Defined in: [lib/lifecycle/index.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L24)
 
 #### Constructors
 
@@ -20,7 +20,7 @@ new Lifecycle(): Lifecycle;
 
 | Property | Modifier | Type | Default value | Defined in |
 | ------ | ------ | ------ | ------ | ------ |
-| <a id="property-drain"></a> `drain` | `readonly` | `10000` | `10_000` | [lib/lifecycle/index.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L25) |
+| <a id="property-drain"></a> `drain` | `readonly` | `10000` | `10_000` | [lib/lifecycle/index.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L25) |
 
 #### Methods
 
@@ -35,7 +35,7 @@ static fatal(
 ): void;
 ```
 
-Defined in: [lib/lifecycle/index.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L35)
+Defined in: [lib/lifecycle/index.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L35)
 
 ###### Parameters
 
@@ -60,7 +60,7 @@ lifecycle.fatal
 static shutdown(params): void;
 ```
 
-Defined in: [lib/lifecycle/index.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L45)
+Defined in: [lib/lifecycle/index.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L45)
 
 ###### Parameters
 
@@ -86,7 +86,7 @@ static stop(
 ): Promise<number>;
 ```
 
-Defined in: [lib/lifecycle/index.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L75)
+Defined in: [lib/lifecycle/index.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L75)
 
 ###### Parameters
 
@@ -112,13 +112,13 @@ lifecycle.stop
 type Closable = object;
 ```
 
-Defined in: [lib/lifecycle/index.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L3)
+Defined in: [lib/lifecycle/index.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L3)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-end"></a> `end` | (`options?`) => `Promise`\<`void`\> | [lib/lifecycle/index.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L4) |
+| <a id="property-end"></a> `end` | (`options?`) => `Promise`\<`void`\> | [lib/lifecycle/index.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L4) |
 
 ***
 
@@ -128,7 +128,7 @@ Defined in: [lib/lifecycle/index.ts:3](https://github.com/smokyngt/time-manager-
 type Runtime = Pick<NodeJS.Process, "exit" | "on">;
 ```
 
-Defined in: [lib/lifecycle/index.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L7)
+Defined in: [lib/lifecycle/index.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L7)
 
 ***
 
@@ -138,17 +138,17 @@ Defined in: [lib/lifecycle/index.ts:7](https://github.com/smokyngt/time-manager-
 type ServerLike = object;
 ```
 
-Defined in: [lib/lifecycle/index.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L9)
+Defined in: [lib/lifecycle/index.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L9)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-close"></a> `close` | () => `Promise`\<`unknown`\> | [lib/lifecycle/index.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L10) |
-| <a id="property-log"></a> `log` | `object` | [lib/lifecycle/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L11) |
-| `log.error` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L12) |
-| `log.fatal` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L13) |
-| `log.info` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L14) |
+| <a id="property-close"></a> `close` | () => `Promise`\<`unknown`\> | [lib/lifecycle/index.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L10) |
+| <a id="property-log"></a> `log` | `object` | [lib/lifecycle/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L11) |
+| `log.error` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L12) |
+| `log.fatal` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L13) |
+| `log.info` | (`payload`, `message`) => `void` | [lib/lifecycle/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L14) |
 
 ***
 
@@ -158,12 +158,12 @@ Defined in: [lib/lifecycle/index.ts:9](https://github.com/smokyngt/time-manager-
 type ShutdownParams = object;
 ```
 
-Defined in: [lib/lifecycle/index.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L18)
+Defined in: [lib/lifecycle/index.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L18)
 
 #### Properties
 
 | Property | Type | Defined in |
 | ------ | ------ | ------ |
-| <a id="property-app"></a> `app` | [`ServerLike`](#serverlike) | [lib/lifecycle/index.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L19) |
-| <a id="property-runtime"></a> `runtime?` | [`Runtime`](#runtime) | [lib/lifecycle/index.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L20) |
-| <a id="property-sql"></a> `sql` | [`Closable`](#closable) | [lib/lifecycle/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/index.ts#L21) |
+| <a id="property-app"></a> `app` | [`ServerLike`](#serverlike) | [lib/lifecycle/index.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L19) |
+| <a id="property-runtime"></a> `runtime?` | [`Runtime`](#runtime) | [lib/lifecycle/index.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L20) |
+| <a id="property-sql"></a> `sql` | [`Closable`](#closable) | [lib/lifecycle/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/672ee29d8c71d4cb65efbd74d9c567f779a48674/api/src/lib/lifecycle/index.ts#L21) |

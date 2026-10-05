@@ -195,12 +195,6 @@ variable "traefik_pod_labels" {
   default     = { "app.kubernetes.io/name" = "traefik" }
 }
 
-variable "middleware_namespace" {
-  description = "Namespace that holds the Traefik Middleware chains default-chain and admin-chain."
-  type        = string
-  default     = "kube-system"
-}
-
 
 
 variable "postgres_pod_labels" {
@@ -323,12 +317,6 @@ variable "kubectl_image" {
     condition     = can(regex(":[A-Za-z0-9._-]+$", var.kubectl_image)) && !endswith(var.kubectl_image, ":latest")
     error_message = "kubectl_image must carry an explicit non-latest tag."
   }
-}
-
-variable "prometheus_service_name" {
-  description = "Service of Prometheus in the monitoring namespace queried by the Prometheus adapter."
-  type        = string
-  default     = "kube-prometheus-stack-prometheus"
 }
 
 variable "vault_pod_labels" {

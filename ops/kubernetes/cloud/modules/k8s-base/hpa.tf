@@ -32,7 +32,7 @@ locals {
   prometheus_adapter_values = {
     replicas = 2
     prometheus = {
-      url  = "http://${var.prometheus_service_name}.${local.ns.monitoring}.svc"
+      url  = "http://${local.prometheus_service}.${local.ns.monitoring}.svc"
       port = 9090
     }
     podAnnotations      = { "linkerd.io/inject" = "disabled" }
@@ -243,7 +243,11 @@ resource "helm_release" "prometheus_adapter" {
 
   values = [yamlencode(local.prometheus_adapter_values)]
 
-  depends_on = [kubernetes_namespace_v1.this, kubernetes_priority_class_v1.critical]
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    kubernetes_priority_class_v1.critical,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 resource "helm_release" "vpa" {
@@ -277,7 +281,11 @@ resource "kubectl_manifest" "vpa" {
 
   yaml_body = each.value
 
-  depends_on = [kubectl_manifest.api_deployment, kubectl_manifest.web_deployment, helm_release.vpa]
+  depends_on = [
+    kubectl_manifest.api_deployment,
+    kubectl_manifest.web_deployment,
+    helm_release.vpa,
+  ]
 }
 
 resource "kubernetes_service_account_v1" "scaling_scheduler" {

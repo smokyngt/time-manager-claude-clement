@@ -132,7 +132,13 @@ module "k8s_base" {
     web       = 30080
     websecure = 30443
   }
-  vault_replicas = var.data_workers >= 3 ? 3 : 1
+  postgres_instances = 1
+  vault_replicas     = var.data_workers >= 3 ? 3 : 1
 
-  depends_on = [kind_cluster.this]
+  vault_backup_passphrase = var.vault_backup_passphrase
+  backup_s3_bucket        = var.backup_s3_bucket
+  backup_s3_endpoint      = var.backup_s3_endpoint
+  backup_s3_region        = var.backup_s3_region
+  backup_image_tag        = var.backup_image_tag
+  depends_on              = [kind_cluster.this]
 }

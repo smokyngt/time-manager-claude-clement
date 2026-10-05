@@ -374,7 +374,7 @@ groups:
   - name: tm-k8s-platform
     rules:
       - alert: PlatformTargetDown
-        expr: up{job=~"traefik|cert-manager|external-secrets|velero"} == 0
+        expr: up{job=~"traefik|cert-manager|external-secrets|velero|cnpg-operator"} == 0
         for: 5m
         labels:
           severity: warning

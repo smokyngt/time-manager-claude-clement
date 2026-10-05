@@ -484,17 +484,26 @@ resource "helm_release" "linkerd_control_plane" {
 resource "kubectl_manifest" "linkerd_proxy_pod_monitor" {
   yaml_body = local.linkerd_proxy_pod_monitor_manifest
 
-  depends_on = [helm_release.linkerd_control_plane]
+  depends_on = [
+    helm_release.linkerd_control_plane,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 resource "kubectl_manifest" "linkerd_control_plane_pod_monitor" {
   yaml_body = local.linkerd_control_plane_pod_monitor_manifest
 
-  depends_on = [helm_release.linkerd_control_plane]
+  depends_on = [
+    helm_release.linkerd_control_plane,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 resource "kubectl_manifest" "linkerd_rules" {
   yaml_body = local.linkerd_rules_manifest
 
-  depends_on = [helm_release.linkerd_control_plane]
+  depends_on = [
+    helm_release.linkerd_control_plane,
+    helm_release.kube_prometheus_stack,
+  ]
 }

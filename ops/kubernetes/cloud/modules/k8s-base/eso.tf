@@ -112,16 +112,6 @@ locals {
       data      = { token = { key = "monitoring/api-metrics", property = "token" } }
       template  = {}
     }
-    "databases/postgres-credentials" = {
-      namespace = local.ns.databases
-      name      = "postgres-credentials"
-      type      = "kubernetes.io/basic-auth"
-      data = {
-        username = { key = "databases/postgres", property = "username" }
-        password = { key = "databases/postgres", property = "password" }
-      }
-      template = {}
-    }
     "backup/postgres-credentials" = {
       namespace = local.ns.backup
       name      = "postgres-credentials"

@@ -462,6 +462,8 @@ resource "kubectl_manifest" "api_migrate" {
     vault_kubernetes_auth_backend_role.api,
     kubernetes_config_map_v1.api_env,
     kubernetes_secret_v1.ca_bundle["app"],
+    kubernetes_namespace_v1.this,
+    helm_release.linkerd_control_plane,
   ]
 }
 
@@ -476,6 +478,8 @@ resource "kubectl_manifest" "api_deployment" {
     kubernetes_config_map_v1.api_env,
     kubernetes_secret_v1.ca_bundle["app"],
     kubectl_manifest.api_migrate,
+    kubernetes_namespace_v1.this,
+    helm_release.linkerd_control_plane,
   ]
 }
 
@@ -484,7 +488,11 @@ resource "kubectl_manifest" "web_deployment" {
   wait_for_rollout = false
   ignore_fields    = ["spec.replicas"]
 
-  depends_on = [kubernetes_service_account_v1.web]
+  depends_on = [
+    kubernetes_service_account_v1.web,
+    kubernetes_namespace_v1.this,
+    helm_release.linkerd_control_plane,
+  ]
 }
 
 locals {
@@ -530,7 +538,11 @@ resource "kubectl_manifest" "service" {
 
   yaml_body = each.value
 
-  depends_on = [kubectl_manifest.api_deployment, kubectl_manifest.web_deployment]
+  depends_on = [
+    kubectl_manifest.api_deployment,
+    kubectl_manifest.web_deployment,
+    kubernetes_namespace_v1.this,
+  ]
 }
 
 resource "kubectl_manifest" "pdb" {
@@ -538,7 +550,11 @@ resource "kubectl_manifest" "pdb" {
 
   yaml_body = each.value
 
-  depends_on = [kubectl_manifest.api_deployment, kubectl_manifest.web_deployment]
+  depends_on = [
+    kubectl_manifest.api_deployment,
+    kubectl_manifest.web_deployment,
+    kubernetes_namespace_v1.this,
+  ]
 }
 
 locals {
@@ -757,15 +773,29 @@ locals {
 resource "kubectl_manifest" "api_service_monitor" {
   yaml_body = local.api_service_monitor_manifest
 
-  depends_on = [kubectl_manifest.service]
+  depends_on = [
+    kubectl_manifest.service,
+    kubernetes_namespace_v1.this,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 resource "kubectl_manifest" "api_rules" {
   yaml_body = local.api_rules_manifest
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 resource "kubectl_manifest" "web_rules" {
   yaml_body = local.web_rules_manifest
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    helm_release.kube_prometheus_stack,
+  ]
 }
 
 locals {
@@ -881,6 +911,10 @@ resource "kubectl_manifest" "app_network_policy" {
   for_each = local.app_network_policy_manifests
 
   yaml_body = each.value
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+  ]
 }
 
 locals {
@@ -944,7 +978,7 @@ locals {
           match: Host(`${host}`)
           middlewares:
             - name: default-chain
-              namespace: ${var.middleware_namespace}
+              namespace: ${local.ns.traefik}
           services:
             - name: ${local.workloads[k].name}
               port: ${local.workloads[k].service_port}
@@ -953,6 +987,9 @@ locals {
               ${k == "api" && var.api_tls_enabled ? "serversTransport: api-internal-ca" : ""}
       tls:
         secretName: ${k}-public-tls
+        options:
+          name: ${local.tls_option_name}
+          namespace: ${local.ns.traefik}
   YAML
   }
 }
@@ -961,6 +998,12 @@ resource "kubectl_manifest" "public_certificate" {
   for_each = local.public_certificate_manifests
 
   yaml_body = each.value
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    kubectl_manifest.letsencrypt_issuer,
+    kubectl_manifest.bootstrap_ca_issuer,
+  ]
 }
 
 resource "kubectl_manifest" "api_servers_transport" {
@@ -968,7 +1011,11 @@ resource "kubectl_manifest" "api_servers_transport" {
 
   yaml_body = each.value
 
-  depends_on = [kubernetes_secret_v1.ca_bundle["app"]]
+  depends_on = [
+    kubernetes_secret_v1.ca_bundle["app"],
+    kubernetes_namespace_v1.this,
+    helm_release.traefik,
+  ]
 }
 
 resource "kubectl_manifest" "ingress_route" {
@@ -981,5 +1028,7 @@ resource "kubectl_manifest" "ingress_route" {
     kubectl_manifest.public_certificate,
     kubectl_manifest.api_servers_transport,
     kubectl_manifest.app_network_policy,
+    kubectl_manifest.traefik_chains,
+    kubectl_manifest.traefik_tls_option,
   ]
 }

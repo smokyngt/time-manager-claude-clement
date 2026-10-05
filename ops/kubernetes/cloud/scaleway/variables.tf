@@ -173,3 +173,29 @@ variable "cloudflare_origin_pull_ca_pem" {
   type    = string
   default = ""
 }
+
+variable "vault_backup_passphrase" {
+  type      = string
+  default   = null
+  sensitive = true
+}
+
+variable "backup_s3_bucket" {
+  type    = string
+  default = "time-manager-backups"
+}
+
+variable "backup_s3_endpoint" {
+  type    = string
+  default = "https://s3.fr-par.scw.cloud"
+}
+
+variable "backup_s3_region" {
+  type    = string
+  default = "fr-par"
+}
+
+variable "backup_image_tag" {
+  type    = string
+  default = "0.1.0"
+}

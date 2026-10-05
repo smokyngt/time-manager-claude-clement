@@ -134,6 +134,30 @@ locals {
         }]
       }
     } },
+    { for ns in local.mesh_namespaces : "${ns}/allow-mesh-proxy-ingress" => {
+      namespace = ns
+      name      = "allow-mesh-proxy-ingress"
+      spec = {
+        podSelector = {}
+        policyTypes = ["Ingress"]
+        ingress = [{
+          from  = [for peer in local.mesh_namespaces : { namespaceSelector = { matchLabels = { "kubernetes.io/metadata.name" = peer } } }]
+          ports = [{ port = local.mesh_proxy_in, protocol = "TCP" }]
+        }]
+      }
+    } },
+    { for ns in local.mesh_namespaces : "${ns}/allow-mesh-proxy-egress" => {
+      namespace = ns
+      name      = "allow-mesh-proxy-egress"
+      spec = {
+        podSelector = {}
+        policyTypes = ["Egress"]
+        egress = [{
+          to    = [for peer in local.mesh_namespaces : { namespaceSelector = { matchLabels = { "kubernetes.io/metadata.name" = peer } } }]
+          ports = [{ port = local.mesh_proxy_in, protocol = "TCP" }]
+        }]
+      }
+    } },
     { for ns in local.mesh_namespaces : "${ns}/allow-monitoring-to-linkerd-admin" => {
       namespace = ns
       name      = "allow-monitoring-to-linkerd-admin"
@@ -157,6 +181,16 @@ locals {
             from  = [for ns in local.mesh_namespaces : { namespaceSelector = { matchLabels = { "kubernetes.io/metadata.name" = ns } } }]
             ports = local.linkerd_control_plane_ports
           }]
+        }
+      }
+      "${local.linkerd_ns}/allow-linkerd-intra" = {
+        namespace = local.linkerd_ns
+        name      = "allow-linkerd-intra"
+        spec = {
+          podSelector = {}
+          policyTypes = ["Ingress", "Egress"]
+          ingress     = [{ from = [{ podSelector = {} }] }]
+          egress      = [{ to = [{ podSelector = {} }] }]
         }
       }
       "${local.linkerd_ns}/allow-apiserver-to-linkerd-webhooks" = {

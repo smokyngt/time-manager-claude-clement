@@ -477,12 +477,12 @@ resource "vault_pki_secret_backend_role" "internal_services" {
   backend            = vault_mount.pki_internal.path
   name               = "internal-services"
   issuer_ref         = "default"
-  allowed_domains    = ["svc.cluster.local", "cluster.local", "internal", local.app_domain]
+  allowed_domains    = ["svc.cluster.local", "cluster.local", "internal", "streaming_replica", local.app_domain]
   allow_subdomains   = true
-  allow_bare_domains = false
+  allow_bare_domains = true
   allow_localhost    = false
   allow_ip_sans      = true
-  enforce_hostnames  = true
+  enforce_hostnames  = false
   key_type           = "ec"
   key_bits           = 256
   ttl                = "86400"

@@ -40,5 +40,10 @@ module "k8s_base" {
   vault_kms_type        = var.vault_kms_type
   vault_kms_config      = var.vault_kms_config
 
-  depends_on = [scaleway_k8s_pool.app, scaleway_k8s_pool.data, scaleway_k8s_acl.this]
+  vault_backup_passphrase = var.vault_backup_passphrase
+  backup_s3_bucket        = var.backup_s3_bucket
+  backup_s3_endpoint      = var.backup_s3_endpoint
+  backup_s3_region        = var.backup_s3_region
+  backup_image_tag        = var.backup_image_tag
+  depends_on              = [scaleway_k8s_pool.app, scaleway_k8s_pool.data, scaleway_k8s_acl.this]
 }

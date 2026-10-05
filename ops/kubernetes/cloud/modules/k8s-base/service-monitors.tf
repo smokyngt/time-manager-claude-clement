@@ -17,6 +17,11 @@ locals {
       selector  = { "app.kubernetes.io/instance" = "external-secrets" }
       port      = 8080
     }
+    cnpg-operator = {
+      namespace = var.monitoring_platform_namespaces.cnpg_operator
+      selector  = { "app.kubernetes.io/name" = "cloudnative-pg" }
+      port      = 8080
+    }
     velero = {
       namespace = var.monitoring_platform_namespaces.velero
       selector  = { "app.kubernetes.io/name" = "velero" }
@@ -89,16 +94,18 @@ locals {
               replacement: vault
   YAML
 
-  velero_network_policy_manifest = <<-YAML
+  scrape_ingress_policy_targets = toset(["velero", "cnpg-operator"])
+
+  scrape_ingress_policy_manifests = { for k in local.scrape_ingress_policy_targets : k => <<-YAML
     apiVersion: networking.k8s.io/v1
     kind: NetworkPolicy
     metadata:
-      name: allow-monitoring-to-velero
-      namespace: ${var.monitoring_platform_namespaces.velero}
+      name: allow-monitoring-to-${k}
+      namespace: ${local.platform_pod_monitors[k].namespace}
       labels: ${jsonencode(local.common_labels)}
     spec:
       podSelector:
-        matchLabels: ${jsonencode(local.platform_pod_monitors.velero.selector)}
+        matchLabels: ${jsonencode(local.platform_pod_monitors[k].selector)}
       policyTypes:
         - Ingress
       ingress:
@@ -110,8 +117,9 @@ locals {
                 matchLabels: ${jsonencode(var.prometheus_pod_labels)}
           ports:
             - protocol: TCP
-              port: ${local.platform_pod_monitors.velero.port}
+              port: ${local.platform_pod_monitors[k].port}
   YAML
+  }
 }
 
 resource "kubectl_manifest" "platform_pod_monitor" {
@@ -135,8 +143,10 @@ resource "kubectl_manifest" "vault_pod_monitor" {
   ]
 }
 
-resource "kubectl_manifest" "velero_network_policy" {
-  yaml_body = local.velero_network_policy_manifest
+resource "kubectl_manifest" "scrape_ingress_policy" {
+  for_each = local.scrape_ingress_policy_manifests
+
+  yaml_body = each.value
 
   depends_on = [kubernetes_namespace_v1.this]
 }
