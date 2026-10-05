@@ -1,0 +1,85 @@
+## Classes
+
+### Access
+
+Defined in: [utils/access.ts:126](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L126)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Access(): Access;
+```
+
+###### Returns
+
+[`Access`](#access)
+
+#### Properties
+
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-role"></a> `role` | `readonly` | `RoleAccess` | [utils/access.ts:127](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L127) |
+| <a id="property-user"></a> `user` | `readonly` | `UserAccess` | [utils/access.ts:128](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L128) |
+
+#### Methods
+
+##### context()
+
+```ts
+static context(req): AccessContext;
+```
+
+Defined in: [utils/access.ts:136](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L136)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest` | - |
+
+###### Returns
+
+[`AccessContext`](#accesscontext-1)
+
+###### Route
+
+access.context
+
+###### Throws
+
+## Interfaces
+
+### AccessContext
+
+Defined in: [utils/access.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L8)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [utils/access.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L9) |
+
+***
+
+### UserTarget
+
+Defined in: [utils/access.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L14)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id"></a> `id?` | `string` | [utils/access.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L15) |
+| <a id="property-role-1"></a> `role` | `"admin"` \| `"employee"` \| `"manager"` | [utils/access.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L16) |
+
+## Type Aliases
+
+### UserAction
+
+```ts
+type UserAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
+```
+
+Defined in: [utils/access.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access.ts#L12)

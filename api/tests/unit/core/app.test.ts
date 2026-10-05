@@ -47,13 +47,13 @@ describe('app.v2', () => {
 
   it('serves health', async () => {
     const response = await app.inject({ url: '/health' });
-    expect(response.json()).toEqual({ status: 'ok' });
+    expect(response.json<Record<string, unknown>>()).toEqual({ status: 'ok' });
   });
 
   it('puts the request id in error bodies', async () => {
     const response = await app.inject({ headers: { 'x-request-id': 'req-9' }, url: '/nope' });
     expect(response.statusCode).toBe(404);
-    expect(response.json()).toMatchObject({
+    expect(response.json<Record<string, unknown>>()).toMatchObject({
       code: 'route.not.found',
       correlation_id: 'req-9',
       instance: '/nope',
@@ -73,7 +73,7 @@ describe('app.v2', () => {
   it('reports validation failures with errors[]', async () => {
     const response = await app.inject({ method: 'POST', payload: {}, url: '/echo' });
     expect(response.statusCode).toBe(400);
-    expect(response.json()).toMatchObject({
+    expect(response.json<Record<string, unknown>>()).toMatchObject({
       code: 'validation.error',
       errors: [{ code: 'required', params: { missing_property: 'name' }, path: 'body.name' }],
     });
@@ -85,7 +85,7 @@ describe('app.v2', () => {
       payload: { age: '7', extra: 1, name: '  Jo\u0000e  ' },
       url: '/echo',
     });
-    expect(response.json()).toEqual({ body: { age: 7, name: 'Joe' } });
+    expect(response.json<Record<string, unknown>>()).toEqual({ body: { age: 7, name: 'Joe' } });
   });
 
   it('drops prototype keys and refuses __proto__ at parse time', async () => {
@@ -96,7 +96,7 @@ describe('app.v2', () => {
       payload: '{"name":"a","constructor":{"x":1}}',
       url: '/echo',
     });
-    expect(clean.json()).toEqual({ body: { name: 'a' } });
+    expect(clean.json<Record<string, unknown>>()).toEqual({ body: { name: 'a' } });
     const proto = await app.inject({
       headers,
       method: 'POST',

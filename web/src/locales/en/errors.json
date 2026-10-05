@@ -1,0 +1,212 @@
+{
+  "auth": {
+    "invalid": {
+      "credentials": "The email or password is incorrect."
+    },
+    "login": {
+      "failed": "Sign-in failed. Please try again."
+    },
+    "logout": {
+      "failed": "Sign-out failed. Please try again."
+    },
+    "me": {
+      "failed": "Your profile could not be loaded."
+    },
+    "microsoft": {
+      "failed": "Microsoft sign-in failed. Please try again.",
+      "rejected": "Microsoft sign-in was refused.",
+      "unavailable": "Microsoft sign-in is not available right now.",
+      "unknown": {
+        "user": "No account matches this Microsoft identity. Ask an administrator to create one."
+      }
+    },
+    "refresh": {
+      "failed": "Your session could not be renewed. Please sign in again."
+    },
+    "session": {
+      "invalid": "Your session has expired. Please sign in again."
+    }
+  },
+  "clock": {
+    "conflict": "The clock state does not allow this action. Refresh and try again.",
+    "create": {
+      "failed": "The clock entry could not be created."
+    },
+    "current": {
+      "failed": "The current clock could not be loaded."
+    },
+    "delete": {
+      "failed": "The clock entries could not be deleted."
+    },
+    "in": {
+      "failed": "Clocking in failed. Please try again."
+    },
+    "invalid": "The clock times are invalid. Check the dates and try again.",
+    "list": {
+      "failed": "The clock entries could not be loaded."
+    },
+    "not": {
+      "found": "This clock entry no longer exists."
+    },
+    "out": {
+      "failed": "Clocking out failed. Please try again."
+    },
+    "overlap": "This clock entry overlaps another one.",
+    "retrieve": {
+      "failed": "The clock entry could not be loaded."
+    },
+    "update": {
+      "failed": "The clock entry could not be updated."
+    }
+  },
+  "crypto": {
+    "decrypt": {
+      "failed": "Some data could not be read. Please contact support."
+    },
+    "key": {
+      "invalid": "A server configuration problem occurred. Please contact support."
+    }
+  },
+  "duplicate": {
+    "key": "This item already exists."
+  },
+  "internal": {
+    "unexpected": "Something went wrong on our side. Please try again later."
+  },
+  "json": {
+    "invalid": "The request could not be understood. Please try again."
+  },
+  "log": {
+    "create": {
+      "failed": "The action could not be recorded. Please try again."
+    }
+  },
+  "payload": {
+    "too": {
+      "large": "The data sent is too large."
+    }
+  },
+  "rate": {
+    "limit": {
+      "exceeded": "Too many requests. Please wait a moment and try again."
+    }
+  },
+  "report": {
+    "invalid": "The report parameters are invalid. Check the dates and try again.",
+    "team": {
+      "failed": "The team report could not be loaded.",
+      "not": {
+        "found": "This team no longer exists."
+      }
+    },
+    "user": {
+      "failed": "The user report could not be loaded."
+    }
+  },
+  "route": {
+    "not": {
+      "found": "The requested page or resource does not exist."
+    }
+  },
+  "team": {
+    "archive": {
+      "failed": "The teams could not be archived."
+    },
+    "create": {
+      "failed": "The team could not be created."
+    },
+    "delete": {
+      "failed": "The teams could not be deleted."
+    },
+    "list": {
+      "failed": "The teams could not be loaded."
+    },
+    "manager": {
+      "invalid": "The manager must be an active manager or administrator."
+    },
+    "member": {
+      "add": {
+        "failed": "The members could not be added."
+      },
+      "list": {
+        "failed": "The members could not be loaded."
+      },
+      "not": {
+        "found": "This person is not a member of the team."
+      },
+      "remove": {
+        "failed": "The members could not be removed."
+      },
+      "team": {
+        "archived": "This team is archived. Restore it first.",
+        "not": {
+          "found": "This team no longer exists."
+        }
+      },
+      "user": {
+        "archived": "This user is archived. Restore the user first.",
+        "not": {
+          "found": "This user no longer exists."
+        }
+      }
+    },
+    "not": {
+      "found": "This team no longer exists."
+    },
+    "restore": {
+      "failed": "The teams could not be restored."
+    },
+    "retrieve": {
+      "failed": "The team could not be loaded."
+    },
+    "schedule": {
+      "invalid": "The working day must end after it starts."
+    },
+    "update": {
+      "failed": "The team could not be updated."
+    }
+  },
+  "token": {
+    "authentication": {
+      "failed": "Your session has expired. Please sign in again."
+    }
+  },
+  "unauthorized": "You are not allowed to do this.",
+  "user": {
+    "archive": {
+      "failed": "The users could not be archived."
+    },
+    "conflict": "A user with this email already exists.",
+    "create": {
+      "failed": "The user could not be created."
+    },
+    "delete": {
+      "failed": "The users could not be deleted."
+    },
+    "list": {
+      "failed": "The users could not be loaded."
+    },
+    "not": {
+      "found": "This user no longer exists."
+    },
+    "password": {
+      "invalid": "The current password is incorrect."
+    },
+    "restore": {
+      "failed": "The users could not be restored."
+    },
+    "retrieve": {
+      "failed": "The user could not be loaded."
+    },
+    "update": {
+      "failed": "The users could not be updated."
+    }
+  },
+  "validation": {
+    "error": "Some fields are invalid. Check them and try again."
+  },
+  "generic": "Something went wrong. Please try again.",
+  "network": "Cannot reach the server. Check your connection and try again.",
+  "timeout": "The server took too long to answer. Please try again.",
+  "rate_limited": "Too many requests. Try again in {{seconds}} seconds."
+}

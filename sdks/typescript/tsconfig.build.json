@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.json",
-  "compilerOptions": { "allowImportingTsExtensions": false, "noEmit": false, "rewriteRelativeImportExtensions": false },
+  "compilerOptions": { "noEmit": false },
   "include": ["src"],
   "exclude": ["src/__tests__"]
 }

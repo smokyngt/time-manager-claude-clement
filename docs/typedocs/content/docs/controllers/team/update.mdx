@@ -1,0 +1,26 @@
+## Functions
+
+### update()
+
+```ts
+function update(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/team/update.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team/update.ts#L22)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`UpdateBody`](../team.mdx#updatebody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`UpdateResponse`](../team.mdx#updateresponse)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+team.controller.update
+
+#### Throws

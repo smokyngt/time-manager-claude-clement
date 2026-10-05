@@ -1,0 +1,109 @@
+## Classes
+
+### Membership
+
+Defined in: [utils/membership.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/membership.ts#L8)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Membership(): Membership;
+```
+
+###### Returns
+
+[`Membership`](#membership)
+
+#### Methods
+
+##### manages()
+
+```ts
+static manages(actor, userId): Promise<boolean>;
+```
+
+Defined in: [utils/membership.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/membership.ts#L15)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../types/entities/actor.mdx#actor) | - |
+| `userId` | `string` | - |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+utils.membership.manages
+
+##### members()
+
+```ts
+static members(managerId): Promise<string[]>;
+```
+
+Defined in: [utils/membership.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/membership.ts#L39)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `managerId` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`[]\>
+
+###### Route
+
+utils.membership.members
+
+##### reaches()
+
+```ts
+static reaches(actor, userId): Promise<boolean>;
+```
+
+Defined in: [utils/membership.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/membership.ts#L55)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../types/entities/actor.mdx#actor) | - |
+| `userId` | `string` | - |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+utils.membership.reaches
+
+##### teams()
+
+```ts
+static teams(userId): Promise<string[]>;
+```
+
+Defined in: [utils/membership.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/membership.ts#L66)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `userId` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`[]\>
+
+###### Route
+
+utils.membership.teams

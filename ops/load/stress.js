@@ -41,7 +41,9 @@ export const options = {
   tags: { scenario: 'stress' },
 };
 
-export const setup = prepare;
+export function setup() {
+  return prepare();
+}
 
 export default function (data) {
   mixedJourney(data);

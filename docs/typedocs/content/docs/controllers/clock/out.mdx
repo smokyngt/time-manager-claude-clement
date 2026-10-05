@@ -1,0 +1,26 @@
+## Functions
+
+### clockOut()
+
+```ts
+function clockOut(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/clock/out.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/out.ts#L19)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`OutBody`](../clock.mdx#outbody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Clock`](../../types/entities/clock.mdx#clock)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+clock.controller.out
+
+#### Throws

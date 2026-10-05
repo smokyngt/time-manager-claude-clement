@@ -1,0 +1,37 @@
+## Interfaces
+
+### AuthOptions
+
+Defined in: [plugins/auth.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L12)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-scopes"></a> `scopes` | ( \| `"auth:self"` \| `"clocks:manage"` \| `"clocks:read"` \| `"clocks:write"` \| `"reports:read"` \| `"teams:manage"` \| `"teams:read"` \| `"users:manage"` \| `"users:read"` \| `"users:write"`)[] | [plugins/auth.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L13) |
+
+## Functions
+
+### auth()
+
+```ts
+function auth(options): (req, reply) => Promise<void>;
+```
+
+Defined in: [plugins/auth.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L22)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `options` | [`AuthOptions`](#authoptions) | - |
+
+#### Returns
+
+(`req`, `reply`) => `Promise`\<`void`\>
+
+#### Route
+
+plugins.auth
+
+#### Throws

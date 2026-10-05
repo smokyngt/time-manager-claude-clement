@@ -19,7 +19,11 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
-    "paths": { "@/*": ["./src/*"] }
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./src/*"],
+      "@time-manager/sdk": ["../sdks/typescript/src/index.ts"]
+    }
   },
   "include": ["src"]
 }

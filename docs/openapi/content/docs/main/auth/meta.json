@@ -1,0 +1,13 @@
+{
+  "title": "Auth",
+  "description": "Sign in, sessions and Microsoft SSO.",
+  "pages": [
+    "index",
+    "post-auth-login",
+    "post-auth-refresh",
+    "post-auth-logout",
+    "get-auth-me",
+    "get-auth-microsoft",
+    "get-auth-microsoft-callback"
+  ]
+}

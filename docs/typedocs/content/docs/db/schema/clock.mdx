@@ -1,0 +1,40 @@
+## Type Aliases
+
+### ClockInsert
+
+```ts
+type ClockInsert = typeof clocks.$inferInsert;
+```
+
+Defined in: [db/schema/clock.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/db/schema/clock.ts#L35)
+
+***
+
+### ClockRow
+
+```ts
+type ClockRow = typeof clocks.$inferSelect;
+```
+
+Defined in: [db/schema/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/db/schema/clock.ts#L36)
+
+## Variables
+
+### clocks
+
+```ts
+const clocks: PgTableWithColumns<{
+}>;
+```
+
+Defined in: [db/schema/clock.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/db/schema/clock.ts#L10)
+
+***
+
+### clockSource
+
+```ts
+const clockSource: PgEnum<["clock", "manual"]>;
+```
+
+Defined in: [db/schema/clock.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/db/schema/clock.ts#L8)

@@ -14,6 +14,7 @@ function thresholdRows(data) {
   const rows = [];
   for (const [key, metric] of Object.entries(data.metrics)) {
     if (!metric.thresholds) continue;
+    if (key.startsWith('http_reqs{')) continue; // bookkeeping thresholds, see lib/thresholds.js
     for (const [expr, result] of Object.entries(metric.thresholds)) {
       const ok = typeof result === 'object' ? result.ok : !result;
       rows.push({ key, expr, ok });
@@ -34,9 +35,11 @@ export function markdown(data, scenario) {
   const vus = values(data, 'vus_max');
   const rows = thresholdRows(data);
   const failing = rows.filter((row) => !row.ok);
+  // A run that issued no request (setup() crashed, API down) must never read as a pass.
+  const empty = !reqs.count;
   const lines = [];
 
-  lines.push(`## k6 ${scenario}: ${failing.length === 0 ? 'PASS' : 'FAIL'}`, '');
+  lines.push(`## k6 ${scenario}: ${failing.length === 0 && !empty ? 'PASS' : 'FAIL'}${empty ? ' (no request was issued, see the k6 log)' : ''}`, '');
   lines.push(`Run at ${new Date().toISOString()}, test duration ${num((data.state.testRunDurationMs || 0) / 1000, 0)} s.`, '');
   lines.push('| Metric | Value |', '|---|---|');
   lines.push(`| Requests | ${reqs.count ?? '-'} (${num(reqs.rate)} req/s) |`);

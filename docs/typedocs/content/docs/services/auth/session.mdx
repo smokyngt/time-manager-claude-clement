@@ -1,0 +1,123 @@
+## Classes
+
+### Session
+
+Defined in: [services/auth/session.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L22)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Session(): Session;
+```
+
+###### Returns
+
+[`Session`](#session)
+
+#### Methods
+
+##### grace()
+
+```ts
+static grace(params): Promise<boolean>;
+```
+
+Defined in: [services/auth/session.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L28)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | \{ `now`: `number`; `stored`: \{ `created_at`: `number`; `expires_at`: `number`; `family_id`: `string`; `id`: `string`; `revoked_at`: `number` \| `null`; `token_hash`: `string`; `user_id`: `string`; \}; \} | - |
+| `params.now` | `number` | - |
+| `params.stored` | \{ `created_at`: `number`; `expires_at`: `number`; `family_id`: `string`; `id`: `string`; `revoked_at`: `number` \| `null`; `token_hash`: `string`; `user_id`: `string`; \} | - |
+| `params.stored.created_at` | `number` | - |
+| `params.stored.expires_at` | `number` | - |
+| `params.stored.family_id` | `string` | - |
+| `params.stored.id` | `string` | - |
+| `params.stored.revoked_at` | `number` \| `null` | - |
+| `params.stored.token_hash` | `string` | - |
+| `params.stored.user_id` | `string` | - |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+auth.session.grace
+
+##### issue()
+
+```ts
+static issue(params): Promise<SessionResult>;
+```
+
+Defined in: [services/auth/session.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L52)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | \{ `family_id?`: `string`; `user`: \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \}; \} | - |
+| `params.family_id?` | `string` | - |
+| `params.user` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} | - |
+| `params.user.archived_at` | `number` \| `null` | - |
+| `params.user.created_at` | `number` | - |
+| `params.user.email` | `string` | - |
+| `params.user.first_name` | `string` | - |
+| `params.user.id` | `string` | - |
+| `params.user.last_name` | `string` | - |
+| `params.user.microsoft_id` | `string` \| `null` | - |
+| `params.user.password_hash` | `string` \| `null` | - |
+| `params.user.phone_number` | `string` \| `null` | - |
+| `params.user.role` | `"admin"` \| `"employee"` \| `"manager"` | - |
+| `params.user.updated_at` | `number` \| `null` | - |
+
+###### Returns
+
+`Promise`\<[`SessionResult`](#sessionresult)\>
+
+###### Route
+
+auth.session.issue
+
+##### revoke()
+
+```ts
+static revoke(familyId): Promise<void>;
+```
+
+Defined in: [services/auth/session.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L76)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `familyId` | `string` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+auth.session.revoke
+
+## Interfaces
+
+### SessionResult
+
+Defined in: [services/auth/session.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L12)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-access_token"></a> `access_token` | `string` | [services/auth/session.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L13) |
+| <a id="property-expires_in"></a> `expires_in` | `number` | [services/auth/session.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L14) |
+| <a id="property-refresh_expires_in"></a> `refresh_expires_in` | `number` | [services/auth/session.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L15) |
+| <a id="property-refresh_token"></a> `refresh_token` | `string` | [services/auth/session.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L16) |
+| <a id="property-user"></a> `user` | [`User`](../../types/entities/user.mdx#user) | [services/auth/session.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/session.ts#L17) |

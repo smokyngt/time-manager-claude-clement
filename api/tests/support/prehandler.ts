@@ -1,7 +1,6 @@
 import { expect, spyOn } from 'bun:test';
 
 import { Roles } from '@/config/auth/roles.js';
-import { SCOPES } from '@/config/auth/scopes.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { Identity } from '@/middlewares/auth/identity.js';
 

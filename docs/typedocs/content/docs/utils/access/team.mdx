@@ -1,0 +1,157 @@
+## Classes
+
+### TeamAccess
+
+Defined in: [utils/access/team.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L16)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamAccess(): TeamAccess;
+```
+
+###### Returns
+
+[`TeamAccess`](#teamaccess-1)
+
+#### Methods
+
+##### allow()
+
+```ts
+allow(
+   actor, 
+   action, 
+   target?
+): boolean;
+```
+
+Defined in: [utils/access/team.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L24)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `action` | [`TeamAction`](#teamaction) | - |
+| `target?` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+access.team.allow
+
+##### fields()
+
+```ts
+fields(actor, target): string[];
+```
+
+Defined in: [utils/access/team.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L41)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `target` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`string`[]
+
+###### Route
+
+access.team.fields
+
+##### manages()
+
+```ts
+manages(actor, target): boolean;
+```
+
+Defined in: [utils/access/team.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L53)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `target` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+access.team.manages
+
+##### require()
+
+```ts
+require(
+   actor, 
+   action, 
+   target?
+): void;
+```
+
+Defined in: [utils/access/team.ts:65](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L65)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `action` | [`TeamAction`](#teamaction) | - |
+| `target?` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+access.team.require
+
+###### Throws
+
+## Interfaces
+
+### TeamTarget
+
+Defined in: [utils/access/team.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L7)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id"></a> `id?` | `string` | [utils/access/team.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L8) |
+| <a id="property-manager_id"></a> `manager_id?` | `string` | [utils/access/team.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L9) |
+| <a id="property-member"></a> `member?` | `boolean` | [utils/access/team.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L10) |
+
+## Type Aliases
+
+### TeamAction
+
+```ts
+type TeamAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
+```
+
+Defined in: [utils/access/team.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L5)
+
+## Variables
+
+### teamAccess
+
+```ts
+const teamAccess: TeamAccess;
+```
+
+Defined in: [utils/access/team.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/team.ts#L74)

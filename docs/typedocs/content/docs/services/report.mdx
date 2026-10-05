@@ -1,0 +1,78 @@
+## Interfaces
+
+### ReportServiceType
+
+Defined in: [services/report/index.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L7)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team"></a> `team` | (`params`) => `Promise`\<[`TeamResponse`](#teamresponse)\> | [services/report/index.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L8) |
+| <a id="property-user"></a> `user` | (`params`) => `Promise`\<[`UserResponse`](#userresponse)\> | [services/report/index.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L9) |
+
+***
+
+### TeamParams
+
+Defined in: [services/report/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L12)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/report/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L13) |
+| <a id="property-from"></a> `from` | `number` | [services/report/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L14) |
+| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` | [services/report/index.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L15) |
+| <a id="property-team_id"></a> `team_id` | `string` | [services/report/index.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L16) |
+| <a id="property-to"></a> `to` | `number` | [services/report/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L17) |
+
+***
+
+### TeamResponse
+
+Defined in: [services/report/index.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L20)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-report"></a> `report` | [`TeamReport`](../types/entities/report.mdx#teamreport) | [services/report/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L21) |
+
+***
+
+### UserParams
+
+Defined in: [services/report/index.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L24)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/report/index.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L25) |
+| <a id="property-from-1"></a> `from` | `number` | [services/report/index.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L26) |
+| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` | [services/report/index.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L27) |
+| <a id="property-to-1"></a> `to` | `number` | [services/report/index.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L28) |
+| <a id="property-user_id"></a> `user_id` | `string` | [services/report/index.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L29) |
+
+***
+
+### UserResponse
+
+Defined in: [services/report/index.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L32)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-report-1"></a> `report` | [`UserReport`](../types/entities/report.mdx#userreport) | [services/report/index.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L33) |
+
+## Variables
+
+### reportService
+
+```ts
+const reportService: ReportService;
+```
+
+Defined in: [services/report/index.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/index.ts#L41)

@@ -1,0 +1,26 @@
+## Functions
+
+### list()
+
+```ts
+function list(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/user/list.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/user/list.ts#L21)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`ListBody`](../user.mdx#listbody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`ListResponse`](../user.mdx#listresponse)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+user.controller.list
+
+#### Throws

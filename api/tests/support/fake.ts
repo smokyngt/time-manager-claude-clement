@@ -17,10 +17,10 @@ export type LogCall = { args: unknown[]; level: string };
 export class Fake {
   /**
    * @route fake.reply
-   * @returns {FakeReply & FastifyReply}
+   * @returns {FakeReply & Reply}
    */
-  public static reply(): FakeReply & FastifyReply {
-    return new FakeReply() as unknown as FakeReply & FastifyReply;
+  public static reply<Reply extends FastifyReply = FastifyReply>(): FakeReply & Reply {
+    return new FakeReply() as unknown as FakeReply & Reply;
   }
 
   /**

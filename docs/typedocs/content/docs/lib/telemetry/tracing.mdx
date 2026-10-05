@@ -1,0 +1,96 @@
+## Classes
+
+### Tracing
+
+Defined in: [lib/telemetry/tracing.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L17)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Tracing(): Tracing;
+```
+
+###### Returns
+
+[`Tracing`](#tracing)
+
+#### Methods
+
+##### enabled()
+
+```ts
+static enabled(): boolean;
+```
+
+Defined in: [lib/telemetry/tracing.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L22)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+tracing.enabled
+
+##### span()
+
+```ts
+static span<Result>(name, fn): Promise<Result>;
+```
+
+Defined in: [lib/telemetry/tracing.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L32)
+
+###### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Result` |
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `fn` | (`span`) => `Promise`\<`Result`\> | - |
+
+###### Returns
+
+`Promise`\<`Result`\>
+
+###### Route
+
+tracing.span
+
+##### start()
+
+```ts
+static start(): boolean;
+```
+
+Defined in: [lib/telemetry/tracing.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L53)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+tracing.start
+
+##### stop()
+
+```ts
+static stop(): Promise<void>;
+```
+
+Defined in: [lib/telemetry/tracing.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L82)
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+tracing.stop

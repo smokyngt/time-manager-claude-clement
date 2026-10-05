@@ -1,0 +1,310 @@
+## Classes
+
+### Metrics
+
+Defined in: [lib/telemetry/metrics.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L101)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Metrics(): Metrics;
+```
+
+###### Returns
+
+[`Metrics`](#metrics)
+
+#### Methods
+
+##### bind()
+
+```ts
+static bind(sources): void;
+```
+
+Defined in: [lib/telemetry/metrics.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L107)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `sources` | [`MetricsBinding`](#metricsbinding) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+metrics.bind
+
+##### digest()
+
+```ts
+static digest(value): Buffer;
+```
+
+Defined in: [lib/telemetry/metrics.ts:116](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L116)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `string` | - |
+
+###### Returns
+
+`Buffer`
+
+###### Route
+
+metrics.digest
+
+##### error()
+
+```ts
+static error(code, status): void;
+```
+
+Defined in: [lib/telemetry/metrics.ts:126](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L126)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
+| `status` | `number` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+metrics.error
+
+##### event()
+
+```ts
+static event(code): void;
+```
+
+Defined in: [lib/telemetry/metrics.ts:135](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L135)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+metrics.event
+
+##### gate()
+
+```ts
+static gate(params): MetricsGate;
+```
+
+Defined in: [lib/telemetry/metrics.ts:144](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L144)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`MetricsGateParams`](#metricsgateparams) | - |
+
+###### Returns
+
+[`MetricsGate`](#metricsgate-1)
+
+###### Route
+
+metrics.gate
+
+##### observe()
+
+```ts
+static observe(observation): void;
+```
+
+Defined in: [lib/telemetry/metrics.ts:157](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L157)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `observation` | [`MetricsObservation`](#metricsobservation) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+metrics.observe
+
+##### reset()
+
+```ts
+static reset(): void;
+```
+
+Defined in: [lib/telemetry/metrics.ts:175](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L175)
+
+###### Returns
+
+`void`
+
+###### Route
+
+metrics.reset
+
+##### route()
+
+```ts
+static route(url): string;
+```
+
+Defined in: [lib/telemetry/metrics.ts:186](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L186)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `url` | `string` \| `undefined` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+metrics.route
+
+##### scrape()
+
+```ts
+static scrape(accept): Promise<MetricsScrape>;
+```
+
+Defined in: [lib/telemetry/metrics.ts:195](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L195)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `accept` | `string` \| `undefined` | - |
+
+###### Returns
+
+`Promise`\<[`MetricsScrape`](#metricsscrape-1)\>
+
+###### Route
+
+metrics.scrape
+
+##### trace()
+
+```ts
+static trace(): string | undefined;
+```
+
+Defined in: [lib/telemetry/metrics.ts:205](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L205)
+
+###### Returns
+
+`string` \| `undefined`
+
+###### Route
+
+metrics.trace
+
+## Type Aliases
+
+### MetricsBinding
+
+```ts
+type MetricsBinding = object;
+```
+
+Defined in: [lib/telemetry/metrics.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L7)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-openclocks"></a> `openClocks?` | () => `Promise`\<`number`\> | [lib/telemetry/metrics.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L8) |
+| <a id="property-poolmax"></a> `poolMax?` | `number` | [lib/telemetry/metrics.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L9) |
+
+***
+
+### MetricsGate
+
+```ts
+type MetricsGate = "allow" | "deny" | "hide";
+```
+
+Defined in: [lib/telemetry/metrics.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L12)
+
+***
+
+### MetricsGateParams
+
+```ts
+type MetricsGateParams = object;
+```
+
+Defined in: [lib/telemetry/metrics.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L14)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-header"></a> `header` | `string` \| `undefined` | [lib/telemetry/metrics.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L15) |
+| <a id="property-production"></a> `production` | `boolean` | [lib/telemetry/metrics.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L16) |
+| <a id="property-token"></a> `token` | `string` \| `undefined` | [lib/telemetry/metrics.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L17) |
+
+***
+
+### MetricsObservation
+
+```ts
+type MetricsObservation = object;
+```
+
+Defined in: [lib/telemetry/metrics.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L20)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-method"></a> `method` | `string` | [lib/telemetry/metrics.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L21) |
+| <a id="property-route"></a> `route` | `string` | [lib/telemetry/metrics.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L22) |
+| <a id="property-seconds"></a> `seconds` | `number` | [lib/telemetry/metrics.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L23) |
+| <a id="property-status"></a> `status` | `number` | [lib/telemetry/metrics.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L24) |
+| <a id="property-trace"></a> `trace?` | `string` | [lib/telemetry/metrics.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L25) |
+
+***
+
+### MetricsScrape
+
+```ts
+type MetricsScrape = object;
+```
+
+Defined in: [lib/telemetry/metrics.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L28)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-body"></a> `body` | `string` | [lib/telemetry/metrics.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L28) |
+| <a id="property-type"></a> `type` | `string` | [lib/telemetry/metrics.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/metrics.ts#L28) |

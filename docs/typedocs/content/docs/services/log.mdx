@@ -1,0 +1,47 @@
+## Interfaces
+
+### CreateParams
+
+Defined in: [services/log/index.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L5)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor"></a> `actor` | \| `Pick`\<[`Actor`](../types/entities/actor.mdx#actor), `"id"` \| `"role"`\> \| `null` | [services/log/index.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L6) |
+| <a id="property-event"></a> `event` | `string` | [services/log/index.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L7) |
+| <a id="property-metadata"></a> `metadata?` | `Record`\<`string`, `unknown`\> | [services/log/index.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L8) |
+
+***
+
+### CreateResponse
+
+Defined in: [services/log/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L11)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` | [services/log/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L12) |
+
+***
+
+### LogServiceType
+
+Defined in: [services/log/index.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L15)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-create"></a> `create` | (`params`) => `Promise`\<[`CreateResponse`](#createresponse)\> | [services/log/index.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L16) |
+
+## Variables
+
+### logService
+
+```ts
+const logService: LogService;
+```
+
+Defined in: [services/log/index.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/log/index.ts#L23)

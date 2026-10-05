@@ -56,9 +56,11 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(import.meta.dirname, 'src'),
+      '@time-manager/sdk': path.resolve(import.meta.dirname, '../sdks/typescript/src/index.ts'),
     },
   },
   server: {
+    fs: { allow: ['..'] },
     host: true,
     port: 5173,
     proxy: {

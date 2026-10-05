@@ -1,0 +1,102 @@
+## Classes
+
+### ClockRules
+
+Defined in: [services/clock/rules.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L20)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new ClockRules(): ClockRules;
+```
+
+###### Returns
+
+[`ClockRules`](#clockrules)
+
+#### Properties
+
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-maxdurationms"></a> `maxDurationMs` | `readonly` | `number` | [services/clock/rules.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L21) |
+
+#### Methods
+
+##### overlap()
+
+```ts
+static overlap(params): Promise<void>;
+```
+
+Defined in: [services/clock/rules.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L29)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`OverlapParams`](#overlapparams) | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+clock.rules.overlap
+
+###### Throws
+
+##### validate()
+
+```ts
+static validate(params): void;
+```
+
+Defined in: [services/clock/rules.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L54)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ValidateParams`](#validateparams) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+clock.rules.validate
+
+###### Throws
+
+## Interfaces
+
+### OverlapParams
+
+Defined in: [services/clock/rules.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L7)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clockedin"></a> `clockedIn` | `number` | [services/clock/rules.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L8) |
+| <a id="property-clockedout"></a> `clockedOut` | `number` \| `null` | [services/clock/rules.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L9) |
+| <a id="property-excludeid"></a> `excludeId?` | `string` | [services/clock/rules.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L10) |
+| <a id="property-userid"></a> `userId` | `string` | [services/clock/rules.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L11) |
+
+***
+
+### ValidateParams
+
+Defined in: [services/clock/rules.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L14)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clockedin-1"></a> `clockedIn` | `number` | [services/clock/rules.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L15) |
+| <a id="property-clockedout-1"></a> `clockedOut` | `number` \| `null` | [services/clock/rules.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L16) |
+| <a id="property-now"></a> `now` | `number` | [services/clock/rules.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/rules.ts#L17) |

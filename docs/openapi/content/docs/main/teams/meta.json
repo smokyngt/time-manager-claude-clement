@@ -1,0 +1,10 @@
+{
+  "title": "Teams",
+  "description": "Teams and their members.",
+  "pages": [
+    "index",
+    "post-teams-by-id-members-add",
+    "post-teams-by-id-members-list",
+    "post-teams-by-id-members-remove"
+  ]
+}

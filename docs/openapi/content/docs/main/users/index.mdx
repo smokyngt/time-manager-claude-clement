@@ -1,0 +1,28 @@
+---
+title: "users"
+description: "User accounts."
+---
+
+<Cards>
+  <Card title="Create a user" href="/users/post-users-new">
+    Registration is manager-only. A manager can only create employees, an admin can create any role.
+  </Card>
+  <Card title="List users" href="/users/post-users-list">
+    Cursor paginated list ordered by creation time. Managers only see employees they manage or employees without a team.
+  </Card>
+  <Card title="Update users in bulk" href="/users/patch-users">
+    Applies the same data to every id. Authorization is checked for every item before any write. Employees can only change their own names, phone number and password.
+  </Card>
+  <Card title="Delete users in bulk" href="/users/delete-users">
+    Permanently deletes users. Authorization is checked for every item before any deletion. Nobody can delete themselves.
+  </Card>
+  <Card title="Retrieve a user" href="/users/get-users-by-id">
+    Employees can only retrieve themselves. Managers can retrieve employees.
+  </Card>
+  <Card title="Archive a user" href="/users/post-users-by-id-archive">
+    Archive a user. Archived users cannot sign in.
+  </Card>
+  <Card title="Restore a user" href="/users/post-users-by-id-restore">
+    Restore a user. Archived users cannot sign in.
+  </Card>
+</Cards>

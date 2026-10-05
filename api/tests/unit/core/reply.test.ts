@@ -5,11 +5,14 @@ import { Reply } from '@/utils/http/reply.js';
 
 import { Fake } from '../../support/fake.js';
 
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
+import type { FastifyReply } from 'fastify';
+
 describe('utils.reply', () => {
   it('sends the envelope and logs the event', async () => {
     const Created = registerEvent<{ id: string }>({ code: 'thing.created' });
     const req = Fake.request({ actor: { id: 'u1', role: 'admin', team_ids: [] } });
-    const reply = Fake.reply();
+    const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<{ thing: { id: string } }> }>>();
     await Reply.send(req, reply, Created({ payload: { id: 't1' } }), { thing: { id: 't1' } });
     expect(reply.statusCode).toBe(200);
     expect(reply.payload).toMatchObject({

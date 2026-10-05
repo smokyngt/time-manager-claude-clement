@@ -1,0 +1,35 @@
+{
+  "name": "time-manager-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "fumadocs-mdx && next dev",
+    "build": "fumadocs-mdx && next build",
+    "typecheck": "fumadocs-mdx && tsc --noEmit",
+    "check:i18n": "node scripts/check-i18n.mjs"
+  },
+  "dependencies": {
+    "fumadocs-core": "latest",
+    "fumadocs-mdx": "latest",
+    "fumadocs-ui": "latest",
+    "katex": "latest",
+    "mermaid": "latest",
+    "next": "^16",
+    "next-themes": "latest",
+    "react": "latest",
+    "react-dom": "latest",
+    "rehype-katex": "latest",
+    "remark-math": "latest"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/mdx": "latest",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "postcss": "latest",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}

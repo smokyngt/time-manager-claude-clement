@@ -1,0 +1,92 @@
+## Classes
+
+### ErrorHandler
+
+Defined in: [lib/errors/handler.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/handler.ts#L12)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new ErrorHandler(): ErrorHandler;
+```
+
+###### Returns
+
+[`ErrorHandler`](#errorhandler)
+
+#### Methods
+
+##### handle()
+
+```ts
+static handle(
+   error, 
+   req, 
+   reply
+): Promise<void>;
+```
+
+Defined in: [lib/errors/handler.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/handler.ts#L20)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `error` | `unknown` | - |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+errors.handler.handle
+
+##### missing()
+
+```ts
+static missing(req, reply): Promise<void>;
+```
+
+Defined in: [lib/errors/handler.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/handler.ts#L49)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+errors.handler.missing
+
+##### normalize()
+
+```ts
+static normalize(error): AppError;
+```
+
+Defined in: [lib/errors/handler.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/handler.ts#L58)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `error` | `unknown` | - |
+
+###### Returns
+
+[`AppError`](../errors.mdx#apperror)
+
+###### Route
+
+errors.handler.normalize

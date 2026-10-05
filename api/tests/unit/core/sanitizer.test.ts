@@ -15,7 +15,9 @@ describe('utils.sanitizer', () => {
   });
 
   it('drops prototype pollution keys', () => {
-    const polluted = JSON.parse('{"__proto__":{"x":1},"constructor":1,"prototype":2,"ok":3}');
+    const polluted: unknown = JSON.parse(
+      '{"__proto__":{"x":1},"constructor":1,"prototype":2,"ok":3}',
+    );
     const clean = Sanitizer.body(polluted) as Record<string, unknown>;
     expect(Object.keys(clean)).toEqual(['ok']);
     expect(({} as Record<string, unknown>)['x']).toBeUndefined();

@@ -1,0 +1,9 @@
+{
+  "title": "Reports",
+  "description": "Working time reports and KPIs.",
+  "pages": [
+    "index",
+    "post-reports-team",
+    "post-reports-user"
+  ]
+}

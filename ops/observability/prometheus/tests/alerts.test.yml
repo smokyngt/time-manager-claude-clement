@@ -26,7 +26,7 @@ tests:
             exp_annotations:
               summary: "API scrape target is down"
               description: "Alloy cannot scrape api:8000/metrics (instance api) for 1 minute. The api is down, restarting, or METRICS_TOKEN does not match."
-              runbook_url: "/docs/OBSERVABILITY.md#apidown"
+              runbook: "docs/OBSERVABILITY.md#apidown"
 
   - name: 5xx ratio above 2 percent fires
     interval: 15s
@@ -55,7 +55,7 @@ tests:
             exp_annotations:
               summary: "More than 2% of API responses are 5xx"
               description: "5xx ratio is 10% over the last 5 minutes."
-              runbook_url: "/docs/OBSERVABILITY.md#apihigherrorratio"
+              runbook: "docs/OBSERVABILITY.md#apihigherrorratio"
 
   - name: readiness probe failing fires
     interval: 15s
@@ -73,4 +73,4 @@ tests:
             exp_annotations:
               summary: "api /health/ready is failing"
               description: "The readiness probe (database reachable within 2s) has failed for 2 minutes."
-              runbook_url: "/docs/OBSERVABILITY.md#readinessfailing"
+              runbook: "docs/OBSERVABILITY.md#readinessfailing"

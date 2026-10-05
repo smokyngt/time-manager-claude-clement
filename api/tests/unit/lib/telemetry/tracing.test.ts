@@ -33,7 +33,10 @@ describe('Tracing.span', () => {
   });
 
   it('rethrows callback errors', async () => {
-    const failing = Tracing.span('test.fail', () => Promise.reject(new Error('boom')));
-    await expect(failing).rejects.toThrow('boom');
+    const error = await Tracing.span('test.fail', () => Promise.reject(new Error('boom'))).catch(
+      (caught: unknown) => caught,
+    );
+    expect(error).toBeInstanceOf(Error);
+    expect((error as Error).message).toBe('boom');
   });
 });

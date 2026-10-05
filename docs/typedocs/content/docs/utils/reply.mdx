@@ -1,0 +1,56 @@
+## Classes
+
+### Reply
+
+Defined in: [utils/reply.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/reply.ts#L5)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Reply(): Reply;
+```
+
+###### Returns
+
+[`Reply`](#reply)
+
+#### Methods
+
+##### send()
+
+```ts
+static send<Data, Payload>(
+   req, 
+   reply, 
+   event, 
+   data
+): Promise<void>;
+```
+
+Defined in: [utils/reply.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/reply.ts#L14)
+
+###### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Data` |
+| `Payload` |
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../types/envelope.mdx#replyenvelope)\<`Data`\>; \}\> | - |
+| `event` | [`AppEvent`](../lib/events.mdx#appevent)\<`Payload`\> | - |
+| `data` | `Data` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+reply.send

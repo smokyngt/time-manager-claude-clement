@@ -1,0 +1,99 @@
+## Type Aliases
+
+### AppEvent
+
+```ts
+type AppEvent<Payload> = object;
+```
+
+Defined in: [lib/events/base/registry.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L1)
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Payload` |
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-code"></a> `code` | `string` | [lib/events/base/registry.ts:2](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L2) |
+| <a id="property-metadata"></a> `metadata` | `Record`\<`string`, `unknown`\> | [lib/events/base/registry.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L3) |
+| <a id="property-payload"></a> `payload` | `Payload` | [lib/events/base/registry.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L4) |
+
+***
+
+### EventFactory
+
+```ts
+type EventFactory<Payload> = (options) => AppEvent<Payload> & object;
+```
+
+Defined in: [lib/events/base/registry.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L7)
+
+#### Type Declaration
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `code` | `string` | [lib/events/base/registry.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L8) |
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Payload` |
+
+***
+
+### EventOptions
+
+```ts
+type EventOptions<Payload> = object;
+```
+
+Defined in: [lib/events/base/registry.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L11)
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Payload` |
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> | [lib/events/base/registry.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L12) |
+| <a id="property-payload-1"></a> `payload` | `Payload` | [lib/events/base/registry.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L13) |
+
+## Functions
+
+### registerEvent()
+
+```ts
+function registerEvent<Payload>(definition): EventFactory<Payload>;
+```
+
+Defined in: [lib/events/base/registry.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/base/registry.ts#L21)
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Payload` |
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | \{ `code`: `string`; \} | - |
+| `definition.code` | `string` | - |
+
+#### Returns
+
+[`EventFactory`](#eventfactory)\<`Payload`\>
+
+#### Route
+
+events.register

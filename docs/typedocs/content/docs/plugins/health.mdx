@@ -1,0 +1,44 @@
+## Type Aliases
+
+### HealthOptions
+
+```ts
+type HealthOptions = object;
+```
+
+Defined in: [plugins/health.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/health.ts#L6)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-probe"></a> `probe` | [`Probe`](../lib/lifecycle/health.mdx#probe) | [plugins/health.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/health.ts#L7) |
+| <a id="property-timeout"></a> `timeout?` | `number` | [plugins/health.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/health.ts#L8) |
+
+## Variables
+
+### health
+
+```ts
+const health: FastifyPluginCallback<HealthOptions>;
+```
+
+Defined in: [plugins/health.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/health.ts#L52)
+
+#### Route
+
+plugins.health
+
+#### Param
+
+**app**
+
+#### Param
+
+**options**
+
+#### Param
+
+**done**
+
+#### Returns

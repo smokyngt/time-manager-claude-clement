@@ -1,0 +1,62 @@
+## Classes
+
+### Sessions
+
+Defined in: [lib/auth/sessions.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/sessions.ts#L8)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Sessions(): Sessions;
+```
+
+###### Returns
+
+[`Sessions`](#sessions)
+
+#### Methods
+
+##### purge()
+
+```ts
+static purge(): Promise<{
+  deleted: number;
+}>;
+```
+
+Defined in: [lib/auth/sessions.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/sessions.ts#L13)
+
+###### Returns
+
+`Promise`\<\{
+  `deleted`: `number`;
+\}\>
+
+###### Route
+
+sessions.purge
+
+##### revoke()
+
+```ts
+static revoke(params): Promise<void>;
+```
+
+Defined in: [lib/auth/sessions.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/sessions.ts#L33)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | \{ `user_id`: `string`; \} | - |
+| `params.user_id` | `string` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+sessions.revoke

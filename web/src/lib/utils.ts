@@ -1,11 +1,4 @@
-import type { ClassValue } from 'clsx'
-
-import { clsx } from 'clsx'
-import { twMerge } from 'tailwind-merge'
-
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
-}
+export { cn } from '@/lib/cn'
 
 export function getInitials(first_name: string, last_name: string) {
   return `${first_name.charAt(0)}${last_name.charAt(0)}`.toUpperCase()

@@ -1,0 +1,26 @@
+## Functions
+
+### retrieve()
+
+```ts
+function retrieve(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/team/retrieve.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team/retrieve.ts#L21)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Params`: [`RetrieveParams`](../team.mdx#retrieveparams); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Team`](../../types/entities/team.mdx#team)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+team.controller.retrieve
+
+#### Throws

@@ -1,0 +1,13 @@
+{
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "auth",
+    "health",
+    "reports",
+    "teams",
+    "users"
+  ],
+  "root": true,
+  "title": "API Reference"
+}

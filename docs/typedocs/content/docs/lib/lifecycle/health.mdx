@@ -1,0 +1,56 @@
+## Classes
+
+### Health
+
+Defined in: [lib/lifecycle/health.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/lifecycle/health.ts#L3)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Health(): Health;
+```
+
+###### Returns
+
+[`Health`](#health)
+
+#### Methods
+
+##### check()
+
+```ts
+static check(probe, timeout): Promise<boolean>;
+```
+
+Defined in: [lib/lifecycle/health.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/lifecycle/health.ts#L10)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `probe` | [`Probe`](#probe) | - |
+| `timeout` | `number` | - |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+health.check
+
+## Type Aliases
+
+### Probe
+
+```ts
+type Probe = () => Promise<unknown>;
+```
+
+Defined in: [lib/lifecycle/health.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/lifecycle/health.ts#L1)
+
+#### Returns
+
+`Promise`\<`unknown`\>

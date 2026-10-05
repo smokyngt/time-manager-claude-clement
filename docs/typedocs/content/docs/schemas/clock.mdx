@@ -1,0 +1,628 @@
+## Variables
+
+### ClockCreateBodySchema
+
+```ts
+const ClockCreateBodySchema: object;
+```
+
+Defined in: [schemas/clock.ts:143](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L143)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:144](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L144) |
+| <a id="property-properties"></a> `properties` | `object` | - | [schemas/clock.ts:145](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L145) |
+| `properties.clocked_in_at` | `object` | `clockedInProperty` | [schemas/clock.ts:146](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L146) |
+| `properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds. Cannot be in the future."` | `'Clock-in time in epoch milliseconds. Cannot be in the future.'` | [schemas/clock.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L17) |
+| `properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.clocked_out_at` | `object` | `clockedOutProperty` | [schemas/clock.ts:147](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L147) |
+| `properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time."` | `'Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time.'` | [schemas/clock.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L24) |
+| `properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L26) |
+| `properties.clocked_out_at.minimum` | `0` | `0` | [schemas/clock.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L27) |
+| `properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L28) |
+| `properties.note` | `object` | `noteProperty` | [schemas/clock.ts:148](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L148) |
+| `properties.note.description` | `"Free text note."` | `'Free text note.'` | [schemas/clock.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L32) |
+| `properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L33) |
+| `properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L34) |
+| `properties.note.minLength` | `1` | `1` | [schemas/clock.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L35) |
+| `properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L36) |
+| `properties.user_id` | `object` | `userIdProperty` | [schemas/clock.ts:149](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L149) |
+| `properties.user_id.description` | `"Identifier of the user the clock belongs to."` | `'Identifier of the user the clock belongs to.'` | [schemas/clock.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L40) |
+| `properties.user_id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `USER_ID_EXAMPLE` | [schemas/clock.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L41) |
+| `properties.user_id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L42) |
+| `properties.user_id.type` | `"string"` | `'string'` | [schemas/clock.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L43) |
+| <a id="property-required"></a> `required` | readonly \[`"clocked_in_at"`, `"clocked_out_at"`, `"user_id"`\] | - | [schemas/clock.ts:151](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L151) |
+| <a id="property-type"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:152](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L152) |
+
+***
+
+### ClockCurrentDataSchema
+
+```ts
+const ClockCurrentDataSchema: object;
+```
+
+Defined in: [schemas/clock.ts:223](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L223)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-1"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:224](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L224) |
+| <a id="property-properties-1"></a> `properties` | `object` | - | [schemas/clock.ts:225](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L225) |
+| `properties.clock` | `object` | - | [schemas/clock.ts:226](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L226) |
+| `properties.clock.additionalProperties` | `false` | `false` | [schemas/clock.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L67) |
+| `properties.clock.description` | `"The open clock, null when not clocked in."` | `'The open clock, null when not clocked in.'` | [schemas/clock.ts:228](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L228) |
+| `properties.clock.nullable` | `true` | `true` | [schemas/clock.ts:229](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L229) |
+| `properties.clock.properties` | `object` | - | [schemas/clock.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L69) |
+| `properties.clock.properties.clocked_in_at` | `object` | - | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.clock.properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds."` | `'Clock-in time in epoch milliseconds.'` | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.clock.properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.clock.properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.clock.properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.clock.properties.clocked_out_at` | `object` | - | [schemas/clock.ts:71](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L71) |
+| `properties.clock.properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds, null while the clock is open."` | `'Clock-out time in epoch milliseconds, null while the clock is open.'` | [schemas/clock.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L72) |
+| `properties.clock.properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L73) |
+| `properties.clock.properties.clocked_out_at.nullable` | `true` | `true` | [schemas/clock.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L74) |
+| `properties.clock.properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L75) |
+| `properties.clock.properties.created_at` | `object` | - | [schemas/clock.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L77) |
+| `properties.clock.properties.created_at.description` | `"Creation time in epoch milliseconds."` | `'Creation time in epoch milliseconds.'` | [schemas/clock.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L78) |
+| `properties.clock.properties.created_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L79) |
+| `properties.clock.properties.created_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L80) |
+| `properties.clock.properties.duration_ms` | `object` | - | [schemas/clock.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L82) |
+| `properties.clock.properties.duration_ms.description` | `"Duration in milliseconds, null while the clock is open."` | `'Duration in milliseconds, null while the clock is open.'` | [schemas/clock.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L83) |
+| `properties.clock.properties.duration_ms.example` | `28800000` | `28800000` | [schemas/clock.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L84) |
+| `properties.clock.properties.duration_ms.nullable` | `true` | `true` | [schemas/clock.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L85) |
+| `properties.clock.properties.duration_ms.type` | `"integer"` | `'integer'` | [schemas/clock.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L86) |
+| `properties.clock.properties.id` | `object` | - | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.clock.properties.id.description` | `"Unique identifier."` | `'Unique identifier.'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.clock.properties.id.example` | `"5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"` | `ID_EXAMPLE` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.clock.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.clock.properties.id.type` | `"string"` | `'string'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.clock.properties.note` | `object` | - | [schemas/clock.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L89) |
+| `properties.clock.properties.note.description` | `"Free text note, null when absent."` | `'Free text note, null when absent.'` | [schemas/clock.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L90) |
+| `properties.clock.properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L91) |
+| `properties.clock.properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L92) |
+| `properties.clock.properties.note.nullable` | `true` | `true` | [schemas/clock.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L93) |
+| `properties.clock.properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L94) |
+| `properties.clock.properties.object` | `object` | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.clock.properties.object.description` | `"Object type."` | `'Object type.'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.clock.properties.object.enum` | readonly \[`"clock"`\] | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.clock.properties.object.example` | `"clock"` | `'clock'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.clock.properties.object.type` | `"string"` | `'string'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.clock.properties.source` | `object` | - | [schemas/clock.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L97) |
+| `properties.clock.properties.source.description` | `"How the clock was recorded: by the user (clock) or entered by a manager (manual)."` | `'How the clock was recorded: by the user (clock) or entered by a manager (manual).'` | [schemas/clock.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L98) |
+| `properties.clock.properties.source.enum` | readonly \[`"clock"`, `"manual"`\] | `CLOCK_SOURCES` | [schemas/clock.ts:100](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L100) |
+| `properties.clock.properties.source.example` | `"clock"` | `'clock'` | [schemas/clock.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L101) |
+| `properties.clock.properties.source.type` | `"string"` | `'string'` | [schemas/clock.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L102) |
+| `properties.clock.properties.updated_at` | `object` | - | [schemas/clock.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L104) |
+| `properties.clock.properties.updated_at.description` | `"Last update time in epoch milliseconds, null when never updated."` | `'Last update time in epoch milliseconds, null when never updated.'` | [schemas/clock.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L105) |
+| `properties.clock.properties.updated_at.example` | `null` | `null` | [schemas/clock.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L106) |
+| `properties.clock.properties.updated_at.nullable` | `true` | `true` | [schemas/clock.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L107) |
+| `properties.clock.properties.updated_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:108](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L108) |
+| `properties.clock.properties.user_id` | `object` | `userIdProperty` | [schemas/clock.ts:110](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L110) |
+| `properties.clock.properties.user_id.description` | `"Identifier of the user the clock belongs to."` | `'Identifier of the user the clock belongs to.'` | [schemas/clock.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L40) |
+| `properties.clock.properties.user_id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `USER_ID_EXAMPLE` | [schemas/clock.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L41) |
+| `properties.clock.properties.user_id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L42) |
+| `properties.clock.properties.user_id.type` | `"string"` | `'string'` | [schemas/clock.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L43) |
+| `properties.clock.required` | readonly \[`"clocked_in_at"`, `"clocked_out_at"`, `"created_at"`, `"duration_ms"`, `"id"`, `"note"`, `"object"`, `"source"`, `"updated_at"`, `"user_id"`\] | - | [schemas/clock.ts:112](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L112) |
+| `properties.clock.type` | `"object"` | `'object'` | [schemas/clock.ts:124](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L124) |
+| <a id="property-required-1"></a> `required` | readonly \[`"clock"`\] | - | [schemas/clock.ts:232](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L232) |
+| <a id="property-type-1"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:233](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L233) |
+
+***
+
+### ClockDeleteBodySchema
+
+```ts
+const ClockDeleteBodySchema: object;
+```
+
+Defined in: [schemas/clock.ts:216](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L216)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-2"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:217](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L217) |
+| <a id="property-properties-2"></a> `properties` | `object` | - | [schemas/clock.ts:218](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L218) |
+| `properties.ids` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/clock.ts:218](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L218) |
+| <a id="property-required-2"></a> `required` | readonly \[`"ids"`\] | - | [schemas/clock.ts:219](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L219) |
+| <a id="property-type-2"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:220](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L220) |
+
+***
+
+### ClockDeleteDataResponseSchema
+
+```ts
+const ClockDeleteDataResponseSchema: object;
+```
+
+Defined in: [schemas/clock.ts:264](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L264)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-3"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:265](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L265) |
+| <a id="property-properties-3"></a> `properties` | `object` | - | [schemas/clock.ts:266](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L266) |
+| `properties.deleted` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/clock.ts:267](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L267) |
+| `properties.failed` | `object` | `failedArray` | [schemas/clock.ts:268](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L268) |
+| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` | [schemas/clock.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L61) |
+| `properties.failed.items` | `object` | `BulkFailureSchema` | [schemas/clock.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L62) |
+| `properties.failed.items.additionalProperties` | `false` | `false` | [schemas/common.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L87) |
+| `properties.failed.items.properties` | `object` | - | [schemas/common.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L88) |
+| `properties.failed.items.properties.code` | `object` | - | [schemas/common.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L89) |
+| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` | [schemas/common.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L90) |
+| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` | [schemas/common.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L91) |
+| `properties.failed.items.properties.code.type` | `"string"` | `'string'` | [schemas/common.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L92) |
+| `properties.failed.items.properties.id` | `object` | - | [schemas/common.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L94) |
+| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` | [schemas/common.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L95) |
+| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` | [schemas/common.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L96) |
+| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L97) |
+| `properties.failed.items.properties.id.type` | `"string"` | `'string'` | [schemas/common.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L98) |
+| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - | [schemas/common.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L101) |
+| `properties.failed.items.type` | `"object"` | `'object'` | [schemas/common.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L102) |
+| `properties.failed.type` | `"array"` | `'array'` | [schemas/clock.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L63) |
+| `properties.success` | `object` | - | [schemas/clock.ts:269](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L269) |
+| `properties.success.description` | `"True when every id was deleted."` | `'True when every id was deleted.'` | [schemas/clock.ts:269](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L269) |
+| `properties.success.example` | `true` | `true` | [schemas/clock.ts:269](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L269) |
+| `properties.success.type` | `"boolean"` | `'boolean'` | [schemas/clock.ts:269](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L269) |
+| <a id="property-required-3"></a> `required` | readonly \[`"deleted"`, `"failed"`, `"success"`\] | - | [schemas/clock.ts:271](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L271) |
+| <a id="property-type-3"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:272](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L272) |
+
+***
+
+### ClockIdParamsSchema
+
+```ts
+const ClockIdParamsSchema: object;
+```
+
+Defined in: [schemas/clock.ts:127](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L127)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-4"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:128](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L128) |
+| <a id="property-properties-4"></a> `properties` | `object` | - | [schemas/clock.ts:129](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L129) |
+| `properties.id` | `object` | - | [schemas/clock.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L130) |
+| `properties.id.description` | `"Clock identifier."` | `'Clock identifier.'` | [schemas/clock.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L130) |
+| `properties.id.example` | `"5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"` | `ID_EXAMPLE` | [schemas/clock.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L130) |
+| `properties.id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L130) |
+| `properties.id.type` | `"string"` | `'string'` | [schemas/clock.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L130) |
+| <a id="property-required-4"></a> `required` | readonly \[`"id"`\] | - | [schemas/clock.ts:132](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L132) |
+| <a id="property-type-4"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:133](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L133) |
+
+***
+
+### ClockListBodySchema
+
+```ts
+const ClockListBodySchema: object;
+```
+
+Defined in: [schemas/clock.ts:155](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L155)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-5"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:156](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L156) |
+| <a id="property-properties-5"></a> `properties` | `object` | - | [schemas/clock.ts:157](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L157) |
+| `properties.cursor` | `object` | - | [schemas/clock.ts:158](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L158) |
+| `properties.cursor.description` | `"Opaque cursor returned as next by a previous call."` | `'Opaque cursor returned as next by a previous call.'` | [schemas/clock.ts:159](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L159) |
+| `properties.cursor.example` | `"MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA"` | `'MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA'` | [schemas/clock.ts:160](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L160) |
+| `properties.cursor.maxLength` | `200` | `RequestLimits.cursor` | [schemas/clock.ts:161](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L161) |
+| `properties.cursor.minLength` | `1` | `1` | [schemas/clock.ts:162](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L162) |
+| `properties.cursor.type` | `"string"` | `'string'` | [schemas/clock.ts:163](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L163) |
+| `properties.from` | `object` | - | [schemas/clock.ts:165](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L165) |
+| `properties.from.anyOf` | readonly \[\{ `minimum`: `0`; `type`: `"integer"`; \}, \{ `format`: `"date-time"`; `type`: `"string"`; \}\] | - | [schemas/common.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L23) |
+| `properties.from.description` | `"Lower bound on clocked_in_at, inclusive."` | `'Lower bound on clocked_in_at, inclusive.'` | [schemas/clock.ts:165](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L165) |
+| `properties.from.examples` | readonly \[`1767225600000`, `"2026-01-01T00:00:00.000Z"`\] | - | [schemas/common.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L28) |
+| `properties.limit` | `object` | - | [schemas/clock.ts:166](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L166) |
+| `properties.limit.default` | `25` | `RequestLimits.limitDefault` | [schemas/clock.ts:167](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L167) |
+| `properties.limit.description` | `"Page size."` | `'Page size.'` | [schemas/clock.ts:168](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L168) |
+| `properties.limit.example` | `25` | `25` | [schemas/clock.ts:169](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L169) |
+| `properties.limit.maximum` | `100` | `RequestLimits.limit` | [schemas/clock.ts:170](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L170) |
+| `properties.limit.minimum` | `1` | `1` | [schemas/clock.ts:171](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L171) |
+| `properties.limit.type` | `"integer"` | `'integer'` | [schemas/clock.ts:172](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L172) |
+| `properties.open` | `object` | - | [schemas/clock.ts:174](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L174) |
+| `properties.open.description` | `"Only open clocks (true) or only closed clocks (false)."` | `'Only open clocks (true) or only closed clocks (false).'` | [schemas/clock.ts:175](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L175) |
+| `properties.open.example` | `false` | `false` | [schemas/clock.ts:176](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L176) |
+| `properties.open.type` | `"boolean"` | `'boolean'` | [schemas/clock.ts:177](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L177) |
+| `properties.order` | `object` | - | [schemas/clock.ts:179](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L179) |
+| `properties.order.default` | `"desc"` | `'desc'` | [schemas/clock.ts:180](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L180) |
+| `properties.order.description` | `"Sort direction on created_at."` | `'Sort direction on created_at.'` | [schemas/clock.ts:181](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L181) |
+| `properties.order.enum` | readonly \[`"asc"`, `"desc"`\] | - | [schemas/clock.ts:182](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L182) |
+| `properties.order.example` | `"desc"` | `'desc'` | [schemas/clock.ts:183](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L183) |
+| `properties.order.type` | `"string"` | `'string'` | [schemas/clock.ts:184](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L184) |
+| `properties.to` | `object` | - | [schemas/clock.ts:186](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L186) |
+| `properties.to.anyOf` | readonly \[\{ `minimum`: `0`; `type`: `"integer"`; \}, \{ `format`: `"date-time"`; `type`: `"string"`; \}\] | - | [schemas/common.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L23) |
+| `properties.to.description` | `"Upper bound on clocked_in_at, inclusive."` | `'Upper bound on clocked_in_at, inclusive.'` | [schemas/clock.ts:186](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L186) |
+| `properties.to.examples` | readonly \[`1767225600000`, `"2026-01-01T00:00:00.000Z"`\] | - | [schemas/common.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L28) |
+| `properties.user_ids` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/clock.ts:187](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L187) |
+| <a id="property-type-5"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:191](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L191) |
+
+***
+
+### ClockListDataSchema
+
+```ts
+const ClockListDataSchema: object;
+```
+
+Defined in: [schemas/clock.ts:236](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L236)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-6"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:237](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L237) |
+| <a id="property-properties-6"></a> `properties` | `object` | - | [schemas/clock.ts:238](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L238) |
+| `properties.items` | `object` | - | [schemas/clock.ts:239](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L239) |
+| `properties.items.description` | `"Clocks of the page."` | `'Clocks of the page.'` | [schemas/clock.ts:239](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L239) |
+| `properties.items.items` | `object` | `ClockSchema` | [schemas/clock.ts:239](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L239) |
+| `properties.items.items.additionalProperties` | `false` | `false` | [schemas/clock.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L67) |
+| `properties.items.items.description` | `"A time clock entry of a user."` | `'A time clock entry of a user.'` | [schemas/clock.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L68) |
+| `properties.items.items.properties` | `object` | - | [schemas/clock.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L69) |
+| `properties.items.items.properties.clocked_in_at` | `object` | - | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.items.items.properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds."` | `'Clock-in time in epoch milliseconds.'` | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.items.items.properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.items.items.properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.items.items.properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.items.items.properties.clocked_out_at` | `object` | - | [schemas/clock.ts:71](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L71) |
+| `properties.items.items.properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds, null while the clock is open."` | `'Clock-out time in epoch milliseconds, null while the clock is open.'` | [schemas/clock.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L72) |
+| `properties.items.items.properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L73) |
+| `properties.items.items.properties.clocked_out_at.nullable` | `true` | `true` | [schemas/clock.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L74) |
+| `properties.items.items.properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L75) |
+| `properties.items.items.properties.created_at` | `object` | - | [schemas/clock.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L77) |
+| `properties.items.items.properties.created_at.description` | `"Creation time in epoch milliseconds."` | `'Creation time in epoch milliseconds.'` | [schemas/clock.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L78) |
+| `properties.items.items.properties.created_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L79) |
+| `properties.items.items.properties.created_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L80) |
+| `properties.items.items.properties.duration_ms` | `object` | - | [schemas/clock.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L82) |
+| `properties.items.items.properties.duration_ms.description` | `"Duration in milliseconds, null while the clock is open."` | `'Duration in milliseconds, null while the clock is open.'` | [schemas/clock.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L83) |
+| `properties.items.items.properties.duration_ms.example` | `28800000` | `28800000` | [schemas/clock.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L84) |
+| `properties.items.items.properties.duration_ms.nullable` | `true` | `true` | [schemas/clock.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L85) |
+| `properties.items.items.properties.duration_ms.type` | `"integer"` | `'integer'` | [schemas/clock.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L86) |
+| `properties.items.items.properties.id` | `object` | - | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.items.items.properties.id.description` | `"Unique identifier."` | `'Unique identifier.'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.items.items.properties.id.example` | `"5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"` | `ID_EXAMPLE` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.items.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.items.items.properties.id.type` | `"string"` | `'string'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.items.items.properties.note` | `object` | - | [schemas/clock.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L89) |
+| `properties.items.items.properties.note.description` | `"Free text note, null when absent."` | `'Free text note, null when absent.'` | [schemas/clock.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L90) |
+| `properties.items.items.properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L91) |
+| `properties.items.items.properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L92) |
+| `properties.items.items.properties.note.nullable` | `true` | `true` | [schemas/clock.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L93) |
+| `properties.items.items.properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L94) |
+| `properties.items.items.properties.object` | `object` | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.items.items.properties.object.description` | `"Object type."` | `'Object type.'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.items.items.properties.object.enum` | readonly \[`"clock"`\] | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.items.items.properties.object.example` | `"clock"` | `'clock'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.items.items.properties.object.type` | `"string"` | `'string'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.items.items.properties.source` | `object` | - | [schemas/clock.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L97) |
+| `properties.items.items.properties.source.description` | `"How the clock was recorded: by the user (clock) or entered by a manager (manual)."` | `'How the clock was recorded: by the user (clock) or entered by a manager (manual).'` | [schemas/clock.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L98) |
+| `properties.items.items.properties.source.enum` | readonly \[`"clock"`, `"manual"`\] | `CLOCK_SOURCES` | [schemas/clock.ts:100](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L100) |
+| `properties.items.items.properties.source.example` | `"clock"` | `'clock'` | [schemas/clock.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L101) |
+| `properties.items.items.properties.source.type` | `"string"` | `'string'` | [schemas/clock.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L102) |
+| `properties.items.items.properties.updated_at` | `object` | - | [schemas/clock.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L104) |
+| `properties.items.items.properties.updated_at.description` | `"Last update time in epoch milliseconds, null when never updated."` | `'Last update time in epoch milliseconds, null when never updated.'` | [schemas/clock.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L105) |
+| `properties.items.items.properties.updated_at.example` | `null` | `null` | [schemas/clock.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L106) |
+| `properties.items.items.properties.updated_at.nullable` | `true` | `true` | [schemas/clock.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L107) |
+| `properties.items.items.properties.updated_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:108](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L108) |
+| `properties.items.items.properties.user_id` | `object` | `userIdProperty` | [schemas/clock.ts:110](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L110) |
+| `properties.items.items.properties.user_id.description` | `"Identifier of the user the clock belongs to."` | `'Identifier of the user the clock belongs to.'` | [schemas/clock.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L40) |
+| `properties.items.items.properties.user_id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `USER_ID_EXAMPLE` | [schemas/clock.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L41) |
+| `properties.items.items.properties.user_id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L42) |
+| `properties.items.items.properties.user_id.type` | `"string"` | `'string'` | [schemas/clock.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L43) |
+| `properties.items.items.required` | readonly \[`"clocked_in_at"`, `"clocked_out_at"`, `"created_at"`, `"duration_ms"`, `"id"`, `"note"`, `"object"`, `"source"`, `"updated_at"`, `"user_id"`\] | - | [schemas/clock.ts:112](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L112) |
+| `properties.items.items.type` | `"object"` | `'object'` | [schemas/clock.ts:124](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L124) |
+| `properties.items.type` | `"array"` | `'array'` | [schemas/clock.ts:239](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L239) |
+| `properties.more` | `object` | - | [schemas/clock.ts:240](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L240) |
+| `properties.more.description` | `"Whether another page exists."` | `'Whether another page exists.'` | [schemas/clock.ts:240](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L240) |
+| `properties.more.example` | `false` | `false` | [schemas/clock.ts:240](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L240) |
+| `properties.more.type` | `"boolean"` | `'boolean'` | [schemas/clock.ts:240](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L240) |
+| `properties.next` | `object` | - | [schemas/clock.ts:241](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L241) |
+| `properties.next.description` | `"Cursor of the next page, null on the last page."` | `'Cursor of the next page, null on the last page.'` | [schemas/clock.ts:242](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L242) |
+| `properties.next.example` | `null` | `null` | [schemas/clock.ts:243](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L243) |
+| `properties.next.nullable` | `true` | `true` | [schemas/clock.ts:244](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L244) |
+| `properties.next.type` | `"string"` | `'string'` | [schemas/clock.ts:245](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L245) |
+| `properties.total` | `object` | - | [schemas/clock.ts:247](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L247) |
+| `properties.total.description` | `"Total clocks matching the filters."` | `'Total clocks matching the filters.'` | [schemas/clock.ts:247](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L247) |
+| `properties.total.example` | `1` | `1` | [schemas/clock.ts:247](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L247) |
+| `properties.total.type` | `"integer"` | `'integer'` | [schemas/clock.ts:247](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L247) |
+| <a id="property-required-5"></a> `required` | readonly \[`"items"`, `"more"`, `"next"`, `"total"`\] | - | [schemas/clock.ts:249](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L249) |
+| <a id="property-type-6"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:250](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L250) |
+
+***
+
+### ClockNoteBodySchema
+
+```ts
+const ClockNoteBodySchema: object;
+```
+
+Defined in: [schemas/clock.ts:136](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L136)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-7"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:137](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L137) |
+| <a id="property-description"></a> `description` | `"Optional note. Send an empty object when there is none."` | `'Optional note. Send an empty object when there is none.'` | [schemas/clock.ts:138](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L138) |
+| <a id="property-properties-7"></a> `properties` | `object` | - | [schemas/clock.ts:139](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L139) |
+| `properties.note` | `object` | `noteProperty` | [schemas/clock.ts:139](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L139) |
+| `properties.note.description` | `"Free text note."` | `'Free text note.'` | [schemas/clock.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L32) |
+| `properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L33) |
+| `properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L34) |
+| `properties.note.minLength` | `1` | `1` | [schemas/clock.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L35) |
+| `properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L36) |
+| <a id="property-type-7"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:140](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L140) |
+
+***
+
+### ClockResponses
+
+```ts
+const ClockResponses: object;
+```
+
+Defined in: [schemas/clock.ts:275](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L275)
+
+#### Type Declaration
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-create"></a> `create` | `object` | [schemas/clock.ts:276](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L276) |
+| `create.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:277](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L277) |
+| `create.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:278](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L278) |
+| `create.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:279](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L279) |
+| `create.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:280](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L280) |
+| `create.404` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:281](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L281) |
+| `create.409` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:282](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L282) |
+| `create.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:283](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L283) |
+| `create.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:284](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L284) |
+| <a id="property-current"></a> `current` | `object` | [schemas/clock.ts:286](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L286) |
+| `current.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:287](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L287) |
+| `current.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:288](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L288) |
+| `current.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:289](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L289) |
+| `current.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:290](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L290) |
+| <a id="property-delete"></a> `delete` | `object` | [schemas/clock.ts:292](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L292) |
+| `delete.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:293](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L293) |
+| `delete.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:294](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L294) |
+| `delete.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:295](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L295) |
+| `delete.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:296](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L296) |
+| `delete.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:297](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L297) |
+| `delete.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:298](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L298) |
+| <a id="property-in"></a> `in` | `object` | [schemas/clock.ts:300](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L300) |
+| `in.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:301](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L301) |
+| `in.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:302](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L302) |
+| `in.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:303](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L303) |
+| `in.409` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:304](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L304) |
+| `in.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:305](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L305) |
+| `in.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:306](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L306) |
+| <a id="property-list"></a> `list` | `object` | [schemas/clock.ts:308](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L308) |
+| `list.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:309](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L309) |
+| `list.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:310](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L310) |
+| `list.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:311](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L311) |
+| `list.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:312](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L312) |
+| `list.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:313](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L313) |
+| <a id="property-out"></a> `out` | `object` | [schemas/clock.ts:315](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L315) |
+| `out.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:316](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L316) |
+| `out.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:317](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L317) |
+| `out.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:318](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L318) |
+| `out.409` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:319](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L319) |
+| `out.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:320](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L320) |
+| `out.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:321](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L321) |
+| <a id="property-retrieve"></a> `retrieve` | `object` | [schemas/clock.ts:323](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L323) |
+| `retrieve.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:324](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L324) |
+| `retrieve.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:325](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L325) |
+| `retrieve.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:326](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L326) |
+| `retrieve.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:327](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L327) |
+| `retrieve.404` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:328](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L328) |
+| `retrieve.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:329](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L329) |
+| `retrieve.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:330](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L330) |
+| <a id="property-update"></a> `update` | `object` | [schemas/clock.ts:332](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L332) |
+| `update.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:333](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L333) |
+| `update.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:334](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L334) |
+| `update.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:335](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L335) |
+| `update.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:336](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L336) |
+| `update.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:337](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L337) |
+| `update.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/clock.ts:338](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L338) |
+
+***
+
+### ClockSchema
+
+```ts
+const ClockSchema: object;
+```
+
+Defined in: [schemas/clock.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L66)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-8"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L67) |
+| <a id="property-description-1"></a> `description` | `"A time clock entry of a user."` | `'A time clock entry of a user.'` | [schemas/clock.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L68) |
+| <a id="property-properties-8"></a> `properties` | `object` | - | [schemas/clock.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L69) |
+| `properties.clocked_in_at` | `object` | - | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds."` | `'Clock-in time in epoch milliseconds.'` | [schemas/clock.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L70) |
+| `properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.clocked_out_at` | `object` | - | [schemas/clock.ts:71](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L71) |
+| `properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds, null while the clock is open."` | `'Clock-out time in epoch milliseconds, null while the clock is open.'` | [schemas/clock.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L72) |
+| `properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L73) |
+| `properties.clocked_out_at.nullable` | `true` | `true` | [schemas/clock.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L74) |
+| `properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L75) |
+| `properties.created_at` | `object` | - | [schemas/clock.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L77) |
+| `properties.created_at.description` | `"Creation time in epoch milliseconds."` | `'Creation time in epoch milliseconds.'` | [schemas/clock.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L78) |
+| `properties.created_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L79) |
+| `properties.created_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L80) |
+| `properties.duration_ms` | `object` | - | [schemas/clock.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L82) |
+| `properties.duration_ms.description` | `"Duration in milliseconds, null while the clock is open."` | `'Duration in milliseconds, null while the clock is open.'` | [schemas/clock.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L83) |
+| `properties.duration_ms.example` | `28800000` | `28800000` | [schemas/clock.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L84) |
+| `properties.duration_ms.nullable` | `true` | `true` | [schemas/clock.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L85) |
+| `properties.duration_ms.type` | `"integer"` | `'integer'` | [schemas/clock.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L86) |
+| `properties.id` | `object` | - | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.id.description` | `"Unique identifier."` | `'Unique identifier.'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.id.example` | `"5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"` | `ID_EXAMPLE` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.id.type` | `"string"` | `'string'` | [schemas/clock.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L88) |
+| `properties.note` | `object` | - | [schemas/clock.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L89) |
+| `properties.note.description` | `"Free text note, null when absent."` | `'Free text note, null when absent.'` | [schemas/clock.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L90) |
+| `properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L91) |
+| `properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L92) |
+| `properties.note.nullable` | `true` | `true` | [schemas/clock.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L93) |
+| `properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L94) |
+| `properties.object` | `object` | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.object.description` | `"Object type."` | `'Object type.'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.object.enum` | readonly \[`"clock"`\] | - | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.object.example` | `"clock"` | `'clock'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.object.type` | `"string"` | `'string'` | [schemas/clock.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L96) |
+| `properties.source` | `object` | - | [schemas/clock.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L97) |
+| `properties.source.description` | `"How the clock was recorded: by the user (clock) or entered by a manager (manual)."` | `'How the clock was recorded: by the user (clock) or entered by a manager (manual).'` | [schemas/clock.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L98) |
+| `properties.source.enum` | readonly \[`"clock"`, `"manual"`\] | `CLOCK_SOURCES` | [schemas/clock.ts:100](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L100) |
+| `properties.source.example` | `"clock"` | `'clock'` | [schemas/clock.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L101) |
+| `properties.source.type` | `"string"` | `'string'` | [schemas/clock.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L102) |
+| `properties.updated_at` | `object` | - | [schemas/clock.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L104) |
+| `properties.updated_at.description` | `"Last update time in epoch milliseconds, null when never updated."` | `'Last update time in epoch milliseconds, null when never updated.'` | [schemas/clock.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L105) |
+| `properties.updated_at.example` | `null` | `null` | [schemas/clock.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L106) |
+| `properties.updated_at.nullable` | `true` | `true` | [schemas/clock.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L107) |
+| `properties.updated_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:108](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L108) |
+| `properties.user_id` | `object` | `userIdProperty` | [schemas/clock.ts:110](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L110) |
+| `properties.user_id.description` | `"Identifier of the user the clock belongs to."` | `'Identifier of the user the clock belongs to.'` | [schemas/clock.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L40) |
+| `properties.user_id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `USER_ID_EXAMPLE` | [schemas/clock.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L41) |
+| `properties.user_id.format` | `"uuid"` | `'uuid'` | [schemas/clock.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L42) |
+| `properties.user_id.type` | `"string"` | `'string'` | [schemas/clock.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L43) |
+| <a id="property-required-6"></a> `required` | readonly \[`"clocked_in_at"`, `"clocked_out_at"`, `"created_at"`, `"duration_ms"`, `"id"`, `"note"`, `"object"`, `"source"`, `"updated_at"`, `"user_id"`\] | - | [schemas/clock.ts:112](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L112) |
+| <a id="property-type-8"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:124](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L124) |
+
+***
+
+### ClockUpdateBodySchema
+
+```ts
+const ClockUpdateBodySchema: object;
+```
+
+Defined in: [schemas/clock.ts:206](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L206)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-9"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:207](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L207) |
+| <a id="property-properties-9"></a> `properties` | `object` | - | [schemas/clock.ts:208](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L208) |
+| `properties.data` | `object` | `ClockUpdateDataSchema` | [schemas/clock.ts:209](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L209) |
+| `properties.data.additionalProperties` | `false` | `false` | [schemas/clock.ts:195](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L195) |
+| `properties.data.description` | `"Fields to change."` | `'Fields to change.'` | [schemas/clock.ts:196](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L196) |
+| `properties.data.minProperties` | `1` | `1` | [schemas/clock.ts:197](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L197) |
+| `properties.data.properties` | `object` | - | [schemas/clock.ts:198](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L198) |
+| `properties.data.properties.clocked_in_at` | `object` | `clockedInProperty` | [schemas/clock.ts:199](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L199) |
+| `properties.data.properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds. Cannot be in the future."` | `'Clock-in time in epoch milliseconds. Cannot be in the future.'` | [schemas/clock.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L17) |
+| `properties.data.properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.data.properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.data.properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.data.properties.clocked_out_at` | `object` | `clockedOutProperty` | [schemas/clock.ts:200](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L200) |
+| `properties.data.properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time."` | `'Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time.'` | [schemas/clock.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L24) |
+| `properties.data.properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L26) |
+| `properties.data.properties.clocked_out_at.minimum` | `0` | `0` | [schemas/clock.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L27) |
+| `properties.data.properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L28) |
+| `properties.data.properties.note` | `object` | - | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.data.properties.note.description` | `"Free text note, null to clear it."` | `'Free text note, null to clear it.'` | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.data.properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L33) |
+| `properties.data.properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L34) |
+| `properties.data.properties.note.minLength` | `1` | `1` | [schemas/clock.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L35) |
+| `properties.data.properties.note.nullable` | `true` | `true` | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.data.properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L36) |
+| `properties.data.type` | `"object"` | `'object'` | [schemas/clock.ts:203](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L203) |
+| `properties.ids` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/clock.ts:210](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L210) |
+| <a id="property-required-7"></a> `required` | readonly \[`"data"`, `"ids"`\] | - | [schemas/clock.ts:212](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L212) |
+| <a id="property-type-9"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:213](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L213) |
+
+***
+
+### ClockUpdateDataResponseSchema
+
+```ts
+const ClockUpdateDataResponseSchema: object;
+```
+
+Defined in: [schemas/clock.ts:253](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L253)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-10"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:254](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L254) |
+| <a id="property-properties-10"></a> `properties` | `object` | - | [schemas/clock.ts:255](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L255) |
+| `properties.failed` | `object` | `failedArray` | [schemas/clock.ts:256](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L256) |
+| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` | [schemas/clock.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L61) |
+| `properties.failed.items` | `object` | `BulkFailureSchema` | [schemas/clock.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L62) |
+| `properties.failed.items.additionalProperties` | `false` | `false` | [schemas/common.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L87) |
+| `properties.failed.items.properties` | `object` | - | [schemas/common.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L88) |
+| `properties.failed.items.properties.code` | `object` | - | [schemas/common.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L89) |
+| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` | [schemas/common.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L90) |
+| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` | [schemas/common.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L91) |
+| `properties.failed.items.properties.code.type` | `"string"` | `'string'` | [schemas/common.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L92) |
+| `properties.failed.items.properties.id` | `object` | - | [schemas/common.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L94) |
+| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` | [schemas/common.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L95) |
+| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` | [schemas/common.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L96) |
+| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L97) |
+| `properties.failed.items.properties.id.type` | `"string"` | `'string'` | [schemas/common.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L98) |
+| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - | [schemas/common.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L101) |
+| `properties.failed.items.type` | `"object"` | `'object'` | [schemas/common.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L102) |
+| `properties.failed.type` | `"array"` | `'array'` | [schemas/clock.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L63) |
+| `properties.success` | `object` | - | [schemas/clock.ts:257](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L257) |
+| `properties.success.description` | `"True when every id was updated."` | `'True when every id was updated.'` | [schemas/clock.ts:257](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L257) |
+| `properties.success.example` | `true` | `true` | [schemas/clock.ts:257](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L257) |
+| `properties.success.type` | `"boolean"` | `'boolean'` | [schemas/clock.ts:257](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L257) |
+| `properties.updated` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/clock.ts:258](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L258) |
+| <a id="property-required-8"></a> `required` | readonly \[`"failed"`, `"success"`, `"updated"`\] | - | [schemas/clock.ts:260](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L260) |
+| <a id="property-type-10"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:261](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L261) |
+
+***
+
+### ClockUpdateDataSchema
+
+```ts
+const ClockUpdateDataSchema: object;
+```
+
+Defined in: [schemas/clock.ts:194](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L194)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties-11"></a> `additionalProperties` | `false` | `false` | [schemas/clock.ts:195](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L195) |
+| <a id="property-description-2"></a> `description` | `"Fields to change."` | `'Fields to change.'` | [schemas/clock.ts:196](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L196) |
+| <a id="property-minproperties"></a> `minProperties` | `1` | `1` | [schemas/clock.ts:197](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L197) |
+| <a id="property-properties-11"></a> `properties` | `object` | - | [schemas/clock.ts:198](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L198) |
+| `properties.clocked_in_at` | `object` | `clockedInProperty` | [schemas/clock.ts:199](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L199) |
+| `properties.clocked_in_at.description` | `"Clock-in time in epoch milliseconds. Cannot be in the future."` | `'Clock-in time in epoch milliseconds. Cannot be in the future.'` | [schemas/clock.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L17) |
+| `properties.clocked_in_at.example` | `1767254400000` | `1767254400000` | [schemas/clock.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L18) |
+| `properties.clocked_in_at.minimum` | `0` | `0` | [schemas/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L19) |
+| `properties.clocked_in_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L20) |
+| `properties.clocked_out_at` | `object` | `clockedOutProperty` | [schemas/clock.ts:200](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L200) |
+| `properties.clocked_out_at.description` | `"Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time."` | `'Clock-out time in epoch milliseconds. Must be after the clock-in time, not in the future, and at most 24 hours after the clock-in time.'` | [schemas/clock.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L24) |
+| `properties.clocked_out_at.example` | `1767283200000` | `1767283200000` | [schemas/clock.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L26) |
+| `properties.clocked_out_at.minimum` | `0` | `0` | [schemas/clock.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L27) |
+| `properties.clocked_out_at.type` | `"integer"` | `'integer'` | [schemas/clock.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L28) |
+| `properties.note` | `object` | - | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.note.description` | `"Free text note, null to clear it."` | `'Free text note, null to clear it.'` | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.note.example` | `"Worked from the client site."` | `'Worked from the client site.'` | [schemas/clock.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L33) |
+| `properties.note.maxLength` | `500` | `500` | [schemas/clock.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L34) |
+| `properties.note.minLength` | `1` | `1` | [schemas/clock.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L35) |
+| `properties.note.nullable` | `true` | `true` | [schemas/clock.ts:201](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L201) |
+| `properties.note.type` | `"string"` | `'string'` | [schemas/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L36) |
+| <a id="property-type-11"></a> `type` | `"object"` | `'object'` | [schemas/clock.ts:203](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/clock.ts#L203) |

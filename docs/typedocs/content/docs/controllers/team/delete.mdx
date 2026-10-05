@@ -1,0 +1,26 @@
+## Functions
+
+### remove()
+
+```ts
+function remove(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/team/delete.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team/delete.ts#L22)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`DeleteBody`](../team.mdx#deletebody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`DeleteResponse`](../team.mdx#deleteresponse)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+team.controller.delete
+
+#### Throws

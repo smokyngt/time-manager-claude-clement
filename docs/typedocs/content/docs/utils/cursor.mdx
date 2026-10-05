@@ -1,0 +1,150 @@
+## Classes
+
+### Cursor
+
+Defined in: [utils/cursor.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L31)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Cursor(): Cursor;
+```
+
+###### Returns
+
+[`Cursor`](#cursor)
+
+#### Methods
+
+##### decode()
+
+```ts
+static decode(cursor): Position;
+```
+
+Defined in: [utils/cursor.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L38)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `cursor` | `string` | - |
+
+###### Returns
+
+`Position`
+
+###### Route
+
+cursor.decode
+
+###### Throws
+
+##### encode()
+
+```ts
+static encode(position): string;
+```
+
+Defined in: [utils/cursor.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L55)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `position` | `Position` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+cursor.encode
+
+##### paginate()
+
+```ts
+static paginate<Table>(table, params): Promise<CursorPage<Table["$inferSelect"]>>;
+```
+
+Defined in: [utils/cursor.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L66)
+
+###### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Table` *extends* [`CursorTable`](#cursortable) |
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `table` | `Table` | - |
+| `params` | [`CursorParams`](#cursorparams) | - |
+
+###### Returns
+
+`Promise`\<[`CursorPage`](#cursorpage)\<`Table`\[`"$inferSelect"`\]\>\>
+
+###### Route
+
+cursor.paginate
+
+###### Throws
+
+## Interfaces
+
+### CursorPage
+
+Defined in: [utils/cursor.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L9)
+
+#### Type Parameters
+
+| Type Parameter |
+| ------ |
+| `Item` |
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-items"></a> `items` | `Item`[] | [utils/cursor.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L10) |
+| <a id="property-more"></a> `more` | `boolean` | [utils/cursor.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L11) |
+| <a id="property-next"></a> `next` | `string` \| `null` | [utils/cursor.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L12) |
+| <a id="property-total"></a> `total` | `number` | [utils/cursor.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L13) |
+
+***
+
+### CursorParams
+
+Defined in: [utils/cursor.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L16)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` | [utils/cursor.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L17) |
+| <a id="property-filters"></a> `filters?` | `SQL`\<`unknown`\> | [utils/cursor.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L18) |
+| <a id="property-limit"></a> `limit` | `number` | [utils/cursor.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L19) |
+| <a id="property-order"></a> `order` | `"asc"` \| `"desc"` | [utils/cursor.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L20) |
+| <a id="property-sort"></a> `sort` | `"created_at"` | [utils/cursor.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L21) |
+
+## Type Aliases
+
+### CursorTable
+
+```ts
+type CursorTable = object & PgTable;
+```
+
+Defined in: [utils/cursor.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L24)
+
+#### Type Declaration
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `created_at` | `AnyPgColumn` | [utils/cursor.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L24) |
+| `id` | `AnyPgColumn` | [utils/cursor.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/cursor.ts#L24) |

@@ -1,0 +1,33 @@
+{
+  "name": "time-manager-openapi-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run generate && next dev",
+    "generate": "bun scripts/generate-docs.mts",
+    "audit": "bun scripts/audit.mts",
+    "typecheck": "fumadocs-mdx && next typegen && tsc --noEmit",
+    "build": "bun run generate && next build",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "fumadocs-core": "^16.16.2",
+    "fumadocs-mdx": "^15.4.6",
+    "fumadocs-openapi": "^12.3.0",
+    "fumadocs-ui": "^16.16.2",
+    "next": "16",
+    "postcss": "^8.5.29",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "tailwindcss": "^4.3.3"
+  },
+  "devDependencies": {
+    "@types/mdx": "^2.0.14",
+    "@types/node": "^26.6.4",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "typescript": "5.9"
+  }
+}

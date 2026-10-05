@@ -1,0 +1,208 @@
+## Classes
+
+### Tokens
+
+Defined in: [lib/auth/tokens.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L26)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Tokens(): Tokens;
+```
+
+###### Returns
+
+[`Tokens`](#tokens)
+
+#### Methods
+
+##### access()
+
+```ts
+static access(user): Promise<AccessToken>;
+```
+
+Defined in: [lib/auth/tokens.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L32)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `user` | \{ `id`: `string`; `role`: `"admin"` \| `"employee"` \| `"manager"`; \} | - |
+| `user.id` | `string` | - |
+| `user.role` | `"admin"` \| `"employee"` \| `"manager"` | - |
+
+###### Returns
+
+`Promise`\<[`AccessToken`](#accesstoken)\>
+
+###### Route
+
+tokens.access
+
+##### accessTtl()
+
+```ts
+static accessTtl(): number;
+```
+
+Defined in: [lib/auth/tokens.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L49)
+
+###### Returns
+
+`number`
+
+###### Route
+
+tokens.accessTtl
+
+##### hash()
+
+```ts
+static hash(token): string;
+```
+
+Defined in: [lib/auth/tokens.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L58)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `token` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+tokens.hash
+
+##### refresh()
+
+```ts
+static refresh(): RefreshToken;
+```
+
+Defined in: [lib/auth/tokens.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L67)
+
+###### Returns
+
+[`RefreshToken`](#refreshtoken)
+
+###### Route
+
+tokens.refresh
+
+##### refreshTtl()
+
+```ts
+static refreshTtl(): number;
+```
+
+Defined in: [lib/auth/tokens.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L81)
+
+###### Returns
+
+`number`
+
+###### Route
+
+tokens.refreshTtl
+
+##### secret()
+
+```ts
+static secret(name): Uint8Array;
+```
+
+Defined in: [lib/auth/tokens.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L90)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+
+###### Returns
+
+`Uint8Array`
+
+###### Route
+
+tokens.secret
+
+##### secretText()
+
+```ts
+static secretText(name): string;
+```
+
+Defined in: [lib/auth/tokens.ts:99](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L99)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+tokens.secretText
+
+##### verify()
+
+```ts
+static verify(token): Promise<Actor>;
+```
+
+Defined in: [lib/auth/tokens.ts:109](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L109)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `token` | `string` | - |
+
+###### Returns
+
+`Promise`\<[`Actor`](../../types/entities/actor.mdx#actor)\>
+
+###### Route
+
+tokens.verify
+
+###### Throws
+
+## Interfaces
+
+### AccessToken
+
+Defined in: [lib/auth/tokens.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L15)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-expires_in"></a> `expires_in` | `number` | [lib/auth/tokens.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L16) |
+| <a id="property-token"></a> `token` | `string` | [lib/auth/tokens.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L17) |
+
+***
+
+### RefreshToken
+
+Defined in: [lib/auth/tokens.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L20)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-expires_at"></a> `expires_at` | `number` | [lib/auth/tokens.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L21) |
+| <a id="property-hash"></a> `hash` | `string` | [lib/auth/tokens.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L22) |
+| <a id="property-token-1"></a> `token` | `string` | [lib/auth/tokens.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/tokens.ts#L23) |

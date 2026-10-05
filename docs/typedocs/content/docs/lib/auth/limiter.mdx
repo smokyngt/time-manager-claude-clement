@@ -1,0 +1,123 @@
+## Classes
+
+### Limiter
+
+Defined in: [lib/auth/limiter.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L11)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Limiter(): Limiter;
+```
+
+###### Returns
+
+[`Limiter`](#limiter)
+
+#### Methods
+
+##### blocked()
+
+```ts
+static blocked(email): boolean;
+```
+
+Defined in: [lib/auth/limiter.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L19)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+limiter.blocked
+
+##### clear()
+
+```ts
+static clear(email): void;
+```
+
+Defined in: [lib/auth/limiter.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L37)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+limiter.clear
+
+##### fail()
+
+```ts
+static fail(email): void;
+```
+
+Defined in: [lib/auth/limiter.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L46)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+limiter.fail
+
+##### key()
+
+```ts
+static key(email): string;
+```
+
+Defined in: [lib/auth/limiter.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L68)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+limiter.key
+
+##### reset()
+
+```ts
+static reset(): void;
+```
+
+Defined in: [lib/auth/limiter.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L76)
+
+###### Returns
+
+`void`
+
+###### Route
+
+limiter.reset

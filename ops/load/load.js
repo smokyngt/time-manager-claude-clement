@@ -1,6 +1,6 @@
 // Load: ramp to 50 VUs over 5 minutes (40 employees + 10 managers), hold, ramp down.
 //   k6 run -e BASE_URL=http://localhost:8000 ops/load/load.js
-// Override: -e VUS_EMPLOYEES=40 -e VUS_MANAGERS=10 -e HOLD=2m
+// Override: -e VUS_EMPLOYEES=40 -e VUS_MANAGERS=10 -e RAMP=5m -e HOLD=2m
 import { EMPLOYEES, MANAGERS } from './lib/config.js';
 import { summarize } from './lib/summary.js';
 import { thresholds } from './lib/thresholds.js';
@@ -8,10 +8,11 @@ import { accountOf, employeeJourney, managerJourney, prepare } from './lib/workl
 
 const employeeVus = Number(__ENV.VUS_EMPLOYEES || 40);
 const managerVus = Number(__ENV.VUS_MANAGERS || 10);
+const ramp = __ENV.RAMP || '5m';
 const hold = __ENV.HOLD || '2m';
 
 const stages = (target) => [
-  { duration: '5m', target },
+  { duration: ramp, target },
   { duration: hold, target },
   { duration: '30s', target: 0 },
 ];
@@ -26,7 +27,9 @@ export const options = {
   tags: { scenario: 'load' },
 };
 
-export const setup = prepare;
+export function setup() {
+  return prepare();
+}
 
 // A VU runs one scenario for its whole life, so its account is stable per scenario.
 export function employees(data) {

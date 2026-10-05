@@ -30,7 +30,9 @@ export const options = {
   tags: { scenario: 'spike' },
 };
 
-export const setup = prepare;
+export function setup() {
+  return prepare();
+}
 
 export default function (data) {
   mixedJourney(data);

@@ -1,0 +1,85 @@
+## Classes
+
+### TeamQuery
+
+Defined in: [services/team/query.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team/query.ts#L8)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamQuery(): TeamQuery;
+```
+
+###### Returns
+
+[`TeamQuery`](#teamquery)
+
+#### Methods
+
+##### count()
+
+```ts
+static count(id): Promise<number>;
+```
+
+Defined in: [services/team/query.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team/query.ts#L14)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | - |
+
+###### Returns
+
+`Promise`\<`number`\>
+
+###### Route
+
+team.query.count
+
+##### counts()
+
+```ts
+static counts(ids): Promise<Map<string, number>>;
+```
+
+Defined in: [services/team/query.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team/query.ts#L25)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ids` | `string`[] | - |
+
+###### Returns
+
+`Promise`\<`Map`\<`string`, `number`\>\>
+
+###### Route
+
+team.query.counts
+
+##### member()
+
+```ts
+static member(userId): SQL;
+```
+
+Defined in: [services/team/query.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team/query.ts#L43)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `userId` | `string` | - |
+
+###### Returns
+
+`SQL`
+
+###### Route
+
+team.query.member

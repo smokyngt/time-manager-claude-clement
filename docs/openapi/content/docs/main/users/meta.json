@@ -1,0 +1,14 @@
+{
+  "title": "Users",
+  "description": "User accounts.",
+  "pages": [
+    "index",
+    "post-users-new",
+    "post-users-list",
+    "patch-users",
+    "delete-users",
+    "get-users-by-id",
+    "post-users-by-id-archive",
+    "post-users-by-id-restore"
+  ]
+}

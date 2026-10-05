@@ -1,0 +1,49 @@
+## Classes
+
+### ClockMapper
+
+Defined in: [utils/clock-mapper.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/clock-mapper.ts#L4)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new ClockMapper(): ClockMapper;
+```
+
+###### Returns
+
+[`ClockMapper`](#clockmapper)
+
+#### Methods
+
+##### entity()
+
+```ts
+static entity(row): Clock;
+```
+
+Defined in: [utils/clock-mapper.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/clock-mapper.ts#L10)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `row` | \{ `clocked_in_at`: `number`; `clocked_out_at`: `number` \| `null`; `created_at`: `number`; `id`: `string`; `note`: `string` \| `null`; `source`: `"clock"` \| `"manual"`; `updated_at`: `number` \| `null`; `user_id`: `string`; \} | - |
+| `row.clocked_in_at` | `number` | - |
+| `row.clocked_out_at` | `number` \| `null` | - |
+| `row.created_at` | `number` | - |
+| `row.id` | `string` | - |
+| `row.note` | `string` \| `null` | - |
+| `row.source` | `"clock"` \| `"manual"` | - |
+| `row.updated_at` | `number` \| `null` | - |
+| `row.user_id` | `string` | - |
+
+###### Returns
+
+[`Clock`](../types/entities/clock.mdx#clock)
+
+###### Route
+
+clock.mapper.entity

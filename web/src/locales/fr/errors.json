@@ -1,0 +1,212 @@
+{
+  "auth": {
+    "invalid": {
+      "credentials": "L'adresse e-mail ou le mot de passe est incorrect."
+    },
+    "login": {
+      "failed": "La connexion a échoué. Veuillez réessayer."
+    },
+    "logout": {
+      "failed": "La déconnexion a échoué. Veuillez réessayer."
+    },
+    "me": {
+      "failed": "Votre profil n'a pas pu être chargé."
+    },
+    "microsoft": {
+      "failed": "La connexion Microsoft a échoué. Veuillez réessayer.",
+      "rejected": "La connexion Microsoft a été refusée.",
+      "unavailable": "La connexion Microsoft n'est pas disponible pour le moment.",
+      "unknown": {
+        "user": "Aucun compte ne correspond à cette identité Microsoft. Demandez à un administrateur d'en créer un."
+      }
+    },
+    "refresh": {
+      "failed": "Votre session n'a pas pu être renouvelée. Veuillez vous reconnecter."
+    },
+    "session": {
+      "invalid": "Votre session a expiré. Veuillez vous reconnecter."
+    }
+  },
+  "clock": {
+    "conflict": "L'état du pointage ne permet pas cette action. Actualisez puis réessayez.",
+    "create": {
+      "failed": "L'entrée de pointage n'a pas pu être créée."
+    },
+    "current": {
+      "failed": "Le pointage en cours n'a pas pu être chargé."
+    },
+    "delete": {
+      "failed": "Les entrées de pointage n'ont pas pu être supprimées."
+    },
+    "in": {
+      "failed": "Le pointage d’arrivée a échoué. Veuillez réessayer."
+    },
+    "invalid": "Les horaires de pointage sont invalides. Vérifiez les dates puis réessayez.",
+    "list": {
+      "failed": "Les entrées de pointage n'ont pas pu être chargées."
+    },
+    "not": {
+      "found": "Cette entrée de pointage n'existe plus."
+    },
+    "out": {
+      "failed": "Le pointage de départ a échoué. Veuillez réessayer."
+    },
+    "overlap": "Cette entrée de pointage chevauche une autre entrée.",
+    "retrieve": {
+      "failed": "L'entrée de pointage n'a pas pu être chargée."
+    },
+    "update": {
+      "failed": "L'entrée de pointage n'a pas pu être modifiée."
+    }
+  },
+  "crypto": {
+    "decrypt": {
+      "failed": "Certaines données n'ont pas pu être lues. Veuillez contacter le support."
+    },
+    "key": {
+      "invalid": "Un problème de configuration du serveur est survenu. Veuillez contacter le support."
+    }
+  },
+  "duplicate": {
+    "key": "Cet élément existe déjà."
+  },
+  "internal": {
+    "unexpected": "Un problème est survenu de notre côté. Veuillez réessayer plus tard."
+  },
+  "json": {
+    "invalid": "La requête n'a pas pu être comprise. Veuillez réessayer."
+  },
+  "log": {
+    "create": {
+      "failed": "L'action n'a pas pu être enregistrée. Veuillez réessayer."
+    }
+  },
+  "payload": {
+    "too": {
+      "large": "Les données envoyées sont trop volumineuses."
+    }
+  },
+  "rate": {
+    "limit": {
+      "exceeded": "Trop de requêtes. Veuillez patienter un instant puis réessayer."
+    }
+  },
+  "report": {
+    "invalid": "Les paramètres du rapport sont invalides. Vérifiez les dates puis réessayez.",
+    "team": {
+      "failed": "Le rapport d'équipe n'a pas pu être chargé.",
+      "not": {
+        "found": "Cette équipe n'existe plus."
+      }
+    },
+    "user": {
+      "failed": "Le rapport de l'utilisateur n'a pas pu être chargé."
+    }
+  },
+  "route": {
+    "not": {
+      "found": "La page ou la ressource demandée n'existe pas."
+    }
+  },
+  "team": {
+    "archive": {
+      "failed": "Les équipes n'ont pas pu être archivées."
+    },
+    "create": {
+      "failed": "L'équipe n'a pas pu être créée."
+    },
+    "delete": {
+      "failed": "Les équipes n'ont pas pu être supprimées."
+    },
+    "list": {
+      "failed": "Les équipes n'ont pas pu être chargées."
+    },
+    "manager": {
+      "invalid": "Le responsable doit être un manager ou un administrateur actif."
+    },
+    "member": {
+      "add": {
+        "failed": "Les membres n'ont pas pu être ajoutés."
+      },
+      "list": {
+        "failed": "Les membres n'ont pas pu être chargés."
+      },
+      "not": {
+        "found": "Cette personne n'est pas membre de l'équipe."
+      },
+      "remove": {
+        "failed": "Les membres n'ont pas pu être retirés."
+      },
+      "team": {
+        "archived": "Cette équipe est archivée. Restaurez-la d'abord.",
+        "not": {
+          "found": "Cette équipe n'existe plus."
+        }
+      },
+      "user": {
+        "archived": "Cet utilisateur est archivé. Restaurez-le d'abord.",
+        "not": {
+          "found": "Cet utilisateur n'existe plus."
+        }
+      }
+    },
+    "not": {
+      "found": "Cette équipe n'existe plus."
+    },
+    "restore": {
+      "failed": "Les équipes n'ont pas pu être restaurées."
+    },
+    "retrieve": {
+      "failed": "L'équipe n'a pas pu être chargée."
+    },
+    "schedule": {
+      "invalid": "La journée de travail doit se terminer après son début."
+    },
+    "update": {
+      "failed": "L'équipe n'a pas pu être modifiée."
+    }
+  },
+  "token": {
+    "authentication": {
+      "failed": "Votre session a expiré. Veuillez vous reconnecter."
+    }
+  },
+  "unauthorized": "Vous n'avez pas l'autorisation d'effectuer cette action.",
+  "user": {
+    "archive": {
+      "failed": "Les utilisateurs n'ont pas pu être archivés."
+    },
+    "conflict": "Un utilisateur avec cette adresse e-mail existe déjà.",
+    "create": {
+      "failed": "L'utilisateur n'a pas pu être créé."
+    },
+    "delete": {
+      "failed": "Les utilisateurs n'ont pas pu être supprimés."
+    },
+    "list": {
+      "failed": "Les utilisateurs n'ont pas pu être chargés."
+    },
+    "not": {
+      "found": "Cet utilisateur n'existe plus."
+    },
+    "password": {
+      "invalid": "Le mot de passe actuel est incorrect."
+    },
+    "restore": {
+      "failed": "Les utilisateurs n'ont pas pu être restaurés."
+    },
+    "retrieve": {
+      "failed": "L'utilisateur n'a pas pu être chargé."
+    },
+    "update": {
+      "failed": "Les utilisateurs n'ont pas pu être modifiés."
+    }
+  },
+  "validation": {
+    "error": "Certains champs sont invalides. Vérifiez-les puis réessayez."
+  },
+  "generic": "Un problème est survenu. Veuillez réessayer.",
+  "network": "Impossible de joindre le serveur. Vérifiez votre connexion puis réessayez.",
+  "timeout": "Le serveur a mis trop de temps à répondre. Veuillez réessayer.",
+  "rate_limited": "Trop de requêtes. Réessayez dans {{seconds}} secondes."
+}

@@ -1,0 +1,86 @@
+## Variables
+
+### UserArchived
+
+```ts
+const UserArchived: EventFactory<{
+  user_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L3)
+
+***
+
+### UserCreated
+
+```ts
+const UserCreated: EventFactory<{
+  user_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L5)
+
+***
+
+### UserDeleted
+
+```ts
+const UserDeleted: EventFactory<{
+  deleted: number;
+  failed: number;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L7)
+
+***
+
+### UserListed
+
+```ts
+const UserListed: EventFactory<{
+  count: number;
+  total: number;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L9)
+
+***
+
+### UserRestored
+
+```ts
+const UserRestored: EventFactory<{
+  user_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L11)
+
+***
+
+### UserRetrieved
+
+```ts
+const UserRetrieved: EventFactory<{
+  user_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L13)
+
+***
+
+### UserUpdated
+
+```ts
+const UserUpdated: EventFactory<{
+  failed: number;
+  updated: number;
+}>;
+```
+
+Defined in: [lib/events/domains/user.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/user.ts#L15)

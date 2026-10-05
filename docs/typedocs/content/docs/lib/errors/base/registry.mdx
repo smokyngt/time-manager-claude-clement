@@ -1,0 +1,274 @@
+## Classes
+
+### AppError
+
+Defined in: [lib/errors/base/registry.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L24)
+
+#### Extends
+
+- `Error`
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new AppError(definition, options): AppError;
+```
+
+Defined in: [lib/errors/base/registry.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L32)
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) |
+| `options` | `object` & [`ErrorOptions`](#erroroptions) |
+
+###### Returns
+
+[`AppError`](#apperror)
+
+###### Overrides
+
+```ts
+Error.constructor
+```
+
+#### Properties
+
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-code"></a> `code` | `readonly` | `string` | [lib/errors/base/registry.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L25) |
+| <a id="property-correlation_id"></a> `correlation_id` | `readonly` | `string` \| `undefined` | [lib/errors/base/registry.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L26) |
+| <a id="property-instance"></a> `instance` | `readonly` | `string` \| `undefined` | [lib/errors/base/registry.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L27) |
+| <a id="property-metadata"></a> `metadata` | `readonly` | [`Metadata`](#metadata) | [lib/errors/base/registry.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L28) |
+| <a id="property-retry_after"></a> `retry_after` | `readonly` | `number` \| `undefined` | [lib/errors/base/registry.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L29) |
+| <a id="property-status"></a> `status` | `readonly` | `number` | [lib/errors/base/registry.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L30) |
+
+#### Methods
+
+##### is()
+
+```ts
+static is(value): value is AppError;
+```
+
+Defined in: [lib/errors/base/registry.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L48)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `unknown` | - |
+
+###### Returns
+
+`value is AppError`
+
+###### Route
+
+errors.app.is
+
+***
+
+### Registry
+
+Defined in: [lib/errors/base/registry.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L53)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Registry(): Registry;
+```
+
+###### Returns
+
+[`Registry`](#registry)
+
+#### Methods
+
+##### get()
+
+```ts
+static get(code): ErrorDefinition | undefined;
+```
+
+Defined in: [lib/errors/base/registry.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L61)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
+
+###### Returns
+
+[`ErrorDefinition`](#errordefinition) \| `undefined`
+
+###### Route
+
+errors.registry.get
+
+##### has()
+
+```ts
+static has(code): boolean;
+```
+
+Defined in: [lib/errors/base/registry.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L70)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+errors.registry.has
+
+##### sanitize()
+
+```ts
+static sanitize(value): Metadata;
+```
+
+Defined in: [lib/errors/base/registry.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L79)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | [`Metadata`](#metadata) | - |
+
+###### Returns
+
+[`Metadata`](#metadata)
+
+###### Route
+
+errors.registry.sanitize
+
+##### set()
+
+```ts
+static set(definition): void;
+```
+
+Defined in: [lib/errors/base/registry.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L106)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+errors.registry.set
+
+###### Throws
+
+## Type Aliases
+
+### ErrorDefinition
+
+```ts
+type ErrorDefinition = object;
+```
+
+Defined in: [lib/errors/base/registry.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L1)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-code-1"></a> `code` | `string` | [lib/errors/base/registry.ts:2](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L2) |
+| <a id="property-defaultstatus"></a> `defaultStatus` | `number` | [lib/errors/base/registry.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L3) |
+
+***
+
+### ErrorFactory
+
+```ts
+type ErrorFactory = (options?) => AppError & object;
+```
+
+Defined in: [lib/errors/base/registry.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L6)
+
+#### Type Declaration
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `code` | `string` | [lib/errors/base/registry.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L7) |
+| `defaultStatus` | `number` | [lib/errors/base/registry.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L8) |
+
+***
+
+### ErrorOptions
+
+```ts
+type ErrorOptions = object;
+```
+
+Defined in: [lib/errors/base/registry.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L11)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cause"></a> `cause?` | `unknown` | [lib/errors/base/registry.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L12) |
+| <a id="property-correlation_id-1"></a> `correlation_id?` | `string` | [lib/errors/base/registry.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L13) |
+| <a id="property-instance-1"></a> `instance?` | `string` | [lib/errors/base/registry.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L14) |
+| <a id="property-mergecausemetadata"></a> `mergeCauseMetadata?` | `boolean` | [lib/errors/base/registry.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L15) |
+| <a id="property-message"></a> `message?` | `string` | [lib/errors/base/registry.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L16) |
+| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> | [lib/errors/base/registry.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L17) |
+| <a id="property-retry_after-1"></a> `retry_after?` | `number` | [lib/errors/base/registry.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L18) |
+| <a id="property-status-1"></a> `status?` | `number` | [lib/errors/base/registry.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L19) |
+
+***
+
+### Metadata
+
+```ts
+type Metadata = Record<string, unknown>;
+```
+
+Defined in: [lib/errors/base/registry.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L22)
+
+## Functions
+
+### registerError()
+
+```ts
+function registerError(definition): ErrorFactory;
+```
+
+Defined in: [lib/errors/base/registry.ts:123](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/errors/base/registry.ts#L123)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) | - |
+
+#### Returns
+
+[`ErrorFactory`](#errorfactory)
+
+#### Route
+
+errors.register
+
+#### Throws

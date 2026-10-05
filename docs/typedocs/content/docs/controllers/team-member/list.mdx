@@ -1,0 +1,26 @@
+## Functions
+
+### list()
+
+```ts
+function list(req, reply): Promise<void>;
+```
+
+Defined in: [controllers/team-member/list.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team-member/list.ts#L19)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`ListBody`](../team-member.mdx#listbody); `Params`: [`ListParams`](../team-member.mdx#listparams); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`ListResponse`](../team-member.mdx#listresponse)\>; \}\> | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+team_member.controller.list
+
+#### Throws

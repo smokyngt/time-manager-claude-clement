@@ -1,0 +1,98 @@
+## Variables
+
+### ClockCreated
+
+```ts
+const ClockCreated: EventFactory<{
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L3)
+
+***
+
+### ClockCurrent
+
+```ts
+const ClockCurrent: EventFactory<{
+  open: boolean;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L5)
+
+***
+
+### ClockDeleted
+
+```ts
+const ClockDeleted: EventFactory<{
+  deleted: number;
+  failed: number;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L7)
+
+***
+
+### ClockIn
+
+```ts
+const ClockIn: EventFactory<{
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L9)
+
+***
+
+### ClockListed
+
+```ts
+const ClockListed: EventFactory<{
+  count: number;
+  total: number;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L11)
+
+***
+
+### ClockOut
+
+```ts
+const ClockOut: EventFactory<{
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L13)
+
+***
+
+### ClockRetrieved
+
+```ts
+const ClockRetrieved: EventFactory<{
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L15)
+
+***
+
+### ClockUpdated
+
+```ts
+const ClockUpdated: EventFactory<{
+  failed: number;
+  updated: number;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/clock.ts#L17)

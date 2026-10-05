@@ -1,0 +1,166 @@
+## Type Aliases
+
+### JsonSchema
+
+```ts
+type JsonSchema = Record<string, unknown>;
+```
+
+Defined in: [schemas/base/envelope.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L10)
+
+## Variables
+
+### ErrorResponseSchema
+
+```ts
+const ErrorResponseSchema: object;
+```
+
+Defined in: [schemas/base/envelope.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L12)
+
+#### Type Declaration
+
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-additionalproperties"></a> `additionalProperties` | `true` | `true` | [schemas/base/envelope.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L13) |
+| <a id="property-description"></a> `description` | `"Problem details returned for every failed request."` | `'Problem details returned for every failed request.'` | [schemas/base/envelope.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L14) |
+| <a id="property-properties"></a> `properties` | `object` | - | [schemas/base/envelope.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L15) |
+| `properties.code` | `object` | - | [schemas/base/envelope.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L16) |
+| `properties.code.description` | `"Stable machine readable error code."` | `'Stable machine readable error code.'` | [schemas/base/envelope.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L17) |
+| `properties.code.example` | `"team.not.found"` | `'team.not.found'` | [schemas/base/envelope.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L18) |
+| `properties.code.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L19) |
+| `properties.correlation_id` | `object` | - | [schemas/base/envelope.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L21) |
+| `properties.correlation_id.description` | `"Request identifier to quote when reporting a problem."` | `'Request identifier to quote when reporting a problem.'` | [schemas/base/envelope.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L22) |
+| `properties.correlation_id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` | [schemas/base/envelope.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L23) |
+| `properties.correlation_id.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L24) |
+| `properties.errors` | `object` | - | [schemas/base/envelope.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L26) |
+| `properties.errors.description` | `"Field level validation failures."` | `'Field level validation failures.'` | [schemas/base/envelope.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L27) |
+| `properties.errors.items` | `object` | - | [schemas/base/envelope.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L28) |
+| `properties.errors.items.additionalProperties` | `false` | `false` | [schemas/base/envelope.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L29) |
+| `properties.errors.items.properties` | `object` | - | [schemas/base/envelope.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L30) |
+| `properties.errors.items.properties.code` | `object` | - | [schemas/base/envelope.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L31) |
+| `properties.errors.items.properties.code.description` | `"Validation keyword that failed."` | `'Validation keyword that failed.'` | [schemas/base/envelope.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L32) |
+| `properties.errors.items.properties.code.example` | `"required"` | `'required'` | [schemas/base/envelope.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L33) |
+| `properties.errors.items.properties.code.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L34) |
+| `properties.errors.items.properties.params` | `object` | - | [schemas/base/envelope.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L36) |
+| `properties.errors.items.properties.params.additionalProperties` | `true` | `true` | [schemas/base/envelope.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L37) |
+| `properties.errors.items.properties.params.description` | `"Keyword parameters."` | `'Keyword parameters.'` | [schemas/base/envelope.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L38) |
+| `properties.errors.items.properties.params.type` | `"object"` | `'object'` | [schemas/base/envelope.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L39) |
+| `properties.errors.items.properties.path` | `object` | - | [schemas/base/envelope.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L41) |
+| `properties.errors.items.properties.path.description` | `"Location of the invalid value."` | `'Location of the invalid value.'` | [schemas/base/envelope.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L42) |
+| `properties.errors.items.properties.path.example` | `"body.name"` | `'body.name'` | [schemas/base/envelope.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L43) |
+| `properties.errors.items.properties.path.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L44) |
+| `properties.errors.items.required` | readonly \[`"code"`, `"params"`, `"path"`\] | - | [schemas/base/envelope.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L47) |
+| `properties.errors.items.type` | `"object"` | `'object'` | [schemas/base/envelope.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L48) |
+| `properties.errors.type` | `"array"` | `'array'` | [schemas/base/envelope.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L50) |
+| `properties.instance` | `object` | - | [schemas/base/envelope.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L52) |
+| `properties.instance.description` | `"Request path."` | `'Request path.'` | [schemas/base/envelope.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L52) |
+| `properties.instance.example` | `"/v1/teams/1"` | `'/v1/teams/1'` | [schemas/base/envelope.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L52) |
+| `properties.instance.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L52) |
+| `properties.metadata` | `object` | - | [schemas/base/envelope.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L53) |
+| `properties.metadata.additionalProperties` | `true` | `true` | [schemas/base/envelope.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L54) |
+| `properties.metadata.description` | `"Debug details, non production only."` | `'Debug details, non production only.'` | [schemas/base/envelope.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L55) |
+| `properties.metadata.type` | `"object"` | `'object'` | [schemas/base/envelope.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L56) |
+| `properties.stack` | `object` | - | [schemas/base/envelope.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L58) |
+| `properties.stack.description` | `"Stack trace, non production only."` | `'Stack trace, non production only.'` | [schemas/base/envelope.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L58) |
+| `properties.stack.type` | `"string"` | `'string'` | [schemas/base/envelope.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L58) |
+| `properties.status` | `object` | - | [schemas/base/envelope.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L59) |
+| `properties.status.description` | `"HTTP status code."` | `'HTTP status code.'` | [schemas/base/envelope.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L59) |
+| `properties.status.example` | `404` | `404` | [schemas/base/envelope.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L59) |
+| `properties.status.type` | `"integer"` | `'integer'` | [schemas/base/envelope.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L59) |
+| `properties.timestamp` | `object` | - | [schemas/base/envelope.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L60) |
+| `properties.timestamp.description` | `"Epoch milliseconds."` | `'Epoch milliseconds.'` | [schemas/base/envelope.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L60) |
+| `properties.timestamp.example` | `1760000000000` | `1_760_000_000_000` | [schemas/base/envelope.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L60) |
+| `properties.timestamp.type` | `"integer"` | `'integer'` | [schemas/base/envelope.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L60) |
+| <a id="property-required"></a> `required` | readonly \[`"code"`, `"correlation_id"`, `"instance"`, `"status"`, `"timestamp"`\] | - | [schemas/base/envelope.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L62) |
+| <a id="property-type"></a> `type` | `"object"` | `'object'` | [schemas/base/envelope.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L63) |
+
+***
+
+### RateLimitErrorSchema
+
+```ts
+const RateLimitErrorSchema: JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L98)
+
+***
+
+### TokenAuthenticationErrorSchema
+
+```ts
+const TokenAuthenticationErrorSchema: JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L88)
+
+***
+
+### UnauthorizedErrorSchema
+
+```ts
+const UnauthorizedErrorSchema: JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L93)
+
+***
+
+### ValidationErrorSchema
+
+```ts
+const ValidationErrorSchema: JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L86)
+
+## Functions
+
+### ErrorSchema()
+
+```ts
+function ErrorSchema(factory, description?): JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L72)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `factory` | [`ErrorFactory`](../../lib/errors/base/registry.mdx#errorfactory) | - |
+| `description?` | `string` | - |
+
+#### Returns
+
+[`JsonSchema`](#jsonschema)
+
+#### Route
+
+schemas.envelope.error
+
+***
+
+### ReplyEnvelopeSchema()
+
+```ts
+function ReplyEnvelopeSchema(dataSchema, eventCode): JsonSchema;
+```
+
+Defined in: [schemas/base/envelope.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/base/envelope.ts#L106)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `dataSchema` | [`JsonSchema`](#jsonschema) | - |
+| `eventCode` | `string` | - |
+
+#### Returns
+
+[`JsonSchema`](#jsonschema)
+
+#### Route
+
+schemas.envelope.reply

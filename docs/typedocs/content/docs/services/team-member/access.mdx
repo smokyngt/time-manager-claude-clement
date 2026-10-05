@@ -1,0 +1,146 @@
+## Classes
+
+### TeamMemberAccess
+
+Defined in: [services/team-member/access.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L11)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamMemberAccess(): TeamMemberAccess;
+```
+
+###### Returns
+
+[`TeamMemberAccess`](#teammemberaccess)
+
+#### Methods
+
+##### load()
+
+```ts
+static load(id, route): Promise<{
+  archived_at: number | null;
+  created_at: number;
+  description: string | null;
+  id: string;
+  manager_id: string;
+  name: string;
+  updated_at: number | null;
+  weekly_hours_target: number;
+  work_end: string;
+  work_start: string;
+}>;
+```
+
+Defined in: [services/team-member/access.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L19)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | - |
+| `route` | `string` | - |
+
+###### Returns
+
+`Promise`\<\{
+  `archived_at`: `number` \| `null`;
+  `created_at`: `number`;
+  `description`: `string` \| `null`;
+  `id`: `string`;
+  `manager_id`: `string`;
+  `name`: `string`;
+  `updated_at`: `number` \| `null`;
+  `weekly_hours_target`: `number`;
+  `work_end`: `string`;
+  `work_start`: `string`;
+\}\>
+
+###### Route
+
+team_member.access.load
+
+###### Throws
+
+##### manage()
+
+```ts
+static manage(
+   actor, 
+   team, 
+   route
+): void;
+```
+
+Defined in: [services/team-member/access.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L36)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
+| `team.archived_at` | `number` \| `null` | - |
+| `team.created_at` | `number` | - |
+| `team.description` | `string` \| `null` | - |
+| `team.id` | `string` | - |
+| `team.manager_id` | `string` | - |
+| `team.name` | `string` | - |
+| `team.updated_at` | `number` \| `null` | - |
+| `team.weekly_hours_target` | `number` | - |
+| `team.work_end` | `string` | - |
+| `team.work_start` | `string` | - |
+| `route` | `string` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+team_member.access.manage
+
+###### Throws
+
+##### view()
+
+```ts
+static view(
+   actor, 
+   team, 
+   route
+): Promise<void>;
+```
+
+Defined in: [services/team-member/access.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L50)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
+| `team.archived_at` | `number` \| `null` | - |
+| `team.created_at` | `number` | - |
+| `team.description` | `string` \| `null` | - |
+| `team.id` | `string` | - |
+| `team.manager_id` | `string` | - |
+| `team.name` | `string` | - |
+| `team.updated_at` | `number` \| `null` | - |
+| `team.weekly_hours_target` | `number` | - |
+| `team.work_end` | `string` | - |
+| `team.work_start` | `string` | - |
+| `route` | `string` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+team_member.access.view
+
+###### Throws
