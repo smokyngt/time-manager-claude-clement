@@ -7,6 +7,7 @@ import {
   PayloadTooLargeError,
   RateLimitError, Registry, ValidationError 
 } from '@/lib/errors/index.js';
+import { Config } from '@/config/index.js';
 import { Metrics } from '@/lib/telemetry/metrics.js';
 
 import type { ErrorDetail, ErrorEnvelope } from '@/types/misc/reply.js';
@@ -83,7 +84,7 @@ export class ErrorHandler {
     reply: FastifyReply,
   ): Promise<void> {
     const resolved = ErrorHandler.resolve(error);
-    const production = process.env['NODE_ENV'] === 'production';
+    const production = Config.production();
     const body: ErrorEnvelope = {
       code: resolved.code,
       correlation_id: resolved.correlation_id ?? req.id,

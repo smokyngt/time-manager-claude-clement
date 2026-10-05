@@ -6,9 +6,6 @@ export type VaultEnv = Record<string, string | undefined>;
 export const SECRET_KEYS: readonly string[] = ['DATABASE_URL'];
 
 export const SENSITIVE_KEYS: readonly string[] = [
-  'ENCRYPTION_KEY',
-  'ENCRYPTION_KEYS_PREVIOUS',
-  'HASH_KEY',
   'JWT_ACCESS_SECRET',
   'JWT_REFRESH_SECRET',
   'METRICS_TOKEN',

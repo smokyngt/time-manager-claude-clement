@@ -1,6 +1,6 @@
 import { sql } from 'drizzle-orm';
 
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { db } from '@/db/client.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
@@ -39,7 +39,7 @@ export class ReportQuery {
    * @returns {Promise<SeriesRow[]>}
    */
   public static async series(range: ReportRange, members: SQL): Promise<SeriesRow[]> {
-    const tz = Config.store.text('APP_TIMEZONE', 'Europe/Paris');
+    const tz = vaultConfig.store.text('APP_TIMEZONE', 'Europe/Paris');
     const granularity = range.granularity;
     const rows = await Tracing.span('db.report.series', () =>
       db.execute<SeriesRow>(sql`
@@ -80,7 +80,7 @@ export class ReportQuery {
    * @returns {Promise<TotalsRow[]>}
    */
   public static async totals(range: ReportRange, members: SQL): Promise<TotalsRow[]> {
-    const tz = Config.store.text('APP_TIMEZONE', 'Europe/Paris');
+    const tz = vaultConfig.store.text('APP_TIMEZONE', 'Europe/Paris');
     const rows = await Tracing.span('db.report.totals', () =>
       db.execute<TotalsRow>(sql`
       ${ReportQuery.base(range, members, tz)}

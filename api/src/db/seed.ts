@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { Digest } from '@/utils/crypto/digest.js';
 import { Password } from '@/utils/password.js';
@@ -8,8 +8,8 @@ import { Password } from '@/utils/password.js';
 import { db, sql } from './client.js';
 import { users } from './schema/index.js';
 
-const email = Config.store.optional('SEED_ADMIN_EMAIL')?.trim().toLowerCase();
-const password = Config.store.optional('SEED_ADMIN_PASSWORD');
+const email = vaultConfig.store.optional('SEED_ADMIN_EMAIL')?.trim().toLowerCase();
+const password = vaultConfig.store.optional('SEED_ADMIN_PASSWORD');
 
 if (email === undefined || password === undefined) {
   process.stderr.write('SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required\n');

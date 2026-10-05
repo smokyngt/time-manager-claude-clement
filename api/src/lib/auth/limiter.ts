@@ -1,4 +1,4 @@
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { Time } from '@/utils/time.js';
 
 type Entry = {
@@ -26,7 +26,7 @@ export class Limiter {
       return false;
     }
 
-    return entry.count >= Config.store.number('AUTH_ACCOUNT_RATE_LIMIT_MAX', 5);
+    return entry.count >= vaultConfig.store.number('AUTH_ACCOUNT_RATE_LIMIT_MAX', 5);
   }
 
   /**
@@ -54,7 +54,7 @@ export class Limiter {
       return;
     }
     if (Limiter.entries.size >= CAPACITY) Limiter.prune(now);
-    const window = Time.seconds(Config.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'));
+    const window = Time.seconds(vaultConfig.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'));
     Limiter.entries.set(key, { count: 1, reset: now + window * 1000 });
   }
 

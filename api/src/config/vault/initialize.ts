@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises';
+
 import { Env } from '@/config/env.js';
 import { vaultConfig } from '@/config/vault/index.js';
 import { SENSITIVE_KEYS } from '@/config/vault/store.js';
@@ -5,6 +7,7 @@ import { VaultError, VaultUrl } from '@/config/vault/url.js';
 
 import type { VaultConfig, VaultDocument } from '@/config/vault/index.js';
 
+const JWT_PATH = '/var/run/secrets/kubernetes.io/serviceaccount/token';
 const DATABASE_PATH = 'secret/data/databases/postgres';
 const SECRETS_PATH = 'secret/data/app/time-manager';
 
@@ -16,16 +19,74 @@ const message = (error: unknown): string =>
   error instanceof Error ? error.message : 'unknown error';
 
 /**
- * @route config.vault.initialize.authenticate
+ * @route config.vault.initialize.kubernetes
+ * @param {VaultConfig} config
+ * @returns {Promise<number>}
+ * @throws {VaultError}
+ */
+export const kubernetes = async (config: VaultConfig): Promise<number> => {
+  const role = Env.opt('VAULT_K8S_ROLE');
+  if (role === undefined) throw new VaultError('VAULT_K8S_ROLE is required');
+  const file = Env.str('VAULT_K8S_JWT_PATH', JWT_PATH);
+  let jwt: string;
+  try {
+    jwt = (await readFile(file, 'utf8')).trim();
+  } catch (error) {
+    throw new VaultError(`Kubernetes service account token is unreadable at ${file}`, {
+      cause: error,
+    });
+  }
+  if (jwt === '') throw new VaultError(`Kubernetes service account token at ${file} is empty`);
+  const mount = Env.str('VAULT_K8S_MOUNT', 'kubernetes');
+  const reply = await config.client.write(`auth/${mount}/login`, { jwt, role });
+  const token = reply.auth?.client_token;
+  if (typeof token !== 'string' || token === '')
+    throw new VaultError(`Vault login failed for auth/${mount}/login: no client token`);
+  config.client.authenticate(token);
+
+  return Number(reply.auth?.lease_duration ?? 0);
+};
+
+/**
+ * @route config.vault.initialize.login
  * @param {VaultConfig} config
  * @returns {Promise<void>}
  * @throws {VaultError}
  */
-export const authenticate = async (config: VaultConfig): Promise<void> => {
+export const login = async (config: VaultConfig): Promise<void> => {
+  const url = VaultUrl.resolve();
+  const method = Env.str('VAULT_AUTH_METHOD', 'token');
+  if (method === 'kubernetes') {
+    config.client.configure({ url });
+    const ttl = await kubernetes(config);
+    config.token.login(() => kubernetes(config));
+    config.token.schedule(ttl);
+    await authenticate(config, false);
+
+    return;
+  }
+  if (method !== 'token') throw new VaultError('VAULT_AUTH_METHOD must be token or kubernetes');
+  const token = Env.opt('VAULT_TOKEN');
+  if (token === undefined) throw new VaultError('VAULT_TOKEN is required');
+  config.client.configure({ token, url });
+  await authenticate(config);
+};
+
+/**
+ * @route config.vault.initialize.authenticate
+ * @param {VaultConfig} config
+ * @param {boolean} schedule
+ * @returns {Promise<void>}
+ * @throws {VaultError}
+ */
+export const authenticate = async (
+  config: VaultConfig,
+  schedule: boolean = true,
+): Promise<void> => {
   try {
     const reply = await config.client.lookupSelf();
     const ttl = Number(reply.data?.['ttl'] ?? 0);
-    if (reply.data?.['renewable'] === true && ttl > 0) config.token.schedule(ttl);
+    if (schedule && reply.data?.['renewable'] === true && ttl > 0) config.token.schedule(ttl);
   } catch (error) {
     if (error instanceof VaultError && (error.status === 401 || error.status === 403))
       throw new VaultError(
@@ -122,11 +183,7 @@ export const initialize = async (config: VaultConfig = vaultConfig): Promise<voi
 
       return;
     }
-    const url = VaultUrl.resolve();
-    const token = Env.opt('VAULT_TOKEN');
-    if (token === undefined) throw new VaultError('VAULT_TOKEN is required');
-    config.client.configure({ token, url });
-    await authenticate(config);
+    await login(config);
     const health = await config.client.health({ standbyok: true });
     if (!health.initialized) throw new VaultError('Vault is not initialized');
     if (health.sealed) throw new VaultError('Vault is sealed');

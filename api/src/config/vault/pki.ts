@@ -71,7 +71,7 @@ export class VaultPki {
     const role = Env.str('VAULT_PKI_ROLE', 'api-server');
     const path = `${mount}/issue/${role}`;
     const body: Record<string, string> = {
-      alt_names: Env.list('VAULT_PKI_ALT_NAMES', ['api.internal', 'localhost']).join(','),
+      alt_names: Env.list('VAULT_PKI_ALT_NAMES', ['api.internal', 'localhost', 'api.app.svc.cluster.local']).join(','),
       common_name: Env.str('VAULT_PKI_COMMON_NAME', 'api'),
       ip_sans: Env.list('VAULT_PKI_IP_SANS', ['127.0.0.1']).join(','),
       ttl: Env.str('VAULT_PKI_TTL', '24h'),

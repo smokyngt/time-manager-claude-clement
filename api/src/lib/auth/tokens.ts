@@ -1,6 +1,6 @@
 import { jwtVerify, SignJWT } from 'jose';
 
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { TokenAuthenticationError } from '@/lib/errors/index.js';
 import { ROLES } from '@/types/entities/index.js';
 import { Time } from '@/utils/time.js';
@@ -48,7 +48,7 @@ export class Tokens {
    * @throws {ValidationError}
    */
   public static accessTtl(): number {
-    return Time.seconds(Config.store.text('JWT_ACCESS_TTL', '15m'));
+    return Time.seconds(vaultConfig.store.text('JWT_ACCESS_TTL', '15m'));
   }
 
   /**
@@ -84,7 +84,7 @@ export class Tokens {
    * @throws {ValidationError}
    */
   public static refreshTtl(): number {
-    return Time.seconds(Config.store.text('JWT_REFRESH_TTL', '7d'));
+    return Time.seconds(vaultConfig.store.text('JWT_REFRESH_TTL', '7d'));
   }
 
   /**
@@ -102,7 +102,7 @@ export class Tokens {
    * @returns {string}
    */
   public static secretText(name: string): string {
-    return Config.store.text(name, `dev-only-${name.toLowerCase()}-change-me-in-production`);
+    return vaultConfig.store.text(name, `dev-only-${name.toLowerCase()}-change-me-in-production`);
   }
 
   /**

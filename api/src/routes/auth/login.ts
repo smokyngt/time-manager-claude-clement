@@ -1,4 +1,4 @@
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { authController } from '@/controllers/index.js';
 import { AuthLoginBodySchema, AuthResponses } from '@/schemas/index.js';
 
@@ -12,8 +12,8 @@ const login: FastifyPluginAsync = async (fastify) => {
     {
       config: {
         rateLimit: {
-          max: Config.store.number('AUTH_LOGIN_RATE_LIMIT_MAX', 10),
-          timeWindow: Config.store.text('AUTH_LOGIN_RATE_LIMIT_WINDOW', '1 minute'),
+          max: vaultConfig.store.number('AUTH_LOGIN_RATE_LIMIT_MAX', 10),
+          timeWindow: vaultConfig.store.text('AUTH_LOGIN_RATE_LIMIT_WINDOW', '1 minute'),
         },
       },
       schema: {

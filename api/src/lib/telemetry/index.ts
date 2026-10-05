@@ -1,6 +1,7 @@
 import { trace } from '@opentelemetry/api';
 
-import { Config } from '@/config/index.js';
+import { Env } from '@/config/env.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { Redact } from '@/lib/auth/redact.js';
 
 import type { RedactedRequest, RedactInput } from '@/lib/auth/redact.js';
@@ -47,12 +48,12 @@ export class Telemetry {
    */
   public static logger(): LoggerOptions {
     const options: LoggerOptions = {
-      level: Config.store.text('LOG_LEVEL', 'info'),
+      level: vaultConfig.store.text('LOG_LEVEL', 'info'),
       mixin: () => Telemetry.trace(),
       redact: { censor: '[redacted]', paths: [...Telemetry.redacted] },
       serializers: { req: (req) => Redact.request(req) },
     };
-    if (Config.store.text('NODE_ENV', 'development') === 'development') {
+    if (Env.str('NODE_ENV', 'development') === 'development') {
       options.transport = {
         options: { colorize: true, translateTime: 'SYS:HH:MM:ss.l' },
         target: 'pino-pretty',

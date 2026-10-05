@@ -1,9 +1,8 @@
 import { isIP } from 'node:net';
 
-import { Keys } from '@/utils/crypto/keys.js';
+import { Env } from '@/config/env.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { Time } from '@/utils/time.js';
-
-import { store } from './store.js';
 
 export type TrustProxy = (address: string, hop: number) => boolean;
 
@@ -12,8 +11,6 @@ const TENANT_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{1
 const LOCAL_HOSTS = ['127.0.0.1', '::1', '[::1]', 'localhost'];
 
 export class Config {
-  public static readonly store = store;
-
   /**
    * @route config.address
    * @param {string} entry
@@ -33,7 +30,7 @@ export class Config {
    * @returns {boolean}
    */
   public static production(): boolean {
-    return store.production();
+    return Env.str('NODE_ENV', 'development') === 'production';
   }
 
   /**
@@ -41,7 +38,7 @@ export class Config {
    * @returns {boolean | string[] | TrustProxy}
    */
   public static proxy(): boolean | string[] | TrustProxy {
-    const raw = Config.store.optional('TRUST_PROXY')?.trim();
+    const raw = vaultConfig.store.optional('TRUST_PROXY')?.trim();
     if (raw === undefined || raw === '' || raw === 'false') return false;
     if (raw === 'true') return true;
     if (/^\d+$/.test(raw)) {
@@ -60,7 +57,7 @@ export class Config {
    * @returns {string}
    */
   public static redirect(): string {
-    return Config.store.text(
+    return vaultConfig.store.text(
       'MICROSOFT_REDIRECT_URI',
       'http://localhost:8000/v1/auth/microsoft/callback',
     );
@@ -85,7 +82,7 @@ export class Config {
    * @returns {string | undefined}
    */
   public static tenant(): string | undefined {
-    const raw = Config.store.optional('MICROSOFT_TENANT_ID')?.trim().toLowerCase();
+    const raw = vaultConfig.store.optional('MICROSOFT_TENANT_ID')?.trim().toLowerCase();
 
     return raw !== undefined && TENANT_GUID.test(raw) ? raw : undefined;
   }
@@ -97,7 +94,7 @@ export class Config {
   public static validate(): string[] {
     const problems: string[] = [];
     for (const name of ['AUTH_ACCOUNT_RATE_LIMIT_WINDOW', 'JWT_ACCESS_TTL', 'JWT_REFRESH_TTL']) {
-      const raw = Config.store.optional(name);
+      const raw = vaultConfig.store.optional(name);
       if (raw === undefined) continue;
       try {
         Time.seconds(raw);
@@ -106,12 +103,12 @@ export class Config {
       }
     }
     if (!Config.production()) return problems;
-    const microsoft = Config.store.optional('MICROSOFT_CLIENT_ID') !== undefined;
+    const microsoft = vaultConfig.store.optional('MICROSOFT_CLIENT_ID') !== undefined;
     const names = ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];
     if (microsoft) names.push('OAUTH_STATE_SECRET');
     const seen = new Set<string>();
     for (const name of names) {
-      const value = Config.store.optional(name);
+      const value = vaultConfig.store.optional(name);
       if (value === undefined || value.length < 32) {
         problems.push(`${name} must be at least 32 characters`);
         continue;
@@ -120,10 +117,10 @@ export class Config {
       if (seen.has(value)) problems.push(`${name} must differ from the other secrets`);
       seen.add(value);
     }
-    if (Config.store.optional('DATABASE_URL') === undefined)
+    if (vaultConfig.store.optional('DATABASE_URL') === undefined)
       problems.push('DATABASE_URL is required');
     if (microsoft) {
-      const clientSecret = Config.store.optional('MICROSOFT_CLIENT_SECRET');
+      const clientSecret = vaultConfig.store.optional('MICROSOFT_CLIENT_SECRET');
       if (clientSecret === undefined) problems.push('MICROSOFT_CLIENT_SECRET is required');
       else if (PLACEHOLDER.test(clientSecret))
         problems.push('MICROSOFT_CLIENT_SECRET must not be a placeholder value');
@@ -132,7 +129,7 @@ export class Config {
           'MICROSOFT_TENANT_ID must be a single tenant id (GUID), not common, organizations or consumers',
         );
     }
-    if (!Config.store.flag('ALLOW_INSECURE_URLS', false)) {
+    if (!vaultConfig.store.boolean('ALLOW_INSECURE_URLS', false)) {
       if (!Config.secure(Config.web())) problems.push('WEB_URL must be a non-local https url');
       if (microsoft && !Config.secure(Config.redirect()))
         problems.push('MICROSOFT_REDIRECT_URI must be a non-local https url');
@@ -140,7 +137,6 @@ export class Config {
     const proxy = Config.proxy();
     if (Array.isArray(proxy) && !proxy.every((entry) => Config.address(entry)))
       problems.push('TRUST_PROXY must be true, false, a hop count or a list of IPs and CIDR ranges');
-    problems.push(...Keys.validate());
 
     return problems;
   }
@@ -150,6 +146,6 @@ export class Config {
    * @returns {string}
    */
   public static web(): string {
-    return Config.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
+    return vaultConfig.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
   }
 }

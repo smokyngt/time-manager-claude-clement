@@ -1,4 +1,5 @@
 import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 
 export type MicrosoftConfig = {
   client_id: string;
@@ -58,8 +59,8 @@ export class Microsoft {
    * @returns {MicrosoftConfig | undefined}
    */
   public static config(): MicrosoftConfig | undefined {
-    const clientId = Config.store.optional('MICROSOFT_CLIENT_ID');
-    const clientSecret = Config.store.optional('MICROSOFT_CLIENT_SECRET');
+    const clientId = vaultConfig.store.optional('MICROSOFT_CLIENT_ID');
+    const clientSecret = vaultConfig.store.optional('MICROSOFT_CLIENT_SECRET');
     const tenant = Config.tenant();
     if (clientId === undefined || clientSecret === undefined || tenant === undefined) {
       return undefined;

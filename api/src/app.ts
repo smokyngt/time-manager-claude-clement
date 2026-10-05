@@ -8,6 +8,7 @@ import { trace } from '@opentelemetry/api';
 import Fastify from 'fastify';
 
 import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { sql } from '@/db/client.js';
 import { Cookies } from '@/lib/auth/cookies.js';
 import { Redact } from '@/lib/auth/redact.js';
@@ -95,7 +96,7 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
   await app.register(observability);
   await app.register(metrics, {
     production: Config.production(),
-    token: Config.store.optional('METRICS_TOKEN'),
+    token: vaultConfig.store.optional('METRICS_TOKEN'),
   });
   await app.register(health, { probe: async () => sql`select 1` });
   app.addHook('onRequest', (req, _reply, next) => {
@@ -110,7 +111,7 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
     next();
   });
   app.addHook('preValidation', (req, _reply, next) => {
-    const maxDepth = Config.store.number('JSON_BODY_MAX_DEPTH', 10);
+    const maxDepth = vaultConfig.store.number('JSON_BODY_MAX_DEPTH', 10);
     if (typeof req.body === 'object' && req.body !== null) {
       if (Sanitizer.depth(req.body) > maxDepth) {
         next(ValidationError({ metadata: { max_depth: maxDepth, route: 'app.preValidation' } }));
@@ -130,7 +131,7 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
   await app.register(cors, {
     credentials: true,
     methods: ['DELETE', 'GET', 'PATCH', 'POST', 'OPTIONS'],
-    origin: Config.store.text('CORS_ORIGIN', 'http://localhost:5173').split(','),
+    origin: vaultConfig.store.text('CORS_ORIGIN', 'http://localhost:5173').split(','),
   });
   await app.register(cookie);
 

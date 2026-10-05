@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { Digest } from '@/utils/crypto/digest.js';
 import { Password } from '@/utils/password.js';
@@ -374,8 +374,8 @@ export class Demo {
    * @returns {Promise<DemoCounts>}
    */
   public static async run(): Promise<DemoCounts> {
-    const timezone = Config.store.text('APP_TIMEZONE', 'Europe/Paris');
-    const password = await Password.hash(Config.store.text('DEMO_PASSWORD', 'Demo1234!'));
+    const timezone = vaultConfig.store.text('APP_TIMEZONE', 'Europe/Paris');
+    const password = await Password.hash(vaultConfig.store.text('DEMO_PASSWORD', 'Demo1234!'));
     const now = Date.now();
 
     return db.transaction(async (tx) => {

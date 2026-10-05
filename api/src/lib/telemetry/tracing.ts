@@ -6,7 +6,8 @@ import { UndiciInstrumentation } from '@opentelemetry/instrumentation-undici';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 
-import { Config } from '@/config/index.js';
+import { Env } from '@/config/env.js';
+import { vaultConfig } from '@/config/vault/index.js';
 
 import type { Span } from '@opentelemetry/api';
 
@@ -20,7 +21,7 @@ export class Tracing {
    * @returns {boolean}
    */
   public static enabled(): boolean {
-    return Config.store.optional('OTEL_EXPORTER_OTLP_ENDPOINT') !== undefined;
+    return vaultConfig.store.optional('OTEL_EXPORTER_OTLP_ENDPOINT') !== undefined;
   }
 
   /**
@@ -52,7 +53,7 @@ export class Tracing {
    * @returns {boolean}
    */
   public static start(): boolean {
-    const endpoint = Config.store.optional('OTEL_EXPORTER_OTLP_ENDPOINT');
+    const endpoint = vaultConfig.store.optional('OTEL_EXPORTER_OTLP_ENDPOINT');
     if (endpoint === undefined || sdk !== null) return false;
     const started = new NodeSDK({
       instrumentations: [
@@ -64,9 +65,9 @@ export class Tracing {
         }),
       ],
       resource: resourceFromAttributes({
-        'deployment.environment.name': Config.store.text('NODE_ENV', 'development'),
-        'service.name': Config.store.text('OTEL_SERVICE_NAME', NAME),
-        'service.version': Config.store.text('APP_VERSION', '0.1.0'),
+        'deployment.environment.name': Env.str('NODE_ENV', 'development'),
+        'service.name': vaultConfig.store.text('OTEL_SERVICE_NAME', NAME),
+        'service.version': vaultConfig.store.text('APP_VERSION', '0.1.0'),
       }),
       traceExporter: new OTLPTraceExporter({ url: `${endpoint.replace(/\/+$/, '')}/v1/traces` }),
     });

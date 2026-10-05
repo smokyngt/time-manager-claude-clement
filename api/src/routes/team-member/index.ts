@@ -1,6 +1,6 @@
 import rateLimit from '@fastify/rate-limit';
 
-import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 import { RateLimit } from '@/utils/http/rate-limit.js';
 
 import { add } from './add.js';
@@ -13,8 +13,8 @@ const teamMembers: FastifyPluginAsync = async (fastify) => {
   await fastify.register(rateLimit, {
     errorResponseBuilder: (req, context) => RateLimit.error(req, context),
     keyGenerator: (req) => RateLimit.key(req),
-    max: Config.store.number('TEAM_MEMBER_RATE_LIMIT_MAX', 600),
-    timeWindow: Config.store.text('TEAM_MEMBER_RATE_LIMIT_WINDOW', '1 minute'),
+    max: vaultConfig.store.number('TEAM_MEMBER_RATE_LIMIT_MAX', 600),
+    timeWindow: vaultConfig.store.text('TEAM_MEMBER_RATE_LIMIT_WINDOW', '1 minute'),
   });
   await fastify.register(add);
   await fastify.register(list);

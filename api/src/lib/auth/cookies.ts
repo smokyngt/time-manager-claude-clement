@@ -1,4 +1,5 @@
 import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
 
 import type { FastifyReply } from 'fastify';
 
@@ -30,7 +31,7 @@ export class Cookies {
       maxAge,
       path,
       sameSite: 'lax',
-      secure: Config.store.flag('COOKIE_SECURE', Config.production()),
+      secure: vaultConfig.store.boolean('COOKIE_SECURE', Config.production()),
     };
   }
 
