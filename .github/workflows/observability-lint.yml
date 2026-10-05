@@ -27,7 +27,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Validate dashboard JSON
         run: |
           set -euo pipefail
@@ -65,7 +65,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: promtool check config
         run: |
           docker run --rm --entrypoint promtool \
@@ -99,7 +99,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: alloy fmt (must be already formatted)
         run: |
           docker run --rm -v "$PWD/ops/observability/alloy:/cfg:ro" "$ALLOY_IMAGE" \
@@ -120,7 +120,7 @@ jobs:
     timeout-minutes: 10
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: docker compose config
         run: |
           cp .env.example .env.ci

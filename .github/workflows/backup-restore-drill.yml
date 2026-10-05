@@ -42,7 +42,7 @@ jobs:
       BACKUP_DIR: ${{ github.workspace }}/.backup-drill
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Install PostgreSQL 17 client and age
         run: |
           sudo apt-get update
@@ -77,7 +77,7 @@ jobs:
           left="$(psql "$DATABASE_URL" -Atc "SELECT count(*) FROM pg_database WHERE datname LIKE 'tm_verify_%'")"
           test "$left" = "0"
       - name: Upload the encrypted dump
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: backup-drill-${{ github.run_id }}
           path: |

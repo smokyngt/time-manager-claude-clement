@@ -39,7 +39,7 @@ jobs:
       JWT_ACCESS_SECRET: ci-access-secret-0123456789abcdef0123456789abcdef
       JWT_REFRESH_SECRET: ci-refresh-secret-0123456789abcdef0123456789abcdef
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.x
@@ -60,7 +60,7 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.x
@@ -99,7 +99,7 @@ jobs:
       WEB_URL: http://localhost:5173
       PORT: "8000"
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Detect e2e suite
         id: detect
         run: echo "present=${{ hashFiles('web/e2e/**') != '' }}" >> "$GITHUB_OUTPUT"
@@ -143,7 +143,7 @@ jobs:
         run: bunx playwright test
       - name: Upload Playwright report
         if: failure() && steps.detect.outputs.present == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-report
           path: web/playwright-report
@@ -164,7 +164,7 @@ jobs:
       run:
         working-directory: ${{ matrix.package }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: oven-sh/setup-bun@v2
         with:
           bun-version: 1.3.x
