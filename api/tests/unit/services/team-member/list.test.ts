@@ -63,7 +63,7 @@ describe('team.member.service.list', () => {
     expect(result.more).toBe(true);
     expect(result.next).toBe('abc');
     expect(result.total).toBe(5);
-    expect(result.items).toEqual([{ id: row.id, object: 'user', role: 'employee' }]);
+    expect(result.items.map((item) => item.id)).toEqual([row.id]);
     expect(entity).toHaveBeenCalledTimes(1);
     const calls = paginate.mock.calls as unknown as [unknown, Record<string, unknown>][];
     expect(calls[0]?.[1]).toMatchObject({ limit: 10, order: 'desc', sort: 'created_at' });

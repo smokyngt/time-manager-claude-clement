@@ -4,6 +4,7 @@ import { AppError } from '@/lib/errors/base/registry.js';
 
 import { Fake } from '../../../support/fake.js';
 
+import type { FakeReply } from '../../../support/fake.js';
 import type { TeamBody } from '@/controllers/report/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { TeamReport } from '@/types/entities/report.js';
@@ -78,7 +79,7 @@ const run = async (caller: Actor | undefined) => {
   const body: TeamBody = { from: 1, granularity: 'week', team_id: TEAM_ID, to: 2 };
   await team(Fake.request({ actor: caller, body }) as Req, reply as unknown as Rep);
 
-  return reply;
+  return reply as unknown as FakeReply;
 };
 
 describe('report.controller.team', () => {

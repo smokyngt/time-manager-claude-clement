@@ -4,6 +4,7 @@ import { AppError } from '@/lib/errors/base/registry.js';
 
 import { Fake } from '../../../support/fake.js';
 
+import type { FakeReply } from '../../../support/fake.js';
 import type { UserBody } from '@/controllers/report/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { UserReport } from '@/types/entities/report.js';
@@ -77,7 +78,7 @@ const run = async (caller: Actor | undefined, userId: string) => {
   const body: UserBody = { from: 1, granularity: 'day', to: 2, user_id: userId };
   await user(Fake.request({ actor: caller, body }) as Req, reply as unknown as Rep);
 
-  return reply;
+  return reply as unknown as FakeReply;
 };
 
 describe('report.controller.user', () => {

@@ -36,12 +36,12 @@ services:
       WEB_URL: ${WEB_URL:-http://localhost:5173}
       MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
       MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
-      MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
+      MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-}
       MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8000/v1/auth/microsoft/callback}
       SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.com}
       SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-admin-password-dev}
       APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Paris}
-      DEMO_PASSWORD: ${DEMO_PASSWORD:-demo-password-dev}
+      DEMO_PASSWORD: ${DEMO_PASSWORD:-Demo1234!}
     ports:
       - "8000:8000"
     volumes:
