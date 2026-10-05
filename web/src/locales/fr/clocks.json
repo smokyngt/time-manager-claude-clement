@@ -1,1 +1,120 @@
-{}
+{
+  "title": "Pointages",
+  "description_own": "Vos pointages",
+  "description_team": "Consultez et corrigez le temps de votre équipe",
+  "card": {
+    "title": "Pointeuse",
+    "loading": "Chargement de la pointeuse",
+    "status_in": "Pointé",
+    "status_out": "Non pointé",
+    "since": "Depuis {{time}}",
+    "idle": "Démarrez votre journée à votre arrivée",
+    "timer": "Temps écoulé",
+    "note_label": "Note (facultative)",
+    "clock_in": "Pointer l'arrivée",
+    "clock_out": "Pointer le départ",
+    "announce_in": "Vous êtes pointé depuis {{time}}",
+    "announce_out": "Vous n'êtes pas pointé",
+    "conflict_in": "Vous êtes déjà pointé. La pointeuse a été actualisée.",
+    "conflict_out": "Vous n'êtes pas pointé. La pointeuse a été actualisée."
+  },
+  "toolbar": {
+    "range": "Période",
+    "user": "Utilisateur",
+    "user_placeholder": "Choisir un utilisateur",
+    "me": "{{name}} (moi)",
+    "from": "Du",
+    "to": "Au",
+    "invalid_range": "La date de fin doit être postérieure à la date de début"
+  },
+  "range": {
+    "today": "Aujourd'hui",
+    "this_week": "Cette semaine",
+    "last_week": "Semaine dernière",
+    "custom": "Personnalisée"
+  },
+  "table": {
+    "label": "Pointages",
+    "date": "Date",
+    "in": "Arrivée",
+    "out": "Départ",
+    "duration": "Durée",
+    "source": "Source",
+    "note": "Note",
+    "actions": "Actions",
+    "total": "Total (cette page)",
+    "in_progress": "En cours",
+    "select_row": "Sélectionner le pointage du {{date}}",
+    "select_all": "Sélectionner tous les pointages"
+  },
+  "source": {
+    "clock": "Pointeuse",
+    "manual": "Manuel"
+  },
+  "actions": {
+    "add": "Ajouter un pointage manuel",
+    "edit": "Modifier le pointage du {{date}}",
+    "delete": "Supprimer le pointage du {{date}}",
+    "delete_selected": "Supprimer la sélection"
+  },
+  "form": {
+    "user": "Utilisateur",
+    "user_placeholder": "Choisir un utilisateur",
+    "clocked_in_at": "Arrivée",
+    "clocked_out_at": "Départ",
+    "note": "Note (facultative)",
+    "hint": "Un pointage doit se terminer après son début, ne peut pas être dans le futur et dure au plus 24 heures.",
+    "errors": {
+      "user_required": "Choisissez un utilisateur",
+      "in_required": "L'arrivée est obligatoire",
+      "out_required": "Le départ est obligatoire",
+      "in_future": "L'arrivée ne peut pas être dans le futur",
+      "out_future": "Le départ ne peut pas être dans le futur",
+      "out_before_in": "Le départ doit être après l'arrivée",
+      "too_long": "Un pointage ne peut pas dépasser 24 heures",
+      "note_too_long": "La note ne peut pas dépasser 500 caractères"
+    }
+  },
+  "create": {
+    "title": "Ajouter un pointage manuel",
+    "submit": "Ajouter le pointage"
+  },
+  "edit": {
+    "title": "Modifier le pointage",
+    "submit": "Enregistrer"
+  },
+  "delete": {
+    "message_one": "{{count}} pointage supprimé",
+    "message_other": "{{count}} pointages supprimés",
+    "failed": "Certains pointages n'ont pas pu être supprimés."
+  },
+  "bulk": {
+    "title_one": "Supprimer {{count}} pointage ?",
+    "title_other": "Supprimer {{count}} pointages ?",
+    "description": "Les pointages sélectionnés seront supprimés. Vous pouvez annuler pendant quelques secondes.",
+    "confirm": "Supprimer",
+    "selected_one": "{{count}} pointage sélectionné",
+    "selected_other": "{{count}} pointages sélectionnés",
+    "cleared": "Sélection effacée"
+  },
+  "toast": {
+    "clocked_in": "Arrivée pointée",
+    "clocked_out": "Départ pointé",
+    "created": "Pointage ajouté",
+    "updated": "Pointage mis à jour",
+    "update_failed": "Ce pointage n'a pas pu être mis à jour.",
+    "undo_create": "Pointage ajouté",
+    "undo_update": "Pointage mis à jour"
+  },
+  "empty": {
+    "title": "Rien pour le moment",
+    "description": "Aucun pointage sur cette période."
+  },
+  "error": {
+    "title": "Impossible de charger les pointages"
+  },
+  "invalid_range": {
+    "title": "Choisissez une période",
+    "description": "Indiquez des dates de début et de fin valides pour afficher les pointages."
+  }
+}

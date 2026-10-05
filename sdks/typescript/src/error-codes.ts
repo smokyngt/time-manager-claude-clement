@@ -1,13 +1,11 @@
 /**
- * Every error code the API can return, dotted lowercase.
+ * Every error code the API registers, dotted lowercase.
  *
- * Derived from docs/DOMAIN.md, docs/API_CONVENTIONS.md (core codes and the
- * `<entity>.not.found`, `<entity>.<op>.failed`, `<entity>.conflict` conventions) and the
- * current factories in api/src/lib/errors/domains. These values must be checked against the
- * API once its migration to the dotted format is complete.
+ * Generated from the `registerError({ code })` calls in `api/src/lib/errors/base/core.ts` and
+ * `api/src/lib/errors/domains/*.ts`. Regenerate it when a code is added or renamed.
  */
 export const ErrorCodes = {
-  AuthInvalidCredentials: 'auth.invalid.credentials',
+  AuthCredentialsInvalid: 'auth.credentials.invalid',
   AuthLoginFailed: 'auth.login.failed',
   AuthLogoutFailed: 'auth.logout.failed',
   AuthMeFailed: 'auth.me.failed',
@@ -15,8 +13,9 @@ export const ErrorCodes = {
   AuthMicrosoftRejected: 'auth.microsoft.rejected',
   AuthMicrosoftUnavailable: 'auth.microsoft.unavailable',
   AuthMicrosoftUnknownUser: 'auth.microsoft.unknown.user',
+  AuthRateLimited: 'auth.rate.limited',
   AuthRefreshFailed: 'auth.refresh.failed',
-  AuthSessionInvalid: 'auth.session.invalid',
+  AuthRefreshInvalid: 'auth.refresh.invalid',
   ClockConflict: 'clock.conflict',
   ClockCreateFailed: 'clock.create.failed',
   ClockCurrentFailed: 'clock.current.failed',
@@ -35,11 +34,13 @@ export const ErrorCodes = {
   InternalUnexpected: 'internal.unexpected',
   JsonInvalid: 'json.invalid',
   LogCreateFailed: 'log.create.failed',
+  PayloadTooLarge: 'payload.too.large',
   RateLimitExceeded: 'rate.limit.exceeded',
   ReportInvalid: 'report.invalid',
   ReportTeamFailed: 'report.team.failed',
   ReportTeamNotFound: 'report.team.not.found',
   ReportUserFailed: 'report.user.failed',
+  ReportUserNotFound: 'report.user.not.found',
   RouteNotFound: 'route.not.found',
   TeamArchiveFailed: 'team.archive.failed',
   TeamCreateFailed: 'team.create.failed',
@@ -62,7 +63,6 @@ export const ErrorCodes = {
   TokenAuthenticationFailed: 'token.authentication.failed',
   Unauthorized: 'unauthorized',
   UserArchiveFailed: 'user.archive.failed',
-  UserConflict: 'user.conflict',
   UserCreateFailed: 'user.create.failed',
   UserDeleteFailed: 'user.delete.failed',
   UserListFailed: 'user.list.failed',

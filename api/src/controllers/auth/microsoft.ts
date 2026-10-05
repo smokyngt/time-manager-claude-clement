@@ -20,7 +20,10 @@ export const microsoft = async (req: FastifyRequest, reply: FastifyReply): Promi
       result.state_cookie,
       Cookies.options(result.max_age, '/v1/auth/microsoft'),
     );
-    req.log.info({ event: AuthMicrosoftStarted.code }, 'request succeeded');
+    req.log.info(
+      { correlation_id: req.id, event: AuthMicrosoftStarted.code },
+      'request succeeded',
+    );
     await reply.redirect(result.url);
   } catch (error) {
     throw AuthMicrosoftError({ cause: error, metadata: { route: 'auth.controller.microsoft' } });

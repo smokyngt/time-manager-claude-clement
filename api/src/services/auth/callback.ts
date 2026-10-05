@@ -11,6 +11,8 @@ import {
   AuthMicrosoftUnavailableError,
   AuthMicrosoftUnknownUserError,
 } from '@/lib/errors/domains/auth.js';
+import { AuthLoggedIn, AuthMicrosoftLinked } from '@/lib/events/domains/auth.js';
+import { Digest } from '@/utils/crypto/digest.js';
 import { logService } from '@/services/log/index.js';
 
 import { Session } from './session.js';
@@ -21,7 +23,7 @@ import type { CallbackParams, CallbackResponse } from './index.js';
  * @route auth.service.callback
  * @param {CallbackParams} params
  * @returns {Promise<CallbackResponse>}
- * @throws {AuthMicrosoftError}
+ * @throws {AuthMicrosoftError | AuthMicrosoftRejectedError | AuthMicrosoftUnavailableError | AuthMicrosoftUnknownUserError}
  */
 export const callback = async (params: CallbackParams): Promise<CallbackResponse> => {
   try {
@@ -53,9 +55,11 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
       signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok) throw rejected();
-    const body = (await response.json()) as { id_token?: string };
-    if (typeof body.id_token !== 'string') throw rejected();
-    const claims = decodeJwt(body.id_token);
+    const body: unknown = await response.json();
+    const idToken =
+      typeof body === 'object' && body !== null && 'id_token' in body ? body.id_token : undefined;
+    if (typeof idToken !== 'string') throw rejected();
+    const claims = decodeJwt(idToken);
     const audience = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
     const tenant = typeof claims['tid'] === 'string' ? claims['tid'].toLowerCase() : undefined;
     const oid = typeof claims['oid'] === 'string' ? claims['oid'] : undefined;
@@ -80,7 +84,7 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
     const [byEmail] =
       byId !== undefined || email === undefined
         ? []
-        : await db.select().from(users).where(eq(users.email, email)).limit(1);
+        : await db.select().from(users).where(eq(users.email_hash, Digest.email(email))).limit(1);
     const row = byId ?? byEmail;
     if (row === undefined) {
       throw AuthMicrosoftUnknownUserError({ metadata: { route: 'auth.service.callback' } });
@@ -98,14 +102,14 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
       linked = updated;
       await logService.create({
         actor: row,
-        event: 'auth.microsoft_linked',
+        event: AuthMicrosoftLinked.code,
         metadata: { user_id: row.id },
       });
     }
     const session = await Session.issue({ user: linked });
     await logService.create({
       actor: linked,
-      event: 'auth.logged_in',
+      event: AuthLoggedIn.code,
       metadata: { method: 'microsoft', user_id: linked.id },
     });
     return session;

@@ -4,7 +4,7 @@ import { Config } from '@/config/index.js';
 import { ROLES } from '@/types/entities/user.js';
 import { Duration } from '@/utils/duration.js';
 
-import { UnauthorizedError } from '../errors/index.js';
+import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 import type { Role } from '@/types/entities/user.js';
@@ -12,16 +12,16 @@ import type { Role } from '@/types/entities/user.js';
 const ISSUER = 'time-manager';
 const AUDIENCE = 'time-manager-web';
 
-export interface AccessToken {
+export type AccessToken = {
   expires_in: number;
   token: string;
-}
+};
 
-export interface RefreshToken {
+export type RefreshToken = {
   expires_at: number;
   hash: string;
   token: string;
-}
+};
 
 export class Tokens {
   /**
@@ -39,6 +39,7 @@ export class Tokens {
       .setIssuedAt()
       .setExpirationTime(`${expiresIn}s`)
       .sign(Tokens.secret('JWT_ACCESS_SECRET'));
+
     return { expires_in: expiresIn, token };
   }
 
@@ -57,6 +58,7 @@ export class Tokens {
    */
   public static hash(token: string): string {
     const hasher = new Bun.CryptoHasher('sha256', Tokens.secretText('JWT_REFRESH_SECRET'));
+
     return hasher.update(token).digest('hex');
   }
 
@@ -67,6 +69,7 @@ export class Tokens {
   public static refresh(): RefreshToken {
     const bytes = crypto.getRandomValues(new Uint8Array(32));
     const token = Buffer.from(bytes).toString('base64url');
+
     return {
       expires_at: Date.now() + Tokens.refreshTtl() * 1000,
       hash: Tokens.hash(token),
@@ -104,7 +107,7 @@ export class Tokens {
    * @route tokens.verify
    * @param {string} token
    * @returns {Promise<Actor>}
-   * @throws {UnauthorizedError}
+   * @throws {TokenAuthenticationError}
    */
   public static async verify(token: string): Promise<Actor> {
     try {
@@ -113,13 +116,14 @@ export class Tokens {
         audience: AUDIENCE,
         issuer: ISSUER,
       });
-      const role = payload['role'] as Role | undefined;
-      if (payload.sub === undefined || role === undefined || !ROLES.includes(role)) {
-        throw UnauthorizedError({ metadata: { route: 'tokens.verify' } });
+      const role = ROLES.find((item) => item === payload['role']);
+      if (payload.sub === undefined || role === undefined) {
+        throw TokenAuthenticationError({ metadata: { route: 'tokens.verify' } });
       }
+
       return { id: payload.sub, role, team_ids: [] };
     } catch (error) {
-      throw UnauthorizedError({ cause: error, metadata: { route: 'tokens.verify' } });
+      throw TokenAuthenticationError({ cause: error, metadata: { route: 'tokens.verify' } });
     }
   }
 }

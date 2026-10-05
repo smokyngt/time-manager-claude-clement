@@ -1,10 +1,10 @@
 import { Config } from '@/config/index.js';
 import { Duration } from '@/utils/duration.js';
 
-interface Entry {
+type Entry = {
   count: number;
   reset: number;
-}
+};
 
 const CAPACITY = 10_000;
 
@@ -67,6 +67,18 @@ export class Limiter {
    */
   public static key(email: string): string {
     return new Bun.CryptoHasher('sha256').update(email.trim().toLowerCase()).digest('hex');
+  }
+
+  /**
+   * @route limiter.retry
+   * @param {string} email
+   * @returns {number}
+   */
+  public static retry(email: string): number {
+    const entry = Limiter.entries.get(Limiter.key(email));
+    if (entry === undefined) return 1;
+
+    return Math.max(1, Math.ceil((entry.reset - Date.now()) / 1000));
   }
 
   /**

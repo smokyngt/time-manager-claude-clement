@@ -1,19 +1,18 @@
 import { clock } from '@/controllers/clock/index.js';
-import { auth } from '@/plugins/auth.js';
-import { ClockNoteBodySchema, ClockResponses } from '@/schemas/clock.js';
+import { auth } from '@/middlewares/auth/index.js';
+import { ClockInBodySchema, ClockResponses } from '@/schemas/clock.js';
 
-import type { InBody } from '@/controllers/clock/index.js';
-import type { Clock } from '@/types/entities/clock.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ClockInBody, ClockResponse } from '@/controllers/clock/index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const inRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: InBody; Reply: ReplyEnvelope<Clock> }>(
+const clockIn: FastifyPluginAsync = async (fastify) => {
+  fastify.post<{ Body: ClockInBody; Reply: ReplyEnvelope<ClockResponse> }>(
     '/in',
     {
       preHandler: auth({ scopes: ['clocks:write'] }),
       schema: {
-        body: ClockNoteBodySchema,
+        body: ClockInBodySchema,
         description:
           'Opens a clock for the caller at the current time. Fails with a conflict when the caller is already clocked in.',
         response: ClockResponses.in,
@@ -22,6 +21,8 @@ export const inRoute: FastifyPluginAsync = async (fastify) => {
         tags: ['clocks'],
       },
     },
-    clock.in,
+    clock.clockIn,
   );
 };
+
+export { clockIn };

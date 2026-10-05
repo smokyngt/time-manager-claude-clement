@@ -3,19 +3,19 @@ import { and, eq, gt, isNull } from 'drizzle-orm';
 import { db } from '@/db/client.js';
 import { refreshTokens } from '@/db/schema/refresh-token.js';
 import { Tokens } from '@/lib/auth/tokens.js';
-import { UserMapper } from '@/utils/user-mapper.js';
+import { UserMapper } from '@/utils/mappers/user.js';
 
 import type { RefreshTokenRow } from '@/db/schema/refresh-token.js';
 import type { UserRow } from '@/db/schema/user.js';
 import type { User } from '@/types/entities/user.js';
 
-export interface SessionResult {
+export type SessionResult = {
   access_token: string;
   expires_in: number;
   refresh_expires_in: number;
   refresh_token: string;
   user: User;
-}
+};
 
 const GRACE = 10_000;
 
@@ -59,6 +59,7 @@ export class Session {
       token_hash: refresh.hash,
       user_id: user.id,
     });
+
     return {
       access_token: access.token,
       expires_in: access.expires_in,

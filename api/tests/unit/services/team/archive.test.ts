@@ -1,8 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor } from '../../../helpers/fixtures.js';
-import { makeTeamRow, MISSING_TEAM_ID, TEAM_ID } from './fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+import { actorOf, caught, MISSING_ID, rowOf, TEAM_ID } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -26,14 +25,16 @@ afterEach(() => {
 
 const { archive } = await import('@/services/team/archive.js');
 
-const actor = makeActor('admin');
+const actor = actorOf('admin');
 
 describe('team.service.archive', () => {
-  it('archives the team, returns the entity and writes an audit log', async () => {
-    fakeDb.enqueue([makeTeamRow({ archived_at: 5 })], [{ id: TEAM_ID, total: 2 }]);
+  it('writes the change, returns the decrypted team and writes an audit log', async () => {
+    fakeDb.enqueue([rowOf()], [{ total: 2 }]);
     const { team } = await archive({ actor, id: TEAM_ID });
-    expect((fakeDb.arg('update', 'set') as Record<string, unknown>)['archived_at']).toBeNumber();
-    expect(team.member_count).toBe(2);
+    const values = fakeDb.arg('update', 'set') as Record<string, unknown>;
+    expect(typeof values['updated_at']).toBe('number');
+    expect(values['archived_at']).toBeNumber();
+    expect(team).toMatchObject({ id: TEAM_ID, member_count: 2, name: 'Customer support' });
     expect(logCreate).toHaveBeenCalledWith({
       actor,
       event: 'team.archived',
@@ -41,10 +42,10 @@ describe('team.service.archive', () => {
     });
   });
 
-  it('throws TEAM_NOT_FOUND when nothing matches', async () => {
+  it('throws team.not.found when nothing matches', async () => {
     fakeDb.enqueue([]);
-    const error = await caught(archive({ actor, id: MISSING_TEAM_ID }));
-    expect(error.code).toBe('TEAM_NOT_FOUND');
+    const error = await caught(archive({ actor, id: MISSING_ID }));
+    expect(error.code).toBe('team.not.found');
     expect(error.status).toBe(404);
     expect(logCreate).not.toHaveBeenCalled();
   });
@@ -53,7 +54,8 @@ describe('team.service.archive', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(archive({ actor, id: TEAM_ID }));
-    expect(error.code).toBe('TEAM_ARCHIVE_ERROR');
+    expect(error.code).toBe('team.archive.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('team.service.archive');
   });

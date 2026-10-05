@@ -1,21 +1,42 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import type { Clock } from '@time-manager/sdk'
 
-import type { ClockPage } from '@/features/clocks/api/types'
-import type { ClockFilters } from '@/features/clocks/hooks/query-keys'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
-import { listClocks } from '@/features/clocks/api/clocks'
-import { clockListKey } from '@/features/clocks/hooks/query-keys'
+import { QueryKeys } from '@/config/query-keys'
+import { sdk } from '@/config/sdk'
+import { LIMITS } from '@/config/limits'
 
-const PAGE_SIZE = 25
+export type ClocksFilters = {
+  cursor?: string
+  from?: number
+  to?: number
+  userIds?: string[]
+}
 
-export function useClocks(filters: ClockFilters, enabled = true) {
-  return useInfiniteQuery({
+const EMPTY: Clock[] = []
+
+export function useClocks(filters: ClocksFilters, enabled = true) {
+  const params = { ...filters, limit: LIMITS.pageSize.default, order: 'desc' as const }
+  const query = useQuery({
     enabled,
-    getNextPageParam: (last_page: ClockPage) =>
-      last_page.more ? (last_page.next ?? undefined) : undefined,
-    initialPageParam: undefined as string | undefined,
-    queryFn: ({ pageParam }): Promise<ClockPage> =>
-      listClocks({ ...filters, cursor: pageParam, limit: PAGE_SIZE, order: 'desc' }),
-    queryKey: clockListKey(filters),
+    meta: { suppressError: true },
+    placeholderData: keepPreviousData,
+    queryFn: async () => {
+      const { items, more, next, total } = await sdk.clocks.list(params)
+      return { items, more, next, total }
+    },
+    queryKey: QueryKeys.clocks(params),
   })
+
+  return {
+    clocks: query.data?.items ?? EMPTY,
+    error: query.error,
+    isError: query.isError,
+    loaded: query.isSuccess,
+    loading: query.isPending,
+    more: query.data?.more ?? false,
+    next: query.data?.next ?? null,
+    refetch: query.refetch,
+    total: query.data?.total ?? 0,
+  }
 }

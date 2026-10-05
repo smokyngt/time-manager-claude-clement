@@ -1,24 +1,27 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
+import { useMemo } from 'react'
 import { useForm, useWatch } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
-import type { PasswordValues } from '@/features/profile/schemas'
+import type { PasswordValues } from '@/features/profile/lib/schemas'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Field } from '@/features/profile/components/field'
 import { PasswordStrengthHint } from '@/features/profile/components/password-strength-hint'
-import { passwordSchema } from '@/features/profile/schemas'
-import { FormField } from '@/features/users/components/form-field'
+import { ProfileSchemas } from '@/features/profile/lib/schemas'
 
-export function ChangePasswordForm({
-  formError,
-  onSubmit,
-  pending,
-}: {
-  formError?: null | string
+export type ChangePasswordFormProps = {
   onSubmit: (values: PasswordValues) => Promise<boolean>
   pending: boolean
-}) {
+  wrongPassword: boolean
+}
+
+export function ChangePasswordForm({ onSubmit, pending, wrongPassword }: ChangePasswordFormProps) {
+  const { t } = useTranslation('profile')
+  const { t: tErrors } = useTranslation('errors')
+  const schema = useMemo(() => ProfileSchemas.password(t), [t])
   const {
     control,
     formState: { errors },
@@ -26,53 +29,57 @@ export function ChangePasswordForm({
     register,
     reset,
   } = useForm<PasswordValues>({
-    defaultValues: { confirm_password: '', new_password: '' },
-    resolver: zodResolver(passwordSchema),
+    defaultValues: { confirmPassword: '', currentPassword: '', newPassword: '' },
+    resolver: zodResolver(schema),
   })
-  const new_password = useWatch({ control, name: 'new_password' })
+  const newPassword = useWatch({ control, name: 'newPassword' })
 
   async function submit(values: PasswordValues) {
-    if (await onSubmit(values)) reset()
+    if (await onSubmit(values)) {
+      reset()
+    }
   }
+
+  const currentError = wrongPassword ? tErrors('user.password.invalid') : errors.currentPassword?.message
 
   return (
     <form className="grid gap-4" noValidate onSubmit={(event) => void handleSubmit(submit)(event)}>
-      {formError ? (
-        <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
-          {formError}
-        </p>
-      ) : null}
-      <FormField
-        error={errors.new_password?.message}
-        id="profile-new-password"
-        label="New password"
-      >
+      <Field error={currentError} id="profile-current-password" label={t('password.current')}>
         <Input
-          aria-invalid={Boolean(errors.new_password)}
+          aria-invalid={Boolean(currentError)}
+          autoComplete="current-password"
+          id="profile-current-password"
+          type="password"
+          {...register('currentPassword')}
+        />
+      </Field>
+      <Field error={errors.newPassword?.message} id="profile-new-password" label={t('password.new')}>
+        <Input
+          aria-invalid={Boolean(errors.newPassword)}
           autoComplete="new-password"
           id="profile-new-password"
           type="password"
-          {...register('new_password')}
+          {...register('newPassword')}
         />
-        <PasswordStrengthHint password={new_password} />
-      </FormField>
-      <FormField
-        error={errors.confirm_password?.message}
+        <PasswordStrengthHint password={newPassword} />
+      </Field>
+      <Field
+        error={errors.confirmPassword?.message}
         id="profile-confirm-password"
-        label="Confirm password"
+        label={t('password.confirm')}
       >
         <Input
-          aria-invalid={Boolean(errors.confirm_password)}
+          aria-invalid={Boolean(errors.confirmPassword)}
           autoComplete="new-password"
           id="profile-confirm-password"
           type="password"
-          {...register('confirm_password')}
+          {...register('confirmPassword')}
         />
-      </FormField>
+      </Field>
       <div className="flex sm:justify-end">
         <Button disabled={pending} type="submit">
           {pending ? <Loader2Icon className="animate-spin" /> : null}
-          Change password
+          {t('password.submit')}
         </Button>
       </div>
     </form>

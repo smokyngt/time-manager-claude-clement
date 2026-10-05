@@ -1,12 +1,12 @@
 import { clock } from '@/controllers/clock/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { ClockListBodySchema, ClockResponses } from '@/schemas/clock.js';
 
 import type { ListBody, ListResponse } from '@/controllers/clock/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const listRoute: FastifyPluginAsync = async (fastify) => {
+const list: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: ListBody; Reply: ReplyEnvelope<ListResponse> }>(
     '/list',
     {
@@ -14,7 +14,7 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
       schema: {
         body: ClockListBodySchema,
         description:
-          'Cursor paginated list ordered by creation time. Employees only see their own clocks, managers see their own and those of the users they manage.',
+          'Cursor paginated list ordered by creation time. Employees only see their own clocks, managers see their own and those of the users they manage, admins see all.',
         response: ClockResponses.list,
         security: [{ bearerAuth: [] }],
         summary: 'List clocks',
@@ -24,3 +24,5 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
     clock.list,
   );
 };
+
+export { list };

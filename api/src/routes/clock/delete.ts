@@ -1,12 +1,12 @@
 import { clock } from '@/controllers/clock/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { ClockDeleteBodySchema, ClockResponses } from '@/schemas/clock.js';
 
 import type { DeleteBody, DeleteResponse } from '@/controllers/clock/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const deleteRoute: FastifyPluginAsync = async (fastify) => {
+const deleteRoute: FastifyPluginAsync = async (fastify) => {
   fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
     '',
     {
@@ -24,3 +24,5 @@ export const deleteRoute: FastifyPluginAsync = async (fastify) => {
     clock.delete,
   );
 };
+
+export { deleteRoute };

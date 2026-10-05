@@ -1,6 +1,34 @@
 const SENSITIVE = ['code', 'error_description', 'session_state', 'state'];
 
+export type RedactedRequest = {
+  host: string | undefined;
+  method: string;
+  remoteAddress: string | undefined;
+  remotePort: number | undefined;
+  url: string | undefined;
+};
+
 export class Redact {
+  /**
+   * @route redact.request
+   * @param {{ headers?: { host?: string }; method: string; socket?: { remoteAddress?: string; remotePort?: number }; url?: string }} req
+   * @returns {RedactedRequest}
+   */
+  public static request(req: {
+    headers?: { host?: string };
+    method: string;
+    socket?: { remoteAddress?: string; remotePort?: number };
+    url?: string;
+  }): RedactedRequest {
+    return {
+      host: req.headers?.host,
+      method: req.method,
+      remoteAddress: req.socket?.remoteAddress,
+      remotePort: req.socket?.remotePort,
+      url: Redact.url(req.url),
+    };
+  }
+
   /**
    * @route redact.url
    * @param {string | undefined} url
@@ -15,6 +43,6 @@ export class Redact {
       if (query.has(name)) query.set(name, 'redacted');
     }
 
-    return `${url.slice(0, index)}?${query.toString().replaceAll('%5Bredacted%5D', 'redacted')}`;
+    return `${url.slice(0, index)}?${query.toString()}`;
   }
 }

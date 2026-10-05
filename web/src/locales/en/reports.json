@@ -1,1 +1,113 @@
-{}
+{
+  "period": {
+    "label": "Period",
+    "group": "Group",
+    "from": "From",
+    "to": "To",
+    "auto": "Auto ({{granularity}})",
+    "presets": {
+      "this_week": "This week",
+      "last_4_weeks": "Last 4 weeks",
+      "this_month": "This month",
+      "last_3_months": "Last 3 months",
+      "custom": "Custom"
+    },
+    "granularity": {
+      "day": "By day",
+      "week": "By week",
+      "month": "By month"
+    },
+    "errors": {
+      "range_required": "Choose a start and an end date.",
+      "range_order": "The end date must be after the start date.",
+      "range_too_long": "The range cannot exceed {{days}} days."
+    }
+  },
+  "unit": {
+    "day": "day",
+    "week": "week",
+    "month": "month"
+  },
+  "kpi": {
+    "worked": {
+      "label": "Worked hours",
+      "hint": "of {{target}} target"
+    },
+    "worked_team": {
+      "label": "Worked hours",
+      "hint": "all members"
+    },
+    "average": {
+      "label": "Average per day",
+      "hint": "on worked days"
+    },
+    "average_team": {
+      "label": "Average per day",
+      "hint": "per member and day"
+    },
+    "days": {
+      "label": "Days worked",
+      "hint": "with at least one clock"
+    },
+    "overtime": {
+      "label": "Overtime",
+      "under": "under target",
+      "over": "over target"
+    },
+    "lateness": {
+      "label": "Lateness rate",
+      "hint": "of days worked"
+    },
+    "late_days": {
+      "label": "Late days",
+      "hint": "more than 5 min late"
+    },
+    "members": {
+      "label": "Members",
+      "hint": "{{active}} of {{total}} members active"
+    }
+  },
+  "chart": {
+    "period": "Period",
+    "week_of": "Week of {{date}}",
+    "worked": {
+      "title": "Worked hours",
+      "team_title": "Team worked hours",
+      "description": "Hours worked per {{unit}}",
+      "description_target": "Hours worked per {{unit}}, dashed line is the target",
+      "summary": "Bar chart of worked hours per {{unit}}, {{total}} in total",
+      "summary_target": "Bar chart of worked hours per {{unit}}, {{total}} in total, with a dashed target line",
+      "series": "Worked",
+      "target": "Target"
+    },
+    "lateness": {
+      "title": "Lateness",
+      "description": "Late arrivals per {{unit}}",
+      "summary": "Bar chart of late arrivals per {{unit}}, {{total}} in total",
+      "series": "Late arrivals"
+    },
+    "view_table": "View as table",
+    "view_chart": "View as chart",
+    "empty": "Nothing to chart for this period."
+  },
+  "members": {
+    "label": "Team members",
+    "member": "Member",
+    "worked": "Worked",
+    "overtime": "Overtime",
+    "late_days": "Late days",
+    "days_worked": "Days worked"
+  },
+  "user": {
+    "title": "Employee report",
+    "description": "Time tracking KPIs",
+    "empty_title": "No time tracked",
+    "empty_description": "No time tracked in this period."
+  },
+  "team": {
+    "title": "Team dashboard",
+    "description": "Team KPIs and members",
+    "empty_title": "No members",
+    "empty_description": "This team has no members yet."
+  }
+}

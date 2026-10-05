@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'bun:test';
 
+import { ErrorCodes } from '../error-codes.js';
 import {
   AuthenticationError,
   ConflictError,
@@ -41,6 +42,22 @@ describe('TimeManagerError.from', () => {
     expect(error.instance).toBe('/v1/x');
     expect(error.metadata).toEqual({ a: 1 });
     expect(error).toBeInstanceOf(TimeManagerError);
+  });
+
+  test('maps 422 and other unlisted 4xx to the generic error', () => {
+    for (const status of [413, 422]) {
+      const error = make(status, base);
+      expect(error).toBeInstanceOf(TimeManagerError);
+      expect(error).not.toBeInstanceOf(ValidationError);
+      expect(error.status).toBe(status);
+    }
+  });
+
+  test('every ErrorCodes value is dotted lowercase', () => {
+    for (const code of Object.values(ErrorCodes)) {
+      expect(code).toMatch(/^[a-z]+(\.[a-z]+)*$/);
+    }
+    expect(Object.values(ErrorCodes)).toContain('payload.too.large');
   });
 
   test('keeps validation issues', () => {

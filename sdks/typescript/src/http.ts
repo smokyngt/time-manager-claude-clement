@@ -20,6 +20,8 @@ export interface HttpClientOptions {
   timeoutMs?: number;
 }
 
+/** Default request timeout in milliseconds. */
+const DEFAULT_TIMEOUT_MS = 15_000;
 const REFRESH_PATH = '/v1/auth/refresh';
 const NO_REFRESH_PATHS = ['/v1/auth/login', REFRESH_PATH, '/v1/auth/logout'];
 
@@ -44,7 +46,7 @@ export class HttpClient {
     this.getToken = options.getToken;
     this.onTokenRefresh = options.onTokenRefresh;
     this.onLogout = options.onLogout;
-    this.timeoutMs = options.timeoutMs ?? 15000;
+    this.timeoutMs = options.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   }
 
   private static expired(error: unknown): boolean {

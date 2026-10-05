@@ -1,3 +1,7 @@
+import { isIP } from 'node:net';
+
+import { Keys } from '@/utils/crypto/keys.js';
+
 class ConfigStore {
   /**
    * @route config.store.flag
@@ -47,11 +51,25 @@ class ConfigStore {
 }
 
 const PLACEHOLDER = /change[-_]?me|dev[-_]?only/i;
-const TENANT_ALIASES = ['common', 'consumers', 'organizations'];
+const TENANT_GUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const LOCAL_HOSTS = ['127.0.0.1', '::1', '[::1]', 'localhost'];
 
 export class Config {
   public static readonly store = new ConfigStore();
+
+  /**
+   * @route config.address
+   * @param {string} entry
+   * @returns {boolean}
+   */
+  public static address(entry: string): boolean {
+    const [host = '', prefix, ...rest] = entry.split('/');
+    if (rest.length > 0 || isIP(host) === 0) return false;
+    if (prefix === undefined) return true;
+    const limit = isIP(host) === 4 ? 32 : 128;
+
+    return /^\d{1,3}$/.test(prefix) && Number(prefix) <= limit;
+  }
 
   /**
    * @route config.production
@@ -77,6 +95,17 @@ export class Config {
   }
 
   /**
+   * @route config.redirect
+   * @returns {string}
+   */
+  public static redirect(): string {
+    return Config.store.text(
+      'MICROSOFT_REDIRECT_URI',
+      'http://localhost:8000/v1/auth/microsoft/callback',
+    );
+  }
+
+  /**
    * @route config.secure
    * @param {string} value
    * @returns {boolean}
@@ -88,6 +117,24 @@ export class Config {
     } catch {
       return false;
     }
+  }
+
+  /**
+   * @route config.web
+   * @returns {string}
+   */
+  public static web(): string {
+    return Config.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
+  }
+
+  /**
+   * @route config.tenant
+   * @returns {string | undefined}
+   */
+  public static tenant(): string | undefined {
+    const raw = Config.store.optional('MICROSOFT_TENANT_ID')?.trim().toLowerCase();
+
+    return raw !== undefined && TENANT_GUID.test(raw) ? raw : undefined;
   }
 
   /**
@@ -114,21 +161,25 @@ export class Config {
     if (Config.store.optional('DATABASE_URL') === undefined)
       problems.push('DATABASE_URL is required');
     if (microsoft) {
-      if (Config.store.optional('MICROSOFT_CLIENT_SECRET') === undefined)
-        problems.push('MICROSOFT_CLIENT_SECRET is required');
-      const tenant = Config.store.text('MICROSOFT_TENANT_ID', 'common').toLowerCase();
-      if (TENANT_ALIASES.includes(tenant))
-        problems.push('MICROSOFT_TENANT_ID must be a single tenant id, not a multi-tenant alias');
+      const clientSecret = Config.store.optional('MICROSOFT_CLIENT_SECRET');
+      if (clientSecret === undefined) problems.push('MICROSOFT_CLIENT_SECRET is required');
+      else if (PLACEHOLDER.test(clientSecret))
+        problems.push('MICROSOFT_CLIENT_SECRET must not be a placeholder value');
+      if (Config.tenant() === undefined)
+        problems.push(
+          'MICROSOFT_TENANT_ID must be a single tenant id (GUID), not common, organizations or consumers',
+        );
     }
     if (!Config.store.flag('ALLOW_INSECURE_URLS', false)) {
-      if (!Config.secure(Config.store.text('WEB_URL', 'http://localhost:5173')))
-        problems.push('WEB_URL must be a non-local https url');
-      if (
-        microsoft &&
-        !Config.secure(Config.store.text('MICROSOFT_REDIRECT_URI', 'http://localhost:8000'))
-      )
+      if (!Config.secure(Config.web())) problems.push('WEB_URL must be a non-local https url');
+      if (microsoft && !Config.secure(Config.redirect()))
         problems.push('MICROSOFT_REDIRECT_URI must be a non-local https url');
     }
+    const proxy = Config.proxy();
+    if (Array.isArray(proxy) && !proxy.every((entry) => Config.address(entry)))
+      problems.push('TRUST_PROXY must be true, false, a hop count or a list of IPs and CIDR ranges');
+    problems.push(...Keys.validate());
+
     return problems;
   }
 }

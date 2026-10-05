@@ -16,13 +16,13 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Querystring: CallbackQuery }>} req
  * @param {FastifyReply} reply
  * @returns {Promise<void>}
- * @throws {AuthMicrosoftError}
+ * @throws {AuthMicrosoftUnavailableError}
  */
 export const callback = async (
   req: FastifyRequest<{ Querystring: CallbackQuery }>,
   reply: FastifyReply,
 ): Promise<void> => {
-  const web = Config.store.text('WEB_URL', 'http://localhost:5173').replace(/\/+$/, '');
+  const web = Config.web();
   try {
     const { code, error: denied, state } = req.query;
     reply.clearCookie(Cookies.oauth, Cookies.options(0, '/v1/auth/microsoft'));
@@ -35,7 +35,10 @@ export const callback = async (
       state_cookie: req.cookies[Cookies.oauth],
     });
     Cookies.set(reply, session.refresh_token, session.refresh_expires_in);
-    req.log.info({ event: AuthLoggedIn.code, user_id: session.user.id }, 'request succeeded');
+    req.log.info(
+      { actor_id: session.user.id, correlation_id: req.id, event: AuthLoggedIn.code },
+      'request succeeded',
+    );
     await reply.redirect(`${web}/auth/callback`);
   } catch (error) {
     const wrapped = AuthMicrosoftError({
@@ -43,7 +46,7 @@ export const callback = async (
       metadata: { route: 'auth.controller.callback' },
     });
     if (wrapped.code === AuthMicrosoftUnavailableError.code) throw wrapped;
-    req.log.warn({ code: wrapped.code }, 'microsoft sign-in rejected');
+    req.log.warn({ code: wrapped.code, correlation_id: req.id }, 'microsoft sign-in rejected');
     await reply.redirect(`${web}/auth/callback?error=${encodeURIComponent(wrapped.code)}`);
   }
 };

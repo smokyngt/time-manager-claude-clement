@@ -13,9 +13,7 @@ export {
   ValidationError,
 } from './errors.js';
 export type { TimeManagerErrorOptions, ValidationIssue } from './errors.js';
-export { HttpClient } from './http.js';
 export type { HttpClientOptions } from './http.js';
-export { Payload } from './payload.js';
 export {
   AuthResource,
   ClocksResource,

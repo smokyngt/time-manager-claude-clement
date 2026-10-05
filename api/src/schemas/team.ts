@@ -343,13 +343,15 @@ const unauthenticated = content(TokenAuthenticationErrorSchema, 'Missing or inva
 const limited = content(RateLimitErrorSchema, 'Rate limit exceeded.');
 const unexpected = content(ErrorSchema(InternalError), 'Unexpected error.');
 const notFound = content(ErrorSchema(TeamNotFoundError), 'The team does not exist.');
-const invalidManager = content(
-  ErrorSchema(TeamManagerInvalidError),
-  'The manager is not an active manager or admin.',
-);
-const invalidSchedule = content(
-  ErrorSchema(TeamScheduleInvalidError),
-  'The end of the working day is not after its start.',
+const invalidInput = content(
+  {
+    anyOf: [
+      ValidationErrorSchema,
+      ErrorSchema(TeamManagerInvalidError),
+      ErrorSchema(TeamScheduleInvalidError),
+    ],
+  },
+  'Invalid request, invalid manager or invalid working hours.',
 );
 
 export const TeamResponses = {
@@ -364,10 +366,7 @@ export const TeamResponses = {
   },
   create: {
     200: content(ReplyEnvelopeSchema(TeamDataSchema, 'team.created'), 'The created team.'),
-    400: content(
-      { anyOf: [ValidationErrorSchema, ErrorSchema(TeamManagerInvalidError), ErrorSchema(TeamScheduleInvalidError)] },
-      'Invalid request, invalid manager or invalid working hours.',
-    ),
+    400: invalidInput,
     401: unauthenticated,
     403: content(UnauthorizedErrorSchema, 'The actor may not create this team.'),
     429: limited,

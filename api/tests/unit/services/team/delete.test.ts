@@ -1,8 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor } from '../../../helpers/fixtures.js';
-import { MISSING_TEAM_ID, TEAM_ID } from './fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+import { actorOf, caught, MISSING_ID, TEAM_ID } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -26,7 +25,7 @@ afterEach(() => {
 
 const { remove } = await import('@/services/team/delete.js');
 
-const actor = makeActor('admin');
+const actor = actorOf('admin');
 
 describe('team.service.delete', () => {
   it('deletes the team and writes an audit log', async () => {
@@ -40,10 +39,11 @@ describe('team.service.delete', () => {
     });
   });
 
-  it('throws TEAM_NOT_FOUND when nothing matches', async () => {
+  it('throws team.not.found when nothing was deleted', async () => {
     fakeDb.enqueue([]);
-    const error = await caught(remove({ actor, id: MISSING_TEAM_ID }));
-    expect(error.code).toBe('TEAM_NOT_FOUND');
+    const error = await caught(remove({ actor, id: MISSING_ID }));
+    expect(error.code).toBe('team.not.found');
+    expect(error.status).toBe(404);
     expect(logCreate).not.toHaveBeenCalled();
   });
 
@@ -51,7 +51,7 @@ describe('team.service.delete', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(remove({ actor, id: TEAM_ID }));
-    expect(error.code).toBe('TEAM_DELETE_ERROR');
+    expect(error.code).toBe('team.delete.failed');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('team.service.delete');
   });

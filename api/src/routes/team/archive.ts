@@ -1,20 +1,19 @@
 import { team } from '@/controllers/team/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { TeamIdParamsSchema, TeamResponses } from '@/schemas/team.js';
 
-import type { ArchiveParams } from '@/controllers/team/index.js';
-import type { Team } from '@/types/entities/team.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ArchiveParams, TeamResponse } from '@/controllers/team/index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const archiveRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Params: ArchiveParams; Reply: ReplyEnvelope<Team> }>(
+const archive: FastifyPluginAsync = async (fastify) => {
+  fastify.post<{ Params: ArchiveParams; Reply: ReplyEnvelope<TeamResponse> }>(
     '/:id/archive',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),
       schema: {
         description:
-          'Archive a team. Archived teams are ignored when resolving managers and memberships.',
+          'Archive a team. Admins can archive any team, managers the teams they manage.',
         params: TeamIdParamsSchema,
         response: TeamResponses.archive,
         security: [{ bearerAuth: [] }],
@@ -25,3 +24,5 @@ export const archiveRoute: FastifyPluginAsync = async (fastify) => {
     team.archive,
   );
 };
+
+export { archive };

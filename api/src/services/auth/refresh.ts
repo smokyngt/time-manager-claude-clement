@@ -4,7 +4,8 @@ import { db } from '@/db/client.js';
 import { refreshTokens } from '@/db/schema/refresh-token.js';
 import { users } from '@/db/schema/user.js';
 import { Tokens } from '@/lib/auth/tokens.js';
-import { AuthRefreshError, AuthSessionInvalidError } from '@/lib/errors/domains/auth.js';
+import { AuthRefreshError, AuthRefreshInvalidError } from '@/lib/errors/domains/auth.js';
+import { AuthRefreshReused } from '@/lib/events/domains/auth.js';
 import { logService } from '@/services/log/index.js';
 
 import { Session } from './session.js';
@@ -15,7 +16,7 @@ import type { RefreshParams, RefreshResponse } from './index.js';
  * @route auth.service.refresh
  * @param {RefreshParams} params
  * @returns {Promise<RefreshResponse>}
- * @throws {AuthRefreshError}
+ * @throws {AuthRefreshError | AuthRefreshInvalidError}
  */
 export const refresh = async (params: RefreshParams): Promise<RefreshResponse> => {
   try {
@@ -26,7 +27,7 @@ export const refresh = async (params: RefreshParams): Promise<RefreshResponse> =
       .where(eq(refreshTokens.token_hash, Tokens.hash(params.token)))
       .limit(1);
     if (stored === undefined) {
-      throw AuthSessionInvalidError({ metadata: { route: 'auth.service.refresh' } });
+      throw AuthRefreshInvalidError({ metadata: { route: 'auth.service.refresh' } });
     }
     const [claimed] =
       stored.revoked_at === null && stored.expires_at > now
@@ -43,16 +44,16 @@ export const refresh = async (params: RefreshParams): Promise<RefreshResponse> =
       if (stored.revoked_at !== null) {
         await logService.create({
           actor: null,
-          event: 'auth.refresh_reuse_detected',
+          event: AuthRefreshReused.code,
           metadata: { family_id: stored.family_id, user_id: stored.user_id },
         });
       }
-      throw AuthSessionInvalidError({ metadata: { route: 'auth.service.refresh' } });
+      throw AuthRefreshInvalidError({ metadata: { route: 'auth.service.refresh' } });
     }
     const [row] = await db.select().from(users).where(eq(users.id, stored.user_id)).limit(1);
     if (row === undefined || row.archived_at !== null) {
       await Session.revoke(stored.family_id);
-      throw AuthSessionInvalidError({ metadata: { route: 'auth.service.refresh' } });
+      throw AuthRefreshInvalidError({ metadata: { route: 'auth.service.refresh' } });
     }
     return await Session.issue({ family_id: stored.family_id, user: row });
   } catch (error) {

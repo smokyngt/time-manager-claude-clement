@@ -9,70 +9,41 @@ import { update } from './update.js';
 
 import type { ClockCreateData, ClockUpdateData } from '@/services/clock/index.js';
 import type { Clock } from '@/types/entities/clock.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export interface BulkFailure {
+export type BulkFailure = {
   code: string;
   id: string;
-}
+};
 
-export interface ClockControllerType {
-  create: (
-    req: FastifyRequest<{ Body: CreateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Clock> }>,
-  ) => Promise<void>;
-  current: (
-    req: FastifyRequest,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<CurrentResponse> }>,
-  ) => Promise<void>;
-  delete: (
-    req: FastifyRequest<{ Body: DeleteBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
-  ) => Promise<void>;
-  in: (
-    req: FastifyRequest<{ Body: InBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Clock> }>,
-  ) => Promise<void>;
-  list: (
-    req: FastifyRequest<{ Body: ListBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
-  ) => Promise<void>;
-  out: (
-    req: FastifyRequest<{ Body: OutBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Clock> }>,
-  ) => Promise<void>;
-  retrieve: (
-    req: FastifyRequest<{ Params: RetrieveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<Clock> }>,
-  ) => Promise<void>;
-  update: (
-    req: FastifyRequest<{ Body: UpdateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
-  ) => Promise<void>;
-}
+export type ClockInBody = {
+  note?: string;
+};
+
+export type ClockOutBody = {
+  note?: string;
+};
+
+export type ClockResponse = {
+  clock: Clock;
+};
 
 export type CreateBody = ClockCreateData;
 
-export interface CurrentResponse {
+export type CurrentResponse = {
   clock: Clock | null;
-}
+};
 
-export interface DeleteBody {
+export type DeleteBody = {
   ids: string[];
-}
+};
 
-export interface DeleteResponse {
+export type DeleteResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
-}
+};
 
-export interface InBody {
-  note?: string;
-}
-
-export interface ListBody {
+export type ListBody = {
   cursor?: string;
   from?: number | string;
   limit?: number;
@@ -80,41 +51,37 @@ export interface ListBody {
   order?: 'asc' | 'desc';
   to?: number | string;
   user_ids?: string[];
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: Clock[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface OutBody {
-  note?: string;
-}
-
-export interface RetrieveParams {
+export type RetrieveParams = {
   id: string;
-}
+};
 
-export interface UpdateBody {
+export type UpdateBody = {
   data: ClockUpdateData;
   ids: string[];
-}
+};
 
-export interface UpdateResponse {
+export type UpdateResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
-}
+};
 
-class ClockController implements ClockControllerType {
+class ClockController {
+  public clockIn = clockIn;
+  public clockOut = clockOut;
   public create = create;
   public current = current;
   public delete = remove;
-  public in = clockIn;
   public list = list;
-  public out = clockOut;
   public retrieve = retrieve;
   public update = update;
 }

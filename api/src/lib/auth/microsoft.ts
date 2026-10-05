@@ -1,13 +1,11 @@
 import { Config } from '@/config/index.js';
 
-export interface MicrosoftConfig {
+export type MicrosoftConfig = {
   client_id: string;
   client_secret: string;
   redirect_uri: string;
   tenant: string;
-}
-
-const TENANT_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+};
 
 export class Microsoft {
   /**
@@ -33,6 +31,7 @@ export class Microsoft {
       scope: 'openid profile email',
       state: params.state,
     });
+
     return `${Microsoft.base(config)}/authorize?${query.toString()}`;
   }
 
@@ -61,16 +60,15 @@ export class Microsoft {
   public static config(): MicrosoftConfig | undefined {
     const clientId = Config.store.optional('MICROSOFT_CLIENT_ID');
     const clientSecret = Config.store.optional('MICROSOFT_CLIENT_SECRET');
-    const tenant = Config.store.optional('MICROSOFT_TENANT_ID')?.toLowerCase();
-    if (clientId === undefined || clientSecret === undefined) return undefined;
-    if (tenant === undefined || !TENANT_ID.test(tenant)) return undefined;
+    const tenant = Config.tenant();
+    if (clientId === undefined || clientSecret === undefined || tenant === undefined) {
+      return undefined;
+    }
+
     return {
       client_id: clientId,
       client_secret: clientSecret,
-      redirect_uri: Config.store.text(
-        'MICROSOFT_REDIRECT_URI',
-        'http://localhost:8000/v1/auth/microsoft/callback',
-      ),
+      redirect_uri: Config.redirect(),
       tenant,
     };
   }

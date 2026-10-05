@@ -1,0 +1,5 @@
+export { AccountCard } from '@/features/profile/components/account-card'
+export { ChangePasswordForm } from '@/features/profile/components/change-password-form'
+export { PasswordStrengthHint } from '@/features/profile/components/password-strength-hint'
+export { PreferencesCard } from '@/features/profile/components/preferences-card'
+export { ProfileEditForm } from '@/features/profile/components/profile-edit-form'

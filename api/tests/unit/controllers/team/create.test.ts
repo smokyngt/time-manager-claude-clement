@@ -1,23 +1,20 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import {
-  caught,
-  makeActor,
-  makeReply,
-  makeReq,
-  MANAGER_ID,
-  OTHER_ID,
-} from '../../../helpers/fixtures.js';
-import { installTeamService } from '../../services/team/fixtures.js';
-import { installMembership } from './common.js';
+import { Fake } from '../../../support/fake.js';
+import { actorOf, caught, MANAGER_ID, OTHER_MANAGER_ID } from '../../services/team/support.js';
+import { installTeamService } from './support.js';
+
+import type { FakeReply } from '../../../support/fake.js';
+import type { CreateBody, TeamResponse } from '@/controllers/team/index.js';
+import type { Actor } from '@/types/entities/actor.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const harness = await installTeamService();
-const membership = await installMembership();
 const { directory, svc } = harness;
 
 afterAll(() => {
   harness.restore();
-  membership.restore();
 });
 
 afterEach(() => {
@@ -25,64 +22,66 @@ afterEach(() => {
   directory.clear();
 });
 
-import type { CreateBody } from '@/controllers/team/index.js';
-import type { Actor } from '@/types/entities/actor.js';
-import type { Team } from '@/types/entities/team.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 const { create } = await import('@/controllers/team/create.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<Team> }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<TeamResponse> }>;
 type Req = FastifyRequest<{ Body: CreateBody }>;
 
-const run = async (actor: Actor | null, body: CreateBody) => {
-  const { fake, reply } = makeReply<Rep>();
-  await create(makeReq<Req>({ actor, body }), reply);
-  return fake;
+const run = async (actor: Actor | undefined, body: CreateBody) => {
+  const reply: FakeReply = Fake.reply();
+  await create(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
+
+  return reply;
 };
 
+const lastData = (): Record<string, unknown> =>
+  (svc.create.mock.calls as unknown as [{ data: Record<string, unknown> }][])[0]?.[0].data ?? {};
+
 describe('team.controller.create', () => {
-  it('lets an admin pick the manager', async () => {
-    const fake = await run(makeActor('admin'), { manager_id: OTHER_ID, name: 'A' });
-    expect(svc.create).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { manager_id: OTHER_ID, name: 'A' } }),
-    );
-    expect(fake.sent).toMatchObject({ event: 'team.created' });
+  it('lets an admin choose the manager and replies with the event envelope', async () => {
+    const reply = await run(actorOf('admin'), { manager_id: OTHER_MANAGER_ID, name: 'Support' });
+    expect(reply.statusCode).toBe(200);
+    expect(reply.payload).toMatchObject({
+      data: { team: { object: 'team' } },
+      event: { code: 'team.created', correlation_id: 'req-test', payload: { actor: actorOf('admin').id } },
+    });
+    expect(lastData()['manager_id']).toBe(OTHER_MANAGER_ID);
   });
 
-  it('defaults the manager of an admin to themselves', async () => {
-    const admin = makeActor('admin');
-    await run(admin, { name: 'A' });
-    expect(svc.create).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { manager_id: admin.id, name: 'A' } }),
-    );
+  it('makes an admin the manager when none is given', async () => {
+    await run(actorOf('admin'), { name: 'Support' });
+    expect(lastData()['manager_id']).toBe(actorOf('admin').id);
   });
 
-  it('forces the manager of a manager to themselves', async () => {
-    await run(makeActor('manager'), { manager_id: OTHER_ID, name: 'A' });
-    expect(svc.create).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { manager_id: MANAGER_ID, name: 'A' } }),
-    );
+  it('forces a manager to be the manager of the team', async () => {
+    await run(actorOf('manager'), { manager_id: OTHER_MANAGER_ID, name: 'Support' });
+    expect(lastData()['manager_id']).toBe(MANAGER_ID);
   });
 
-  it('forbids an employee', async () => {
-    const error = await caught(run(makeActor('employee'), { name: 'A' }));
-    expect(error.code).toBe('FORBIDDEN');
+  it('forbids employees and rejects anonymous callers', async () => {
+    const employee = await caught(run(actorOf('employee'), { name: 'Support' }));
+    const anonymous = await caught(run(undefined, { name: 'Support' }));
+    expect(employee.code).toBe('unauthorized');
+    expect(employee.status).toBe(403);
+    expect(anonymous.code).toBe('token.authentication.failed');
+    expect(anonymous.status).toBe(401);
     expect(svc.create).not.toHaveBeenCalled();
   });
 
-  it('wraps service failures and keeps the cause', async () => {
-    const failure = new Error('db down');
-    svc.create.mockImplementationOnce(() => Promise.reject(failure));
-    const error = await caught(run(makeActor('admin'), { name: 'A' }));
-    expect(error.code).toBe('TEAM_CREATE_ERROR');
-    expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.controller.create');
+  it('keeps the invalid manager error raised by the service', async () => {
+    const { TeamManagerInvalidError } = await import('@/lib/errors/domains/team.js');
+    svc.create.mockImplementationOnce(() => Promise.reject(TeamManagerInvalidError()));
+    const error = await caught(run(actorOf('admin'), { manager_id: MANAGER_ID, name: 'Support' }));
+    expect(error.code).toBe('team.manager.invalid');
+    expect(error.status).toBe(400);
   });
 
-  it('requires authentication', async () => {
-    const error = await caught(run(null, { name: 'A' }));
-    expect(error.code).toBe('UNAUTHORIZED');
+  it('wraps unexpected failures with the controller route and keeps the cause', async () => {
+    const failure = new Error('boom');
+    svc.create.mockImplementationOnce(() => Promise.reject(failure));
+    const error = await caught(run(actorOf('admin'), { name: 'Support' }));
+    expect(error.code).toBe('team.create.failed');
+    expect(error.cause).toBe(failure);
+    expect(error.metadata['route']).toBe('team.controller.create');
   });
 });

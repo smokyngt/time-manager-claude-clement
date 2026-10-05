@@ -45,7 +45,11 @@ describe('resources', () => {
     expect(created.user.id).toBe('1');
     await client.users.list({ cursor: 'c', teamId: 't' });
     await client.users.retrieve('1');
-    await client.users.update(['1'], { phoneNumber: null });
+    await client.users.update(['1'], {
+      currentPassword: 'old-password',
+      password: 'new-password',
+      phoneNumber: null,
+    });
     await client.users.archive('1');
     await client.users.restore('1');
     await client.users.delete(['1']);
@@ -60,7 +64,10 @@ describe('resources', () => {
     ]);
     expect(calls[0]?.body).toEqual({ email: 'e', first_name: 'f', last_name: 'l' });
     expect(calls[1]?.body).toEqual({ cursor: 'c', team_id: 't' });
-    expect(calls[3]?.body).toEqual({ data: { phone_number: null }, ids: ['1'] });
+    expect(calls[3]?.body).toEqual({
+      data: { current_password: 'old-password', password: 'new-password', phone_number: null },
+      ids: ['1'],
+    });
     expect(calls[6]?.body).toEqual({ ids: ['1'] });
   });
 
@@ -91,7 +98,7 @@ describe('resources', () => {
     const { calls, client } = setup({ added: [], failed: [], items: [], success: true });
     await client.teamMembers.add('t', ['u1', 'u2']);
     await client.teamMembers.remove('t', ['u1']);
-    await client.teamMembers.list('t', { limit: 5, skip: 2 });
+    await client.teamMembers.list('t', { limit: 5, order: 'asc' });
     expect(calls.map((c) => `${c.method} ${c.url.replace('http://api', '')}`)).toEqual([
       'POST /v1/teams/t/members/add',
       'POST /v1/teams/t/members/remove',
@@ -99,7 +106,7 @@ describe('resources', () => {
     ]);
     expect(calls[0]?.body).toEqual({ user_ids: ['u1', 'u2'] });
     expect(calls[1]?.body).toEqual({ user_ids: ['u1'] });
-    expect(calls[2]?.body).toEqual({ limit: 5, skip: 2 });
+    expect(calls[2]?.body).toEqual({ limit: 5, order: 'asc' });
   });
 
   test('clocks', async () => {
@@ -110,7 +117,7 @@ describe('resources', () => {
     await client.clocks.create({ clockedInAt: 1, clockedOutAt: 2, userId: 'u' });
     await client.clocks.list({ open: true, userIds: ['u'] });
     await client.clocks.retrieve('c');
-    await client.clocks.update(['c'], { note: 'n' });
+    await client.clocks.update(['c'], { note: null });
     await client.clocks.delete(['c']);
     expect(calls.map((c) => `${c.method} ${c.url.replace('http://api', '')}`)).toEqual([
       'POST /v1/clocks/in',

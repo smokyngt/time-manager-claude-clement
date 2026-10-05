@@ -2,13 +2,12 @@ import { ClockListError } from '@/lib/errors/domains/clock.js';
 import { ClockListed } from '@/lib/events/domains/clock.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { clockService } from '@/services/clock/index.js';
-import { Access } from '@/utils/access.js';
-import { clockAccess } from '@/utils/access/clock.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
 import type { ListBody, ListResponse } from './index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -25,7 +24,7 @@ export const list = async (
   try {
     const { actor } = Access.context(req);
     const { cursor, from, limit, open, order, to, user_ids: requested } = req.body;
-    const userIds = await clockAccess.users(actor, requested);
+    const userIds = await Access.clock.users(actor, requested);
     const result = await clockService.list({
       cursor,
       filters: { from: Time.bound(from), open, to: Time.bound(to), user_ids: userIds },
@@ -35,7 +34,9 @@ export const list = async (
     await Reply.send(
       req,
       reply,
-      ClockListed({ payload: { count: result.items.length, total: result.total } }),
+      ClockListed({
+        payload: { actor: actor.id, count: result.items.length, total: result.total },
+      }),
       result,
     );
   } catch (error) {

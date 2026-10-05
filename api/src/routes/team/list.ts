@@ -1,12 +1,12 @@
 import { team } from '@/controllers/team/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { TeamListBodySchema, TeamResponses } from '@/schemas/team.js';
 
 import type { ListBody, ListResponse } from '@/controllers/team/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const listRoute: FastifyPluginAsync = async (fastify) => {
+const list: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: ListBody; Reply: ReplyEnvelope<ListResponse> }>(
     '/list',
     {
@@ -14,7 +14,7 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
       schema: {
         body: TeamListBodySchema,
         description:
-          'Cursor paginated list ordered by creation time. Admins see every team, managers the teams they manage or belong to, employees the teams they belong to.',
+          'Cursor paginated list ordered by creation time. Admins see every team, managers see the teams they manage or belong to, employees see the teams they belong to.',
         response: TeamResponses.list,
         security: [{ bearerAuth: [] }],
         summary: 'List teams',
@@ -24,3 +24,5 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
     team.list,
   );
 };
+
+export { list };

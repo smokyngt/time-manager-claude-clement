@@ -1,38 +1,30 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2Icon } from 'lucide-react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 
-import type { ProfileValues } from '@/features/profile/schemas'
-import type { UserRecord } from '@/features/users/types'
+import type { ProfileValues } from '@/features/profile/lib/schemas'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { profileSchema } from '@/features/profile/schemas'
-import { FormField } from '@/features/users/components/form-field'
+import { Field } from '@/features/profile/components/field'
+import { ProfileSchemas } from '@/features/profile/lib/schemas'
 
-export function ProfileEditForm({
-  formError,
-  onSubmit,
-  pending,
-  user,
-}: {
-  formError?: null | string
+export type ProfileEditFormProps = {
+  defaults: ProfileValues
   onSubmit: (values: ProfileValues) => void
   pending: boolean
-  user: UserRecord
-}) {
+}
+
+export function ProfileEditForm({ defaults, onSubmit, pending }: ProfileEditFormProps) {
+  const { t } = useTranslation('profile')
+  const schema = useMemo(() => ProfileSchemas.profile(t), [t])
   const {
     formState: { errors, isDirty },
     handleSubmit,
     register,
-  } = useForm<ProfileValues>({
-    defaultValues: {
-      first_name: user.first_name,
-      last_name: user.last_name,
-      phone_number: user.phone_number ?? '',
-    },
-    resolver: zodResolver(profileSchema),
-  })
+  } = useForm<ProfileValues>({ defaultValues: defaults, resolver: zodResolver(schema) })
 
   return (
     <form
@@ -40,47 +32,42 @@ export function ProfileEditForm({
       noValidate
       onSubmit={(event) => void handleSubmit(onSubmit)(event)}
     >
-      {formError ? (
-        <p className="rounded-md bg-destructive/10 p-3 text-sm text-destructive" role="alert">
-          {formError}
-        </p>
-      ) : null}
       <div className="grid gap-4 sm:grid-cols-2">
-        <FormField error={errors.first_name?.message} id="profile-first-name" label="First name">
+        <Field error={errors.firstName?.message} id="profile-first-name" label={t('edit.first_name')}>
           <Input
-            aria-invalid={Boolean(errors.first_name)}
+            aria-invalid={Boolean(errors.firstName)}
             autoComplete="given-name"
             id="profile-first-name"
-            {...register('first_name')}
+            {...register('firstName')}
           />
-        </FormField>
-        <FormField error={errors.last_name?.message} id="profile-last-name" label="Last name">
+        </Field>
+        <Field error={errors.lastName?.message} id="profile-last-name" label={t('edit.last_name')}>
           <Input
-            aria-invalid={Boolean(errors.last_name)}
+            aria-invalid={Boolean(errors.lastName)}
             autoComplete="family-name"
             id="profile-last-name"
-            {...register('last_name')}
+            {...register('lastName')}
           />
-        </FormField>
-        <FormField
+        </Field>
+        <Field
           className="sm:col-span-2"
-          error={errors.phone_number?.message}
+          error={errors.phoneNumber?.message}
           id="profile-phone"
-          label="Phone number"
+          label={t('edit.phone')}
         >
           <Input
-            aria-invalid={Boolean(errors.phone_number)}
+            aria-invalid={Boolean(errors.phoneNumber)}
             autoComplete="tel"
             id="profile-phone"
             type="tel"
-            {...register('phone_number')}
+            {...register('phoneNumber')}
           />
-        </FormField>
+        </Field>
       </div>
       <div className="flex sm:justify-end">
         <Button disabled={pending || !isDirty} type="submit">
           {pending ? <Loader2Icon className="animate-spin" /> : null}
-          Save changes
+          {t('edit.save')}
         </Button>
       </div>
     </form>

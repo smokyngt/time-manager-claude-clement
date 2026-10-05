@@ -1,1 +1,60 @@
-{}
+{
+  "title": "My profile",
+  "description": "Your account information and preferences",
+  "loading": "Loading profile",
+  "account": {
+    "title": "Account",
+    "role": "Role",
+    "member_since": "Member since",
+    "email": "Email"
+  },
+  "edit": {
+    "first_name": "First name",
+    "last_name": "Last name",
+    "phone": "Phone number",
+    "save": "Save changes"
+  },
+  "password": {
+    "title": "Password",
+    "description": "Choose a new password for your account.",
+    "current": "Current password",
+    "new": "New password",
+    "confirm": "Confirm password",
+    "submit": "Change password",
+    "hint": "Use at least 10 characters. Mix letters, numbers and symbols.",
+    "strength": "Password strength: {{label}}",
+    "levels": {
+      "empty": "Empty",
+      "weak": "Weak",
+      "fair": "Fair",
+      "good": "Good",
+      "strong": "Strong"
+    }
+  },
+  "preferences": {
+    "title": "Preferences",
+    "description": "Language and appearance on this device.",
+    "language": "Language",
+    "theme": "Theme",
+    "themes": {
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "toast": {
+    "updated": "Profile updated",
+    "password_changed": "Password changed"
+  },
+  "validation": {
+    "name_required": "This field is required",
+    "name_max": "At most {{value}} characters",
+    "name_invalid": "Enter a valid name",
+    "phone_invalid": "Enter a valid phone number",
+    "current_required": "Enter your current password",
+    "confirm_required": "Confirm your new password",
+    "password_min": "Password must be at least {{value}} characters",
+    "password_max": "Password must be at most {{value}} characters",
+    "password_mismatch": "Passwords do not match"
+  }
+}

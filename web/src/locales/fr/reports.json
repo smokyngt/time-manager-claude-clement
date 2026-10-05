@@ -1,1 +1,113 @@
-{}
+{
+  "period": {
+    "label": "Période",
+    "group": "Regroupement",
+    "from": "Du",
+    "to": "Au",
+    "auto": "Auto ({{granularity}})",
+    "presets": {
+      "this_week": "Cette semaine",
+      "last_4_weeks": "4 dernières semaines",
+      "this_month": "Ce mois-ci",
+      "last_3_months": "3 derniers mois",
+      "custom": "Personnalisée"
+    },
+    "granularity": {
+      "day": "Par jour",
+      "week": "Par semaine",
+      "month": "Par mois"
+    },
+    "errors": {
+      "range_required": "Choisissez une date de début et une date de fin.",
+      "range_order": "La date de fin doit être postérieure à la date de début.",
+      "range_too_long": "La période ne peut pas dépasser {{days}} jours."
+    }
+  },
+  "unit": {
+    "day": "jour",
+    "week": "semaine",
+    "month": "mois"
+  },
+  "kpi": {
+    "worked": {
+      "label": "Heures travaillées",
+      "hint": "sur un objectif de {{target}}"
+    },
+    "worked_team": {
+      "label": "Heures travaillées",
+      "hint": "tous les membres"
+    },
+    "average": {
+      "label": "Moyenne par jour",
+      "hint": "sur les jours travaillés"
+    },
+    "average_team": {
+      "label": "Moyenne par jour",
+      "hint": "par membre et par jour"
+    },
+    "days": {
+      "label": "Jours travaillés",
+      "hint": "avec au moins un pointage"
+    },
+    "overtime": {
+      "label": "Heures supplémentaires",
+      "under": "sous l'objectif",
+      "over": "au-dessus de l'objectif"
+    },
+    "lateness": {
+      "label": "Taux de retard",
+      "hint": "des jours travaillés"
+    },
+    "late_days": {
+      "label": "Jours de retard",
+      "hint": "plus de 5 min de retard"
+    },
+    "members": {
+      "label": "Membres",
+      "hint": "{{active}} membres actifs sur {{total}}"
+    }
+  },
+  "chart": {
+    "period": "Période",
+    "week_of": "Semaine du {{date}}",
+    "worked": {
+      "title": "Heures travaillées",
+      "team_title": "Heures travaillées de l'équipe",
+      "description": "Heures travaillées par {{unit}}",
+      "description_target": "Heures travaillées par {{unit}}, la ligne pointillée est l'objectif",
+      "summary": "Diagramme en barres des heures travaillées par {{unit}}, {{total}} au total",
+      "summary_target": "Diagramme en barres des heures travaillées par {{unit}}, {{total}} au total, avec une ligne d'objectif pointillée",
+      "series": "Travaillé",
+      "target": "Objectif"
+    },
+    "lateness": {
+      "title": "Retards",
+      "description": "Arrivées en retard par {{unit}}",
+      "summary": "Diagramme en barres des arrivées en retard par {{unit}}, {{total}} au total",
+      "series": "Arrivées en retard"
+    },
+    "view_table": "Afficher en tableau",
+    "view_chart": "Afficher en graphique",
+    "empty": "Rien à afficher sur cette période."
+  },
+  "members": {
+    "label": "Membres de l'équipe",
+    "member": "Membre",
+    "worked": "Travaillé",
+    "overtime": "Heures sup.",
+    "late_days": "Jours de retard",
+    "days_worked": "Jours travaillés"
+  },
+  "user": {
+    "title": "Rapport de l'employé",
+    "description": "Indicateurs de temps de travail",
+    "empty_title": "Aucun temps enregistré",
+    "empty_description": "Aucun temps enregistré sur cette période."
+  },
+  "team": {
+    "title": "Tableau de bord de l'équipe",
+    "description": "Indicateurs et membres de l'équipe",
+    "empty_title": "Aucun membre",
+    "empty_description": "Cette équipe n'a pas encore de membres."
+  }
+}

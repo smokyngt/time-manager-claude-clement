@@ -1,15 +1,15 @@
-import { ClockUpdateError } from '@/lib/errors/domains/clock.js';
-import { AppError, InternalError, ValidationError } from '@/lib/errors/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+import { ClockNotFoundError, ClockUpdateError } from '@/lib/errors/domains/clock.js';
 import { ClockUpdated } from '@/lib/events/domains/clock.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { clockService } from '@/services/clock/index.js';
-import { Access } from '@/utils/access.js';
-import { clockAccess } from '@/utils/access/clock.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
 import type { BulkFailure, UpdateBody, UpdateResponse } from './index.js';
 import type { Clock } from '@/types/entities/clock.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -17,7 +17,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: UpdateBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {ClockUpdateError}
+ * @throws {ClockUpdateError | UnauthorizedError | ValidationError}
  */
 export const update = async (
   req: FastifyRequest<{ Body: UpdateBody }>,
@@ -48,7 +48,11 @@ export const update = async (
         });
         continue;
       }
-      await clockAccess.require(actor, 'update', item.clock);
+      if (!(await Access.clock.scope(actor, item.clock))) {
+        failed.push({ code: ClockNotFoundError.code, id: item.id });
+        continue;
+      }
+      await Access.clock.require(actor, 'update', item.clock);
       targets.push(item.clock);
     }
     const updated: string[] = [];
@@ -69,7 +73,9 @@ export const update = async (
     await Reply.send(
       req,
       reply,
-      ClockUpdated({ payload: { failed: failed.length, updated: updated.length } }),
+      ClockUpdated({
+        payload: { actor: actor.id, failed: failed.length, updated: updated.length },
+      }),
       result,
     );
   } catch (error) {

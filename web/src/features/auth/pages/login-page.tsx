@@ -1,80 +1,58 @@
-import { useEffect } from 'react'
-import { Navigate, useLocation, useNavigate } from 'react-router'
+import { useTranslation } from 'react-i18next'
+import { useNavigate, useSearchParams } from 'react-router'
 
-import { FullPageSpinner } from '@/components/layout/full-page-spinner'
 import { Logo } from '@/components/layout/logo'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { LoginForm } from '@/features/auth/components/login-form'
-import { MICROSOFT_LOGIN_URL } from '@/lib/api/config'
-import { consumeFrom, peekFrom, sanitizeFrom, saveFrom } from '@/lib/auth/redirect'
-import { useAuth } from '@/lib/auth/use-auth'
-
-function MicrosoftIcon() {
-  return (
-    <svg aria-hidden height="16" viewBox="0 0 21 21" width="16">
-      <rect fill="#f25022" height="9" width="9" x="1" y="1" />
-      <rect fill="#7fba00" height="9" width="9" x="11" y="1" />
-      <rect fill="#00a4ef" height="9" width="9" x="1" y="11" />
-      <rect fill="#ffb900" height="9" width="9" x="11" y="11" />
-    </svg>
-  )
-}
+import { LoginForm, MicrosoftButton } from '@/features/auth/components'
+import { useDocumentTitle } from '@/hooks/use-document-title'
+import { AuthRedirect } from '@/lib/auth-redirect'
+import { useAuth } from '@/providers/use-auth'
 
 export function LoginPage() {
-  const { status } = useAuth()
-  const location = useLocation()
+  const { t } = useTranslation('auth')
+  const { loginWithMicrosoft } = useAuth()
   const navigate = useNavigate()
-  const state_from = (location.state as { from?: string } | null)?.from
-  const from = state_from ? sanitizeFrom(state_from) : (peekFrom() ?? '/')
+  const [params] = useSearchParams()
+  const redirect = AuthRedirect.sanitize(params.get('redirect'))
 
-  useEffect(() => {
-    if (status === 'authenticated') consumeFrom()
-  }, [status])
-
-  if (status === 'loading') return <FullPageSpinner />
-  if (status === 'authenticated') return <Navigate replace to={from} />
+  useDocumentTitle(t('title'))
 
   return (
-    <div className="grid min-h-dvh place-items-center bg-muted/40 p-4">
+    <main className="grid min-h-dvh place-items-center bg-muted/40 p-4">
       <div className="w-full max-w-sm space-y-6">
         <div className="flex justify-center">
           <Logo />
         </div>
         <Card>
           <CardHeader className="text-center">
-            <CardTitle className="text-xl">Welcome back</CardTitle>
-            <CardDescription>Sign in to track your time</CardDescription>
+            <CardTitle aria-level={1} className="text-xl" role="heading">
+              {t('login.title')}
+            </CardTitle>
+            <CardDescription>{t('login.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-5">
             <LoginForm
               onSuccess={() => {
-                consumeFrom()
-                void navigate(from, { replace: true })
+                void navigate(redirect, { replace: true })
               }}
             />
-            <div className="flex items-center gap-3 text-xs text-muted-foreground uppercase">
+            <div
+              aria-hidden
+              className="flex items-center gap-3 text-xs text-muted-foreground uppercase"
+            >
               <span className="h-px flex-1 bg-border" />
-              or
+              {t('login.or')}
               <span className="h-px flex-1 bg-border" />
             </div>
-            <Button asChild className="w-full" variant="outline">
-              <a
-                href={MICROSOFT_LOGIN_URL}
-                onClick={() => {
-                  saveFrom(from)
-                }}
-              >
-                <MicrosoftIcon />
-                Sign in with Microsoft
-              </a>
-            </Button>
+            <MicrosoftButton
+              onClick={() => {
+                loginWithMicrosoft(redirect)
+              }}
+            />
           </CardContent>
         </Card>
-        <p className="text-center text-xs text-muted-foreground">
-          Accounts are created by your manager.
-        </p>
+        <p className="text-center text-xs text-muted-foreground">{t('login.footer')}</p>
       </div>
-    </div>
+    </main>
   )
 }

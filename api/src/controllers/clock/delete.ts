@@ -1,15 +1,15 @@
-import { ClockDeleteError } from '@/lib/errors/domains/clock.js';
-import { AppError, InternalError, ValidationError } from '@/lib/errors/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+import { ClockNotFoundError, ClockDeleteError } from '@/lib/errors/domains/clock.js';
 import { ClockDeleted } from '@/lib/events/domains/clock.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { clockService } from '@/services/clock/index.js';
-import { Access } from '@/utils/access.js';
-import { clockAccess } from '@/utils/access/clock.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
 import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
 import type { Clock } from '@/types/entities/clock.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -17,7 +17,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: DeleteBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {ClockDeleteError}
+ * @throws {ClockDeleteError | UnauthorizedError | ValidationError}
  */
 export const remove = async (
   req: FastifyRequest<{ Body: DeleteBody }>,
@@ -47,7 +47,11 @@ export const remove = async (
         });
         continue;
       }
-      await clockAccess.require(actor, 'delete', item.clock);
+      if (!(await Access.clock.scope(actor, item.clock))) {
+        failed.push({ code: ClockNotFoundError.code, id: item.id });
+        continue;
+      }
+      await Access.clock.require(actor, 'delete', item.clock);
       targets.push(item.clock);
     }
     const deleted: string[] = [];
@@ -64,11 +68,13 @@ export const remove = async (
         }
       }),
     );
-    const result: DeleteResponse = { deleted, failed, success: failed.length === 0 };
+    const result: DeleteResponse = { failed, success: failed.length === 0, deleted };
     await Reply.send(
       req,
       reply,
-      ClockDeleted({ payload: { deleted: deleted.length, failed: failed.length } }),
+      ClockDeleted({
+        payload: { actor: actor.id, failed: failed.length, deleted: deleted.length },
+      }),
       result,
     );
   } catch (error) {

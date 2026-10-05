@@ -127,8 +127,8 @@ export interface ClockUpdateData {
   clockedInAt?: number;
   /** New clock-out time. */
   clockedOutAt?: number;
-  /** New note. */
-  note?: string;
+  /** New note, null to clear it. */
+  note?: null | string;
 }
 
 /** Response of `clocks.create`. */
@@ -200,8 +200,6 @@ export interface PaginationParams {
   limit?: number;
   /** Sort direction on `createdAt`, default `desc`. */
   order?: Order;
-  /** Number of items to skip. */
-  skip?: number;
 }
 
 /** Response of `teams.restore`. */
@@ -280,8 +278,8 @@ export interface Team {
 
 /** Parameters of `teams.create`. */
 export interface TeamCreateParams {
-  /** Description (500 characters max). */
-  description?: null | string;
+  /** Description (1 to 500 characters); omit it for none. */
+  description?: string;
   /** Managing user; forced to the caller for managers. */
   managerId?: string;
   /** Name (1 to 100 characters). */
@@ -556,6 +554,8 @@ export interface UserReportResponse {
 
 /** Fields `users.update` can change. */
 export interface UserUpdateData {
+  /** Current password, required when the caller changes their own password. */
+  currentPassword?: string;
   /** New email address. */
   email?: string;
   /** New first name. */

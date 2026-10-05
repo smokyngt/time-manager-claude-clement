@@ -1,12 +1,12 @@
 import { clock } from '@/controllers/clock/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { ClockResponses } from '@/schemas/clock.js';
 
 import type { CurrentResponse } from '@/controllers/clock/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const currentRoute: FastifyPluginAsync = async (fastify) => {
+const current: FastifyPluginAsync = async (fastify) => {
   fastify.get<{ Reply: ReplyEnvelope<CurrentResponse> }>(
     '/current',
     {
@@ -23,3 +23,5 @@ export const currentRoute: FastifyPluginAsync = async (fastify) => {
     clock.current,
   );
 };
+
+export { current };

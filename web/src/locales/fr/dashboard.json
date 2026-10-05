@@ -1,5 +1,8 @@
 {
   "title": "Tableau de bord",
   "greeting": "Bonjour, {{name}}",
-  "subtitle": "Voici un aperçu de votre temps de travail"
+  "subtitle": "Voici un aperçu de votre temps de travail",
+  "my_report": {
+    "title": "Mon temps"
+  }
 }

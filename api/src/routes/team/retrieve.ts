@@ -1,20 +1,19 @@
 import { team } from '@/controllers/team/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { TeamIdParamsSchema, TeamResponses } from '@/schemas/team.js';
 
-import type { RetrieveParams } from '@/controllers/team/index.js';
-import type { Team } from '@/types/entities/team.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { RetrieveParams, TeamResponse } from '@/controllers/team/index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const retrieveRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.get<{ Params: RetrieveParams; Reply: ReplyEnvelope<Team> }>(
+const retrieve: FastifyPluginAsync = async (fastify) => {
+  fastify.get<{ Params: RetrieveParams; Reply: ReplyEnvelope<TeamResponse> }>(
     '/:id',
     {
       preHandler: auth({ scopes: ['teams:read'] }),
       schema: {
         description:
-          'Admins can read any team. Managers and employees can read the teams they manage or belong to.',
+          'Admins can retrieve any team, managers the teams they manage or belong to, employees the teams they belong to.',
         params: TeamIdParamsSchema,
         response: TeamResponses.retrieve,
         security: [{ bearerAuth: [] }],
@@ -25,3 +24,5 @@ export const retrieveRoute: FastifyPluginAsync = async (fastify) => {
     team.retrieve,
   );
 };
+
+export { retrieve };

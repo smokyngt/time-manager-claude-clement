@@ -1,5 +1,22 @@
-import { errorResponse, ReplyEnvelopeSchema } from './common.js';
+import { SCOPES } from '@/config/auth/scopes.js';
+import { InternalError } from '@/lib/errors/base/core.js';
+import {
+  AuthCredentialsInvalidError,
+  AuthMicrosoftUnavailableError,
+  AuthRateLimitedError,
+  AuthRefreshInvalidError,
+} from '@/lib/errors/domains/auth.js';
+import {
+  ErrorSchema,
+  RateLimitErrorSchema,
+  ReplyEnvelopeSchema,
+  TokenAuthenticationErrorSchema,
+  ValidationErrorSchema,
+} from '@/schemas/base/envelope.js';
+
 import { UserSchema } from './user.js';
+
+import type { JsonSchema } from './common.js';
 
 export const AuthLoginBodySchema = {
   additionalProperties: false,
@@ -23,7 +40,7 @@ export const AuthLoginBodySchema = {
   type: 'object',
 } as const;
 
-export const AuthSessionSchema = {
+export const AuthSessionDataSchema = {
   additionalProperties: false,
   properties: {
     access_token: {
@@ -32,10 +49,16 @@ export const AuthSessionSchema = {
       type: 'string',
     },
     expires_in: { description: 'Access token lifetime in seconds.', example: 900, type: 'integer' },
+    scopes: {
+      description: 'Scopes granted to the user by the current role.',
+      example: ['auth:self', 'clocks:read'],
+      items: { enum: SCOPES, type: 'string' },
+      type: 'array',
+    },
     token_type: { description: 'Token type.', enum: ['Bearer'], example: 'Bearer', type: 'string' },
     user: UserSchema,
   },
-  required: ['access_token', 'expires_in', 'token_type', 'user'],
+  required: ['access_token', 'expires_in', 'scopes', 'token_type', 'user'],
   type: 'object',
 } as const;
 
@@ -48,8 +71,18 @@ export const AuthLogoutDataSchema = {
   type: 'object',
 } as const;
 
+export const AuthMeDataSchema = {
+  additionalProperties: false,
+  properties: {
+    scopes: AuthSessionDataSchema.properties.scopes,
+    user: UserSchema,
+  },
+  required: ['scopes', 'user'],
+  type: 'object',
+} as const;
+
 export const AuthCallbackQuerySchema = {
-  additionalProperties: true,
+  additionalProperties: false,
   properties: {
     code: {
       description: 'Authorization code issued by Microsoft.',
@@ -67,6 +100,11 @@ export const AuthCallbackQuerySchema = {
       maxLength: 2000,
       type: 'string',
     },
+    session_state: {
+      description: 'Session identifier sent by Microsoft, ignored.',
+      maxLength: 200,
+      type: 'string',
+    },
     state: {
       description: 'State echoed back by Microsoft.',
       maxLength: 200,
@@ -77,44 +115,58 @@ export const AuthCallbackQuerySchema = {
   type: 'object',
 } as const;
 
+const content = (schema: JsonSchema, description: string): JsonSchema => ({
+  content: { 'application/json': { schema } },
+  description,
+});
+
+const validation = content(ValidationErrorSchema, 'Invalid request.');
+const unauthenticated = content(TokenAuthenticationErrorSchema, 'Missing or invalid access token.');
+const limited = content(RateLimitErrorSchema, 'Rate limit exceeded.');
+const unexpected = content(ErrorSchema(InternalError), 'Unexpected error.');
+const unavailable = content(
+  ErrorSchema(AuthMicrosoftUnavailableError),
+  'Microsoft sign-in is not configured.',
+);
+
 export const AuthResponses = {
   callback: {
-    302: {
-      description: 'Redirect to the web application, which then calls the refresh endpoint.',
-      type: 'null',
-    },
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
-    503: errorResponse('Microsoft sign-in is not configured.'),
+    302: { description: 'Redirect to the web application, which then calls the refresh endpoint.' },
+    429: limited,
+    500: unexpected,
+    503: unavailable,
   },
   login: {
-    200: ReplyEnvelopeSchema(AuthSessionSchema, 'auth.logged_in'),
-    400: errorResponse('Invalid request body.'),
-    401: errorResponse('Invalid credentials.'),
-    429: errorResponse('Rate limit exceeded, per IP or per account.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(AuthSessionDataSchema, 'auth.logged_in'), 'The session.'),
+    400: validation,
+    401: content(ErrorSchema(AuthCredentialsInvalidError), 'Invalid credentials.'),
+    429: content(
+      { anyOf: [RateLimitErrorSchema, ErrorSchema(AuthRateLimitedError)] },
+      'Rate limit exceeded, per IP or per account.',
+    ),
+    500: unexpected,
   },
   logout: {
-    200: ReplyEnvelopeSchema(AuthLogoutDataSchema, 'auth.logged_out'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(AuthLogoutDataSchema, 'auth.logged_out'), 'Session closed.'),
+    429: limited,
+    500: unexpected,
   },
   me: {
-    200: ReplyEnvelopeSchema(UserSchema, 'auth.retrieved'),
-    401: errorResponse('Missing or invalid access token.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(AuthMeDataSchema, 'auth.retrieved'), 'The current user.'),
+    401: unauthenticated,
+    429: limited,
+    500: unexpected,
   },
   microsoft: {
-    302: { description: 'Redirect to the Microsoft sign-in page.', type: 'null' },
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
-    503: errorResponse('Microsoft sign-in is not configured.'),
+    302: { description: 'Redirect to the Microsoft sign-in page.' },
+    429: limited,
+    500: unexpected,
+    503: unavailable,
   },
   refresh: {
-    200: ReplyEnvelopeSchema(AuthSessionSchema, 'auth.refreshed'),
-    401: errorResponse('Missing, expired or reused refresh token.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(AuthSessionDataSchema, 'auth.refreshed'), 'The new session.'),
+    401: content(ErrorSchema(AuthRefreshInvalidError), 'Missing, expired or reused refresh token.'),
+    429: limited,
+    500: unexpected,
   },
 } as const;

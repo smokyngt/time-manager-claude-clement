@@ -1,1 +1,60 @@
-{}
+{
+  "title": "Mon profil",
+  "description": "Les informations de votre compte et vos préférences",
+  "loading": "Chargement du profil",
+  "account": {
+    "title": "Compte",
+    "role": "Rôle",
+    "member_since": "Membre depuis",
+    "email": "E-mail"
+  },
+  "edit": {
+    "first_name": "Prénom",
+    "last_name": "Nom",
+    "phone": "Numéro de téléphone",
+    "save": "Enregistrer les modifications"
+  },
+  "password": {
+    "title": "Mot de passe",
+    "description": "Choisissez un nouveau mot de passe pour votre compte.",
+    "current": "Mot de passe actuel",
+    "new": "Nouveau mot de passe",
+    "confirm": "Confirmer le mot de passe",
+    "submit": "Changer le mot de passe",
+    "hint": "Utilisez au moins 10 caractères. Mélangez lettres, chiffres et symboles.",
+    "strength": "Robustesse du mot de passe : {{label}}",
+    "levels": {
+      "empty": "Vide",
+      "weak": "Faible",
+      "fair": "Moyen",
+      "good": "Bon",
+      "strong": "Fort"
+    }
+  },
+  "preferences": {
+    "title": "Préférences",
+    "description": "Langue et apparence sur cet appareil.",
+    "language": "Langue",
+    "theme": "Thème",
+    "themes": {
+      "light": "Clair",
+      "dark": "Sombre",
+      "system": "Système"
+    }
+  },
+  "toast": {
+    "updated": "Profil mis à jour",
+    "password_changed": "Mot de passe modifié"
+  },
+  "validation": {
+    "name_required": "Ce champ est obligatoire",
+    "name_max": "{{value}} caractères maximum",
+    "name_invalid": "Saisissez un nom valide",
+    "phone_invalid": "Saisissez un numéro de téléphone valide",
+    "current_required": "Saisissez votre mot de passe actuel",
+    "confirm_required": "Confirmez votre nouveau mot de passe",
+    "password_min": "Le mot de passe doit contenir au moins {{value}} caractères",
+    "password_max": "Le mot de passe doit contenir au plus {{value}} caractères",
+    "password_mismatch": "Les mots de passe ne correspondent pas"
+  }
+}

@@ -2,7 +2,7 @@ import { createHash } from 'node:crypto';
 
 import { Config } from '@/config/index.js';
 import { CryptoKeyInvalidError } from '@/lib/errors/domains/crypto.js';
-import { AppError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 
 export type KeyEntry = { id: string; key: Buffer };
 
@@ -126,6 +126,6 @@ export class Keys {
   }
 
   private static invalid(reason: string): AppError {
-    return CryptoKeyInvalidError({ metadata: { reason } });
+    return CryptoKeyInvalidError({ metadata: { reason, route: 'keys.invalid' } });
   }
 }

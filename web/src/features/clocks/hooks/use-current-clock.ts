@@ -1,8 +1,21 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { getCurrentClock } from '@/features/clocks/api/clocks'
-import { CURRENT_CLOCK_QUERY_KEY } from '@/features/clocks/hooks/query-keys'
+import { sdk } from '@/config/sdk'
+import { QueryKeys } from '@/config/query-keys'
 
 export function useCurrentClock() {
-  return useQuery({ queryFn: getCurrentClock, queryKey: CURRENT_CLOCK_QUERY_KEY })
+  const query = useQuery({
+    meta: { suppressError: true },
+    queryFn: async () => (await sdk.clocks.current()).clock,
+    queryKey: QueryKeys.currentClock(),
+  })
+
+  return {
+    clock: query.data ?? null,
+    error: query.error,
+    isError: query.isError,
+    loaded: query.isSuccess,
+    loading: query.isPending,
+    refetch: query.refetch,
+  }
 }

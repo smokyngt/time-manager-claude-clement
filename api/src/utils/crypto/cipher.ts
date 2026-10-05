@@ -84,7 +84,7 @@ export class Cipher {
         decipher.final(),
       ]).toString('utf8');
     } catch (error) {
-      throw CryptoDecryptFailedError({ cause: error });
+      throw CryptoDecryptFailedError({ cause: error, metadata: { route: 'cipher.open' } });
     }
   }
 

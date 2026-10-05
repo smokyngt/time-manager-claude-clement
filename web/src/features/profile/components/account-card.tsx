@@ -1,47 +1,38 @@
-import { format } from 'date-fns'
+import type { User } from '@time-manager/sdk'
 
-import type { UserRecord } from '@/features/users/types'
+import { useTranslation } from 'react-i18next'
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { roleLabel } from '@/features/users/role-label'
+import { Dates } from '@/lib/dates'
 
-export function AccountCard({
-  microsoftLinked,
-  user,
-}: {
-  microsoftLinked?: boolean
-  user: UserRecord
-}) {
+export type AccountCardProps = { user: User }
+
+export function AccountCard({ user }: AccountCardProps) {
+  const { t } = useTranslation('profile')
+  const { t: tCommon } = useTranslation('common')
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Account</CardTitle>
+        <CardTitle>{t('account.title')}</CardTitle>
       </CardHeader>
       <CardContent>
         <dl className="grid gap-4 text-sm sm:grid-cols-2">
           <div className="space-y-1">
-            <dt className="text-muted-foreground">Role</dt>
+            <dt className="text-muted-foreground">{t('account.role')}</dt>
             <dd>
-              <Badge>{roleLabel(user.role)}</Badge>
+              <Badge>{tCommon(`roles.${user.role}`)}</Badge>
             </dd>
           </div>
           <div className="space-y-1">
-            <dt className="text-muted-foreground">Member since</dt>
-            <dd className="font-medium">{format(user.created_at, 'PPP')}</dd>
+            <dt className="text-muted-foreground">{t('account.member_since')}</dt>
+            <dd className="font-medium">{Dates.date(user.createdAt)}</dd>
           </div>
           <div className="space-y-1 sm:col-span-2">
-            <dt className="text-muted-foreground">Email</dt>
+            <dt className="text-muted-foreground">{t('account.email')}</dt>
             <dd className="font-medium break-all">{user.email}</dd>
           </div>
-          {microsoftLinked ? (
-            <div className="space-y-1 sm:col-span-2">
-              <dt className="text-muted-foreground">Sign-in</dt>
-              <dd>
-                <Badge variant="outline">Microsoft linked</Badge>
-              </dd>
-            </div>
-          ) : null}
         </dl>
       </CardContent>
     </Card>

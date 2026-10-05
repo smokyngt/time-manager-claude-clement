@@ -1,11 +1,13 @@
-import type { TeamMemberReport } from '@/features/reports/api/types'
+import type { TeamReportMember } from '@time-manager/sdk'
 
-export type MemberSortKey = 'late_days' | 'overtime_ms' | 'worked_ms'
+export type MemberSortKey = 'lateDays' | 'overtimeMs' | 'workedMs'
+
+export type SortDirection = 'asc' | 'desc'
 
 export function sortMembers(
-  members: TeamMemberReport[],
+  members: TeamReportMember[],
   key: MemberSortKey,
-  direction: 'asc' | 'desc',
+  direction: SortDirection,
 ) {
   const factor = direction === 'asc' ? 1 : -1
   return [...members].sort((a, b) => (a[key] - b[key]) * factor)

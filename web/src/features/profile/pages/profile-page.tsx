@@ -1,126 +1,101 @@
-import { AlertCircleIcon } from 'lucide-react'
-import { useState } from 'react'
-import { toast } from 'sonner'
+import { useTranslation } from 'react-i18next'
 
-import type { PasswordValues, ProfileValues } from '@/features/profile/schemas'
-
-import { PageHeader } from '@/components/layout/page-header'
+import { PageHeader } from '@/components/shared'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { AccountCard } from '@/features/profile/components/account-card'
-import { ChangePasswordForm } from '@/features/profile/components/change-password-form'
-import { ProfileEditForm } from '@/features/profile/components/profile-edit-form'
-import { useUpdateProfile } from '@/features/profile/hooks/use-profile'
-import { useUser } from '@/features/users/hooks/use-users'
-import { getErrorMessage } from '@/lib/api/errors'
-import { useAuth } from '@/lib/auth/use-auth'
-import { getInitials } from '@/lib/utils'
+import {
+  AccountCard,
+  ChangePasswordForm,
+  PreferencesCard,
+  ProfileEditForm,
+} from '@/features/profile/components'
+import { useChangePassword, useUpdateProfile } from '@/features/profile/hooks'
+import { useDocumentTitle } from '@/hooks'
+import { useAuth } from '@/providers/use-auth'
 
 export function ProfilePage() {
-  const { user: me } = useAuth()
-  const query = useUser(me?.id)
-  const update = useUpdateProfile(me?.id ?? '')
-  const [profile_error, setProfileError] = useState<null | string>(null)
-  const [password_error, setPasswordError] = useState<null | string>(null)
-  const user = query.data
+  const { t } = useTranslation('profile')
+  useDocumentTitle(t('title'))
+  const { user } = useAuth()
+  const id = user?.id ?? ''
+  const profile = useUpdateProfile(id)
+  const password = useChangePassword(id)
 
-  async function saveProfile(values: ProfileValues) {
-    setProfileError(null)
-    try {
-      await update.mutateAsync({
-        first_name: values.first_name,
-        last_name: values.last_name,
-        phone_number: values.phone_number === '' ? null : values.phone_number,
-      })
-      toast.success('Profile updated')
-    } catch (error) {
-      setProfileError(getErrorMessage(error))
-    }
-  }
-
-  async function savePassword(values: PasswordValues) {
-    setPasswordError(null)
-    try {
-      await update.mutateAsync({ password: values.new_password })
-      toast.success('Password changed')
-      return true
-    } catch (error) {
-      setPasswordError(getErrorMessage(error))
-      return false
-    }
+  if (!user) {
+    return (
+      <div aria-busy className="space-y-6" role="status">
+        <span className="sr-only">{t('loading')}</span>
+        <Skeleton className="h-32 w-full" />
+      </div>
+    )
   }
 
   return (
-    <>
-      <PageHeader description="Your account information" title="My profile" />
-      {query.isError ? (
+    <div className="space-y-6">
+      <PageHeader description={t('description')} title={t('title')} />
+      <div className="grid gap-6 lg:grid-cols-2">
         <Card>
-          <CardContent className="flex flex-col items-center gap-3 py-8 text-center">
-            <AlertCircleIcon aria-hidden className="size-6 text-destructive" />
-            <p className="text-sm text-muted-foreground">{getErrorMessage(query.error)}</p>
-            <Button
-              onClick={() => {
-                void query.refetch()
+          <CardHeader>
+            <div className="flex items-center gap-4">
+              <Avatar className="size-14">
+                <AvatarFallback className="text-lg">
+                  {`${user.firstName.charAt(0)}${user.lastName.charAt(0)}`.toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="space-y-1">
+                <CardTitle>{`${user.firstName} ${user.lastName}`}</CardTitle>
+                <CardDescription className="break-all">{user.email}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ProfileEditForm
+              defaults={{
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phoneNumber: user.phoneNumber ?? '',
               }}
-              variant="outline"
-            >
-              Try again
-            </Button>
+              key={user.updatedAt ?? user.createdAt}
+              onSubmit={(values) => {
+                void profile.update({
+                  firstName: values.firstName,
+                  lastName: values.lastName,
+                  phoneNumber: values.phoneNumber === '' ? null : values.phoneNumber,
+                })
+              }}
+              pending={profile.pending}
+            />
           </CardContent>
         </Card>
-      ) : !user ? (
-        <Card aria-busy className="gap-3 p-5" role="status">
-          <span className="sr-only">Loading profile</span>
-          <Skeleton className="h-32 w-full" />
-        </Card>
-      ) : (
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="space-y-6">
+          <AccountCard user={user} />
           <Card>
             <CardHeader>
-              <div className="flex items-center gap-4">
-                <Avatar className="size-14">
-                  <AvatarFallback className="text-lg">
-                    {getInitials(user.first_name, user.last_name)}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="space-y-1">
-                  <CardTitle>
-                    {user.first_name} {user.last_name}
-                  </CardTitle>
-                  <CardDescription className="break-all">{user.email}</CardDescription>
-                </div>
-              </div>
+              <CardTitle>{t('password.title')}</CardTitle>
+              <CardDescription>{t('password.description')}</CardDescription>
             </CardHeader>
             <CardContent>
-              <ProfileEditForm
-                formError={profile_error}
-                key={user.updated_at ?? user.created_at}
-                onSubmit={(values) => void saveProfile(values)}
-                pending={update.isPending}
-                user={user}
+              <ChangePasswordForm
+                onSubmit={async (values) => {
+                  try {
+                    await password.change({
+                      currentPassword: values.currentPassword,
+                      password: values.newPassword,
+                    })
+                    return true
+                  } catch {
+                    return false
+                  }
+                }}
+                pending={password.pending}
+                wrongPassword={password.wrongPassword}
               />
             </CardContent>
           </Card>
-          <div className="space-y-6">
-            <AccountCard user={user} />
-            <Card>
-              <CardHeader>
-                <CardTitle>Password</CardTitle>
-                <CardDescription>Choose a new password for your account.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ChangePasswordForm
-                  formError={password_error}
-                  onSubmit={savePassword}
-                  pending={update.isPending}
-                />
-              </CardContent>
-            </Card>
-          </div>
+          <PreferencesCard />
         </div>
-      )}
-    </>
+      </div>
+    </div>
   )
 }

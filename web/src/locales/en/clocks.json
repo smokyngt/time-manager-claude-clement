@@ -1,1 +1,120 @@
-{}
+{
+  "title": "Clocks",
+  "description_own": "Your time entries",
+  "description_team": "Review and correct the time of your team",
+  "card": {
+    "title": "Time clock",
+    "loading": "Loading time clock",
+    "status_in": "Clocked in",
+    "status_out": "Clocked out",
+    "since": "Since {{time}}",
+    "idle": "Start your shift when you arrive",
+    "timer": "Elapsed time",
+    "note_label": "Note (optional)",
+    "clock_in": "Clock in",
+    "clock_out": "Clock out",
+    "announce_in": "You are clocked in since {{time}}",
+    "announce_out": "You are clocked out",
+    "conflict_in": "You are already clocked in. The clock was refreshed.",
+    "conflict_out": "You are not clocked in. The clock was refreshed."
+  },
+  "toolbar": {
+    "range": "Date range",
+    "user": "User",
+    "user_placeholder": "Select a user",
+    "me": "{{name}} (me)",
+    "from": "From",
+    "to": "To",
+    "invalid_range": "The end date must be after the start date"
+  },
+  "range": {
+    "today": "Today",
+    "this_week": "This week",
+    "last_week": "Last week",
+    "custom": "Custom"
+  },
+  "table": {
+    "label": "Clock entries",
+    "date": "Date",
+    "in": "In",
+    "out": "Out",
+    "duration": "Duration",
+    "source": "Source",
+    "note": "Note",
+    "actions": "Actions",
+    "total": "Total (this page)",
+    "in_progress": "In progress",
+    "select_row": "Select entry of {{date}}",
+    "select_all": "Select all entries"
+  },
+  "source": {
+    "clock": "Clock",
+    "manual": "Manual"
+  },
+  "actions": {
+    "add": "Add manual entry",
+    "edit": "Edit entry of {{date}}",
+    "delete": "Delete entry of {{date}}",
+    "delete_selected": "Delete selected"
+  },
+  "form": {
+    "user": "User",
+    "user_placeholder": "Select a user",
+    "clocked_in_at": "Clock in",
+    "clocked_out_at": "Clock out",
+    "note": "Note (optional)",
+    "hint": "Entries must end after they start, cannot be in the future and last at most 24 hours.",
+    "errors": {
+      "user_required": "Select a user",
+      "in_required": "Start is required",
+      "out_required": "End is required",
+      "in_future": "Start cannot be in the future",
+      "out_future": "End cannot be in the future",
+      "out_before_in": "End must be after start",
+      "too_long": "An entry cannot exceed 24 hours",
+      "note_too_long": "Note must be 500 characters or fewer"
+    }
+  },
+  "create": {
+    "title": "Add manual entry",
+    "submit": "Add entry"
+  },
+  "edit": {
+    "title": "Edit entry",
+    "submit": "Save changes"
+  },
+  "delete": {
+    "message_one": "{{count}} entry deleted",
+    "message_other": "{{count}} entries deleted",
+    "failed": "Some entries could not be deleted."
+  },
+  "bulk": {
+    "title_one": "Delete {{count}} entry?",
+    "title_other": "Delete {{count}} entries?",
+    "description": "The selected entries will be deleted. You can undo this for a few seconds.",
+    "confirm": "Delete",
+    "selected_one": "{{count}} entry selected",
+    "selected_other": "{{count}} entries selected",
+    "cleared": "Selection cleared"
+  },
+  "toast": {
+    "clocked_in": "Clocked in",
+    "clocked_out": "Clocked out",
+    "created": "Entry added",
+    "updated": "Entry updated",
+    "update_failed": "This entry could not be updated.",
+    "undo_create": "Entry added",
+    "undo_update": "Entry updated"
+  },
+  "empty": {
+    "title": "Nothing here yet",
+    "description": "No clock entries in this period."
+  },
+  "error": {
+    "title": "Could not load clocks"
+  },
+  "invalid_range": {
+    "title": "Select a date range",
+    "description": "Choose a valid start and end date to see entries."
+  }
+}

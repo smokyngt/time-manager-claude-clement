@@ -1,5 +1,8 @@
 {
   "title": "Dashboard",
   "greeting": "Hello, {{name}}",
-  "subtitle": "Here is an overview of your working time"
+  "subtitle": "Here is an overview of your working time",
+  "my_report": {
+    "title": "My time"
+  }
 }

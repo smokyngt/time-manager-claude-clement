@@ -11,60 +11,51 @@ import type { User } from '@/types/entities/user.js';
 
 export type { SessionResult } from './session.js';
 
-export interface AuthorizeResponse {
+export type AuthorizeResponse = {
   max_age: number;
   state_cookie: string;
   url: string;
-}
+};
 
-export interface AuthServiceType {
-  authorize: () => Promise<AuthorizeResponse>;
-  callback: (params: CallbackParams) => Promise<CallbackResponse>;
-  login: (params: LoginParams) => Promise<LoginResponse>;
-  logout: (params: LogoutParams) => Promise<LogoutResponse>;
-  me: (params: MeParams) => Promise<MeResponse>;
-  refresh: (params: RefreshParams) => Promise<RefreshResponse>;
-}
-
-export interface CallbackParams {
+export type CallbackParams = {
   code: string;
   state: string;
   state_cookie: string | undefined;
-}
+};
 
 export type CallbackResponse = SessionResult;
 
-export interface LoginParams {
+export type LoginParams = {
   email: string;
   password: string;
-}
+};
 
 export type LoginResponse = SessionResult;
 
-export interface LogoutParams {
+export type LogoutParams = {
   token: string | undefined;
-}
+};
 
-export interface LogoutResponse {
+export type LogoutResponse = {
   success: boolean;
-  user_id: null | string;
-}
+  user_id: string | undefined;
+};
 
-export interface MeParams {
+export type MeParams = {
   actor: Actor;
-}
+};
 
-export interface MeResponse {
+export type MeResponse = {
   user: User;
-}
+};
 
-export interface RefreshParams {
+export type RefreshParams = {
   token: string;
-}
+};
 
 export type RefreshResponse = SessionResult;
 
-class AuthService implements AuthServiceType {
+class AuthService {
   public authorize = authorize;
   public callback = callback;
   public login = login;

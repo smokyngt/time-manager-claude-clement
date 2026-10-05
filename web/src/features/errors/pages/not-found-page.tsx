@@ -1,18 +1,27 @@
+import { SearchXIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router'
 
+import { Empty } from '@/components/shared'
 import { Button } from '@/components/ui/button'
+import { useDocumentTitle } from '@/hooks'
 
 export function NotFoundPage() {
+  const { t } = useTranslation('common')
+  useDocumentTitle(t('not_found.title'))
+
   return (
-    <div className="grid min-h-[60dvh] place-items-center p-4 text-center">
-      <div className="space-y-4">
-        <p className="text-sm font-semibold text-primary">404</p>
-        <h1 className="text-3xl font-semibold tracking-tight">Page not found</h1>
-        <p className="text-muted-foreground">The page you are looking for does not exist.</p>
-        <Button asChild>
-          <Link to="/">Back to dashboard</Link>
-        </Button>
-      </div>
+    <div className="grid min-h-[60dvh] place-items-center p-4">
+      <Empty
+        action={
+          <Button asChild>
+            <Link to="/">{t('not_found.back')}</Link>
+          </Button>
+        }
+        description={t('not_found.description')}
+        icon={SearchXIcon}
+        title={`${t('not_found.code')} · ${t('not_found.title')}`}
+      />
     </div>
   )
 }

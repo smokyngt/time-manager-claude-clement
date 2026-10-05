@@ -1,61 +1,44 @@
-import { registerError } from '../index.js';
+import { registerError } from '@/lib/errors/base/registry.js';
 
-export const AuthInvalidCredentialsError = registerError({
-  code: 'AUTH_INVALID_CREDENTIALS',
+export const AuthCredentialsInvalidError = registerError({
+  code: 'auth.credentials.invalid',
   defaultStatus: 401,
-  message: 'The email or password is incorrect.',
 });
 
-export const AuthLoginError = registerError({
-  code: 'AUTH_LOGIN_ERROR',
-  defaultStatus: 500,
-  message: 'The login could not be completed.',
-});
+export const AuthLoginError = registerError({ code: 'auth.login.failed', defaultStatus: 500 });
 
-export const AuthLogoutError = registerError({
-  code: 'AUTH_LOGOUT_ERROR',
-  defaultStatus: 500,
-  message: 'The logout could not be completed.',
-});
+export const AuthLogoutError = registerError({ code: 'auth.logout.failed', defaultStatus: 500 });
 
-export const AuthMeError = registerError({
-  code: 'AUTH_ME_ERROR',
-  defaultStatus: 500,
-  message: 'The current user could not be retrieved.',
-});
+export const AuthMeError = registerError({ code: 'auth.me.failed', defaultStatus: 500 });
 
 export const AuthMicrosoftError = registerError({
-  code: 'AUTH_MICROSOFT_ERROR',
+  code: 'auth.microsoft.failed',
   defaultStatus: 500,
-  message: 'The Microsoft sign-in could not be completed.',
 });
 
 export const AuthMicrosoftRejectedError = registerError({
-  code: 'AUTH_MICROSOFT_REJECTED',
+  code: 'auth.microsoft.rejected',
   defaultStatus: 401,
-  message: 'The Microsoft sign-in was rejected.',
 });
 
 export const AuthMicrosoftUnavailableError = registerError({
-  code: 'AUTH_MICROSOFT_UNAVAILABLE',
+  code: 'auth.microsoft.unavailable',
   defaultStatus: 503,
-  message: 'Microsoft sign-in is not configured on this server.',
 });
 
 export const AuthMicrosoftUnknownUserError = registerError({
-  code: 'AUTH_MICROSOFT_UNKNOWN_USER',
+  code: 'auth.microsoft.unknown.user',
   defaultStatus: 403,
-  message: 'No account matches this Microsoft identity. Ask a manager to create your account.',
 });
 
-export const AuthRefreshError = registerError({
-  code: 'AUTH_REFRESH_ERROR',
-  defaultStatus: 500,
-  message: 'The session could not be refreshed.',
+export const AuthRateLimitedError = registerError({
+  code: 'auth.rate.limited',
+  defaultStatus: 429,
 });
 
-export const AuthSessionInvalidError = registerError({
-  code: 'AUTH_SESSION_INVALID',
+export const AuthRefreshError = registerError({ code: 'auth.refresh.failed', defaultStatus: 500 });
+
+export const AuthRefreshInvalidError = registerError({
+  code: 'auth.refresh.invalid',
   defaultStatus: 401,
-  message: 'The session is invalid or has expired.',
 });

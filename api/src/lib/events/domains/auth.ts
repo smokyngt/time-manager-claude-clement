@@ -1,13 +1,23 @@
-import { registerEvent } from '../index.js';
+import { registerEvent } from '@/lib/events/base/registry.js';
 
-export const AuthLoggedIn = registerEvent<{ user_id: string }>('auth.logged_in');
+export type EmptyPayload = Record<string, never>;
 
-export const AuthLoggedOut = registerEvent<{ user_id: null | string }>('auth.logged_out');
+export const AuthLoggedIn = registerEvent<{ actor: string }>({ code: 'auth.logged_in' });
 
-export const AuthMicrosoftLinked = registerEvent<{ user_id: string }>('auth.microsoft_linked');
+export const AuthLoggedOut = registerEvent<{ actor?: string }>({ code: 'auth.logged_out' });
 
-export const AuthMicrosoftStarted = registerEvent<Record<string, never>>('auth.microsoft_started');
+export const AuthMicrosoftLinked = registerEvent<{ actor: string }>({
+  code: 'auth.microsoft_linked',
+});
 
-export const AuthRefreshed = registerEvent<{ user_id: string }>('auth.refreshed');
+export const AuthMicrosoftStarted = registerEvent<EmptyPayload>({
+  code: 'auth.microsoft_started',
+});
 
-export const AuthRetrieved = registerEvent<{ user_id: string }>('auth.retrieved');
+export const AuthRefreshed = registerEvent<{ actor: string }>({ code: 'auth.refreshed' });
+
+export const AuthRefreshReused = registerEvent<{ actor: string; family_id: string }>({
+  code: 'auth.refresh_reuse_detected',
+});
+
+export const AuthRetrieved = registerEvent<{ actor: string }>({ code: 'auth.retrieved' });

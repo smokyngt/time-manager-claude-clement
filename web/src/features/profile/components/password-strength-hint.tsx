@@ -1,10 +1,15 @@
-import { passwordStrength } from '@/features/profile/password-strength'
-import { cn } from '@/lib/utils'
+import { useTranslation } from 'react-i18next'
+
+import { PasswordMeter } from '@/features/profile/lib/password-strength'
+import { cn } from '@/lib/cn'
 
 const SEGMENT_COLORS = ['bg-destructive', 'bg-amber-500', 'bg-lime-500', 'bg-emerald-600'] as const
 
-export function PasswordStrengthHint({ password }: { password: string }) {
-  const { label, score } = passwordStrength(password)
+export type PasswordStrengthHintProps = { password: string }
+
+export function PasswordStrengthHint({ password }: PasswordStrengthHintProps) {
+  const { t } = useTranslation('profile')
+  const { label, score } = PasswordMeter.strength(password)
   const color = SEGMENT_COLORS[Math.max(score - 1, 0)]
 
   return (
@@ -19,8 +24,8 @@ export function PasswordStrengthHint({ password }: { password: string }) {
       </div>
       <p aria-live="polite" className="text-xs text-muted-foreground">
         {password.length === 0
-          ? 'Use at least 12 characters. Mix letters, numbers and symbols.'
-          : `Password strength: ${label}`}
+          ? t('password.hint')
+          : t('password.strength', { label: t(`password.levels.${label}`) })}
       </p>
     </div>
   )

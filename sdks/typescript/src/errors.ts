@@ -83,17 +83,26 @@ export class TimeManagerError extends Error {
     if (status === 429) {
       return new RateLimitError({
         ...options,
-        retryAfter: retryAfter(response, record),
+        retryAfter: TimeManagerError.retryAfter(response, record),
       });
     }
     if (status >= 500) {
       return new ServerError(options);
     }
-    if (status === 400 || status === 422) {
+    if (status === 400) {
       return new ValidationError({ ...options, errors: issues(record.errors) });
     }
 
     return new TimeManagerError(options);
+  }
+
+  private static retryAfter(response: Response, record: Record<string, unknown>): null | number {
+    const header = Number(response.headers.get('retry-after'));
+    if (Number.isFinite(header) && response.headers.has('retry-after')) {
+      return header;
+    }
+
+    return typeof record.retryAfter === 'number' ? record.retryAfter : null;
   }
 }
 
@@ -126,15 +135,6 @@ export class NetworkError extends TimeManagerError {
 
 /** The resource does not exist or is not visible (404). */
 export class NotFoundError extends TimeManagerError {}
-
-function retryAfter(response: Response, record: Record<string, unknown>): null | number {
-  const header = Number(response.headers.get('retry-after'));
-  if (Number.isFinite(header) && response.headers.has('retry-after')) {
-    return header;
-  }
-
-  return typeof record.retryAfter === 'number' ? record.retryAfter : null;
-}
 
 /** Too many requests (429). */
 export class RateLimitError extends TimeManagerError {

@@ -1,3 +1,7 @@
+import type { Granularity } from '@time-manager/sdk'
+
+import { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Bar,
   CartesianGrid,
@@ -10,54 +14,77 @@ import {
   YAxis,
 } from 'recharts'
 
-import type { Granularity } from '@/features/reports/api/types'
-
 import { ChartCard } from '@/features/reports/components/chart-card'
+import { usePeriodLabels } from '@/features/reports/hooks/use-period-labels'
 import { AXIS_TICK, TOOLTIP_STYLE } from '@/features/reports/lib/chart-style'
-import { formatDuration } from '@/features/reports/lib/format'
-import { formatPeriodLabel, formatShortPeriodLabel } from '@/features/reports/lib/labels'
 import { buildChartPoints } from '@/features/reports/lib/series'
+import { Duration } from '@/lib/duration'
+
+export type WorkedHoursChartProps = {
+  from: number
+  granularity: Granularity
+  now: number
+  series: { periodStart: number; workedMs: number }[]
+  targetMs?: number
+  title?: string
+  to: number
+}
 
 export function WorkedHoursChart({
   from,
   granularity,
+  now,
   series,
-  target_ms,
-  title = 'Worked hours',
+  targetMs,
+  title,
   to,
-}: {
-  from: number
-  granularity: Granularity
-  series: { period_start: number; worked_ms: number }[]
-  target_ms?: number
-  title?: string
-  to: number
-}) {
-  const points = buildChartPoints(series, { from, granularity, target_ms, to })
-  const data = points.map((point) => ({
-    ...point,
-    name: formatShortPeriodLabel(point.period_start, granularity),
-  }))
-  const has_target = target_ms !== undefined
-  const total = series.reduce((sum, point) => sum + point.worked_ms, 0)
-  const summary = `Bar chart of worked hours per ${granularity}, ${formatDuration(total)} in total${has_target ? ', with a dashed target line' : ''}`
+}: WorkedHoursChartProps) {
+  const { t } = useTranslation('reports')
+  const labels = usePeriodLabels()
+  const hasTarget = targetMs !== undefined
+  const unit = labels.unit(granularity)
+
+  const points = useMemo(
+    () => buildChartPoints(series, { from, granularity, now, targetMs, to }),
+    [series, from, granularity, now, targetMs, to],
+  )
+  const data = useMemo(
+    () => points.map((point) => ({ ...point, name: labels.axis(point.periodStart) })),
+    [points, labels],
+  )
+  const total = series.reduce((sum, point) => sum + point.workedMs, 0)
+  const rows = points.map((point) => [
+    labels.full(point.periodStart, granularity),
+    Duration.short(Duration.fromHours(point.workedHours)),
+    ...(hasTarget ? [Duration.short(Duration.fromHours(point.targetHours ?? 0))] : []),
+  ])
 
   return (
     <ChartCard
-      description={`Hours worked per ${granularity}${has_target ? ', dashed line is the target' : ''}`}
-      summary={summary}
+      description={t(hasTarget ? 'chart.worked.description_target' : 'chart.worked.description', {
+        unit,
+      })}
+      empty={total === 0}
+      summary={t(hasTarget ? 'chart.worked.summary_target' : 'chart.worked.summary', {
+        total: Duration.short(total),
+        unit,
+      })}
       table={{
-        headers: has_target ? ['Period', 'Worked', 'Target'] : ['Period', 'Worked'],
-        rows: points.map((point) => [
-          formatPeriodLabel(point.period_start, granularity),
-          formatDuration(point.worked_hours * 3_600_000),
-          ...(has_target ? [formatDuration((point.target_hours ?? 0) * 3_600_000)] : []),
-        ]),
+        headers: [
+          t('chart.period'),
+          t('chart.worked.series'),
+          ...(hasTarget ? [t('chart.worked.target')] : []),
+        ],
+        rows,
       }}
-      title={title}
+      title={title ?? t('chart.worked.title')}
     >
       <ResponsiveContainer height="100%" width="100%">
-        <ComposedChart data={data} margin={{ bottom: 0, left: -20, right: 8, top: 8 }}>
+        <ComposedChart
+          accessibilityLayer
+          data={data}
+          margin={{ bottom: 0, left: -20, right: 8, top: 8 }}
+        >
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
           <XAxis
             axisLine={false}
@@ -70,25 +97,25 @@ export function WorkedHoursChart({
           <Tooltip
             contentStyle={TOOLTIP_STYLE}
             cursor={{ fill: 'var(--muted)' }}
-            formatter={(value) => formatDuration(Number(value) * 3_600_000)}
+            formatter={(value) => Duration.short(Duration.fromHours(Number(value)))}
           />
           <Legend wrapperStyle={{ fontSize: 12 }} />
           <Bar
-            dataKey="worked_hours"
+            dataKey="workedHours"
             fill="var(--chart-1)"
             maxBarSize={36}
-            name="Worked"
+            name={t('chart.worked.series')}
             radius={[6, 6, 0, 0]}
           />
-          {has_target ? (
+          {hasTarget ? (
             <Line
-              dataKey="target_hours"
+              dataKey="targetHours"
               dot={false}
-              name="Target"
+              name={t('chart.worked.target')}
               stroke="var(--foreground)"
               strokeDasharray="6 4"
               strokeWidth={2}
-              type="monotone"
+              type="stepAfter"
             />
           ) : null}
         </ComposedChart>
