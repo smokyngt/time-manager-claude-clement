@@ -75,7 +75,7 @@ resource "kubectl_manifest" "cluster_secret_store" {
 }
 
 locals {
-  external_secrets = var.enable_vault_config ? merge(
+  external_secrets_all = merge(
     {
       postgres-credentials = {
         namespace = local.ns.app
@@ -130,7 +130,7 @@ locals {
         }
       }
     },
-    var.grafana_oidc_enabled ? {
+    {
       grafana-oidc = {
         namespace = local.ns.observability
         template = {
@@ -145,8 +145,13 @@ locals {
           client_secret = { key = "monitoring/grafana-oidc", property = "client_secret" }
         }
       }
-    } : {},
-  ) : {}
+    },
+  )
+
+  external_secrets = {
+    for k, v in local.external_secrets_all : k => v
+    if var.enable_vault_config && (k != "grafana-oidc" || var.grafana_oidc_enabled)
+  }
 }
 
 resource "kubectl_manifest" "external_secret" {
