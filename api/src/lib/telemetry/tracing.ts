@@ -28,6 +28,7 @@ export class Tracing {
    * @param {string} name
    * @param {(span: Span) => Promise<Result>} fn
    * @returns {Promise<Result>}
+   * @throws {Error}
    */
   public static async span<Result>(
     name: string,

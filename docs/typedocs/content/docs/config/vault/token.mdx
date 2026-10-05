@@ -1,0 +1,81 @@
+## Classes
+
+### VaultToken
+
+Defined in: [config/vault/token.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/token.ts#L6)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultToken(config): VaultToken;
+```
+
+Defined in: [config/vault/token.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/token.ts#L10)
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `config` | [`VaultConfig`](../vault.mdx#vaultconfig-1) |
+
+###### Returns
+
+[`VaultToken`](#vaulttoken)
+
+#### Methods
+
+##### active()
+
+```ts
+active(): boolean;
+```
+
+Defined in: [config/vault/token.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/token.ts#L18)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.vault.token.active
+
+##### schedule()
+
+```ts
+schedule(ttl): void;
+```
+
+Defined in: [config/vault/token.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/token.ts#L27)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ttl` | `number` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.token.schedule
+
+##### stop()
+
+```ts
+stop(): void;
+```
+
+Defined in: [config/vault/token.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/token.ts#L37)
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.token.stop

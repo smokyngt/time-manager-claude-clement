@@ -1,29 +1,25 @@
----
-title: "Me()"
-description: "Reference for the `me()` function in `services/auth/me` (route `auth.service.me`)."
-route: "auth.service.me"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>auth.service.me</code></div>
-
 ## Functions
 
 ### me()
 
 ```ts
-function me(params): Promise<MeResponse>;
+function me(params): Promise<AuthMeResponse>;
 ```
+
+Defined in: [services/auth/me.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/auth/me.ts#L12)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`MeParams`](/docs/services/auth#meparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`AuthMeParams`](../auth.mdx#authmeparams) | - |
 
 #### Returns
 
-`Promise`\<[`MeResponse`](/docs/services/auth#meresponse)\>
+`Promise`\<[`AuthMeResponse`](../auth.mdx#authmeresponse)\>
+
+#### Route
+
+auth.service.me
 
 #### Throws
-
-- `AuthMeError`

@@ -1,14 +1,8 @@
----
-title: "User"
-description: "Reference for the `utils/mappers/user` module: classes."
-route: "user.mapper.entity"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>user.mapper.entity</code></div>
-
 ## Classes
 
 ### UserMapper
+
+Defined in: [utils/mappers/user.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/mappers/user.ts#L6)
 
 #### Constructors
 
@@ -30,28 +24,32 @@ new UserMapper(): UserMapper;
 static entity(row): User;
 ```
 
+Defined in: [utils/mappers/user.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/mappers/user.ts#L13)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `row` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `email_hash`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} |
-| `row.archived_at` | `number` \| `null` |
-| `row.created_at` | `number` |
-| `row.email` | `string` |
-| `row.email_hash` | `string` |
-| `row.first_name` | `string` |
-| `row.id` | `string` |
-| `row.last_name` | `string` |
-| `row.microsoft_id` | `string` \| `null` |
-| `row.password_hash` | `string` \| `null` |
-| `row.phone_number` | `string` \| `null` |
-| `row.role` | `"admin"` \| `"employee"` \| `"manager"` |
-| `row.updated_at` | `number` \| `null` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `row` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `email_hash`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} | - |
+| `row.archived_at` | `number` \| `null` | - |
+| `row.created_at` | `number` | - |
+| `row.email` | `string` | - |
+| `row.email_hash` | `string` | - |
+| `row.first_name` | `string` | - |
+| `row.id` | `string` | - |
+| `row.last_name` | `string` | - |
+| `row.microsoft_id` | `string` \| `null` | - |
+| `row.password_hash` | `string` \| `null` | - |
+| `row.phone_number` | `string` \| `null` | - |
+| `row.role` | `"admin"` \| `"employee"` \| `"manager"` | - |
+| `row.updated_at` | `number` \| `null` | - |
 
 ###### Returns
 
-[`User`](/docs/types/entities/user#user)
+[`User`](../../types/entities/user.mdx#user)
+
+###### Route
+
+user.mapper.entity
 
 ###### Throws
-
-- `CryptoDecryptFailedError`

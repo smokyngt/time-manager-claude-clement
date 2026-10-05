@@ -1,11 +1,8 @@
----
-title: "Membership"
-description: "Reference for the `utils/membership` module: classes."
----
-
 ## Classes
 
 ### Membership
+
+Defined in: [utils/membership.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/membership.ts#L8)
 
 #### Constructors
 
@@ -23,74 +20,90 @@ new Membership(): Membership;
 
 ##### manages()
 
-<div className="route-badge"><span className="route-label">Route</span><code>utils.membership.manages</code></div>
-
 ```ts
 static manages(actor, userId): Promise<boolean>;
 ```
 
+Defined in: [utils/membership.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/membership.ts#L15)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `userId` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../types/entities/actor.mdx#actor) | - |
+| `userId` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`boolean`\>
 
-##### members()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>utils.membership.members</code></div>
+membership.manages
+
+##### members()
 
 ```ts
 static members(managerId): Promise<string[]>;
 ```
 
+Defined in: [utils/membership.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/membership.ts#L39)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `managerId` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `managerId` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`string`[]\>
 
-##### reaches()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>utils.membership.reaches</code></div>
+membership.members
+
+##### reaches()
 
 ```ts
 static reaches(actor, userId): Promise<boolean>;
 ```
 
+Defined in: [utils/membership.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/membership.ts#L55)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `userId` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../types/entities/actor.mdx#actor) | - |
+| `userId` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`boolean`\>
 
-##### teams()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>utils.membership.teams</code></div>
+membership.reaches
+
+##### teams()
 
 ```ts
 static teams(userId): Promise<string[]>;
 ```
 
+Defined in: [utils/membership.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/membership.ts#L66)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `userId` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `userId` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`string`[]\>
+
+###### Route
+
+membership.teams

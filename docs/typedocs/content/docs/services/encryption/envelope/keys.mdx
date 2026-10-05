@@ -1,0 +1,182 @@
+## Type Aliases
+
+### EnvelopeLog
+
+```ts
+type EnvelopeLog = object;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L7)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-error"></a> `error` | (`message`) => `void` | [services/encryption/envelope/keys.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L8) |
+| <a id="property-info"></a> `info` | (`message`) => `void` | [services/encryption/envelope/keys.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L9) |
+
+***
+
+### KeyDomain
+
+```ts
+type KeyDomain = typeof encryptionDomain.enumValues[number];
+```
+
+Defined in: [services/encryption/envelope/keys.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L12)
+
+***
+
+### Runtime
+
+```ts
+type Runtime = object;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L14)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-client"></a> `client` | [`TransitClient`](transit.mdx#transitclient) | [services/encryption/envelope/keys.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L15) |
+| <a id="property-db"></a> `db` | [`Database`](../../../db/client.mdx#database) | [services/encryption/envelope/keys.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L16) |
+| <a id="property-log"></a> `log?` | [`EnvelopeLog`](#envelopelog) | [services/encryption/envelope/keys.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L17) |
+
+## Variables
+
+### EncryptionDecryptFailedError
+
+```ts
+const EncryptionDecryptFailedError: ErrorFactory;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L22)
+
+***
+
+### EncryptionKeyUnavailableError
+
+```ts
+const EncryptionKeyUnavailableError: ErrorFactory;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L27)
+
+***
+
+### EncryptionRotationConflictError
+
+```ts
+const EncryptionRotationConflictError: ErrorFactory;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L32)
+
+***
+
+### KEY\_DOMAINS
+
+```ts
+const KEY_DOMAINS: readonly KeyDomain[];
+```
+
+Defined in: [services/encryption/envelope/keys.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L20)
+
+## Functions
+
+### isKeyDomain()
+
+```ts
+function isKeyDomain(value): value is "content" | "hash" | "pii";
+```
+
+Defined in: [services/encryption/envelope/keys.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L42)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `string` | - |
+
+#### Returns
+
+value is "content" \| "hash" \| "pii"
+
+#### Route
+
+services.encryption.envelope.keys.domain
+
+***
+
+### logError()
+
+```ts
+function logError(runtime, message): void;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L69)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](#runtime) | - |
+| `message` | `string` | - |
+
+#### Returns
+
+`void`
+
+#### Route
+
+services.encryption.envelope.keys.error
+
+***
+
+### logInfo()
+
+```ts
+function logInfo(runtime, message): void;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L58)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](#runtime) | - |
+| `message` | `string` | - |
+
+#### Returns
+
+`void`
+
+#### Route
+
+services.encryption.envelope.keys.info
+
+***
+
+### transitKeyName()
+
+```ts
+function transitKeyName(domain): string;
+```
+
+Defined in: [services/encryption/envelope/keys.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/keys.ts#L50)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+#### Returns
+
+`string`
+
+#### Route
+
+services.encryption.envelope.keys.name

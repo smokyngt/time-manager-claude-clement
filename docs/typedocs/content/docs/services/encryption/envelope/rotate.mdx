@@ -1,0 +1,70 @@
+## Type Aliases
+
+### RewrapResult
+
+```ts
+type RewrapResult = object;
+```
+
+Defined in: [services/encryption/envelope/rotate.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/rotate.ts#L19)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-failed"></a> `failed` | `number`[] | [services/encryption/envelope/rotate.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/rotate.ts#L19) |
+| <a id="property-rewrapped"></a> `rewrapped` | `number`[] | [services/encryption/envelope/rotate.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/rotate.ts#L19) |
+
+## Functions
+
+### rotateDEK()
+
+```ts
+function rotateDEK(runtime, domain): Promise<number>;
+```
+
+Defined in: [services/encryption/envelope/rotate.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/rotate.ts#L30)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+#### Returns
+
+`Promise`\<`number`\>
+
+#### Route
+
+services.encryption.envelope.rotate.dek
+
+#### Throws
+
+***
+
+### rotateTransitKEK()
+
+```ts
+function rotateTransitKEK(runtime, domain): Promise<RewrapResult>;
+```
+
+Defined in: [services/encryption/envelope/rotate.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/rotate.ts#L77)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+#### Returns
+
+`Promise`\<[`RewrapResult`](#rewrapresult)\>
+
+#### Route
+
+services.encryption.envelope.rotate.kek
+
+#### Throws

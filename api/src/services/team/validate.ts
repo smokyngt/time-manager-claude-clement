@@ -6,7 +6,7 @@ import { TeamManagerInvalidError, TeamScheduleInvalidError } from '@/lib/errors/
 
 export class TeamValidate {
   /**
-   * @route team.service.validate.manager
+   * @route team.validate.manager
    * @param {string} id
    * @returns {Promise<void>}
    * @throws {TeamManagerInvalidError}
@@ -19,13 +19,13 @@ export class TeamValidate {
       .limit(1);
     if (row === undefined || row.archived_at !== null || row.role === 'employee') {
       throw TeamManagerInvalidError({
-        metadata: { manager_id: id, route: 'team.service.validate.manager' },
+        metadata: { manager_id: id, route: 'team.validate.manager' },
       });
     }
   }
 
   /**
-   * @route team.service.validate.schedule
+   * @route team.validate.schedule
    * @param {string} start
    * @param {string} end
    * @returns {void}
@@ -33,7 +33,7 @@ export class TeamValidate {
    */
   public static schedule(start: string, end: string): void {
     if (end <= start) {
-      throw TeamScheduleInvalidError({ metadata: { route: 'team.service.validate.schedule' } });
+      throw TeamScheduleInvalidError({ metadata: { route: 'team.validate.schedule' } });
     }
   }
 }

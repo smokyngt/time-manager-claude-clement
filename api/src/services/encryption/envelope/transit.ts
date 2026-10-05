@@ -37,6 +37,7 @@ const field = (reply: TransitReply | undefined, name: string): string => {
  * @param {TransitClient} client
  * @param {string} name
  * @returns {Promise<boolean>}
+ * @throws {Error}
  */
 export const ensureTransitKey = async (client: TransitClient, name: string): Promise<boolean> => {
   try {

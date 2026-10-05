@@ -1,15 +1,13 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'bun:test';
+import { eq, isNotNull } from 'drizzle-orm';
+
+import { db } from '@/db/client.js';
+import { refreshTokens, users } from '@/db/schema/index.js';
+import { Digest } from '@/utils/crypto/digest.js';
 
 import { Harness } from './setup.js';
 
-import type { CallResult } from './setup.js';
-
-interface ErrorBody {
-  code: string;
-  message: string;
-  request_id: string;
-  status: number;
-}
+import type { CallResult, ErrorBody } from './setup.js';
 
 describe('auth', () => {
   beforeAll(async () => {
@@ -27,15 +25,35 @@ describe('auth', () => {
   describe('login', () => {
     test('returns an access token and sets the refresh cookie', async () => {
       const row = await Harness.user({ email: 'login@example.com' });
-      const result: CallResult<{ data: Record<string, unknown>; event: { type: string } }> =
+      const result: CallResult<{ data: Record<string, unknown>; event: { code: string } }> =
         await Harness.call('POST', '/v1/auth/login', {
           body: { email: 'LOGIN@example.com', password: Harness.password },
         });
       expect(result.status).toBe(200);
+      expect(result.body.event.code).toBe('auth.logged_in');
       expect(result.body.data.token_type).toBe('Bearer');
       expect(typeof result.body.data.access_token).toBe('string');
       expect((result.body.data.user as { id: string }).id).toBe(row.id);
       expect(result.cookies.tm_refresh).toBeDefined();
+    });
+
+    test('stores the email sealed with its hash and never returns either', async () => {
+      const row = await Harness.user({ email: 'Sealed@Example.com' });
+      const [stored] = await db.select().from(users).where(eq(users.id, row.id));
+      expect(stored?.email).not.toContain('sealed@example.com');
+      expect(stored?.email).toStartWith('v1.');
+      expect(stored?.first_name).not.toBe('Jane');
+      expect(stored?.email_hash).toBe(Digest.email('sealed@example.com'));
+      const login = await Harness.call<{ data: { user: Record<string, unknown> } }>(
+        'POST',
+        '/v1/auth/login',
+        { body: { email: 'SEALED@example.com', password: Harness.password } },
+      );
+      expect(login.status).toBe(200);
+      expect(login.body.data.user['email']).toBe('sealed@example.com');
+      expect(login.body.data.user['first_name']).toBe('Jane');
+      expect(login.body.data.user).not.toHaveProperty('email_hash');
+      expect(login.body.data.user).not.toHaveProperty('password_hash');
     });
 
     test('rejects a wrong password', async () => {
@@ -44,7 +62,7 @@ describe('auth', () => {
         body: { email: 'login@example.com', password: 'not-the-password' },
       });
       expect(result.status).toBe(401);
-      expect(result.body.code).toBe('AUTH_INVALID_CREDENTIALS');
+      expect(result.body.code).toBe('auth.credentials.invalid');
       expect(result.cookies.tm_refresh).toBeUndefined();
     });
 
@@ -53,7 +71,7 @@ describe('auth', () => {
         body: { email: 'ghost@example.com', password: Harness.password },
       });
       expect(result.status).toBe(401);
-      expect(result.body.code).toBe('AUTH_INVALID_CREDENTIALS');
+      expect(result.body.code).toBe('auth.credentials.invalid');
     });
 
     test('rejects an archived user', async () => {
@@ -69,27 +87,26 @@ describe('auth', () => {
         body: { email: 'not-an-email', password: 'x' },
       });
       expect(result.status).toBe(400);
-      expect(result.body.code).toBe('VALIDATION_ERROR');
+      expect(result.body.code).toBe('validation.error');
     });
   });
 
   describe('me', () => {
     test('returns the current user', async () => {
       const member = await Harness.member('manager');
-      const result = await Harness.call<{ data: { email: string; role: string } }>(
-        'GET',
-        '/v1/auth/me',
-        { token: member.access_token },
-      );
+      const result = await Harness.call<{
+        data: { scopes: string[]; user: { email: string; role: string } };
+      }>('GET', '/v1/auth/me', { token: member.access_token });
       expect(result.status).toBe(200);
-      expect(result.body.data.email).toBe(member.row.email);
-      expect(result.body.data.role).toBe('manager');
+      expect(result.body.data.user.email).toBe(member.row.email);
+      expect(result.body.data.user.role).toBe('manager');
+      expect(result.body.data.scopes).toContain('teams:manage');
     });
 
     test('requires a token', async () => {
       const result = await Harness.call<ErrorBody>('GET', '/v1/auth/me');
       expect(result.status).toBe(401);
-      expect(result.body.code).toBe('UNAUTHORIZED');
+      expect(result.body.code).toBe('token.authentication.failed');
     });
 
     test('rejects a garbage token', async () => {
@@ -116,7 +133,7 @@ describe('auth', () => {
     test('rejects a missing cookie', async () => {
       const result = await Harness.call<ErrorBody>('POST', '/v1/auth/refresh');
       expect(result.status).toBe(401);
-      expect(result.body.code).toBe('AUTH_SESSION_INVALID');
+      expect(result.body.code).toBe('auth.refresh.invalid');
     });
 
     test('rejects an unknown token', async () => {
@@ -132,21 +149,37 @@ describe('auth', () => {
       const rotated = first.cookies.tm_refresh;
       expect(first.status).toBe(200);
       expect(rotated).toBeDefined();
+      await db
+        .update(refreshTokens)
+        .set({ revoked_at: Date.now() - 60_000 })
+        .where(isNotNull(refreshTokens.revoked_at));
       const replay = await Harness.call<ErrorBody>('POST', '/v1/auth/refresh', {
         cookie: member.refresh,
       });
       expect(replay.status).toBe(401);
-      expect(replay.body.code).toBe('AUTH_SESSION_INVALID');
+      expect(replay.body.code).toBe('auth.refresh.invalid');
       const descendant = await Harness.call<ErrorBody>('POST', '/v1/auth/refresh', {
         cookie: rotated,
       });
       expect(descendant.status).toBe(401);
     });
 
+    test('accepts a replay inside the grace window', async () => {
+      const member = await Harness.member('employee');
+      const first = await Harness.call('POST', '/v1/auth/refresh', { cookie: member.refresh });
+      const replay = await Harness.call('POST', '/v1/auth/refresh', { cookie: member.refresh });
+      expect(first.status).toBe(200);
+      expect(replay.status).toBe(200);
+    });
+
     test('keeps other sessions of the same user alive after a reuse', async () => {
       const member = await Harness.member('employee', { email: 'multi@example.com' });
       const other = await Harness.login(member.credentials);
       await Harness.call('POST', '/v1/auth/refresh', { cookie: member.refresh });
+      await db
+        .update(refreshTokens)
+        .set({ revoked_at: Date.now() - 60_000 })
+        .where(isNotNull(refreshTokens.revoked_at));
       await Harness.call('POST', '/v1/auth/refresh', { cookie: member.refresh });
       const result = await Harness.call('POST', '/v1/auth/refresh', { cookie: other.refresh });
       expect(result.status).toBe(200);
@@ -181,18 +214,15 @@ describe('auth', () => {
       expect(refreshed.status).toBe(401);
     });
 
-    test('requires an access token', async () => {
-      const result = await Harness.call<ErrorBody>('POST', '/v1/auth/logout');
-      expect(result.status).toBe(401);
+    test('answers 200 without any cookie', async () => {
+      const result = await Harness.call<{ data: { success: boolean } }>('POST', '/v1/auth/logout');
+      expect(result.status).toBe(200);
     });
 
     test('does not revoke the session of another user', async () => {
       const first = await Harness.member('employee');
       const second = await Harness.member('employee');
-      await Harness.call('POST', '/v1/auth/logout', {
-        cookie: second.refresh,
-        token: first.access_token,
-      });
+      await Harness.call('POST', '/v1/auth/logout', { cookie: first.refresh });
       const result = await Harness.call('POST', '/v1/auth/refresh', { cookie: second.refresh });
       expect(result.status).toBe(200);
     });

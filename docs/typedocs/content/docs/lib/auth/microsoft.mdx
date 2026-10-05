@@ -1,11 +1,8 @@
----
-title: "Microsoft"
-description: "Reference for the `lib/auth/microsoft` module: classes, interfaces."
----
-
 ## Classes
 
 ### Microsoft
+
+Defined in: [lib/auth/microsoft.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L10)
 
 #### Constructors
 
@@ -23,100 +20,126 @@ new Microsoft(): Microsoft;
 
 ##### authorizeUrl()
 
-<div className="route-badge"><span className="route-label">Route</span><code>microsoft.authorizeUrl</code></div>
-
 ```ts
 static authorizeUrl(params): string | undefined;
 ```
 
+Defined in: [lib/auth/microsoft.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L16)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | \{ `challenge`: `string`; `nonce`: `string`; `state`: `string`; \} |
-| `params.challenge` | `string` |
-| `params.nonce` | `string` |
-| `params.state` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | \{ `challenge`: `string`; `nonce`: `string`; `state`: `string`; \} | - |
+| `params.challenge` | `string` | - |
+| `params.nonce` | `string` | - |
+| `params.state` | `string` | - |
 
 ###### Returns
 
 `string` \| `undefined`
 
-##### base()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>microsoft.base</code></div>
+microsoft.authorizeUrl
+
+##### base()
 
 ```ts
 static base(config): string;
 ```
 
+Defined in: [lib/auth/microsoft.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L43)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `config` | [`MicrosoftConfig`](#microsoftconfig-1) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `config` | [`MicrosoftConfig`](#microsoftconfig-1) | - |
 
 ###### Returns
 
 `string`
 
-##### challenge()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>microsoft.challenge</code></div>
+microsoft.base
+
+##### challenge()
 
 ```ts
 static challenge(verifier): string;
 ```
 
+Defined in: [lib/auth/microsoft.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L52)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `verifier` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `verifier` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### config()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>microsoft.config</code></div>
+microsoft.challenge
+
+##### config()
 
 ```ts
 static config(): MicrosoftConfig | undefined;
 ```
 
+Defined in: [lib/auth/microsoft.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L60)
+
 ###### Returns
 
 [`MicrosoftConfig`](#microsoftconfig-1) \| `undefined`
 
-##### random()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>microsoft.random</code></div>
+microsoft.config
+
+##### random()
 
 ```ts
 static random(bytes): string;
 ```
 
+Defined in: [lib/auth/microsoft.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L81)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `bytes` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `bytes` | `number` | - |
 
 ###### Returns
 
 `string`
 
-## Interfaces
+###### Route
+
+microsoft.random
+
+## Type Aliases
 
 ### MicrosoftConfig
 
+```ts
+type MicrosoftConfig = object;
+```
+
+Defined in: [lib/auth/microsoft.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L3)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-client_id"></a> `client_id` | `string` |
-| <a id="property-client_secret"></a> `client_secret` | `string` |
-| <a id="property-redirect_uri"></a> `redirect_uri` | `string` |
-| <a id="property-tenant"></a> `tenant` | `string` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-client_id"></a> `client_id` | `string` | [lib/auth/microsoft.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L4) |
+| <a id="property-client_secret"></a> `client_secret` | `string` | [lib/auth/microsoft.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L5) |
+| <a id="property-redirect_uri"></a> `redirect_uri` | `string` | [lib/auth/microsoft.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L6) |
+| <a id="property-tenant"></a> `tenant` | `string` | [lib/auth/microsoft.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/microsoft.ts#L7) |

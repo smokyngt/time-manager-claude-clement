@@ -1,10 +1,13 @@
 ---
 title: "health"
-description: "Endpoints tagged health."
+description: "Liveness and readiness probes."
 ---
 
 <Cards>
   <Card title="Liveness probe" href="/health/get-health">
-    GET /health
+    Reports that the process is running. Does not touch dependencies.
+  </Card>
+  <Card title="Readiness probe" href="/health/get-health-ready">
+    Reports whether the service can reach its database within two seconds.
   </Card>
 </Cards>

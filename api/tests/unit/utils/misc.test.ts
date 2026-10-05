@@ -1,17 +1,16 @@
 import { describe, expect, it } from 'bun:test';
 
-import { Duration } from '@/utils/duration.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
 import { Time } from '@/utils/time.js';
 
-describe('Duration.seconds', () => {
-  it('parses units and falls back on invalid input', () => {
-    expect(Duration.seconds('15m', 1)).toBe(900);
-    expect(Duration.seconds('7d', 1)).toBe(604_800);
-    expect(Duration.seconds('2h', 1)).toBe(7200);
-    expect(Duration.seconds('45s', 1)).toBe(45);
-    expect(Duration.seconds('soon', 7)).toBe(7);
+describe('Time.seconds', () => {
+  it('parses units and rejects invalid input', () => {
+    expect(Time.seconds('15m')).toBe(900);
+    expect(Time.seconds('7d')).toBe(604_800);
+    expect(Time.seconds('2h')).toBe(7200);
+    expect(Time.seconds('45s')).toBe(45);
+    expect(() => Time.seconds('soon')).toThrow('validation.error');
   });
 });
 
@@ -20,7 +19,7 @@ describe('Time.bound', () => {
     expect(Time.bound(5)).toBe(5);
     expect(Time.bound('2026-01-01T00:00:00.000Z')).toBe(Date.UTC(2026, 0, 1));
     expect(Time.bound(undefined)).toBeUndefined();
-    expect(Time.bound('garbage')).toBeUndefined();
+    expect(() => Time.bound('garbage')).toThrow('validation.error');
   });
 });
 

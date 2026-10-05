@@ -1,29 +1,25 @@
----
-title: "Restore()"
-description: "Reference for the `restore()` function in `services/user/restore` (route `user.service.restore`)."
-route: "user.service.restore"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>user.service.restore</code></div>
-
 ## Functions
 
 ### restore()
 
 ```ts
-function restore(params): Promise<RestoreResponse>;
+function restore(params): Promise<RestoreUserResponse>;
 ```
+
+Defined in: [services/user/restore.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/user/restore.ts#L18)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`RestoreParams`](/docs/services/user#restoreparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`RestoreUserParams`](../user.mdx#restoreuserparams) | - |
 
 #### Returns
 
-`Promise`\<[`RestoreResponse`](/docs/services/user#restoreresponse)\>
+`Promise`\<[`RestoreUserResponse`](../user.mdx#restoreuserresponse)\>
+
+#### Route
+
+user.service.restore
 
 #### Throws
-
-- `UserRestoreError`

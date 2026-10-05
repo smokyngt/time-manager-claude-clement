@@ -70,7 +70,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.controller.add', () => {
+describe('team_member.controller.add', () => {
   it('dedupes ids, restricts a manager to employees and replies', async () => {
     const actor = actorOf('manager');
     const reply = await run(actor, { user_ids: [USER_ID, USER_ID] });
@@ -145,6 +145,6 @@ describe('team.member.controller.add', () => {
     const error = await caught(run(actorOf('admin'), { user_ids: [USER_ID] }));
     expect(error.code).toBe('team.member.add.failed');
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.controller.add');
+    expect(error.metadata['route']).toBe('team_member.controller.add');
   });
 });

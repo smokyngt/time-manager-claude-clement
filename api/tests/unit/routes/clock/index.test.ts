@@ -33,7 +33,7 @@ const answer =
 
 await mock.module('@/controllers/clock/index.js', () => ({
   ...realControllers,
-  clock: {
+  clockController: {
     clockIn: answer(ClockStarted({ payload: { actor, clock_id: OTHER_CLOCK_ID } }), { clock }),
     clockOut: answer(ClockStopped({ payload: { actor, clock_id: OTHER_CLOCK_ID } }), { clock }),
     create: answer(ClockCreated({ payload: { actor, clock_id: OTHER_CLOCK_ID } }), { clock }),

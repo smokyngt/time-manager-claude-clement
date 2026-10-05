@@ -1,29 +1,25 @@
----
-title: "Archive()"
-description: "Reference for the `archive()` function in `services/user/archive` (route `user.service.archive`)."
-route: "user.service.archive"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>user.service.archive</code></div>
-
 ## Functions
 
 ### archive()
 
 ```ts
-function archive(params): Promise<ArchiveResponse>;
+function archive(params): Promise<ArchiveUserResponse>;
 ```
+
+Defined in: [services/user/archive.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/user/archive.ts#L19)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`ArchiveParams`](/docs/services/user#archiveparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ArchiveUserParams`](../user.mdx#archiveuserparams) | - |
 
 #### Returns
 
-`Promise`\<[`ArchiveResponse`](/docs/services/user#archiveresponse)\>
+`Promise`\<[`ArchiveUserResponse`](../user.mdx#archiveuserresponse)\>
+
+#### Route
+
+user.service.archive
 
 #### Throws
-
-- `UserArchiveError`

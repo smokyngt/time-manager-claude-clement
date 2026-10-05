@@ -1,29 +1,25 @@
----
-title: "Create()"
-description: "Reference for the `create()` function in `services/log/create` (route `log.service.create`)."
-route: "log.service.create"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>log.service.create</code></div>
-
 ## Functions
 
 ### create()
 
 ```ts
-function create(params): Promise<CreateResponse>;
+function create(params): Promise<CreateLogResponse>;
 ```
+
+Defined in: [services/log/create.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/log/create.ts#L13)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`CreateParams`](/docs/services/log#createparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`CreateLogParams`](../log.mdx#createlogparams) | - |
 
 #### Returns
 
-`Promise`\<[`CreateResponse`](/docs/services/log#createresponse)\>
+`Promise`\<[`CreateLogResponse`](../log.mdx#createlogresponse)\>
+
+#### Route
+
+log.service.create
 
 #### Throws
-
-- `LogCreateError`

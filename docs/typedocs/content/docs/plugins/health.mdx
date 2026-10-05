@@ -1,11 +1,3 @@
----
-title: "Health"
-description: "Reference for the `plugins/health` module: type aliases, variables."
-route: "plugins.health"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>plugins.health</code></div>
-
 ## Type Aliases
 
 ### HealthOptions
@@ -14,12 +6,14 @@ route: "plugins.health"
 type HealthOptions = object;
 ```
 
+Defined in: [plugins/health.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/plugins/health.ts#L6)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-probe"></a> `probe` | [`Probe`](/docs/lib/lifecycle/health#probe) |
-| <a id="property-timeout"></a> `timeout?` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-probe"></a> `probe` | [`Probe`](../lib/lifecycle/health.mdx#probe) | [plugins/health.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/plugins/health.ts#L7) |
+| <a id="property-timeout"></a> `timeout?` | `number` | [plugins/health.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/plugins/health.ts#L8) |
 
 ## Variables
 
@@ -28,6 +22,12 @@ type HealthOptions = object;
 ```ts
 const health: FastifyPluginCallback<HealthOptions>;
 ```
+
+Defined in: [plugins/health.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/plugins/health.ts#L52)
+
+#### Route
+
+plugins.health
 
 #### Param
 

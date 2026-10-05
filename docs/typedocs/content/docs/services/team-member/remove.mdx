@@ -1,29 +1,25 @@
----
-title: "Remove()"
-description: "Reference for the `remove()` function in `services/team-member/remove` (route `team.member.service.remove`)."
-route: "team.member.service.remove"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.remove</code></div>
-
 ## Functions
 
 ### remove()
 
 ```ts
-function remove(params): Promise<RemoveResponse>;
+function remove(params): Promise<RemoveTeamMembersResponse>;
 ```
+
+Defined in: [services/team-member/remove.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team-member/remove.ts#L21)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`RemoveParams`](/docs/services/team-member#removeparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`RemoveTeamMembersParams`](../team-member.mdx#removeteammembersparams) | - |
 
 #### Returns
 
-`Promise`\<[`RemoveResponse`](/docs/services/team-member#removeresponse)\>
+`Promise`\<[`RemoveTeamMembersResponse`](../team-member.mdx#removeteammembersresponse)\>
+
+#### Route
+
+team_member.service.remove
 
 #### Throws
-
-- `TeamMemberRemoveError`

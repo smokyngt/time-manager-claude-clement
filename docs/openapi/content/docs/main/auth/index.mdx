@@ -1,25 +1,25 @@
 ---
 title: "auth"
-description: "Sign in, sessions and Microsoft SSO."
+description: "Sign in, token refresh, sign out and Microsoft single sign-on."
 ---
 
 <Cards>
   <Card title="Sign in with email and password" href="/auth/post-auth-login">
-    Returns an access token in the body and sets the httpOnly tm_refresh cookie scoped to /v1/auth.
+    Returns an access token in the body and sets the httpOnly tm_refresh cookie scoped to /v1/auth. Limited per IP and per account.
   </Card>
   <Card title="Rotate the refresh token and get a new access token" href="/auth/post-auth-refresh">
-    Reads the tm_refresh cookie, rotates it and returns a new access token. Reusing a rotated token revokes the whole session family.
+    Reads the tm_refresh cookie, rotates it and returns a new access token. A token rotated less than 10 seconds ago is accepted once more; later reuse revokes the whole session family.
   </Card>
   <Card title="Sign out" href="/auth/post-auth-logout">
     Authenticated by the tm_refresh cookie only, no access token needed. Revokes the refresh token family of the cookie, clears it and always answers 200, even without a valid cookie.
   </Card>
   <Card title="Get the current user" href="/auth/get-auth-me">
-    Returns the user owning the access token.
+    Returns the user owning the access token and the scopes of their role.
   </Card>
   <Card title="Sign in with Microsoft" href="/auth/get-auth-microsoft">
-    Starts the OAuth2 authorization code flow with PKCE. Returns 503 when MICROSOFT_CLIENT_ID is not configured.
+    Starts the OAuth2 authorization code flow with PKCE. Returns 503 when Microsoft sign-in is not configured.
   </Card>
   <Card title="Microsoft OAuth2 callback" href="/auth/get-auth-microsoft-callback">
-    Exchanges the code, links the Microsoft identity to an existing user, sets the tm_refresh cookie and redirects to WEB_URL/auth/callback. Unknown users are never created.
+    Exchanges the code, links the Microsoft identity to an existing user, sets the tm_refresh cookie and redirects to the web application. Unknown users are never created.
   </Card>
 </Cards>

@@ -1,0 +1,356 @@
+## Classes
+
+### TeamService
+
+Defined in: [services/team/index.ts:112](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L112)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamService(): TeamService;
+```
+
+###### Returns
+
+[`TeamService`](#teamservice-1)
+
+#### Properties
+
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-archive"></a> `archive` | `public` | (`params`) => `Promise`\<[`ArchiveTeamResponse`](#archiveteamresponse)\> | `archive` | [services/team/index.ts:113](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L113) |
+| <a id="property-create"></a> `create` | `public` | (`params`) => `Promise`\<[`CreateTeamResponse`](#createteamresponse)\> | `create` | [services/team/index.ts:114](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L114) |
+| <a id="property-delete"></a> `delete` | `public` | (`params`) => `Promise`\<[`DeleteTeamResponse`](#deleteteamresponse)\> | `remove` | [services/team/index.ts:115](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L115) |
+| <a id="property-list"></a> `list` | `public` | (`params`) => `Promise`\<[`ListTeamsResponse`](#listteamsresponse)\> | `list` | [services/team/index.ts:116](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L116) |
+| <a id="property-restore"></a> `restore` | `public` | (`params`) => `Promise`\<[`RestoreTeamResponse`](#restoreteamresponse)\> | `restore` | [services/team/index.ts:117](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L117) |
+| <a id="property-retrieve"></a> `retrieve` | `public` | (`params`) => `Promise`\<[`RetrieveTeamResponse`](#retrieveteamresponse)\> | `retrieve` | [services/team/index.ts:118](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L118) |
+| <a id="property-update"></a> `update` | `public` | (`params`) => `Promise`\<[`UpdateTeamResponse`](#updateteamresponse)\> | `update` | [services/team/index.ts:119](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L119) |
+
+## Type Aliases
+
+### ArchiveTeamParams
+
+```ts
+type ArchiveTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L11)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/team/index.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L12) |
+| <a id="property-id"></a> `id` | `string` | [services/team/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L13) |
+
+***
+
+### ArchiveTeamResponse
+
+```ts
+type ArchiveTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L16)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team"></a> `team` | [`Team`](../types/entities/team.mdx#team) | [services/team/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L17) |
+
+***
+
+### CreateTeamParams
+
+```ts
+type CreateTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L20)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/team/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L21) |
+| <a id="property-data"></a> `data` | [`TeamCreateData`](#teamcreatedata) | [services/team/index.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L22) |
+
+***
+
+### CreateTeamResponse
+
+```ts
+type CreateTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L25)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team-1"></a> `team` | [`Team`](../types/entities/team.mdx#team) | [services/team/index.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L26) |
+
+***
+
+### DeleteTeamParams
+
+```ts
+type DeleteTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L29)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor-2"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/team/index.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L30) |
+| <a id="property-id-1"></a> `id` | `string` | [services/team/index.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L31) |
+
+***
+
+### DeleteTeamResponse
+
+```ts
+type DeleteTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L34)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` | [services/team/index.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L35) |
+
+***
+
+### ListTeamsParams
+
+```ts
+type ListTeamsParams = object;
+```
+
+Defined in: [services/team/index.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L38)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` | [services/team/index.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L39) |
+| <a id="property-filters"></a> `filters` | [`TeamFilters`](#teamfilters) | [services/team/index.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L40) |
+| <a id="property-limit"></a> `limit` | `number` | [services/team/index.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L41) |
+| <a id="property-order"></a> `order` | `"asc"` \| `"desc"` | [services/team/index.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L42) |
+
+***
+
+### ListTeamsResponse
+
+```ts
+type ListTeamsResponse = object;
+```
+
+Defined in: [services/team/index.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L45)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-items"></a> `items` | [`Team`](../types/entities/team.mdx#team)[] | [services/team/index.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L46) |
+| <a id="property-more"></a> `more` | `boolean` | [services/team/index.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L47) |
+| <a id="property-next"></a> `next` | `null` \| `string` | [services/team/index.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L48) |
+| <a id="property-total"></a> `total` | `number` | [services/team/index.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L49) |
+
+***
+
+### RestoreTeamParams
+
+```ts
+type RestoreTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L52)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor-3"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/team/index.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L53) |
+| <a id="property-id-2"></a> `id` | `string` | [services/team/index.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L54) |
+
+***
+
+### RestoreTeamResponse
+
+```ts
+type RestoreTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L57)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team-2"></a> `team` | [`Team`](../types/entities/team.mdx#team) | [services/team/index.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L58) |
+
+***
+
+### RetrieveTeamParams
+
+```ts
+type RetrieveTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L61)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id-3"></a> `id` | `string` | [services/team/index.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L62) |
+
+***
+
+### RetrieveTeamResponse
+
+```ts
+type RetrieveTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:65](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L65)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team-3"></a> `team` | [`Team`](../types/entities/team.mdx#team) | [services/team/index.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L66) |
+
+***
+
+### TeamCreateData
+
+```ts
+type TeamCreateData = object;
+```
+
+Defined in: [services/team/index.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L69)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-description"></a> `description?` | `null` \| `string` | [services/team/index.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L70) |
+| <a id="property-manager_id"></a> `manager_id` | `string` | [services/team/index.ts:71](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L71) |
+| <a id="property-name"></a> `name` | `string` | [services/team/index.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L72) |
+| <a id="property-weekly_hours_target"></a> `weekly_hours_target?` | `number` | [services/team/index.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L73) |
+| <a id="property-work_end"></a> `work_end?` | `string` | [services/team/index.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L74) |
+| <a id="property-work_start"></a> `work_start?` | `string` | [services/team/index.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L75) |
+
+***
+
+### TeamFilters
+
+```ts
+type TeamFilters = object;
+```
+
+Defined in: [services/team/index.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L78)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-archived"></a> `archived?` | `boolean` | [services/team/index.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L79) |
+| <a id="property-created_after"></a> `created_after?` | `number` | [services/team/index.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L80) |
+| <a id="property-created_before"></a> `created_before?` | `number` | [services/team/index.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L81) |
+| <a id="property-ids"></a> `ids?` | `string`[] | [services/team/index.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L82) |
+| <a id="property-manager_id-1"></a> `manager_id?` | `string` | [services/team/index.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L83) |
+| <a id="property-member_id"></a> `member_id?` | `string` | [services/team/index.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L84) |
+| <a id="property-visible_to"></a> `visible_to?` | [`TeamVisibility`](#teamvisibility) | [services/team/index.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L85) |
+
+***
+
+### TeamUpdateData
+
+```ts
+type TeamUpdateData = object;
+```
+
+Defined in: [services/team/index.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L88)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-description-1"></a> `description?` | `null` \| `string` | [services/team/index.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L89) |
+| <a id="property-manager_id-2"></a> `manager_id?` | `string` | [services/team/index.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L90) |
+| <a id="property-name-1"></a> `name?` | `string` | [services/team/index.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L91) |
+| <a id="property-weekly_hours_target-1"></a> `weekly_hours_target?` | `number` | [services/team/index.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L92) |
+| <a id="property-work_end-1"></a> `work_end?` | `string` | [services/team/index.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L93) |
+| <a id="property-work_start-1"></a> `work_start?` | `string` | [services/team/index.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L94) |
+
+***
+
+### TeamVisibility
+
+```ts
+type TeamVisibility = object;
+```
+
+Defined in: [services/team/index.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L97)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id-4"></a> `id` | `string` | [services/team/index.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L98) |
+| <a id="property-managed"></a> `managed` | `boolean` | [services/team/index.ts:99](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L99) |
+
+***
+
+### UpdateTeamParams
+
+```ts
+type UpdateTeamParams = object;
+```
+
+Defined in: [services/team/index.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L102)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-actor-4"></a> `actor` | [`Actor`](../types/entities/actor.mdx#actor) | [services/team/index.ts:103](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L103) |
+| <a id="property-data-1"></a> `data` | [`TeamUpdateData`](#teamupdatedata) | [services/team/index.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L104) |
+| <a id="property-id-5"></a> `id` | `string` | [services/team/index.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L105) |
+
+***
+
+### UpdateTeamResponse
+
+```ts
+type UpdateTeamResponse = object;
+```
+
+Defined in: [services/team/index.ts:108](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L108)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-team-4"></a> `team` | [`Team`](../types/entities/team.mdx#team) | [services/team/index.ts:109](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L109) |
+
+## Variables
+
+### teamService
+
+```ts
+const teamService: TeamService;
+```
+
+Defined in: [services/team/index.ts:122](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/index.ts#L122)

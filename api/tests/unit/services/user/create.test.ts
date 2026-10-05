@@ -76,6 +76,13 @@ describe('user.service.create', () => {
     expect(values['email_hash']).toBe(Digest.email('jane.doe@example.com'));
   });
 
+  it('still succeeds when the audit log cannot be written', async () => {
+    fakeDb.enqueue([rowOf()]);
+    logCreate.mockRejectedValueOnce(new Error('log down'));
+    const { user } = await create({ actor, data });
+    expect(user.id).toBe(OTHER_ID);
+  });
+
   it('maps a unique violation to a 409 duplicate.key', async () => {
     fakeDb.enqueue(Object.assign(new Error('duplicate'), { code: '23505' }));
     const error = await caught(create({ actor, data }));

@@ -1,11 +1,8 @@
----
-title: "Team Member"
-description: "Reference for the `utils/auth/access/team-member` module: classes."
----
-
 ## Classes
 
 ### TeamMemberAccess
+
+Defined in: [utils/auth/access/team-member.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team-member.ts#L10)
 
 #### Constructors
 
@@ -23,84 +20,92 @@ new TeamMemberAccess(): TeamMemberAccess;
 
 ##### manage()
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.manage</code></div>
-
 ```ts
 manage(actor, team): void;
 ```
 
+Defined in: [utils/auth/access/team-member.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team-member.ts#L18)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} |
-| `team.archived_at` | `number` \| `null` |
-| `team.created_at` | `number` |
-| `team.description` | `string` \| `null` |
-| `team.id` | `string` |
-| `team.manager_id` | `string` |
-| `team.name` | `string` |
-| `team.updated_at` | `number` \| `null` |
-| `team.weekly_hours_target` | `number` |
-| `team.work_end` | `string` |
-| `team.work_start` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
+| `team.archived_at` | `number` \| `null` | - |
+| `team.created_at` | `number` | - |
+| `team.description` | `string` \| `null` | - |
+| `team.id` | `string` | - |
+| `team.manager_id` | `string` | - |
+| `team.name` | `string` | - |
+| `team.updated_at` | `number` \| `null` | - |
+| `team.weekly_hours_target` | `number` | - |
+| `team.work_end` | `string` | - |
+| `team.work_start` | `string` | - |
 
 ###### Returns
 
 `void`
 
+###### Route
+
+access.team_member.manage
+
 ###### Throws
 
-- `UnauthorizedError`
-
 ##### roles()
-
-<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.roles</code></div>
 
 ```ts
 roles(actor): ("admin" | "employee" | "manager")[];
 ```
 
+Defined in: [utils/auth/access/team-member.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team-member.ts#L31)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
 
 ###### Returns
 
 (`"admin"` \| `"employee"` \| `"manager"`)[]
 
-##### view()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.view</code></div>
+access.team_member.roles
+
+##### view()
 
 ```ts
 view(actor, team): Promise<void>;
 ```
 
+Defined in: [utils/auth/access/team-member.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team-member.ts#L42)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} |
-| `team.archived_at` | `number` \| `null` |
-| `team.created_at` | `number` |
-| `team.description` | `string` \| `null` |
-| `team.id` | `string` |
-| `team.manager_id` | `string` |
-| `team.name` | `string` |
-| `team.updated_at` | `number` \| `null` |
-| `team.weekly_hours_target` | `number` |
-| `team.work_end` | `string` |
-| `team.work_start` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
+| `team.archived_at` | `number` \| `null` | - |
+| `team.created_at` | `number` | - |
+| `team.description` | `string` \| `null` | - |
+| `team.id` | `string` | - |
+| `team.manager_id` | `string` | - |
+| `team.name` | `string` | - |
+| `team.updated_at` | `number` \| `null` | - |
+| `team.weekly_hours_target` | `number` | - |
+| `team.work_end` | `string` | - |
+| `team.work_start` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`void`\>
 
-###### Throws
+###### Route
 
-- `UnauthorizedError`
+access.team_member.view
+
+###### Throws

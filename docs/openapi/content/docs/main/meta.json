@@ -3,8 +3,10 @@
   "pages": [
     "index",
     "auth",
+    "clocks",
     "health",
     "reports",
+    "team-members",
     "teams",
     "users"
   ],

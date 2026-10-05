@@ -1,16 +1,28 @@
 ---
 title: "teams"
-description: "Teams and their members."
+description: "Create and manage teams and their working schedule."
 ---
 
 <Cards>
-  <Card title="Add members to a team" href="/teams/post-teams-by-id-members-add">
-    Add up to 100 employees to a team. Archived or unknown users are reported in failed. Admins, or the manager of the team.
+  <Card title="Create a team" href="/teams/post-teams-new">
+    An admin can assign any active manager or admin as manager, a manager always becomes the manager of the team. The end of the working day must be after its start.
   </Card>
-  <Card title="List team members" href="/teams/post-teams-by-id-members-list">
-    Cursor paginated list of the members of a team ordered by creation time. Admins, the manager of the team and its members.
+  <Card title="List teams" href="/teams/post-teams-list">
+    Cursor paginated list ordered by creation time. Admins see every team, managers see the teams they manage or belong to, employees see the teams they belong to.
   </Card>
-  <Card title="Remove members from a team" href="/teams/post-teams-by-id-members-remove">
-    Remove up to 100 members from a team. Admins, or the manager of the team.
+  <Card title="Update teams in bulk" href="/teams/patch-teams">
+    Applies the same data to every id. Authorization is checked for every item before any write. Managers can only update teams they manage and cannot change the manager.
+  </Card>
+  <Card title="Delete teams in bulk" href="/teams/delete-teams">
+    Permanently deletes teams and their memberships. Admin only. Authorization is checked for every item before any deletion.
+  </Card>
+  <Card title="Retrieve a team" href="/teams/get-teams-by-id">
+    Admins can retrieve any team, managers the teams they manage or belong to, employees the teams they belong to.
+  </Card>
+  <Card title="Archive a team" href="/teams/post-teams-by-id-archive">
+    Archive a team. Admins can archive any team, managers the teams they manage.
+  </Card>
+  <Card title="Restore a team" href="/teams/post-teams-by-id-restore">
+    Restore an archived team. Admins can restore any team, managers the teams they manage.
   </Card>
 </Cards>

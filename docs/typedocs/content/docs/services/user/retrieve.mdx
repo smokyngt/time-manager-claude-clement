@@ -1,29 +1,25 @@
----
-title: "Retrieve()"
-description: "Reference for the `retrieve()` function in `services/user/retrieve` (route `user.service.retrieve`)."
-route: "user.service.retrieve"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>user.service.retrieve</code></div>
-
 ## Functions
 
 ### retrieve()
 
 ```ts
-function retrieve(params): Promise<RetrieveResponse>;
+function retrieve(params): Promise<RetrieveUserResponse>;
 ```
+
+Defined in: [services/user/retrieve.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/user/retrieve.ts#L16)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`RetrieveParams`](/docs/services/user#retrieveparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`RetrieveUserParams`](../user.mdx#retrieveuserparams) | - |
 
 #### Returns
 
-`Promise`\<[`RetrieveResponse`](/docs/services/user#retrieveresponse)\>
+`Promise`\<[`RetrieveUserResponse`](../user.mdx#retrieveuserresponse)\>
+
+#### Route
+
+user.service.retrieve
 
 #### Throws
-
-- `UserRetrieveError`

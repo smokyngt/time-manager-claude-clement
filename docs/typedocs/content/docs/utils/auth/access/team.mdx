@@ -1,0 +1,173 @@
+## Classes
+
+### TeamAccess
+
+Defined in: [utils/auth/access/team.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L19)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamAccess(): TeamAccess;
+```
+
+###### Returns
+
+[`TeamAccess`](#teamaccess)
+
+#### Methods
+
+##### allow()
+
+```ts
+allow(
+   actor, 
+   action, 
+   target?
+): boolean;
+```
+
+Defined in: [utils/auth/access/team.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L27)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `action` | [`TeamAction`](#teamaction) | - |
+| `target?` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+access.team.allow
+
+##### fields()
+
+```ts
+fields(actor, target): string[];
+```
+
+Defined in: [utils/auth/access/team.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L42)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `target` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`string`[]
+
+###### Route
+
+access.team.fields
+
+##### manages()
+
+```ts
+manages(actor, target): boolean;
+```
+
+Defined in: [utils/auth/access/team.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L55)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `target` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+access.team.manages
+
+##### require()
+
+```ts
+require(
+   actor, 
+   action, 
+   target?
+): void;
+```
+
+Defined in: [utils/auth/access/team.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L67)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `action` | [`TeamAction`](#teamaction) | - |
+| `target?` | [`TeamTarget`](#teamtarget) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+access.team.require
+
+###### Throws
+
+##### scope()
+
+```ts
+scope(actor, target): Promise<boolean>;
+```
+
+Defined in: [utils/auth/access/team.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L81)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `target` | `Required`\<[`TeamTarget`](#teamtarget)\> | - |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+access.team.scope
+
+## Type Aliases
+
+### TeamAction
+
+```ts
+type TeamAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
+```
+
+Defined in: [utils/auth/access/team.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L9)
+
+***
+
+### TeamTarget
+
+```ts
+type TeamTarget = object;
+```
+
+Defined in: [utils/auth/access/team.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L11)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id"></a> `id?` | `string` | [utils/auth/access/team.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L12) |
+| <a id="property-manager_id"></a> `manager_id` | `string` | [utils/auth/access/team.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/team.ts#L13) |

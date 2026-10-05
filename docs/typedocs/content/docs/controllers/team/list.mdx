@@ -1,11 +1,3 @@
----
-title: "List()"
-description: "Reference for the `list()` function in `controllers/team/list` (route `team.controller.list`)."
-route: "team.controller.list"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.controller.list</code></div>
-
 ## Functions
 
 ### list()
@@ -14,17 +6,21 @@ route: "team.controller.list"
 function list(req, reply): Promise<void>;
 ```
 
+Defined in: [controllers/team/list.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/team/list.ts#L20)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`ListBody`](/docs/controllers/team#listbody); \}\> |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`ListResponse`](/docs/controllers/team#listresponse)\>; \}\> |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`ListTeamsBody`](../team.mdx#listteamsbody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/misc/reply.mdx#replyenvelope)\<[`ListTeamsResponse`](../team.mdx#listteamsresponse)\>; \}\> | - |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Throws
+#### Route
 
-- `TeamListError`
+team.controller.list
+
+#### Throws

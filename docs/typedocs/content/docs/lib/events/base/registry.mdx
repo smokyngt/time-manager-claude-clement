@@ -1,11 +1,3 @@
----
-title: "Registry"
-description: "Reference for the `lib/events/base/registry` module: type aliases, functions."
-route: "events.register"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>events.register</code></div>
-
 ## Type Aliases
 
 ### AppEvent
@@ -13,6 +5,8 @@ route: "events.register"
 ```ts
 type AppEvent<Payload> = object;
 ```
+
+Defined in: [lib/events/base/registry.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L1)
 
 #### Type Parameters
 
@@ -22,11 +16,11 @@ type AppEvent<Payload> = object;
 
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-code"></a> `code` | `string` |
-| <a id="property-metadata"></a> `metadata` | `Record`\<`string`, `unknown`\> |
-| <a id="property-payload"></a> `payload` | `Payload` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-code"></a> `code` | `string` | [lib/events/base/registry.ts:2](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L2) |
+| <a id="property-metadata"></a> `metadata` | `Record`\<`string`, `unknown`\> | [lib/events/base/registry.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L3) |
+| <a id="property-payload"></a> `payload` | `Payload` | [lib/events/base/registry.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L4) |
 
 ***
 
@@ -36,11 +30,13 @@ type AppEvent<Payload> = object;
 type EventFactory<Payload> = (options) => AppEvent<Payload> & object;
 ```
 
+Defined in: [lib/events/base/registry.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L7)
+
 #### Type Declaration
 
-| Name | Type |
-| ------ | ------ |
-| `code` | `string` |
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `code` | `string` | [lib/events/base/registry.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L8) |
 
 #### Type Parameters
 
@@ -56,6 +52,8 @@ type EventFactory<Payload> = (options) => AppEvent<Payload> & object;
 type EventOptions<Payload> = object;
 ```
 
+Defined in: [lib/events/base/registry.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L11)
+
 #### Type Parameters
 
 | Type Parameter |
@@ -64,10 +62,10 @@ type EventOptions<Payload> = object;
 
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> |
-| <a id="property-payload-1"></a> `payload` | `Payload` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> | [lib/events/base/registry.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L12) |
+| <a id="property-payload-1"></a> `payload` | `Payload` | [lib/events/base/registry.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L13) |
 
 ## Functions
 
@@ -77,6 +75,8 @@ type EventOptions<Payload> = object;
 function registerEvent<Payload>(definition): EventFactory<Payload>;
 ```
 
+Defined in: [lib/events/base/registry.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/base/registry.ts#L21)
+
 #### Type Parameters
 
 | Type Parameter |
@@ -85,11 +85,15 @@ function registerEvent<Payload>(definition): EventFactory<Payload>;
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `definition` | \{ `code`: `string`; \} |
-| `definition.code` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | \{ `code`: `string`; \} | - |
+| `definition.code` | `string` | - |
 
 #### Returns
 
 [`EventFactory`](#eventfactory)\<`Payload`\>
+
+#### Route
+
+events.register

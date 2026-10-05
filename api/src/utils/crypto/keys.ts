@@ -15,6 +15,7 @@ export class Keys {
   /**
    * @route keys.current
    * @returns {KeyEntry}
+   * @throws {CryptoKeyInvalidError}
    */
   public static current(): KeyEntry {
     const id = Keys.identifier(store.text('ENCRYPTION_KEY_ID', 'k1'), 'ENCRYPTION_KEY_ID');
@@ -32,6 +33,7 @@ export class Keys {
   /**
    * @route keys.digest
    * @returns {Buffer}
+   * @throws {CryptoKeyInvalidError}
    */
   public static digest(): Buffer {
     const raw = store.optional('HASH_KEY');
@@ -59,6 +61,7 @@ export class Keys {
   /**
    * @route keys.previous
    * @returns {KeyEntry[]}
+   * @throws {CryptoKeyInvalidError}
    */
   public static previous(): KeyEntry[] {
     const raw = store.optional('ENCRYPTION_KEYS_PREVIOUS');
@@ -87,6 +90,7 @@ export class Keys {
   /**
    * @route keys.validate
    * @returns {string[]}
+   * @throws {Error}
    */
   public static validate(): string[] {
     if (!store.production()) return [];

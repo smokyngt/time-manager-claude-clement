@@ -1,367 +1,392 @@
 locals {
   obs_dir = "${path.module}/../../../../observability"
-  obs_ns  = local.ns.observability
+  mon_ns  = local.ns.monitoring
 
-  obs_log_namespaces = [local.ns.app, local.ns.vault, local.ns.cnpg, local.ns.ingress, local.ns.external_secrets, local.ns.cert_manager]
+  prom_release         = "kube-prometheus-stack"
+  prometheus_service   = "${local.prom_release}-prometheus"
+  alertmanager_service = "${local.prom_release}-alertmanager"
+  grafana_service      = "${local.prom_release}-grafana"
+  prometheus_url       = "http://${local.prometheus_service}:9090"
+  alertmanager_url     = "http://${local.alertmanager_service}:9093"
+  loki_url             = "http://loki:3100"
+  tempo_url            = "http://tempo:3200"
+  tempo_otlp_endpoint  = "tempo:4317"
 
-  grafana_branding = {
-    "grafana_icon.svg"           = "/usr/share/grafana/public/img/grafana_icon.svg"
-    "g8_login_dark.svg"          = "/usr/share/grafana/public/img/g8_login_dark.svg"
-    "g8_login_light.svg"         = "/usr/share/grafana/public/img/g8_login_light.svg"
-    "login_background_dark.svg"  = "/usr/share/grafana/public/img/login_background_dark.svg"
-    "login_background_light.svg" = "/usr/share/grafana/public/img/login_background_light.svg"
-    "fav32.png"                  = "/usr/share/grafana/public/img/fav32.png"
-    "apple-touch-icon.png"       = "/usr/share/grafana/public/img/apple-touch-icon.png"
+  compose_prometheus  = yamldecode(file("${local.obs_dir}/prometheus/prometheus.yml"))
+  compose_datasources = yamldecode(file("${local.obs_dir}/grafana/provisioning/datasources/datasources.yaml"))
+  compose_dashboards  = yamldecode(file("${local.obs_dir}/grafana/provisioning/dashboards/dashboards.yaml"))
+
+  datasource_urls = {
+    prometheus   = local.prometheus_url
+    tempo        = local.tempo_url
+    loki         = local.loki_url
+    alertmanager = local.alertmanager_url
   }
 
-  alertmanager_source = var.alertmanager_webhook_enabled ? replace(
+  grafana_datasources = merge(local.compose_datasources, {
+    datasources = [for ds in local.compose_datasources.datasources : merge(ds, { url = local.datasource_urls[ds.uid] })]
+  })
+
+  grafana_folders = { for p in local.compose_dashboards.providers : basename(p.options.path) => p.folder }
+
+  grafana_dashboard_files = flatten([
+    for dir, folder in local.grafana_folders : [
+      for f in fileset("${local.obs_dir}/grafana/dashboards/${dir}", "*.json") : {
+        key    = "${dir}-${trimsuffix(f, ".json")}"
+        folder = folder
+        file   = f
+        path   = "${local.obs_dir}/grafana/dashboards/${dir}/${f}"
+      }
+    ]
+  ])
+
+  grafana_branding_files = sort(fileset("${local.obs_dir}/grafana/branding", "*"))
+
+  alertmanager_secret_dir = "/etc/alertmanager/secrets/alertmanager-webhook"
+
+  alertmanager_source = yamldecode(var.monitoring_alert_webhook_enabled ? replace(
     file("${local.obs_dir}/alertmanager/alertmanager.webhook.yml"),
     "/tmp/alert-webhook-url",
-    "/etc/alertmanager-webhook/url",
-  ) : file("${local.obs_dir}/alertmanager/alertmanager.yml")
+    "${local.alertmanager_secret_dir}/url",
+  ) : file("${local.obs_dir}/alertmanager/alertmanager.yml"))
 
-  loki_config = replace(
-    replace(file("${local.obs_dir}/loki/loki.yaml"), "path_prefix: /loki", "path_prefix: /var/loki"),
-    ": /loki/",
-    ": /var/loki/",
-  )
+  alertmanager_config = merge(local.alertmanager_source, {
+    route = merge(local.alertmanager_source.route, {
+      routes = [{
+        receiver = "null"
+        matchers = ["alertname=~\"Watchdog|InfoInhibitor\""]
+      }]
+    })
+    receivers = concat(local.alertmanager_source.receivers, var.monitoring_alert_webhook_enabled ? [{ name = "null" }] : [])
+  })
 
-  obs_scheduling = {
-    nodeSelector = var.data_node_selector
-    tolerations  = local.data_tolerations
-  }
+  grafana_oidc_enabled = var.features.grafana_oidc
+
+  grafana_oidc_env = local.grafana_oidc_enabled ? {
+    GF_AUTH_GENERIC_OAUTH_ENABLED              = "true"
+    GF_AUTH_GENERIC_OAUTH_NAME                 = "Vault"
+    GF_AUTH_GENERIC_OAUTH_SCOPES               = "openid profile email"
+    GF_AUTH_GENERIC_OAUTH_AUTH_URL             = "https://${local.hosts.vault}/ui/vault/identity/oidc/provider/grafana/authorize"
+    GF_AUTH_GENERIC_OAUTH_TOKEN_URL            = "${local.vault_url}/v1/identity/oidc/provider/grafana/token"
+    GF_AUTH_GENERIC_OAUTH_API_URL              = "${local.vault_url}/v1/identity/oidc/provider/grafana/userinfo"
+    GF_AUTH_GENERIC_OAUTH_USE_PKCE             = "true"
+    GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN           = "false"
+    GF_AUTH_GENERIC_OAUTH_ALLOW_SIGN_UP        = "true"
+    GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH = "username"
+    GF_AUTH_GENERIC_OAUTH_EMAIL_ATTRIBUTE_PATH = "email"
+    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH  = var.grafana_oidc_role_attribute_path
+    GF_AUTH_GENERIC_OAUTH_TLS_CLIENT_CA        = "/etc/internal-ca/${local.ca_bundle_key}"
+  } : {}
 
   grafana_mounts = concat(
     [
       { name = "grafana-ini", mountPath = "/etc/grafana-config", configMap = "grafana-ini", readOnly = true },
-      { name = "prov-datasources", mountPath = "/etc/grafana/provisioning/datasources", configMap = "grafana-provisioning-datasources", readOnly = true },
-      { name = "prov-dashboards", mountPath = "/etc/grafana/provisioning/dashboards", configMap = "grafana-provisioning-dashboards", readOnly = true },
-      { name = "prov-alerting", mountPath = "/etc/grafana/provisioning/alerting", configMap = "grafana-provisioning-alerting", readOnly = true },
-      { name = "prov-plugins", mountPath = "/etc/grafana/provisioning/plugins", configMap = "grafana-provisioning-plugins", readOnly = true },
-      { name = "dash-time-manager", mountPath = "/var/lib/grafana/dashboards/time-manager", configMap = "grafana-dashboards-time-manager", readOnly = true },
-      { name = "dash-infrastructure", mountPath = "/var/lib/grafana/dashboards/infrastructure", configMap = "grafana-dashboards-infrastructure", readOnly = true },
+      { name = "prov-datasources", mountPath = "/etc/grafana/provisioning/datasources/datasources.yaml", subPath = "datasources.yaml", configMap = "grafana-provisioning", readOnly = true },
+      { name = "prov-contact-points", mountPath = "/etc/grafana/provisioning/alerting/contact-points.yaml", subPath = "contact-points.yaml", configMap = "grafana-provisioning", readOnly = true },
+      { name = "prov-alert-rules", mountPath = "/etc/grafana/provisioning/alerting/rules.yaml", subPath = "rules.yaml", configMap = "grafana-provisioning", readOnly = true },
+      { name = "prov-plugins", mountPath = "/etc/grafana/provisioning/plugins/plugins.yaml", subPath = "plugins.yaml", configMap = "grafana-provisioning", readOnly = true },
     ],
-    [for file_name, target in local.grafana_branding : {
-      name      = "brand-${replace(replace(file_name, ".", "-"), "_", "-")}"
-      mountPath = target
-      subPath   = file_name
+    [for f in local.grafana_branding_files : {
+      name      = "brand-${replace(replace(lower(f), ".", "-"), "_", "-")}"
+      mountPath = "/usr/share/grafana/public/img/${f}"
+      subPath   = f
       configMap = "grafana-branding"
       readOnly  = true
     }],
   )
 
-  grafana_oidc_env = var.grafana_oidc_enabled ? {
-    GF_AUTH_GENERIC_OAUTH_ENABLED             = "true"
-    GF_AUTH_GENERIC_OAUTH_NAME                = "Vault"
-    GF_AUTH_GENERIC_OAUTH_SCOPES              = "openid profile email"
-    GF_AUTH_GENERIC_OAUTH_AUTH_URL            = "https://${var.vault_oidc_issuer_host}/ui/vault/identity/oidc/provider/grafana/authorize"
-    GF_AUTH_GENERIC_OAUTH_TOKEN_URL           = "${local.vault_address}/v1/identity/oidc/provider/grafana/token"
-    GF_AUTH_GENERIC_OAUTH_API_URL             = "${local.vault_address}/v1/identity/oidc/provider/grafana/userinfo"
-    GF_AUTH_GENERIC_OAUTH_USE_PKCE            = "true"
-    GF_AUTH_GENERIC_OAUTH_AUTO_LOGIN          = "false"
-    GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH = "'Viewer'"
-    GF_AUTH_GENERIC_OAUTH_TLS_CLIENT_CA       = "/etc/vault-ca/ca.crt"
-  } : {}
-}
+  grafana_secret_mounts = local.grafana_oidc_enabled ? [{
+    name       = "internal-ca"
+    mountPath  = "/etc/internal-ca"
+    secretName = local.ca_bundle_secret
+    readOnly   = true
+  }] : []
 
-resource "helm_release" "prometheus_operator_crds" {
-  name       = "prometheus-operator-crds"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus-operator-crds"
-  version    = var.chart_versions.prometheus_crds
-  namespace  = kubernetes_namespace_v1.this[local.obs_ns].metadata[0].name
-
-  wait = true
-}
-
-resource "kubernetes_config_map_v1" "prometheus_config" {
-  metadata {
-    name      = "prometheus-config"
-    namespace = local.obs_ns
-  }
-
-  data = {
-    "prometheus.yml" = file("${local.obs_dir}/prometheus/prometheus.yml")
-  }
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_config_map_v1" "prometheus_rules" {
-  metadata {
-    name      = "prometheus-rules"
-    namespace = local.obs_ns
-  }
-
-  data = {
-    "recording.yml" = file("${local.obs_dir}/prometheus/rules/recording.yml")
-    "alerts.yml"    = file("${local.obs_dir}/prometheus/rules/alerts.yml")
-  }
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "helm_release" "prometheus" {
-  name       = "prometheus"
-  repository = "https://prometheus-community.github.io/helm-charts"
-  chart      = "prometheus"
-  version    = var.chart_versions.prometheus
-  namespace  = local.obs_ns
-
-  wait    = true
-  timeout = 600
-
-  values = [yamlencode({
-    server = merge({
-      fullnameOverride      = "prometheus"
-      image                 = { tag = var.image_tags.prometheus }
-      configMapOverrideName = "config"
-      retention             = var.observability_retention.prometheus_time
-      retentionSize         = var.observability_retention.prometheus_size
-      extraFlags            = ["web.enable-lifecycle", "web.enable-remote-write-receiver"]
-      extraArgs             = { "enable-feature" = "native-histograms,exemplar-storage" }
-      service               = { servicePort = 9090 }
-      persistentVolume = merge(
-        { enabled = true, size = var.observability_storage.prometheus },
-        var.storage_class == null ? {} : { storageClass = var.storage_class },
-      )
-      extraConfigmapMounts = [{
-        name      = "prometheus-rules"
-        mountPath = "/etc/prometheus/rules"
-        configMap = "prometheus-rules"
-        readOnly  = true
-      }]
-    }, local.obs_scheduling)
-    alertmanager = merge({
-      enabled          = true
-      fullnameOverride = "alertmanager"
-      image            = { tag = var.image_tags.alertmanager }
-      persistence = merge(
-        { enabled = true, size = var.observability_storage.alertmanager },
-        var.storage_class == null ? {} : { storageClass = var.storage_class },
-      )
-      config = merge(
-        yamldecode(local.alertmanager_source),
-        { enabled = true },
-      )
-      extraArgs = { "data.retention" = "120h" }
-      extraSecretMounts = var.alertmanager_webhook_enabled ? [{
-        name       = "webhook"
-        mountPath  = "/etc/alertmanager-webhook"
-        secretName = "alertmanager-webhook"
-        readOnly   = true
-      }] : []
-    }, local.obs_scheduling)
-    kube-state-metrics       = { enabled = false }
-    prometheus-node-exporter = { enabled = false }
-    prometheus-pushgateway   = { enabled = false }
-  })]
-
-  depends_on = [
-    kubernetes_config_map_v1.prometheus_config,
-    kubernetes_config_map_v1.prometheus_rules,
-    kubectl_manifest.external_secret,
-    helm_release.prometheus_operator_crds,
-  ]
-}
-
-resource "helm_release" "loki" {
-  name       = "loki"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "loki"
-  version    = var.chart_versions.loki
-  namespace  = local.obs_ns
-
-  wait    = true
-  timeout = 600
-
-  values = [yamlencode({
-    fullnameOverride = "loki"
-    deploymentMode   = "SingleBinary"
-    loki = {
-      auth_enabled  = false
-      useTestSchema = false
-      schemaConfig = {
-        configs = [{
-          from         = "2024-04-01"
-          store        = "tsdb"
-          object_store = "filesystem"
-          schema       = "v13"
-          index        = { prefix = "index_", period = "24h" }
-        }]
+  monitoring_external_secrets = merge(
+    {
+      "vault-metrics-token" = {
+        namespace = local.ns.vault
+        template = {
+          type = "Opaque"
+          data = {
+            token = "{{ .token }}"
+          }
+        }
+        data = {
+          token = { key = "monitoring/vault-metrics", property = "token" }
+        }
       }
-      storage      = { type = "filesystem" }
-      commonConfig = { replication_factor = 1 }
-      config       = local.loki_config
+    },
+    var.loki_object_storage.enabled ? {
+      "loki-s3" = {
+        namespace = local.mon_ns
+        template = {
+          type = "Opaque"
+          data = {
+            AWS_ACCESS_KEY_ID     = "{{ .access_key_id }}"
+            AWS_SECRET_ACCESS_KEY = "{{ .secret_access_key }}"
+          }
+        }
+        data = {
+          access_key_id     = { key = "monitoring/loki-s3", property = "access_key_id" }
+          secret_access_key = { key = "monitoring/loki-s3", property = "secret_access_key" }
+        }
+      }
+    } : {},
+  )
+
+  monitoring_external_secret_manifests = {
+    for name, es in local.monitoring_external_secrets : name => <<-YAML
+      apiVersion: external-secrets.io/v1
+      kind: ExternalSecret
+      metadata:
+        name: ${name}
+        namespace: ${es.namespace}
+        labels: ${jsonencode(local.common_labels)}
+      spec:
+        refreshInterval: 1h
+        secretStoreRef:
+          name: vault
+          kind: ClusterSecretStore
+        target:
+          name: ${name}
+          creationPolicy: Owner
+          template: ${jsonencode(merge({ engineVersion = "v2" }, es.template))}
+        data: ${jsonencode([for key, ref in es.data : { secretKey = key, remoteRef = ref }])}
+    YAML
+  }
+
+  grafana_certificate_manifest = <<-YAML
+    apiVersion: cert-manager.io/v1
+    kind: Certificate
+    metadata:
+      name: grafana-tls
+      namespace: ${local.mon_ns}
+      labels: ${jsonencode(local.common_labels)}
+    spec:
+      secretName: grafana-tls
+      commonName: ${local.hosts.grafana}
+      dnsNames:
+        - ${local.hosts.grafana}
+      usages:
+        - digital signature
+        - key encipherment
+        - server auth
+      privateKey:
+        algorithm: ECDSA
+        size: 256
+        rotationPolicy: Always
+      issuerRef:
+        name: ${local.public_issuer}
+        kind: ClusterIssuer
+        group: cert-manager.io
+  YAML
+
+  grafana_ingress_route_manifest = <<-YAML
+    apiVersion: traefik.io/v1alpha1
+    kind: IngressRoute
+    metadata:
+      name: grafana
+      namespace: ${local.mon_ns}
+      labels: ${jsonencode(local.common_labels)}
+    spec:
+      entryPoints:
+        - websecure
+      routes:
+        - match: Host(`${local.hosts.grafana}`)
+          kind: Rule
+          middlewares:
+            - name: admin-chain
+              namespace: ${local.ns.traefik}
+          services:
+            - name: ${local.grafana_service}
+              port: 80
+      tls:
+        secretName: grafana-tls
+  YAML
+
+  prometheus_values = {
+    crds = { enabled = true }
+
+    defaultRules = {
+      create = true
+      rules = {
+        alertmanager                      = true
+        etcd                              = false
+        configReloaders                   = true
+        general                           = true
+        k8sContainerCpuUsageSecondsTotal  = true
+        k8sContainerMemoryCache           = true
+        k8sContainerMemoryRss             = true
+        k8sContainerMemorySwap            = true
+        k8sContainerResource              = true
+        k8sContainerMemoryWorkingSetBytes = true
+        k8sPodOwner                       = true
+        kubeApiserverAvailability         = false
+        kubeApiserverBurnrate             = false
+        kubeApiserverHistogram            = false
+        kubeApiserverSlos                 = false
+        kubeControllerManager             = false
+        kubelet                           = true
+        kubeProxy                         = false
+        kubePrometheusGeneral             = true
+        kubePrometheusNodeRecording       = true
+        kubernetesApps                    = false
+        kubernetesResources               = false
+        kubernetesStorage                 = false
+        kubernetesSystem                  = false
+        kubeSchedulerAlerting             = false
+        kubeSchedulerRecording            = false
+        kubeStateMetrics                  = true
+        network                           = false
+        node                              = true
+        nodeExporterAlerting              = false
+        nodeExporterRecording             = true
+        prometheus                        = true
+        prometheusOperator                = true
+        windows                           = false
+      }
     }
-    singleBinary = merge({
-      replicas = 1
-      persistence = merge(
-        { enabled = true, size = var.observability_storage.loki },
-        var.storage_class == null ? {} : { storageClass = var.storage_class },
-      )
-    }, local.obs_scheduling)
-    backend        = { replicas = 0 }
-    read           = { replicas = 0 }
-    write          = { replicas = 0 }
-    ingester       = { replicas = 0 }
-    querier        = { replicas = 0 }
-    queryFrontend  = { replicas = 0 }
-    queryScheduler = { replicas = 0 }
-    distributor    = { replicas = 0 }
-    compactor      = { replicas = 0 }
-    indexGateway   = { replicas = 0 }
-    bloomCompactor = { replicas = 0 }
-    bloomGateway   = { replicas = 0 }
-    gateway        = { enabled = false }
-    chunksCache    = { enabled = false }
-    resultsCache   = { enabled = false }
-    lokiCanary     = { enabled = false }
-    test           = { enabled = false }
-    monitoring = {
-      selfMonitoring = { enabled = false }
+
+    kubeApiServer         = { enabled = true }
+    kubelet               = { enabled = true }
+    coreDns               = { enabled = true }
+    kubeEtcd              = { enabled = false }
+    kubeScheduler         = { enabled = false }
+    kubeControllerManager = { enabled = false }
+    kubeProxy             = { enabled = false }
+
+    prometheusOperator = {
+      admissionWebhooks = { enabled = false }
+      resources         = var.monitoring_resources.prometheus_operator
+      priorityClassName = "critical"
     }
-    sidecar = { rules = { enabled = false } }
-  })]
 
-  depends_on = [kubernetes_namespace_v1.this]
-}
+    kube-state-metrics = {
+      resources = var.monitoring_resources.kube_state_metrics
+    }
 
-resource "helm_release" "tempo" {
-  name       = "tempo"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "tempo"
-  version    = var.chart_versions.tempo
-  namespace  = local.obs_ns
+    prometheus-node-exporter = {
+      resources = var.monitoring_resources.node_exporter
+    }
 
-  wait    = true
-  timeout = 600
+    alertmanager = {
+      enabled        = true
+      serviceMonitor = { selfMonitor = false }
+      config         = local.alertmanager_config
+      alertmanagerSpec = merge({
+        replicas          = 1
+        retention         = "120h"
+        resources         = var.monitoring_resources.alertmanager
+        priorityClassName = "critical"
+        storage = {
+          volumeClaimTemplate = {
+            spec = {
+              storageClassName = var.storage_class_default
+              accessModes      = ["ReadWriteOnce"]
+              resources        = { requests = { storage = var.monitoring_storage.alertmanager } }
+            }
+          }
+        }
+        }, var.monitoring_alert_webhook_enabled ? {
+        secrets = ["alertmanager-webhook"]
+      } : {})
+    }
 
-  values = [yamlencode(merge({
-    fullnameOverride = "tempo"
-    tempo = {
-      tag = var.image_tags.tempo
-      receivers = {
-        otlp = {
-          protocols = {
-            grpc = { endpoint = "0.0.0.0:4317" }
-            http = { endpoint = "0.0.0.0:4318" }
+    prometheus = {
+      serviceMonitor = { selfMonitor = false }
+      prometheusSpec = {
+        replicas                                = 1
+        retention                               = var.monitoring_retention.prometheus_time
+        retentionSize                           = var.monitoring_retention.prometheus_size
+        scrapeInterval                          = local.compose_prometheus.global.scrape_interval
+        evaluationInterval                      = local.compose_prometheus.global.evaluation_interval
+        externalLabels                          = merge(local.compose_prometheus.global.external_labels, { cluster = var.cluster_name })
+        enableRemoteWriteReceiver               = true
+        enableFeatures                          = ["exemplar-storage", "native-histograms"]
+        exemplars                               = { maxSize = local.compose_prometheus.storage.exemplars.max_exemplars }
+        walCompression                          = true
+        ruleSelectorNilUsesHelmValues           = false
+        serviceMonitorSelectorNilUsesHelmValues = false
+        podMonitorSelectorNilUsesHelmValues     = false
+        probeSelectorNilUsesHelmValues          = false
+        scrapeConfigSelectorNilUsesHelmValues   = false
+        resources                               = var.monitoring_resources.prometheus
+        priorityClassName                       = "critical"
+        storageSpec = {
+          volumeClaimTemplate = {
+            spec = {
+              storageClassName = var.storage_class_default
+              accessModes      = ["ReadWriteOnce"]
+              resources        = { requests = { storage = var.monitoring_storage.prometheus } }
+            }
           }
         }
       }
     }
-    config = file("${local.obs_dir}/tempo/tempo.yaml")
-    persistence = merge(
-      { enabled = true, size = var.observability_storage.tempo },
-      var.storage_class == null ? {} : { storageClassName = var.storage_class },
-    )
-    service = { type = "ClusterIP" }
-  }, local.obs_scheduling))]
 
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_config_map_v1" "alloy_config" {
-  metadata {
-    name      = "alloy-config"
-    namespace = local.obs_ns
-  }
-
-  data = {
-    "config.alloy" = templatefile("${path.module}/files/alloy.alloy.tftpl", {
-      app_namespace  = local.ns.app
-      api_scheme     = var.api_backend_tls ? "https" : "http"
-      log_namespaces = join(", ", [for n in local.obs_log_namespaces : "\"${n}\""])
-    })
-  }
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_role_v1" "alloy_app_secrets" {
-  metadata {
-    name      = "alloy-read-secrets"
-    namespace = local.ns.app
-  }
-
-  rule {
-    api_groups = [""]
-    resources  = ["secrets", "configmaps"]
-    verbs      = ["get", "list", "watch"]
-  }
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_role_binding_v1" "alloy_app_secrets" {
-  metadata {
-    name      = "alloy-read-secrets"
-    namespace = local.ns.app
-  }
-
-  role_ref {
-    api_group = "rbac.authorization.k8s.io"
-    kind      = "Role"
-    name      = kubernetes_role_v1.alloy_app_secrets.metadata[0].name
-  }
-
-  subject {
-    kind      = "ServiceAccount"
-    name      = "alloy"
-    namespace = local.obs_ns
-  }
-}
-
-resource "helm_release" "alloy" {
-  name       = "alloy"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "alloy"
-  version    = var.chart_versions.alloy
-  namespace  = local.obs_ns
-
-  wait    = true
-  timeout = 600
-
-  values = [yamlencode({
-    fullnameOverride = "alloy"
-    image            = { tag = var.image_tags.alloy }
-    alloy = {
-      configMap = {
-        create = false
-        name   = "alloy-config"
-        key    = "config.alloy"
+    grafana = {
+      enabled                   = true
+      defaultDashboardsEnabled  = true
+      defaultDashboardsTimezone = "browser"
+      forceDeployDatasources    = false
+      forceDeployDashboards     = false
+      admin = {
+        existingSecret = "grafana-admin"
+        userKey        = "admin-user"
+        passwordKey    = "admin-password"
       }
-      extraPorts = [
-        { name = "otlp-grpc", port = 4317, targetPort = 4317, protocol = "TCP" },
-        { name = "otlp-http", port = 4318, targetPort = 4318, protocol = "TCP" },
-      ]
+      resources          = var.monitoring_resources.grafana
+      rbac               = { namespaced = true }
+      deploymentStrategy = { type = "Recreate" }
+      serviceMonitor     = { enabled = false }
+      persistence = {
+        enabled          = true
+        type             = "pvc"
+        accessModes      = ["ReadWriteOnce"]
+        size             = var.monitoring_storage.grafana
+        storageClassName = var.storage_class_default
+      }
+      sidecar = {
+        datasources = { enabled = false }
+        dashboards = {
+          enabled          = true
+          label            = "grafana_dashboard"
+          labelValue       = "1"
+          searchNamespace  = local.mon_ns
+          folderAnnotation = "grafana_folder"
+          provider         = { foldersFromFilesStructure = true, allowUiUpdates = false, disableDelete = true }
+        }
+      }
+      env = merge({
+        GF_PATHS_CONFIG                           = "/etc/grafana-config/grafana.ini"
+        GF_SERVER_ROOT_URL                        = "https://${local.hosts.grafana}"
+        GF_SECURITY_COOKIE_SECURE                 = "true"
+        GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH = "/tmp/dashboards/${local.grafana_folders["time-manager"]}/overview.json"
+        }, var.monitoring_alert_webhook_enabled ? {} : {
+        GRAFANA_ALERT_WEBHOOK_URL = "${local.alertmanager_url}/-/healthy"
+      }, local.grafana_oidc_env)
+      envValueFrom = var.monitoring_alert_webhook_enabled ? {
+        GRAFANA_ALERT_WEBHOOK_URL = { secretKeyRef = { name = "alertmanager-webhook", key = "url" } }
+      } : {}
+      envFromSecrets       = local.grafana_oidc_enabled ? [{ name = "grafana-oidc" }] : []
+      extraConfigmapMounts = local.grafana_mounts
+      extraSecretMounts    = local.grafana_secret_mounts
+      containerSecurityContext = {
+        allowPrivilegeEscalation = false
+        capabilities             = { drop = ["ALL"] }
+        seccompProfile           = { type = "RuntimeDefault" }
+      }
+      testFramework = { enabled = false }
     }
-    controller = merge({
-      type     = "deployment"
-      replicas = 1
-    }, local.obs_scheduling)
-    rbac = {
-      rules = [
-        { apiGroups = ["", "discovery.k8s.io", "networking.k8s.io"], resources = ["endpoints", "endpointslices", "ingresses", "pods", "services"], verbs = ["get", "list", "watch"] },
-        { apiGroups = [""], resources = ["pods", "pods/log", "namespaces", "events"], verbs = ["get", "list", "watch"] },
-        { apiGroups = ["monitoring.coreos.com"], resources = ["podmonitors", "servicemonitors", "probes", "scrapeconfigs"], verbs = ["get", "list", "watch"] },
-      ]
-    }
-  })]
-
-  depends_on = [
-    kubernetes_config_map_v1.alloy_config,
-    helm_release.prometheus_operator_crds,
-    helm_release.loki,
-    helm_release.tempo,
-    helm_release.prometheus,
-  ]
+  }
 }
 
 resource "kubernetes_config_map_v1" "grafana_ini" {
   metadata {
     name      = "grafana-ini"
-    namespace = local.obs_ns
+    namespace = local.mon_ns
+    labels    = local.common_labels
   }
 
   data = {
@@ -372,36 +397,17 @@ resource "kubernetes_config_map_v1" "grafana_ini" {
 }
 
 resource "kubernetes_config_map_v1" "grafana_provisioning" {
-  for_each = {
-    datasources = ["datasources/datasources.yaml"]
-    dashboards  = ["dashboards/dashboards.yaml"]
-    alerting    = ["alerting/contact-points.yaml", "alerting/rules.yaml"]
-    plugins     = ["plugins/plugins.yaml"]
-  }
-
   metadata {
-    name      = "grafana-provisioning-${each.key}"
-    namespace = local.obs_ns
+    name      = "grafana-provisioning"
+    namespace = local.mon_ns
+    labels    = local.common_labels
   }
 
   data = {
-    for f in each.value : basename(f) => file("${local.obs_dir}/grafana/provisioning/${f}")
-  }
-
-  depends_on = [kubernetes_namespace_v1.this]
-}
-
-resource "kubernetes_config_map_v1" "grafana_dashboards" {
-  for_each = toset(["time-manager", "infrastructure"])
-
-  metadata {
-    name      = "grafana-dashboards-${each.key}"
-    namespace = local.obs_ns
-  }
-
-  data = {
-    for f in fileset("${local.obs_dir}/grafana/dashboards/${each.key}", "*.json") :
-    f => file("${local.obs_dir}/grafana/dashboards/${each.key}/${f}")
+    "datasources.yaml"    = yamlencode(local.grafana_datasources)
+    "contact-points.yaml" = file("${local.obs_dir}/grafana/provisioning/alerting/contact-points.yaml")
+    "rules.yaml"          = file("${local.obs_dir}/grafana/provisioning/alerting/rules.yaml")
+    "plugins.yaml"        = file("${local.obs_dir}/grafana/provisioning/plugins/plugins.yaml")
   }
 
   depends_on = [kubernetes_namespace_v1.this]
@@ -410,94 +416,94 @@ resource "kubernetes_config_map_v1" "grafana_dashboards" {
 resource "kubernetes_config_map_v1" "grafana_branding" {
   metadata {
     name      = "grafana-branding"
-    namespace = local.obs_ns
+    namespace = local.mon_ns
+    labels    = local.common_labels
   }
 
   binary_data = {
-    for f in keys(local.grafana_branding) :
-    f => filebase64("${local.obs_dir}/grafana/branding/${f}")
+    for f in local.grafana_branding_files : f => filebase64("${local.obs_dir}/grafana/branding/${f}")
   }
 
   depends_on = [kubernetes_namespace_v1.this]
 }
 
-resource "helm_release" "grafana" {
-  count = local.vault_config_count
-
-  name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "grafana"
-  version    = var.chart_versions.grafana
-  namespace  = local.obs_ns
-
-  wait    = true
-  timeout = 600
-
-  values = [yamlencode(merge({
-    fullnameOverride = "grafana"
-    image            = { tag = var.image_tags.grafana }
-    admin = {
-      existingSecret = "grafana-admin"
-      userKey        = "admin-user"
-      passwordKey    = "admin-password"
-    }
-    persistence = merge(
-      { enabled = true, size = var.observability_storage.grafana },
-      var.storage_class == null ? {} : { storageClassName = var.storage_class },
-    )
-    service = { port = 3000 }
-    env = merge({
-      GF_PATHS_CONFIG           = "/etc/grafana-config/grafana.ini"
-      GF_SERVER_ROOT_URL        = "https://${var.grafana_host}"
-      GF_SECURITY_COOKIE_SECURE = "true"
-      GRAFANA_ALERT_WEBHOOK_URL = var.grafana_alert_webhook_url
-    }, local.grafana_oidc_env)
-    envFromSecrets       = var.grafana_oidc_enabled ? [{ name = "grafana-oidc" }] : []
-    extraConfigmapMounts = local.grafana_mounts
-    extraSecretMounts = var.grafana_oidc_enabled ? [{
-      name       = "vault-ca"
-      mountPath  = "/etc/vault-ca"
-      secretName = "vault-ca-bundle"
-      readOnly   = true
-    }] : []
-    securityContext = {
-      runAsNonRoot = true
-      runAsUser    = 472
-      runAsGroup   = 472
-      fsGroup      = 472
-    }
-    containerSecurityContext = {
-      allowPrivilegeEscalation = false
-      capabilities             = { drop = ["ALL"] }
-      seccompProfile           = { type = "RuntimeDefault" }
-    }
-    testFramework = { enabled = false }
-  }, local.obs_scheduling))]
-
-  depends_on = [
-    kubernetes_config_map_v1.grafana_ini,
-    kubernetes_config_map_v1.grafana_provisioning,
-    kubernetes_config_map_v1.grafana_dashboards,
-    kubernetes_config_map_v1.grafana_branding,
-    kubectl_manifest.external_secret,
-    kubernetes_secret_v1.vault_ca_bundle_observability,
-    helm_release.prometheus,
-    helm_release.loki,
-    helm_release.tempo,
-  ]
-}
-
-resource "kubernetes_secret_v1" "vault_ca_bundle_observability" {
-  count = local.vault_config_count
+resource "kubernetes_config_map_v1" "grafana_dashboards" {
+  for_each = { for d in local.grafana_dashboard_files : d.key => d }
 
   metadata {
-    name      = local.vault_ca_bundle_name
-    namespace = local.obs_ns
+    name      = "grafana-dashboard-${each.key}"
+    namespace = local.mon_ns
+    labels    = merge(local.common_labels, { grafana_dashboard = "1" })
+    annotations = {
+      grafana_folder = each.value.folder
+    }
   }
 
   data = {
-    "ca.crt" = "${join("\n", local.live_ca_pems)}\n"
+    (each.value.file) = file(each.value.path)
   }
 
   depends_on = [kubernetes_namespace_v1.this]
+}
+
+resource "kubectl_manifest" "monitoring_external_secret" {
+  for_each = local.monitoring_external_secret_manifests
+
+  yaml_body = each.value
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    kubectl_manifest.cluster_secret_store,
+  ]
+}
+
+resource "helm_release" "kube_prometheus_stack" {
+  name       = local.prom_release
+  repository = "https://prometheus-community.github.io/helm-charts"
+  chart      = "kube-prometheus-stack"
+  version    = local.chart_versions["kube-prometheus-stack"]
+  namespace  = kubernetes_namespace_v1.this[local.mon_ns].metadata[0].name
+
+  wait    = true
+  timeout = 900
+
+  values = [yamlencode(local.prometheus_values)]
+
+  lifecycle {
+    precondition {
+      condition     = !local.grafana_oidc_enabled || var.features.vault_ui_exposed
+      error_message = "features.grafana_oidc needs features.vault_ui_exposed: browsers are redirected to https://${local.hosts.vault} to authorise. What breaks: the Vault login redirect fails and Grafana only offers the admin password. Fix one of: set features.vault_ui_exposed = true; set features.grafana_oidc = false; or expose the Vault hostname through another route."
+    }
+  }
+
+  depends_on = [
+    kubernetes_priority_class_v1.critical,
+    kubernetes_config_map_v1.grafana_ini,
+    kubernetes_config_map_v1.grafana_provisioning,
+    kubernetes_config_map_v1.grafana_branding,
+    kubernetes_config_map_v1.grafana_dashboards,
+    kubectl_manifest.monitoring_external_secret,
+    kubectl_manifest.external_secret,
+  ]
+}
+
+resource "kubectl_manifest" "grafana_certificate" {
+  yaml_body = local.grafana_certificate_manifest
+
+  depends_on = [
+    kubernetes_namespace_v1.this,
+    kubectl_manifest.vault_pki_issuer,
+    kubectl_manifest.letsencrypt_issuer,
+    kubectl_manifest.bootstrap_ca_issuer,
+  ]
+}
+
+resource "kubectl_manifest" "grafana_ingress_route" {
+  yaml_body = local.grafana_ingress_route_manifest
+
+  depends_on = [
+    helm_release.kube_prometheus_stack,
+    helm_release.traefik,
+    kubectl_manifest.grafana_certificate,
+  ]
 }

@@ -1,29 +1,25 @@
----
-title: "Add()"
-description: "Reference for the `add()` function in `services/team-member/add` (route `team.member.service.add`)."
-route: "team.member.service.add"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.add</code></div>
-
 ## Functions
 
 ### add()
 
 ```ts
-function add(params): Promise<AddResponse>;
+function add(params): Promise<AddTeamMembersResponse>;
 ```
+
+Defined in: [services/team-member/add.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team-member/add.ts#L22)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`AddParams`](/docs/services/team-member#addparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`AddTeamMembersParams`](../team-member.mdx#addteammembersparams) | - |
 
 #### Returns
 
-`Promise`\<[`AddResponse`](/docs/services/team-member#addresponse)\>
+`Promise`\<[`AddTeamMembersResponse`](../team-member.mdx#addteammembersresponse)\>
+
+#### Route
+
+team_member.service.add
 
 #### Throws
-
-- `TeamMemberTeamArchivedError | UnauthorizedError | TeamMemberAddError`

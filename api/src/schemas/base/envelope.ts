@@ -1,4 +1,5 @@
 import {
+  InvalidJsonError,
   RateLimitError,
   TokenAuthenticationError,
   UnauthorizedError,
@@ -25,6 +26,7 @@ export const ErrorResponseSchema = {
     },
     errors: {
       description: 'Field level validation failures.',
+      example: [{ code: 'required', params: { missing_property: 'name' }, path: 'body.name' }],
       items: {
         additionalProperties: false,
         properties: {
@@ -55,7 +57,11 @@ export const ErrorResponseSchema = {
       description: 'Debug details, non production only.',
       type: 'object',
     },
-    stack: { description: 'Stack trace, non production only.', type: 'string' },
+    stack: {
+      description: 'Stack trace, non production only.',
+      example: 'AppError: team.not.found\n    at team.service.retrieve (team/retrieve.ts:21:9)',
+      type: 'string',
+    },
     status: { description: 'HTTP status code.', example: 404, type: 'integer' },
     timestamp: { description: 'Epoch milliseconds.', example: 1_760_000_000_000, type: 'integer' },
   },
@@ -65,25 +71,45 @@ export const ErrorResponseSchema = {
 
 /**
  * @route schemas.envelope.error
- * @param {ErrorFactory} factory
+ * @param {ErrorFactory | ErrorFactory[]} factory
  * @param {string} description
  * @returns {JsonSchema}
  */
-export const ErrorSchema = (factory: ErrorFactory, description?: string): JsonSchema => ({
-  allOf: [
-    ErrorResponseSchema,
-    {
-      properties: {
-        code: { const: factory.code },
-        status: { const: factory.defaultStatus },
-      },
-      type: 'object',
-    },
-  ],
-  description: description ?? factory.code,
-});
+export const ErrorSchema = (
+  factory: ErrorFactory | ErrorFactory[],
+  description?: string,
+): JsonSchema => {
+  const factories = Array.isArray(factory) ? factory : [factory];
 
-export const ValidationErrorSchema = ErrorSchema(ValidationError, 'Invalid request.');
+  return {
+    allOf: [
+      ErrorResponseSchema,
+      {
+        properties: {
+          code: {
+            description: 'Stable machine readable error code.',
+            enum: factories.map((item) => item.code),
+            example: factories[0]?.code,
+            type: 'string',
+          },
+          status: {
+            description: 'HTTP status code.',
+            enum: [...new Set(factories.map((item) => item.defaultStatus))],
+            example: factories[0]?.defaultStatus,
+            type: 'integer',
+          },
+        },
+        type: 'object',
+      },
+    ],
+    description: description ?? factories.map((item) => item.code).join(', '),
+  };
+};
+
+export const ValidationErrorSchema = ErrorSchema(
+  [ValidationError, InvalidJsonError],
+  'Invalid request.',
+);
 
 export const TokenAuthenticationErrorSchema = ErrorSchema(
   TokenAuthenticationError,

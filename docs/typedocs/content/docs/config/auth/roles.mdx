@@ -1,14 +1,8 @@
----
-title: "Roles"
-description: "Reference for the `config/auth/roles` module: classes, variables."
-route: "config.roles.scopes"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>config.roles.scopes</code></div>
-
 ## Classes
 
 ### Roles
+
+Defined in: [config/auth/roles.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/auth/roles.ts#L40)
 
 #### Constructors
 
@@ -28,23 +22,25 @@ new Roles(): Roles;
 
 ```ts
 static scopes(role): readonly (
-| "auth:self" |
-| "clocks:manage" |
-| "clocks:read" |
-| "clocks:write" |
-| "reports:read" |
-| "teams:manage" |
-| "teams:read" |
-| "users:manage" |
-| "users:read" |
-| "users:write")[]; |
+  | "auth:self"
+  | "clocks:manage"
+  | "clocks:read"
+  | "clocks:write"
+  | "reports:read"
+  | "teams:manage"
+  | "teams:read"
+  | "users:manage"
+  | "users:read"
+  | "users:write")[];
 ```
+
+Defined in: [config/auth/roles.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/auth/roles.ts#L46)
 
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `role` | `"admin"` \| `"employee"` \| `"manager"` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `role` | `"admin"` \| `"employee"` \| `"manager"` | - |
 
 ###### Returns
 
@@ -60,6 +56,10 @@ readonly (
   \| `"users:read"`
   \| `"users:write"`)[]
 
+###### Route
+
+config.roles.scopes
+
 ## Variables
 
 ### ROLE\_SCOPES
@@ -67,3 +67,5 @@ readonly (
 ```ts
 const ROLE_SCOPES: Record<Role, readonly Scope[]>;
 ```
+
+Defined in: [config/auth/roles.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/auth/roles.ts#L4)

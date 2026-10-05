@@ -1,11 +1,3 @@
----
-title: "App()"
-description: "Reference for the `build()` function in `app` (route `app.build`)."
-route: "app.build"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>app.build</code></div>
-
 ## Functions
 
 ### build()
@@ -14,12 +6,46 @@ route: "app.build"
 function build(options?): Promise<FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProviderDefault>>;
 ```
 
+Defined in: [app.ts:146](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/app.ts#L146)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `options` | `FastifyServerOptions` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `options` | `FastifyServerOptions` | - |
 
 #### Returns
 
 `Promise`\<`FastifyInstance`\<`RawServerDefault`, `IncomingMessage`, `ServerResponse`\<`IncomingMessage`\>, `FastifyBaseLogger`, `FastifyTypeProviderDefault`\>\>
+
+#### Route
+
+app.build
+
+#### Throws
+
+***
+
+### configure()
+
+```ts
+function configure(options?): Promise<FastifyInstance<RawServerDefault, IncomingMessage, ServerResponse<IncomingMessage>, FastifyBaseLogger, FastifyTypeProviderDefault>>;
+```
+
+Defined in: [app.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/app.ts#L40)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `options` | `FastifyServerOptions` | - |
+
+#### Returns
+
+`Promise`\<`FastifyInstance`\<`RawServerDefault`, `IncomingMessage`, `ServerResponse`\<`IncomingMessage`\>, `FastifyBaseLogger`, `FastifyTypeProviderDefault`\>\>
+
+#### Route
+
+app.configure
+
+#### Throws

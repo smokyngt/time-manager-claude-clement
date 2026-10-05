@@ -4,11 +4,11 @@ import { Access } from '@/utils/auth/authz.js';
 
 import { Fake } from '../../../support/fake.js';
 import {
+  actorOf,
   ADMIN_ID,
   EMPLOYEE_ID,
   MANAGER_ID,
   OTHER_ID,
-  actorOf,
 } from '../../services/user/support.js';
 
 describe('Access.context', () => {

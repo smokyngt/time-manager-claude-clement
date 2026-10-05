@@ -1,17 +1,15 @@
----
-title: "Team"
-description: "Reference for the `lib/events/domains/team` module: variables."
----
-
 ## Variables
 
 ### TeamArchived
 
 ```ts
 const TeamArchived: EventFactory<{
+  actor: string;
   team_id: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L3)
 
 ***
 
@@ -19,9 +17,12 @@ const TeamArchived: EventFactory<{
 
 ```ts
 const TeamCreated: EventFactory<{
+  actor: string;
   team_id: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L5)
 
 ***
 
@@ -29,10 +30,13 @@ const TeamCreated: EventFactory<{
 
 ```ts
 const TeamDeleted: EventFactory<{
+  actor: string;
   deleted: number;
   failed: number;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L7)
 
 ***
 
@@ -40,10 +44,13 @@ const TeamDeleted: EventFactory<{
 
 ```ts
 const TeamListed: EventFactory<{
+  actor: string;
   count: number;
   total: number;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L9)
 
 ***
 
@@ -51,9 +58,12 @@ const TeamListed: EventFactory<{
 
 ```ts
 const TeamRestored: EventFactory<{
+  actor: string;
   team_id: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L11)
 
 ***
 
@@ -61,9 +71,12 @@ const TeamRestored: EventFactory<{
 
 ```ts
 const TeamRetrieved: EventFactory<{
+  actor: string;
   team_id: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L13)
 
 ***
 
@@ -71,7 +84,10 @@ const TeamRetrieved: EventFactory<{
 
 ```ts
 const TeamUpdated: EventFactory<{
+  actor: string;
   failed: number;
   updated: number;
 }>;
 ```
+
+Defined in: [lib/events/domains/team.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/team.ts#L15)

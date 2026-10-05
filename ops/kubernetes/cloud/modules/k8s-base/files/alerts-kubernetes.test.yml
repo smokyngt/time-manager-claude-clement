@@ -1,0 +1,189 @@
+rule_files:
+  - alerts-kubernetes.yml
+
+evaluation_interval: 1m
+
+tests:
+  - interval: 1m
+    name: node not ready
+    input_series:
+      - series: 'kube_node_status_condition{condition="Ready",status="true",node="n1"}'
+        values: "1 1 0x10"
+    alert_rule_test:
+      - eval_time: 4m
+        alertname: KubeNodeNotReady
+        exp_alerts: []
+      - eval_time: 10m
+        alertname: KubeNodeNotReady
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              condition: Ready
+              status: "true"
+              node: n1
+            exp_annotations:
+              summary: "Node n1 is not Ready"
+              description: "The kubelet of n1 has not reported Ready for 5 minutes; pods on it are rescheduled by the autohealer or stay Unknown."
+              runbook: "/internal/docs/operations/observability#kubenodenotready"
+
+  - interval: 1m
+    name: app pod crash looping is critical
+    input_series:
+      - series: 'kube_pod_container_status_waiting_reason{namespace="app",pod="api-1",container="api",reason="CrashLoopBackOff"}'
+        values: "1x10"
+      - series: 'kube_pod_container_status_waiting_reason{namespace="monitoring",pod="x-1",container="x",reason="CrashLoopBackOff"}'
+        values: "1x10"
+    alert_rule_test:
+      - eval_time: 7m
+        alertname: AppPodCrashLooping
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              namespace: app
+              pod: api-1
+              container: api
+              reason: CrashLoopBackOff
+            exp_annotations:
+              summary: "Application pod api-1 is in CrashLoopBackOff"
+              description: "A Time Manager workload keeps crashing. If the last rollout caused it, kubectl -n app rollout undo deployment/<name>; otherwise read the previous container logs."
+              runbook: "/internal/docs/operations/observability#apppodcrashlooping"
+      - eval_time: 7m
+        alertname: PodCrashLooping
+        exp_alerts: []
+      - eval_time: 11m
+        alertname: PodCrashLooping
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: app
+              pod: api-1
+              container: api
+              reason: CrashLoopBackOff
+            exp_annotations:
+              summary: "app/api-1 (api) is in CrashLoopBackOff"
+              description: "The container keeps crashing. kubectl -n app logs api-1 -c api --previous, then kubectl describe pod."
+              runbook: "/internal/docs/operations/observability#podcrashlooping"
+          - exp_labels:
+              severity: warning
+              namespace: monitoring
+              pod: x-1
+              container: x
+              reason: CrashLoopBackOff
+            exp_annotations:
+              summary: "monitoring/x-1 (x) is in CrashLoopBackOff"
+              description: "The container keeps crashing. kubectl -n monitoring logs x-1 -c x --previous, then kubectl describe pod."
+              runbook: "/internal/docs/operations/observability#podcrashlooping"
+
+  - interval: 1m
+    name: vault audit volume and generic volume rules do not overlap
+    input_series:
+      - series: 'kubelet_volume_stats_used_bytes{namespace="vault",persistentvolumeclaim="audit-vault-0"}'
+        values: "85x10"
+      - series: 'kubelet_volume_stats_capacity_bytes{namespace="vault",persistentvolumeclaim="audit-vault-0"}'
+        values: "100x10"
+      - series: 'kubelet_volume_stats_used_bytes{namespace="databases",persistentvolumeclaim="data-pg-1"}'
+        values: "85x10"
+      - series: 'kubelet_volume_stats_capacity_bytes{namespace="databases",persistentvolumeclaim="data-pg-1"}'
+        values: "100x10"
+    alert_rule_test:
+      - eval_time: 8m
+        alertname: VaultAuditVolumeFilling
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              namespace: vault
+              persistentvolumeclaim: audit-vault-0
+            exp_annotations:
+              summary: "Vault audit volume audit-vault-0 is more than 80% full"
+              description: "85% used. When the audit device cannot write, Vault refuses every request. Rotate or compress the audit file, or expand the volume."
+              runbook: "/internal/docs/operations/observability#vaultauditvolumefilling"
+      - eval_time: 12m
+        alertname: PersistentVolumeUsageHigh
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: databases
+              persistentvolumeclaim: data-pg-1
+            exp_annotations:
+              summary: "Volume databases/data-pg-1 is more than 80% full"
+              description: "85% used. Expand the PVC (storage class allowVolumeExpansion) before it fills; PostgreSQL stops writing on a full disk."
+              runbook: "/internal/docs/operations/observability#persistentvolumeusagehigh"
+
+  - interval: 1m
+    name: vault sealed
+    input_series:
+      - series: 'vault_core_unsealed{pod="vault-1",job="vault"}'
+        values: "1 1 0x5"
+      - series: 'vault_core_unsealed{pod="vault-0",job="vault"}'
+        values: "1x7"
+    alert_rule_test:
+      - eval_time: 6m
+        alertname: VaultSealed
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              pod: vault-1
+              job: vault
+            exp_annotations:
+              summary: "Vault pod vault-1 is sealed"
+              description: "Unseal it with the Shamir keys (kubectl -n vault exec -it <pod> -- vault operator unseal). Workloads block in the wait-vault init container until Vault answers."
+              runbook: "/internal/docs/operations/observability#vaultsealed"
+
+  - interval: 1m
+    name: certificate renewal overdue
+    input_series:
+      - series: 'certmanager_certificate_renewal_timestamp_seconds{namespace="monitoring",name="alloy-otlp"}'
+        values: "0x120"
+    alert_rule_test:
+      - eval_time: 100m
+        alertname: CertificateRenewalOverdue
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+              namespace: monitoring
+              name: alloy-otlp
+            exp_annotations:
+              summary: "Certificate monitoring/alloy-otlp should have been renewed over an hour ago"
+              description: "The renewal time passed 1h 40m 0s ago and the certificate was not replaced. Vault sealed or unreachable, an expired token role or a failing ACME challenge are the usual causes."
+              runbook: "/internal/docs/operations/observability#certificaterenewaloverdue"
+
+  - interval: 1m
+    name: cnpg backup failed after the last good one
+    input_series:
+      - series: 'cnpg_collector_last_failed_backup_timestamp{namespace="databases",pod="pg-1"}'
+        values: "0 0 2000x10"
+      - series: 'cnpg_collector_last_available_backup_timestamp{namespace="databases",pod="pg-1"}'
+        values: "1000x12"
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: CnpgBackupFailed
+        exp_alerts: []
+      - eval_time: 9m
+        alertname: CnpgBackupFailed
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              namespace: databases
+              pod: pg-1
+            exp_annotations:
+              summary: "The last CloudNativePG backup of pg-1 failed"
+              description: "kubectl -n databases get backup, then describe the failed Backup and check the barman object store credentials and bucket."
+              runbook: "/internal/docs/operations/observability#cnpgbackupfailed"
+
+  - interval: 1m
+    name: migration job failure
+    input_series:
+      - series: 'kube_job_status_failed{namespace="app",job_name="api-migrate-1-2-3"}'
+        values: "0 0 1x5"
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: MigrationJobFailed
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              namespace: app
+              job_name: api-migrate-1-2-3
+            exp_annotations:
+              summary: "Database migration Job api-migrate-1-2-3 failed"
+              description: "The api Deployment waits for this migration. Read the Job logs, fix the migration, delete the Job and apply again; never run it by hand against production without a verified backup."
+              runbook: "/internal/docs/operations/observability#migrationjobfailed"

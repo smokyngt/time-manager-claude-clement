@@ -1,0 +1,172 @@
+## Type Aliases
+
+### TransitClient
+
+```ts
+type TransitClient = object;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L3)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-read"></a> `read` | (`path`) => `Promise`\<[`TransitReply`](#transitreply) \| `undefined`\> | [services/encryption/envelope/transit.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L4) |
+| <a id="property-write"></a> `write` | (`path`, `data`) => `Promise`\<[`TransitReply`](#transitreply) \| `undefined`\> | [services/encryption/envelope/transit.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L5) |
+
+***
+
+### TransitReply
+
+```ts
+type TransitReply = object;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L8)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-data"></a> `data?` | `Record`\<`string`, `unknown`\> | [services/encryption/envelope/transit.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L8) |
+
+## Functions
+
+### ensureTransitKey()
+
+```ts
+function ensureTransitKey(client, name): Promise<boolean>;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L41)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `client` | [`TransitClient`](#transitclient) | - |
+| `name` | `string` | - |
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+#### Route
+
+services.encryption.envelope.transit.ensure
+
+***
+
+### rewrapKey()
+
+```ts
+function rewrapKey(
+   client, 
+   name, 
+   wrapped
+): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L94)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `client` | [`TransitClient`](#transitclient) | - |
+| `name` | `string` | - |
+| `wrapped` | `string` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.transit.rewrap
+
+***
+
+### rotateTransitKey()
+
+```ts
+function rotateTransitKey(client, name): Promise<void>;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L107)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `client` | [`TransitClient`](#transitclient) | - |
+| `name` | `string` | - |
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Route
+
+services.encryption.envelope.transit.rotate
+
+***
+
+### unwrapKey()
+
+```ts
+function unwrapKey(
+   client, 
+   name, 
+   wrapped
+): Promise<Buffer<ArrayBufferLike>>;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L77)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `client` | [`TransitClient`](#transitclient) | - |
+| `name` | `string` | - |
+| `wrapped` | `string` | - |
+
+#### Returns
+
+`Promise`\<`Buffer`\<`ArrayBufferLike`\>\>
+
+#### Route
+
+services.encryption.envelope.transit.unwrap
+
+***
+
+### wrapKey()
+
+```ts
+function wrapKey(
+   client, 
+   name, 
+   key
+): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/transit.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/transit.ts#L64)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `client` | [`TransitClient`](#transitclient) | - |
+| `name` | `string` | - |
+| `key` | `Buffer` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.transit.wrap

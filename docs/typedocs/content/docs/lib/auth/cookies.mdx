@@ -1,11 +1,8 @@
----
-title: "Cookies"
-description: "Reference for the `lib/auth/cookies` module: classes."
----
-
 ## Classes
 
 ### Cookies
+
+Defined in: [lib/auth/cookies.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L5)
 
 #### Constructors
 
@@ -21,61 +18,67 @@ new Cookies(): Cookies;
 
 #### Properties
 
-| Property | Modifier | Type | Default value |
-| ------ | ------ | ------ | ------ |
-| <a id="property-oauth"></a> `oauth` | `readonly` | `"tm_oauth"` | `'tm_oauth'` |
-| <a id="property-refresh"></a> `refresh` | `readonly` | `"tm_refresh"` | `'tm_refresh'` |
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-oauth"></a> `oauth` | `readonly` | `"tm_oauth"` | `'tm_oauth'` | [lib/auth/cookies.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L6) |
+| <a id="property-refresh"></a> `refresh` | `readonly` | `"tm_refresh"` | `'tm_refresh'` | [lib/auth/cookies.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L7) |
 
 #### Methods
 
 ##### clear()
 
-<div className="route-badge"><span className="route-label">Route</span><code>cookies.clear</code></div>
-
 ```ts
 static clear(reply): void;
 ```
 
+Defined in: [lib/auth/cookies.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L14)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `reply` | `FastifyReply` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `reply` | `FastifyReply` | - |
 
 ###### Returns
 
 `void`
 
-##### options()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>cookies.options</code></div>
+cookies.clear
+
+##### options()
 
 ```ts
 static options(maxAge, path?): object;
 ```
 
+Defined in: [lib/auth/cookies.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L24)
+
 ###### Parameters
 
-| Parameter | Type | Default value |
-| ------ | ------ | ------ |
-| `maxAge` | `number` | `undefined` |
-| `path` | `string` | `'/v1/auth'` |
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `maxAge` | `number` | `undefined` | - |
+| `path` | `string` | `'/v1/auth'` | - |
 
 ###### Returns
 
 `object`
 
-| Name | Type |
-| ------ | ------ |
-| `httpOnly` | `boolean` |
-| `maxAge` | `number` |
-| `path` | `string` |
-| `sameSite` | `"lax"` |
-| `secure` | `boolean` |
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `httpOnly` | `boolean` | [lib/auth/cookies.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L27) |
+| `maxAge` | `number` | [lib/auth/cookies.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L27) |
+| `path` | `string` | [lib/auth/cookies.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L27) |
+| `sameSite` | `"lax"` | [lib/auth/cookies.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L27) |
+| `secure` | `boolean` | [lib/auth/cookies.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L27) |
+
+###### Route
+
+cookies.options
 
 ##### set()
-
-<div className="route-badge"><span className="route-label">Route</span><code>cookies.set</code></div>
 
 ```ts
 static set(
@@ -85,14 +88,20 @@ static set(
 ): void;
 ```
 
+Defined in: [lib/auth/cookies.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/cookies.ts#L44)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `reply` | `FastifyReply` |
-| `token` | `string` |
-| `maxAge` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `reply` | `FastifyReply` | - |
+| `token` | `string` | - |
+| `maxAge` | `number` | - |
 
 ###### Returns
 
 `void`
+
+###### Route
+
+cookies.set

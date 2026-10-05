@@ -1,7 +1,9 @@
 {
   "title": "Health",
+  "description": "Liveness and readiness probes.",
   "pages": [
     "index",
-    "get-health"
+    "get-health",
+    "get-health-ready"
   ]
 }

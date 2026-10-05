@@ -1,0 +1,97 @@
+## Classes
+
+### VaultError
+
+Defined in: [config/vault/url.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L5)
+
+#### Extends
+
+- `Error`
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultError(message, options?): VaultError;
+```
+
+Defined in: [config/vault/url.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L8)
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `message` | `string` |
+| `options` | [`VaultErrorOptions`](#vaulterroroptions) |
+
+###### Returns
+
+[`VaultError`](#vaulterror)
+
+###### Overrides
+
+```ts
+Error.constructor
+```
+
+#### Properties
+
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-status"></a> `status` | `readonly` | `number` \| `undefined` | [config/vault/url.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L6) |
+
+***
+
+### VaultUrl
+
+Defined in: [config/vault/url.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L15)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultUrl(): VaultUrl;
+```
+
+###### Returns
+
+[`VaultUrl`](#vaulturl)
+
+#### Methods
+
+##### resolve()
+
+```ts
+static resolve(): string;
+```
+
+Defined in: [config/vault/url.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L21)
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.vault.url.resolve
+
+###### Throws
+
+## Type Aliases
+
+### VaultErrorOptions
+
+```ts
+type VaultErrorOptions = object;
+```
+
+Defined in: [config/vault/url.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L3)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cause"></a> `cause?` | `unknown` | [config/vault/url.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L3) |
+| <a id="property-status-1"></a> `status?` | `number` | [config/vault/url.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/url.ts#L3) |

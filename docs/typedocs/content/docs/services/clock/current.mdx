@@ -1,29 +1,25 @@
----
-title: "Current()"
-description: "Reference for the `current()` function in `services/clock/current` (route `clock.service.current`)."
-route: "clock.service.current"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>clock.service.current</code></div>
-
 ## Functions
 
 ### current()
 
 ```ts
-function current(params): Promise<CurrentResponse>;
+function current(params): Promise<CurrentClockResponse>;
 ```
+
+Defined in: [services/clock/current.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/clock/current.ts#L17)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`CurrentParams`](/docs/services/clock#currentparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`CurrentClockParams`](../clock.mdx#currentclockparams) | - |
 
 #### Returns
 
-`Promise`\<[`CurrentResponse`](/docs/services/clock#currentresponse)\>
+`Promise`\<[`CurrentClockResponse`](../clock.mdx#currentclockresponse)\>
+
+#### Route
+
+clock.service.current
 
 #### Throws
-
-- `ClockCurrentError`

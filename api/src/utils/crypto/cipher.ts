@@ -56,6 +56,7 @@ export class Cipher {
    * @route cipher.open
    * @param {string} sealed
    * @returns {string}
+   * @throws {CryptoDecryptFailedError}
    */
   public static open(sealed: string): string {
     try {

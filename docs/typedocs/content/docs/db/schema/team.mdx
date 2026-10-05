@@ -1,8 +1,3 @@
----
-title: "Team"
-description: "Reference for the `db/schema/team` module: type aliases, variables."
----
-
 ## Type Aliases
 
 ### TeamInsert
@@ -10,6 +5,8 @@ description: "Reference for the `db/schema/team` module: type aliases, variables
 ```ts
 type TeamInsert = typeof teams.$inferInsert;
 ```
+
+Defined in: [db/schema/team.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/team.ts#L49)
 
 ***
 
@@ -19,6 +16,8 @@ type TeamInsert = typeof teams.$inferInsert;
 type TeamMemberRow = typeof teamMembers.$inferSelect;
 ```
 
+Defined in: [db/schema/team.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/team.ts#L50)
+
 ***
 
 ### TeamRow
@@ -26,6 +25,8 @@ type TeamMemberRow = typeof teamMembers.$inferSelect;
 ```ts
 type TeamRow = typeof teams.$inferSelect;
 ```
+
+Defined in: [db/schema/team.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/team.ts#L51)
 
 ## Variables
 
@@ -36,6 +37,8 @@ const teamMembers: PgTableWithColumns<{
 }>;
 ```
 
+Defined in: [db/schema/team.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/team.ts#L30)
+
 ***
 
 ### teams
@@ -44,3 +47,5 @@ const teamMembers: PgTableWithColumns<{
 const teams: PgTableWithColumns<{
 }>;
 ```
+
+Defined in: [db/schema/team.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/team.ts#L5)

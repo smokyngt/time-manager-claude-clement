@@ -10,7 +10,7 @@ import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
- * @route team.member.controller.remove
+ * @route team_member.controller.remove
  * @param {FastifyRequest<{ Body: RemoveTeamMembersBody; Params: RemoveTeamMembersParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<RemoveTeamMembersResponse> }>} reply
  * @returns {Promise<void>}
@@ -25,7 +25,7 @@ export const remove = async (
     const userIds = [...new Set(req.body.user_ids)];
     if (userIds.length === 0 || userIds.length > RequestLimits.bulk) {
       throw ValidationError({
-        metadata: { field: 'user_ids', route: 'team.member.controller.remove' },
+        metadata: { field: 'user_ids', route: 'team_member.controller.remove' },
       });
     }
     const { team } = await teamMemberService.team({ id: req.params.id });
@@ -47,7 +47,7 @@ export const remove = async (
   } catch (error) {
     throw TeamMemberRemoveError({
       cause: error,
-      metadata: { route: 'team.member.controller.remove' },
+      metadata: { route: 'team_member.controller.remove' },
     });
   }
 };

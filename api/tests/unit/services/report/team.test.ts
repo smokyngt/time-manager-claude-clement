@@ -1,6 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { AppError } from '@/lib/errors/base/registry.js';
+import { Cipher } from '@/utils/crypto/cipher.js';
 
 import { FakeDb } from '../../../support/db.js';
 
@@ -39,8 +40,8 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
 
 const member = (userId: string, overrides: Record<string, unknown> = {}) => ({
   days_worked: 4,
-  first_name: 'Jane',
-  last_name: 'Doe',
+  first_name: Cipher.seal('Jane'),
+  last_name: Cipher.seal('Doe'),
   late_days: 1,
   user_id: userId,
   weekly_hours: 35,
@@ -77,7 +78,7 @@ describe('report.service.team', () => {
       worked_ms: 30 * HOUR,
     });
     expect(report.members).toHaveLength(2);
-    expect(report.members[0]).toEqual({
+    expect(report.members.find((item) => item.user_id === MEMBER_ID)).toEqual({
       days_worked: 4,
       first_name: 'Jane',
       last_name: 'Doe',
@@ -87,6 +88,33 @@ describe('report.service.team', () => {
       worked_ms: 30 * HOUR,
     });
     expect(report.series).toEqual([{ period_start: FROM, worked_ms: 30 * HOUR }]);
+  });
+
+  it('opens the sealed names and orders members by last name, first name then id', async () => {
+    fakeDb.enqueue(
+      [{ id: TEAM_ID }],
+      [
+        member('00000000-0000-4000-8000-0000000000d3', {
+          first_name: Cipher.seal('Zoe'),
+          last_name: Cipher.seal('Adams'),
+        }),
+        member('00000000-0000-4000-8000-0000000000d2', {
+          first_name: Cipher.seal('Ann'),
+          last_name: Cipher.seal('Zane'),
+        }),
+        member('00000000-0000-4000-8000-0000000000d1', {
+          first_name: Cipher.seal('Abe'),
+          last_name: Cipher.seal('Adams'),
+        }),
+      ],
+      [],
+    );
+    const { report } = await team(params());
+    expect(report.members.map((item) => `${item.first_name} ${item.last_name}`)).toEqual([
+      'Abe Adams',
+      'Zoe Adams',
+      'Ann Zane',
+    ]);
   });
 
   it('returns empty kpis for a team without members', async () => {

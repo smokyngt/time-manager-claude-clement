@@ -1,0 +1,60 @@
+## Functions
+
+### email()
+
+```ts
+function email(runtime, address): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/digest.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/digest.ts#L39)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `address` | `string` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.digest.email
+
+#### Throws
+
+***
+
+### hash()
+
+```ts
+function hash(
+   runtime, 
+   purpose, 
+   value, 
+   version?
+): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/digest.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/digest.ts#L18)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `purpose` | `string` | - |
+| `value` | `string` | - |
+| `version?` | `number` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.digest.hash
+
+#### Throws

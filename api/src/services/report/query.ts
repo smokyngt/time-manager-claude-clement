@@ -97,7 +97,7 @@ export class ReportQuery {
       join users u on u.id = c.user_id
       left join ud on ud.user_id = c.user_id
       group by c.user_id, u.first_name, u.last_name, c.weekly_hours
-      order by u.last_name, u.first_name, c.user_id
+      order by c.user_id
     `),
     );
 

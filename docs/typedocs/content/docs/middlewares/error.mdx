@@ -1,11 +1,8 @@
----
-title: "Error"
-description: "Reference for the `middlewares/error` module: classes."
----
-
 ## Classes
 
 ### ErrorHandler
+
+Defined in: [middlewares/error.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/middlewares/error.ts#L51)
 
 #### Constructors
 
@@ -23,25 +20,27 @@ new ErrorHandler(): ErrorHandler;
 
 ##### chain()
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.handler.chain</code></div>
-
 ```ts
 static chain(error): Record<string, unknown>[];
 ```
 
+Defined in: [middlewares/error.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/middlewares/error.ts#L57)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `error` | `unknown` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `error` | `unknown` | - |
 
 ###### Returns
 
 `Record`\<`string`, `unknown`\>[]
 
-##### handle()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.handler.handle</code></div>
+errors.handler.chain
+
+##### handle()
 
 ```ts
 static handle(
@@ -51,33 +50,43 @@ static handle(
 ): Promise<void>;
 ```
 
+Defined in: [middlewares/error.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/middlewares/error.ts#L80)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `error` | `unknown` |
-| `req` | `FastifyRequest` |
-| `reply` | `FastifyReply` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `error` | `unknown` | - |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply` | - |
 
 ###### Returns
 
 `Promise`\<`void`\>
 
-##### missing()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.handler.missing</code></div>
+errors.handler.handle
+
+##### missing()
 
 ```ts
 static missing(req, reply): Promise<void>;
 ```
 
+Defined in: [middlewares/error.ts:120](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/middlewares/error.ts#L120)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `req` | `FastifyRequest` |
-| `reply` | `FastifyReply` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply` | - |
 
 ###### Returns
 
 `Promise`\<`void`\>
+
+###### Route
+
+errors.handler.missing

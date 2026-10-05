@@ -10,14 +10,14 @@ import { clocks, teamMembers, teams, users } from './schema/index.js';
 
 import type { ClockSource } from '@/types/entities/index.js';
 
-export interface ClockSeed {
+export type ClockSeed = {
   clocked_in_at: number;
   clocked_out_at: null | number;
   note: null | string;
   source: ClockSource;
-}
+};
 
-export interface ClocksParams {
+export type ClocksParams = {
   index: number;
   now: number;
   open: boolean;
@@ -26,31 +26,31 @@ export interface ClocksParams {
   target: number;
   timezone: string;
   weeks: number;
-}
+};
 
-export interface DemoCounts {
+export type DemoCounts = {
   clocks: number;
   employees: number;
   managers: number;
   memberships: number;
   skipped: boolean;
   teams: number;
-}
+};
 
-export interface LocalDate {
+export type LocalDate = {
   day: number;
   month: number;
   year: number;
-}
+};
 
-export interface TeamSeed {
+export type TeamSeed = {
   manager: number;
   members: number[];
   name: string;
   target: number;
   work_end: string;
   work_start: string;
-}
+};
 
 export class Prng {
   private state: number;

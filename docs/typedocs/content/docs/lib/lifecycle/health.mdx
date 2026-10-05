@@ -1,14 +1,8 @@
----
-title: "Health"
-description: "Reference for the `lib/lifecycle/health` module: classes, type aliases."
-route: "health.check"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>health.check</code></div>
-
 ## Classes
 
 ### Health
+
+Defined in: [lib/lifecycle/health.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/health.ts#L3)
 
 #### Constructors
 
@@ -30,16 +24,22 @@ new Health(): Health;
 static check(probe, timeout): Promise<boolean>;
 ```
 
+Defined in: [lib/lifecycle/health.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/health.ts#L10)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `probe` | [`Probe`](#probe) |
-| `timeout` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `probe` | [`Probe`](#probe) | - |
+| `timeout` | `number` | - |
 
 ###### Returns
 
 `Promise`\<`boolean`\>
+
+###### Route
+
+health.check
 
 ## Type Aliases
 
@@ -48,6 +48,8 @@ static check(probe, timeout): Promise<boolean>;
 ```ts
 type Probe = () => Promise<unknown>;
 ```
+
+Defined in: [lib/lifecycle/health.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/lifecycle/health.ts#L1)
 
 #### Returns
 

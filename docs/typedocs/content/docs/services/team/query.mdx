@@ -1,11 +1,8 @@
----
-title: "Query"
-description: "Reference for the `services/team/query` module: classes."
----
-
 ## Classes
 
 ### TeamQuery
+
+Defined in: [services/team/query.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/query.ts#L8)
 
 #### Constructors
 
@@ -23,54 +20,66 @@ new TeamQuery(): TeamQuery;
 
 ##### count()
 
-<div className="route-badge"><span className="route-label">Route</span><code>team.query.count</code></div>
-
 ```ts
 static count(id): Promise<number>;
 ```
 
+Defined in: [services/team/query.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/query.ts#L14)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `id` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`number`\>
 
-##### counts()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>team.query.counts</code></div>
+team.query.count
+
+##### counts()
 
 ```ts
 static counts(ids): Promise<Map<string, number>>;
 ```
 
+Defined in: [services/team/query.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/query.ts#L28)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `ids` | `string`[] |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `ids` | `string`[] | - |
 
 ###### Returns
 
 `Promise`\<`Map`\<`string`, `number`\>\>
 
-##### member()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>team.query.member</code></div>
+team.query.counts
+
+##### member()
 
 ```ts
 static member(userId): SQL;
 ```
 
+Defined in: [services/team/query.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/query.ts#L44)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `userId` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `userId` | `string` | - |
 
 ###### Returns
 
 `SQL`
+
+###### Route
+
+team.query.member

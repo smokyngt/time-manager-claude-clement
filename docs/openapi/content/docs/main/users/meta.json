@@ -1,6 +1,6 @@
 {
   "title": "Users",
-  "description": "User accounts.",
+  "description": "Create and manage user accounts and roles.",
   "pages": [
     "index",
     "post-users-new",

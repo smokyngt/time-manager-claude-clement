@@ -1,29 +1,25 @@
----
-title: "Archive()"
-description: "Reference for the `archive()` function in `services/team/archive` (route `team.service.archive`)."
-route: "team.service.archive"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.service.archive</code></div>
-
 ## Functions
 
 ### archive()
 
 ```ts
-function archive(params): Promise<ArchiveResponse>;
+function archive(params): Promise<ArchiveTeamResponse>;
 ```
+
+Defined in: [services/team/archive.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/archive.ts#L20)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`ArchiveParams`](/docs/services/team#archiveparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ArchiveTeamParams`](../team.mdx#archiveteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`ArchiveResponse`](/docs/services/team#archiveresponse)\>
+`Promise`\<[`ArchiveTeamResponse`](../team.mdx#archiveteamresponse)\>
+
+#### Route
+
+team.service.archive
 
 #### Throws
-
-- `TeamArchiveError`

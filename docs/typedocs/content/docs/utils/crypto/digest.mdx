@@ -1,11 +1,8 @@
----
-title: "Digest"
-description: "Reference for the `utils/crypto/digest` module: classes."
----
-
 ## Classes
 
 ### Digest
+
+Defined in: [utils/crypto/digest.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/crypto/digest.ts#L7)
 
 #### Constructors
 
@@ -23,37 +20,45 @@ new Digest(): Digest;
 
 ##### email()
 
-<div className="route-badge"><span className="route-label">Route</span><code>digest.email</code></div>
-
 ```ts
 static email(email): string;
 ```
 
+Defined in: [utils/crypto/digest.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/crypto/digest.ts#L13)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `email` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### hash()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>digest.hash</code></div>
+digest.email
+
+##### hash()
 
 ```ts
 static hash(value, purpose): string;
 ```
 
+Defined in: [utils/crypto/digest.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/crypto/digest.ts#L23)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `value` | `string` |
-| `purpose` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `string` | - |
+| `purpose` | `string` | - |
 
 ###### Returns
 
 `string`
+
+###### Route
+
+digest.hash

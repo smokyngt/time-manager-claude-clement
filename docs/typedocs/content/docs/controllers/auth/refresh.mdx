@@ -1,11 +1,3 @@
----
-title: "Refresh()"
-description: "Reference for the `refresh()` function in `controllers/auth/refresh` (route `auth.controller.refresh`)."
-route: "auth.controller.refresh"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>auth.controller.refresh</code></div>
-
 ## Functions
 
 ### refresh()
@@ -14,17 +6,21 @@ route: "auth.controller.refresh"
 function refresh(req, reply): Promise<void>;
 ```
 
+Defined in: [controllers/auth/refresh.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/auth/refresh.ts#L19)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `req` | `FastifyRequest` |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`SessionResponse`](/docs/controllers/auth#sessionresponse)\>; \}\> |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest` | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/misc/reply.mdx#replyenvelope)\<[`AuthSessionResponse`](../auth.mdx#authsessionresponse)\>; \}\> | - |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Throws
+#### Route
 
-- `AuthRefreshError`
+auth.controller.refresh
+
+#### Throws

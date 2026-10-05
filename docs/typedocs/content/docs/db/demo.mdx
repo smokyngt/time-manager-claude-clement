@@ -1,11 +1,8 @@
----
-title: "Demo"
-description: "Reference for the `db/demo` module: classes, interfaces."
----
-
 ## Classes
 
 ### Demo
+
+Defined in: [db/demo.ts:170](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L170)
 
 #### Constructors
 
@@ -21,38 +18,40 @@ new Demo(): Demo;
 
 #### Properties
 
-| Property | Modifier | Type | Default value |
-| ------ | ------ | ------ | ------ |
-| <a id="property-employees"></a> `EMPLOYEES` | `readonly` | readonly `string`[] | `undefined` |
-| <a id="property-managers"></a> `MANAGERS` | `readonly` | readonly `string`[] | `undefined` |
-| <a id="property-marker"></a> `MARKER` | `readonly` | `"manager.alpha@timemanager.dev"` | `'manager.alpha@timemanager.dev'` |
-| <a id="property-open-1"></a> `OPEN` | `readonly` | readonly `number`[] | `undefined` |
-| <a id="property-seed-1"></a> `SEED` | `readonly` | `20261005` | `20_261_005` |
-| <a id="property-teams"></a> `TEAMS` | `readonly` | readonly [`TeamSeed`](#teamseed)[] | `undefined` |
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-employees"></a> `EMPLOYEES` | `readonly` | readonly `string`[] | `undefined` | [db/demo.ts:171](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L171) |
+| <a id="property-managers"></a> `MANAGERS` | `readonly` | readonly `string`[] | `undefined` | [db/demo.ts:186](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L186) |
+| <a id="property-marker"></a> `MARKER` | `readonly` | `"manager.alpha@timemanager.dev"` | `'manager.alpha@timemanager.dev'` | [db/demo.ts:188](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L188) |
+| <a id="property-open-1"></a> `OPEN` | `readonly` | readonly `number`[] | `undefined` | [db/demo.ts:190](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L190) |
+| <a id="property-seed-1"></a> `SEED` | `readonly` | `20261005` | `20_261_005` | [db/demo.ts:192](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L192) |
+| <a id="property-teams"></a> `TEAMS` | `readonly` | readonly [`TeamSeed`](#teamseed)[] | `undefined` | [db/demo.ts:194](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L194) |
 
 #### Methods
 
 ##### clocks()
 
-<div className="route-badge"><span className="route-label">Route</span><code>demo.clocks</code></div>
-
 ```ts
 static clocks(params): ClockSeed[];
 ```
 
+Defined in: [db/demo.ts:226](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L226)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`ClocksParams`](#clocksparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ClocksParams`](#clocksparams) | - |
 
 ###### Returns
 
 [`ClockSeed`](#clockseed)[]
 
-##### days()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>demo.days</code></div>
+demo.clocks
+
+##### days()
 
 ```ts
 static days(
@@ -62,92 +61,153 @@ static days(
 ): LocalDate[];
 ```
 
+Defined in: [db/demo.ts:288](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L288)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `now` | `number` |
-| `timezone` | `string` |
-| `weeks` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `now` | `number` | - |
+| `timezone` | `string` | - |
+| `weeks` | `number` | - |
 
 ###### Returns
 
 [`LocalDate`](#localdate)[]
 
-##### email()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>demo.email</code></div>
+demo.days
+
+##### email()
 
 ```ts
 static email(name): string;
 ```
 
+Defined in: [db/demo.ts:311](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L311)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `name` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### minutes()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>demo.minutes</code></div>
+demo.email
+
+##### minutes()
 
 ```ts
 static minutes(time): number;
 ```
 
+Defined in: [db/demo.ts:320](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L320)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `time` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `time` | `string` | - |
 
 ###### Returns
 
 `number`
 
-##### profile()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>demo.profile</code></div>
+demo.minutes
+
+##### person()
 
 ```ts
-static profile(index): object;
+static person(
+   name, 
+   role, 
+   passwordHash
+): object;
 ```
+
+Defined in: [db/demo.ts:333](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L333)
 
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `index` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `role` | `"employee"` \| `"manager"` | - |
+| `passwordHash` | `string` | - |
 
 ###### Returns
 
 `object`
 
-| Name | Type |
-| ------ | ------ |
-| `start` | `string` |
-| `target` | `number` |
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `email` | `string` | [db/demo.ts:338](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L338) |
+| `email_hash` | `string` | [db/demo.ts:339](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L339) |
+| `first_name` | `string` | [db/demo.ts:340](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L340) |
+| `last_name` | `string` | [db/demo.ts:341](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L341) |
+| `password_hash` | `string` | [db/demo.ts:342](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L342) |
+| `role` | `"employee"` \| `"manager"` | [db/demo.ts:343](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L343) |
+
+###### Route
+
+demo.person
+
+##### profile()
+
+```ts
+static profile(index): object;
+```
+
+Defined in: [db/demo.ts:362](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L362)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `index` | `number` | - |
+
+###### Returns
+
+`object`
+
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `start` | `string` | [db/demo.ts:362](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L362) |
+| `target` | `number` | [db/demo.ts:362](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L362) |
+
+###### Route
+
+demo.profile
 
 ##### run()
-
-<div className="route-badge"><span className="route-label">Route</span><code>demo.run</code></div>
 
 ```ts
 static run(): Promise<DemoCounts>;
 ```
 
+Defined in: [db/demo.ts:376](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L376)
+
 ###### Returns
 
 `Promise`\<[`DemoCounts`](#democounts)\>
 
+###### Route
+
+demo.run
+
 ***
 
 ### Prng
+
+Defined in: [db/demo.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L55)
 
 #### Constructors
 
@@ -156,6 +216,8 @@ static run(): Promise<DemoCounts>;
 ```ts
 new Prng(seed): Prng;
 ```
+
+Defined in: [db/demo.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L58)
 
 ###### Parameters
 
@@ -171,56 +233,70 @@ new Prng(seed): Prng;
 
 ##### chance()
 
-<div className="route-badge"><span className="route-label">Route</span><code>prng.chance</code></div>
-
 ```ts
 chance(probability): boolean;
 ```
 
+Defined in: [db/demo.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L67)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `probability` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `probability` | `number` | - |
 
 ###### Returns
 
 `boolean`
 
-##### int()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>prng.int</code></div>
+prng.chance
+
+##### int()
 
 ```ts
 int(min, max): number;
 ```
 
+Defined in: [db/demo.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L77)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `min` | `number` |
-| `max` | `number` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `min` | `number` | - |
+| `max` | `number` | - |
 
 ###### Returns
 
 `number`
 
-##### next()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>prng.next</code></div>
+prng.int
+
+##### next()
 
 ```ts
 next(): number;
 ```
 
+Defined in: [db/demo.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L85)
+
 ###### Returns
 
 `number`
 
+###### Route
+
+prng.next
+
 ***
 
 ### Zone
+
+Defined in: [db/demo.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L95)
 
 #### Constructors
 
@@ -238,26 +314,28 @@ new Zone(): Zone;
 
 ##### date()
 
-<div className="route-badge"><span className="route-label">Route</span><code>zone.date</code></div>
-
 ```ts
 static date(timestamp, timezone): LocalDate;
 ```
 
+Defined in: [db/demo.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L102)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `timestamp` | `number` |
-| `timezone` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `timestamp` | `number` | - |
+| `timezone` | `string` | - |
 
 ###### Returns
 
 [`LocalDate`](#localdate)
 
-##### epoch()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>zone.epoch</code></div>
+zone.date
+
+##### epoch()
 
 ```ts
 static epoch(
@@ -267,105 +345,145 @@ static epoch(
 ): number;
 ```
 
+Defined in: [db/demo.ts:115](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L115)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `date` | [`LocalDate`](#localdate) |
-| `minutes` | `number` |
-| `timezone` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `date` | [`LocalDate`](#localdate) | - |
+| `minutes` | `number` | - |
+| `timezone` | `string` | - |
 
 ###### Returns
 
 `number`
 
-##### offset()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>zone.offset</code></div>
+zone.epoch
+
+##### offset()
 
 ```ts
 static offset(timestamp, timezone): number;
 ```
 
+Defined in: [db/demo.ts:128](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L128)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `timestamp` | `number` |
-| `timezone` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `timestamp` | `number` | - |
+| `timezone` | `string` | - |
 
 ###### Returns
 
 `number`
 
-## Interfaces
+###### Route
+
+zone.offset
+
+## Type Aliases
 
 ### ClockSeed
 
+```ts
+type ClockSeed = object;
+```
+
+Defined in: [db/demo.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L13)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` |
-| <a id="property-clocked_out_at"></a> `clocked_out_at` | `number` \| `null` |
-| <a id="property-note"></a> `note` | `string` \| `null` |
-| <a id="property-source"></a> `source` | `"clock"` \| `"manual"` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` | [db/demo.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L14) |
+| <a id="property-clocked_out_at"></a> `clocked_out_at` | `null` \| `number` | [db/demo.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L15) |
+| <a id="property-note"></a> `note` | `null` \| `string` | [db/demo.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L16) |
+| <a id="property-source"></a> `source` | [`ClockSource`](../types/entities/clock.mdx#clocksource) | [db/demo.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L17) |
 
 ***
 
 ### ClocksParams
 
+```ts
+type ClocksParams = object;
+```
+
+Defined in: [db/demo.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L20)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-index"></a> `index` | `number` |
-| <a id="property-now"></a> `now` | `number` |
-| <a id="property-open"></a> `open` | `boolean` |
-| <a id="property-seed"></a> `seed` | `number` |
-| <a id="property-start"></a> `start` | `string` |
-| <a id="property-target"></a> `target` | `number` |
-| <a id="property-timezone"></a> `timezone` | `string` |
-| <a id="property-weeks"></a> `weeks` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-index"></a> `index` | `number` | [db/demo.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L21) |
+| <a id="property-now"></a> `now` | `number` | [db/demo.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L22) |
+| <a id="property-open"></a> `open` | `boolean` | [db/demo.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L23) |
+| <a id="property-seed"></a> `seed` | `number` | [db/demo.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L24) |
+| <a id="property-start"></a> `start` | `string` | [db/demo.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L25) |
+| <a id="property-target"></a> `target` | `number` | [db/demo.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L26) |
+| <a id="property-timezone"></a> `timezone` | `string` | [db/demo.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L27) |
+| <a id="property-weeks"></a> `weeks` | `number` | [db/demo.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L28) |
 
 ***
 
 ### DemoCounts
 
+```ts
+type DemoCounts = object;
+```
+
+Defined in: [db/demo.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L31)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-clocks"></a> `clocks` | `number` |
-| <a id="property-employees-1"></a> `employees` | `number` |
-| <a id="property-managers-1"></a> `managers` | `number` |
-| <a id="property-memberships"></a> `memberships` | `number` |
-| <a id="property-skipped"></a> `skipped` | `boolean` |
-| <a id="property-teams-1"></a> `teams` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clocks"></a> `clocks` | `number` | [db/demo.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L32) |
+| <a id="property-employees-1"></a> `employees` | `number` | [db/demo.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L33) |
+| <a id="property-managers-1"></a> `managers` | `number` | [db/demo.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L34) |
+| <a id="property-memberships"></a> `memberships` | `number` | [db/demo.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L35) |
+| <a id="property-skipped"></a> `skipped` | `boolean` | [db/demo.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L36) |
+| <a id="property-teams-1"></a> `teams` | `number` | [db/demo.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L37) |
 
 ***
 
 ### LocalDate
 
+```ts
+type LocalDate = object;
+```
+
+Defined in: [db/demo.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L40)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-day"></a> `day` | `number` |
-| <a id="property-month"></a> `month` | `number` |
-| <a id="property-year"></a> `year` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-day"></a> `day` | `number` | [db/demo.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L41) |
+| <a id="property-month"></a> `month` | `number` | [db/demo.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L42) |
+| <a id="property-year"></a> `year` | `number` | [db/demo.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L43) |
 
 ***
 
 ### TeamSeed
 
+```ts
+type TeamSeed = object;
+```
+
+Defined in: [db/demo.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L46)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-manager"></a> `manager` | `number` |
-| <a id="property-members"></a> `members` | `number`[] |
-| <a id="property-name"></a> `name` | `string` |
-| <a id="property-target-1"></a> `target` | `number` |
-| <a id="property-work_end"></a> `work_end` | `string` |
-| <a id="property-work_start"></a> `work_start` | `string` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-manager"></a> `manager` | `number` | [db/demo.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L47) |
+| <a id="property-members"></a> `members` | `number`[] | [db/demo.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L48) |
+| <a id="property-name"></a> `name` | `string` | [db/demo.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L49) |
+| <a id="property-target-1"></a> `target` | `number` | [db/demo.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L50) |
+| <a id="property-work_end"></a> `work_end` | `string` | [db/demo.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L51) |
+| <a id="property-work_start"></a> `work_start` | `string` | [db/demo.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/demo.ts#L52) |

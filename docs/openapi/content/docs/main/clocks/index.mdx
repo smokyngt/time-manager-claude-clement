@@ -1,0 +1,31 @@
+---
+title: "clocks"
+description: "Clock in, clock out and manage working time entries."
+---
+
+<Cards>
+  <Card title="Clock in" href="/clocks/post-clocks-in">
+    Opens a clock for the caller at the current time. Fails with a conflict when the caller is already clocked in.
+  </Card>
+  <Card title="Clock out" href="/clocks/post-clocks-out">
+    Closes the open clock of the caller at the current time. Fails with a conflict when the caller is not clocked in, and with an invalid clock error when the open clock is older than 24 hours.
+  </Card>
+  <Card title="Retrieve the current clock" href="/clocks/get-clocks-current">
+    Returns the open clock of the caller, or null when the caller is not clocked in.
+  </Card>
+  <Card title="Create a clock" href="/clocks/post-clocks-new">
+    Manual entry of a closed clock, recorded with the manual source. Managers can only create clocks for the users they manage. The clock must not overlap another clock of the same user.
+  </Card>
+  <Card title="List clocks" href="/clocks/post-clocks-list">
+    Cursor paginated list ordered by creation time. Employees only see their own clocks, managers see their own and those of the users they manage, admins see all.
+  </Card>
+  <Card title="Update clocks in bulk" href="/clocks/patch-clocks">
+    Applies the same data to every id. Authorization is checked for every item before any write. A corrected clock must stay valid and must not overlap another clock of the same user.
+  </Card>
+  <Card title="Delete clocks in bulk" href="/clocks/delete-clocks">
+    Permanently deletes clocks. Authorization is checked for every item before any deletion.
+  </Card>
+  <Card title="Retrieve a clock" href="/clocks/get-clocks-by-id">
+    Readable by the owner, the manager of the owner and admins. Clocks outside the caller scope are reported as not found.
+  </Card>
+</Cards>

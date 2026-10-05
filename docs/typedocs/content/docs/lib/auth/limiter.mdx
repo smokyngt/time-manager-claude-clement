@@ -1,11 +1,8 @@
----
-title: "Limiter"
-description: "Reference for the `lib/auth/limiter` module: classes."
----
-
 ## Classes
 
 ### Limiter
+
+Defined in: [lib/auth/limiter.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L11)
 
 #### Constructors
 
@@ -23,84 +20,128 @@ new Limiter(): Limiter;
 
 ##### blocked()
 
-<div className="route-badge"><span className="route-label">Route</span><code>limiter.blocked</code></div>
-
 ```ts
 static blocked(email): boolean;
 ```
 
+Defined in: [lib/auth/limiter.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L19)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `email` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
 
 ###### Returns
 
 `boolean`
 
-##### clear()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>limiter.clear</code></div>
+limiter.blocked
+
+##### clear()
 
 ```ts
 static clear(email): void;
 ```
 
+Defined in: [lib/auth/limiter.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L37)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `email` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
 
 ###### Returns
 
 `void`
 
-##### fail()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>limiter.fail</code></div>
+limiter.clear
+
+##### fail()
 
 ```ts
 static fail(email): void;
 ```
 
+Defined in: [lib/auth/limiter.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L47)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `email` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
 
 ###### Returns
 
 `void`
 
-##### key()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>limiter.key</code></div>
+limiter.fail
+
+###### Throws
+
+##### key()
 
 ```ts
 static key(email): string;
 ```
 
+Defined in: [lib/auth/limiter.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L66)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `email` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### reset()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>limiter.reset</code></div>
+limiter.key
+
+##### reset()
 
 ```ts
 static reset(): void;
 ```
 
+Defined in: [lib/auth/limiter.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L74)
+
 ###### Returns
 
 `void`
+
+###### Route
+
+limiter.reset
+
+##### retry()
+
+```ts
+static retry(email): number;
+```
+
+Defined in: [lib/auth/limiter.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/limiter.ts#L83)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `email` | `string` | - |
+
+###### Returns
+
+`number`
+
+###### Route
+
+limiter.retry

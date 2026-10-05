@@ -1,10 +1,14 @@
 {
   "title": "Teams",
-  "description": "Teams and their members.",
+  "description": "Create and manage teams and their working schedule.",
   "pages": [
     "index",
-    "post-teams-by-id-members-add",
-    "post-teams-by-id-members-list",
-    "post-teams-by-id-members-remove"
+    "post-teams-new",
+    "post-teams-list",
+    "patch-teams",
+    "delete-teams",
+    "get-teams-by-id",
+    "post-teams-by-id-archive",
+    "post-teams-by-id-restore"
   ]
 }

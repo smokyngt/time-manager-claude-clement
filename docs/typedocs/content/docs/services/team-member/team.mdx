@@ -1,29 +1,25 @@
----
-title: "Team()"
-description: "Reference for the `team()` function in `services/team-member/team` (route `team.member.service.team`)."
-route: "team.member.service.team"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.team</code></div>
-
 ## Functions
 
 ### team()
 
 ```ts
-function team(params): Promise<TeamResponse>;
+function team(params): Promise<TeamMemberTeamResponse>;
 ```
+
+Defined in: [services/team-member/team.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team-member/team.ts#L18)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`TeamParams`](/docs/services/team-member#teamparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`TeamMemberTeamParams`](../team-member.mdx#teammemberteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`TeamResponse`](/docs/services/team-member#teamresponse)\>
+`Promise`\<[`TeamMemberTeamResponse`](../team-member.mdx#teammemberteamresponse)\>
+
+#### Route
+
+team_member.service.team
 
 #### Throws
-
-- `TeamMemberTeamNotFoundError | TeamMemberListError`

@@ -13,7 +13,7 @@ import type { RemoveTeamMembersParams, RemoveTeamMembersResponse } from './index
 import type { BulkFailure } from '@/types/entities/index.js';
 
 /**
- * @route team.member.service.remove
+ * @route team_member.service.remove
  * @param {RemoveTeamMembersParams} params
  * @returns {Promise<RemoveTeamMembersResponse>}
  * @throws {TeamMemberRemoveError}
@@ -41,7 +41,7 @@ export const remove = async (params: RemoveTeamMembersParams): Promise<RemoveTea
   } catch (error) {
     throw TeamMemberRemoveError({
       cause: error,
-      metadata: { route: 'team.member.service.remove' },
+      metadata: { route: 'team_member.service.remove' },
     });
   }
 };

@@ -1,29 +1,25 @@
----
-title: "User()"
-description: "Reference for the `user()` function in `services/report/user` (route `report.service.user`)."
-route: "report.service.user"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>report.service.user</code></div>
-
 ## Functions
 
 ### user()
 
 ```ts
-function user(params): Promise<UserResponse>;
+function user(params): Promise<ReportUserResponse>;
 ```
+
+Defined in: [services/report/user.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/report/user.ts#L23)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`UserParams`](/docs/services/report#userparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ReportUserParams`](../report.mdx#reportuserparams) | - |
 
 #### Returns
 
-`Promise`\<[`UserResponse`](/docs/services/report#userresponse)\>
+`Promise`\<[`ReportUserResponse`](../report.mdx#reportuserresponse)\>
+
+#### Route
+
+report.service.user
 
 #### Throws
-
-- `ReportInvalidError | ReportUserError | ReportUserNotFoundError`

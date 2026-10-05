@@ -1,29 +1,25 @@
----
-title: "List()"
-description: "Reference for the `list()` function in `services/team-member/list` (route `team.member.service.list`)."
-route: "team.member.service.list"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.list</code></div>
-
 ## Functions
 
 ### list()
 
 ```ts
-function list(params): Promise<ListResponse>;
+function list(params): Promise<ListTeamMembersResponse>;
 ```
+
+Defined in: [services/team-member/list.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team-member/list.ts#L17)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`ListParams`](/docs/services/team-member#listparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ListTeamMembersParams`](../team-member.mdx#listteammembersparams) | - |
 
 #### Returns
 
-`Promise`\<[`ListResponse`](/docs/services/team-member#listresponse)\>
+`Promise`\<[`ListTeamMembersResponse`](../team-member.mdx#listteammembersresponse)\>
+
+#### Route
+
+team_member.service.list
 
 #### Throws
-
-- `TeamMemberListError`

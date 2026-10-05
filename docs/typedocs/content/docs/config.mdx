@@ -1,0 +1,186 @@
+## Classes
+
+### Config
+
+Defined in: [config/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L14)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Config(): Config;
+```
+
+###### Returns
+
+[`Config`](#config)
+
+#### Properties
+
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-store"></a> `store` | `readonly` | [`ConfigStore`](config/store.mdx#configstore) | `store` | [config/index.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L15) |
+
+#### Methods
+
+##### address()
+
+```ts
+static address(entry): boolean;
+```
+
+Defined in: [config/index.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L22)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `entry` | `string` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.address
+
+##### production()
+
+```ts
+static production(): boolean;
+```
+
+Defined in: [config/index.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L35)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.production
+
+##### proxy()
+
+```ts
+static proxy(): boolean | string[] | TrustProxy;
+```
+
+Defined in: [config/index.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L43)
+
+###### Returns
+
+`boolean` \| `string`[] \| [`TrustProxy`](#trustproxy)
+
+###### Route
+
+config.proxy
+
+##### redirect()
+
+```ts
+static redirect(): string;
+```
+
+Defined in: [config/index.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L62)
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.redirect
+
+##### secure()
+
+```ts
+static secure(value): boolean;
+```
+
+Defined in: [config/index.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L74)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `string` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.secure
+
+##### tenant()
+
+```ts
+static tenant(): string | undefined;
+```
+
+Defined in: [config/index.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L87)
+
+###### Returns
+
+`string` \| `undefined`
+
+###### Route
+
+config.tenant
+
+##### validate()
+
+```ts
+static validate(): string[];
+```
+
+Defined in: [config/index.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L97)
+
+###### Returns
+
+`string`[]
+
+###### Route
+
+config.validate
+
+##### web()
+
+```ts
+static web(): string;
+```
+
+Defined in: [config/index.ts:152](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L152)
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.web
+
+## Type Aliases
+
+### TrustProxy
+
+```ts
+type TrustProxy = (address, hop) => boolean;
+```
+
+Defined in: [config/index.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/index.ts#L8)
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `address` | `string` |
+| `hop` | `number` |
+
+#### Returns
+
+`boolean`

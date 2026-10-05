@@ -1,6 +1,6 @@
 {
   "title": "Auth",
-  "description": "Sign in, sessions and Microsoft SSO.",
+  "description": "Sign in, token refresh, sign out and Microsoft single sign-on.",
   "pages": [
     "index",
     "post-auth-login",

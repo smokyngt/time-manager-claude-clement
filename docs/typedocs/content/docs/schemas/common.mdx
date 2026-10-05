@@ -1,11 +1,8 @@
----
-title: "Common"
-description: "Reference for the `schemas/common` module: classes, type aliases, variables, functions."
----
-
 ## Classes
 
 ### RequestLimits
+
+Defined in: [schemas/common.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L3)
 
 #### Constructors
 
@@ -21,115 +18,30 @@ new RequestLimits(): RequestLimits;
 
 #### Properties
 
-| Property | Modifier | Type | Default value |
-| ------ | ------ | ------ | ------ |
-| <a id="property-bulk"></a> `bulk` | `readonly` | `100` | `100` |
-| <a id="property-cursor"></a> `cursor` | `readonly` | `200` | `200` |
-| <a id="property-limit"></a> `limit` | `readonly` | `100` | `100` |
-| <a id="property-limitdefault"></a> `limitDefault` | `readonly` | `25` | `25` |
-
-## Type Aliases
-
-### JsonSchema
-
-```ts
-type JsonSchema = Record<string, unknown>;
-```
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-bulk"></a> `bulk` | `readonly` | `100` | `100` | [schemas/common.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L4) |
+| <a id="property-cursor"></a> `cursor` | `readonly` | `200` | `200` | [schemas/common.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L5) |
+| <a id="property-limit"></a> `limit` | `readonly` | `100` | `100` | [schemas/common.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L6) |
+| <a id="property-limitdefault"></a> `limitDefault` | `readonly` | `25` | `25` | [schemas/common.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L7) |
 
 ## Variables
 
-### BulkFailureSchema
+### DateBoundSchema
 
 ```ts
-const BulkFailureSchema: object;
+const DateBoundSchema: object;
 ```
+
+Defined in: [schemas/common.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L14)
 
 #### Type Declaration
 
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-additionalproperties"></a> `additionalProperties` | `false` | `false` |
-| <a id="property-properties"></a> `properties` | `object` | - |
-| `properties.code` | `object` | - |
-| `properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` |
-| `properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` |
-| `properties.code.type` | `"string"` | `'string'` |
-| `properties.id` | `object` | - |
-| `properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` |
-| `properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` |
-| `properties.id.format` | `"uuid"` | `'uuid'` |
-| `properties.id.type` | `"string"` | `'string'` |
-| <a id="property-required"></a> `required` | readonly \[`"code"`, `"id"`\] | - |
-| <a id="property-type"></a> `type` | `"object"` | `'object'` |
-
-***
-
-### DateBoundAnyOf
-
-```ts
-const DateBoundAnyOf: object;
-```
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-anyof"></a> `anyOf` | readonly \[\{ `minimum`: `0`; `type`: `"integer"`; \}, \{ `format`: `"date-time"`; `type`: `"string"`; \}\] | - |
-| <a id="property-description"></a> `description` | `"Epoch milliseconds or an ISO 8601 date-time."` | `'Epoch milliseconds or an ISO 8601 date-time.'` |
-| <a id="property-examples"></a> `examples` | readonly \[`1767225600000`, `"2026-01-01T00:00:00.000Z"`\] | - |
-
-***
-
-### ErrorResponseSchema
-
-```ts
-const ErrorResponseSchema: object;
-```
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-additionalproperties-1"></a> `additionalProperties` | `false` | `false` |
-| <a id="property-properties-1"></a> `properties` | `object` | - |
-| `properties.code` | `object` | - |
-| `properties.code.description` | `"Stable machine readable error code."` | `'Stable machine readable error code.'` |
-| `properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` |
-| `properties.code.type` | `"string"` | `'string'` |
-| `properties.message` | `object` | - |
-| `properties.message.description` | `"Human readable message, safe to display."` | `'Human readable message, safe to display.'` |
-| `properties.message.example` | `"The user does not exist."` | `'The user does not exist.'` |
-| `properties.message.type` | `"string"` | `'string'` |
-| `properties.request_id` | `object` | - |
-| `properties.request_id.description` | `"Identifier to quote when reporting a problem."` | `'Identifier to quote when reporting a problem.'` |
-| `properties.request_id.example` | `"req-1"` | `'req-1'` |
-| `properties.request_id.type` | `"string"` | `'string'` |
-| `properties.status` | `object` | - |
-| `properties.status.description` | `"HTTP status code."` | `'HTTP status code.'` |
-| `properties.status.example` | `404` | `404` |
-| `properties.status.type` | `"integer"` | `'integer'` |
-| <a id="property-required-1"></a> `required` | readonly \[`"code"`, `"message"`, `"request_id"`, `"status"`\] | - |
-| <a id="property-type-1"></a> `type` | `"object"` | `'object'` |
-
-***
-
-### IdListSchema
-
-```ts
-const IdListSchema: object;
-```
-
-#### Type Declaration
-
-| Name | Type | Default value |
-| ------ | ------ | ------ |
-| <a id="property-description-1"></a> `description` | `"List of user identifiers. Duplicates are ignored."` | `'List of user identifiers. Duplicates are ignored.'` |
-| <a id="property-items"></a> `items` | `object` | - |
-| `items.format` | `"uuid"` | `'uuid'` |
-| `items.type` | `"string"` | `'string'` |
-| <a id="property-maxitems"></a> `maxItems` | `100` | `RequestLimits.bulk` |
-| <a id="property-minitems"></a> `minItems` | `1` | `1` |
-| <a id="property-type-2"></a> `type` | `"array"` | `'array'` |
+| Name | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-anyof"></a> `anyOf` | readonly \[\{ `minimum`: `0`; `type`: `"integer"`; \}, \{ `format`: `"date-time"`; `type`: `"string"`; \}\] | - | [schemas/common.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L15) |
+| <a id="property-description"></a> `description` | `"Epoch milliseconds or an ISO 8601 date-time."` | `'Epoch milliseconds or an ISO 8601 date-time.'` | [schemas/common.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L19) |
+| <a id="property-examples"></a> `examples` | readonly \[`1767225600000`, `"2026-01-01T00:00:00.000Z"`\] | - | [schemas/common.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L20) |
 
 ***
 
@@ -139,6 +51,8 @@ const IdListSchema: object;
 const NAME_PATTERN: "^[\p{L}\p{M}][\p{L}\p{M}' .-]*$" = "^[\p{L}\p{M}][\p{L}\p{M}' .-]*$";
 ```
 
+Defined in: [schemas/common.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L10)
+
 ***
 
 ### PHONE\_PATTERN
@@ -147,43 +61,54 @@ const NAME_PATTERN: "^[\p{L}\p{M}][\p{L}\p{M}' .-]*$" = "^[\p{L}\p{M}][\p{L}\p{M
 const PHONE_PATTERN: "^\+?[0-9 ().-]{6,20}$" = '^\+?[0-9 ().-]{6,20}$';
 ```
 
+Defined in: [schemas/common.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L12)
+
 ## Functions
 
-### errorResponse()
-
-<div className="route-badge"><span className="route-label">Route</span><code>schemas.common.error</code></div>
+### BulkFailureSchema()
 
 ```ts
-function errorResponse(description): JsonSchema;
+function BulkFailureSchema(code, id): JsonSchema;
 ```
+
+Defined in: [schemas/common.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L29)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `description` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
+| `id` | `string` | - |
 
 #### Returns
 
-[`JsonSchema`](#jsonschema)
+[`JsonSchema`](base/envelope.mdx#jsonschema)
+
+#### Route
+
+schemas.common.bulk
 
 ***
 
-### ReplyEnvelopeSchema()
-
-<div className="route-badge"><span className="route-label">Route</span><code>schemas.common.envelope</code></div>
+### IdArraySchema()
 
 ```ts
-function ReplyEnvelopeSchema(dataSchema, eventCode): JsonSchema;
+function IdArraySchema(description, example): JsonSchema;
 ```
+
+Defined in: [schemas/common.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/schemas/common.ts#L45)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `dataSchema` | [`JsonSchema`](#jsonschema) |
-| `eventCode` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `description` | `string` | - |
+| `example` | `string`[] | - |
 
 #### Returns
 
-[`JsonSchema`](#jsonschema)
+[`JsonSchema`](base/envelope.mdx#jsonschema)
+
+#### Route
+
+schemas.common.ids

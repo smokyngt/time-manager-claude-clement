@@ -1,0 +1,169 @@
+name: Kubernetes lint
+
+on:
+  pull_request:
+    paths:
+      - "ops/kubernetes/**"
+      - "ops/observability/**"
+      - ".github/workflows/k8s-lint.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: k8s-lint-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  TERRAFORM_VERSION: "1.10.5"
+  TFLINT_VERSION: "v0.54.0"
+  KUBECONFORM_VERSION: "v0.6.7"
+  CRD_CATALOG: https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json
+
+jobs:
+  terraform:
+    name: Terraform ${{ matrix.dir }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        dir:
+          - ops/kubernetes/cloud/modules/k8s-base
+          - ops/kubernetes/cloud/scaleway
+          - ops/kubernetes/cloud/kind
+          - ops/kubernetes/cloud/render
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: Set up TFLint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: ${{ env.TFLINT_VERSION }}
+
+      - name: Format
+        run: terraform fmt -check -recursive -diff ops/kubernetes
+
+      - name: Init
+        working-directory: ${{ matrix.dir }}
+        run: terraform init -backend=false -input=false
+
+      - name: Validate
+        working-directory: ${{ matrix.dir }}
+        run: terraform validate
+
+      - name: TFLint
+        working-directory: ${{ matrix.dir }}
+        run: |
+          tflint --init --config="$GITHUB_WORKSPACE/ops/kubernetes/cloud/.tflint.hcl"
+          tflint --config="$GITHUB_WORKSPACE/ops/kubernetes/cloud/.tflint.hcl" --format=compact
+
+  manifests:
+    name: Rendered manifests and Helm values
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: ${{ env.TERRAFORM_VERSION }}
+          terraform_wrapper: false
+
+      - name: Set up kubeconform
+        run: |
+          curl -sSfL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
+            | tar xz -C /usr/local/bin kubeconform
+
+      - name: Plan the render root
+        working-directory: ops/kubernetes/cloud/render
+        env:
+          VAULT_TOKEN: render-only
+        run: |
+          terraform init -input=false
+          terraform plan -refresh=false -lock=false -input=false -out=render.tfplan
+          terraform show -json render.tfplan > render.json
+
+      - name: Extract kubectl manifests
+        run: python3 ops/kubernetes/scripts/extract-manifests.py ops/kubernetes/cloud/render/render.json "$RUNNER_TEMP/manifests.yaml"
+
+      - name: kubeconform strict with CRD catalog
+        run: |
+          kubeconform -strict -summary -ignore-missing-schemas \
+            -schema-location default \
+            -schema-location "$CRD_CATALOG" \
+            "$RUNNER_TEMP/manifests.yaml"
+
+      - name: Render Helm releases
+        run: |
+          python3 - <<'PY'
+          import json, os, subprocess, sys
+          plan = json.load(open("ops/kubernetes/cloud/render/render.json"))
+          def walk(m):
+              yield from m.get("resources", [])
+              for c in m.get("child_modules", []):
+                  yield from walk(c)
+          failed = 0
+          for r in walk(plan["planned_values"]["root_module"]):
+              if r["type"] != "helm_release":
+                  continue
+              v = r["values"]
+              values = v.get("values") or []
+              path = os.path.join(os.environ["RUNNER_TEMP"], r["name"] + ".yaml")
+              open(path, "w").write(values[0] if values else "{}")
+              subprocess.run(["helm", "repo", "add", r["name"], v["repository"]], check=True, capture_output=True)
+              cmd = ["helm", "template", v["name"], f'{r["name"]}/{v["chart"]}', "--version", v["version"], "-n", v["namespace"], "-f", path, "--api-versions", "monitoring.coreos.com/v1", "--api-versions", "traefik.io/v1alpha1"]
+              res = subprocess.run(cmd, capture_output=True, text=True)
+              print(("OK   " if res.returncode == 0 else "FAIL ") + r["name"])
+              if res.returncode != 0:
+                  print(res.stderr)
+                  failed += 1
+          sys.exit(1 if failed else 0)
+          PY
+
+  scan:
+    name: Configuration scan
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: ops/kubernetes/cloud
+          framework: terraform
+          quiet: true
+          soft_fail: false
+          skip_check: CKV_K8S_21,CKV_K8S_35,CKV_TF_1,CKV_TF_2
+
+      - name: Trivy configuration scan
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          scan-type: config
+          scan-ref: ops/kubernetes/cloud
+          severity: HIGH,CRITICAL
+          exit-code: "1"
+          skip-dirs: "**/.terraform"
+
+  shell:
+    name: Shell scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ShellCheck
+        run: shellcheck -x -s bash ops/kubernetes/cloud/modules/k8s-base/scripts/*.sh

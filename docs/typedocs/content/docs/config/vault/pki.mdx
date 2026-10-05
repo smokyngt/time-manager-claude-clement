@@ -1,0 +1,205 @@
+## Classes
+
+### VaultPki
+
+Defined in: [config/vault/pki.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L16)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultPki(config): VaultPki;
+```
+
+Defined in: [config/vault/pki.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L22)
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `config` | [`VaultConfig`](../vault.mdx#vaultconfig-1) |
+
+###### Returns
+
+[`VaultPki`](#vaultpki)
+
+#### Methods
+
+##### creds()
+
+```ts
+creds(): VaultCreds;
+```
+
+Defined in: [config/vault/pki.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L31)
+
+###### Returns
+
+[`VaultCreds`](#vaultcreds)
+
+###### Route
+
+config.vault.pki.creds
+
+###### Throws
+
+##### enabled()
+
+```ts
+enabled(): boolean;
+```
+
+Defined in: [config/vault/pki.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L41)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.vault.pki.enabled
+
+##### expires()
+
+```ts
+expires(): number | undefined;
+```
+
+Defined in: [config/vault/pki.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L49)
+
+###### Returns
+
+`number` \| `undefined`
+
+###### Route
+
+config.vault.pki.expires
+
+##### initialize()
+
+```ts
+initialize(): Promise<void>;
+```
+
+Defined in: [config/vault/pki.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L58)
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+config.vault.pki.initialize
+
+###### Throws
+
+##### issue()
+
+```ts
+issue(): Promise<VaultCreds>;
+```
+
+Defined in: [config/vault/pki.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L68)
+
+###### Returns
+
+`Promise`\<[`VaultCreds`](#vaultcreds)\>
+
+###### Route
+
+config.vault.pki.issue
+
+###### Throws
+
+##### onRenew()
+
+```ts
+onRenew(listener): () => void;
+```
+
+Defined in: [config/vault/pki.ts:109](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L109)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `listener` | [`VaultPkiListener`](#vaultpkilistener) | - |
+
+###### Returns
+
+() => `void`
+
+###### Route
+
+config.vault.pki.onRenew
+
+##### schedule()
+
+```ts
+schedule(): void;
+```
+
+Defined in: [config/vault/pki.ts:121](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L121)
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.pki.schedule
+
+##### stop()
+
+```ts
+stop(): void;
+```
+
+Defined in: [config/vault/pki.ts:133](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L133)
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.pki.stop
+
+## Type Aliases
+
+### VaultCreds
+
+```ts
+type VaultCreds = object;
+```
+
+Defined in: [config/vault/pki.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L6)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-ca"></a> `ca` | `string` | [config/vault/pki.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L6) |
+| <a id="property-cert"></a> `cert` | `string` | [config/vault/pki.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L6) |
+| <a id="property-key"></a> `key` | `string` | [config/vault/pki.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L6) |
+
+***
+
+### VaultPkiListener
+
+```ts
+type VaultPkiListener = (creds) => void;
+```
+
+Defined in: [config/vault/pki.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/pki.ts#L8)
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `creds` | [`VaultCreds`](#vaultcreds) |
+
+#### Returns
+
+`void`

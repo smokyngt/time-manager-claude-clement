@@ -55,6 +55,43 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
     ...options,
   });
   await app.register(fastifyRequestContext);
+  await app.register(swagger, {
+    openapi: {
+      components: {
+        securitySchemes: {
+          bearerAuth: {
+            bearerFormat: 'JWT',
+            description: 'Access token returned by POST /v1/auth/login or /v1/auth/refresh.',
+            scheme: 'bearer',
+            type: 'http',
+          },
+          cookieAuth: {
+            description:
+              'Opaque refresh token stored in an HttpOnly cookie scoped to /v1/auth and set at sign-in.',
+            in: 'cookie',
+            name: Cookies.refresh,
+            type: 'apiKey',
+          },
+        },
+      },
+      info: {
+        description: 'Time Manager API. Employees clock in and out, managers manage teams.',
+        title: 'Time Manager API',
+        version: '0.1.0',
+      },
+      openapi: '3.0.3',
+      tags: [
+        { description: 'Sign in, token refresh, sign out and Microsoft single sign-on.', name: 'auth' },
+        { description: 'Clock in, clock out and manage working time entries.', name: 'clocks' },
+        { description: 'Liveness and readiness probes.', name: 'health' },
+        { description: 'Working time reports and KPIs for a user or a team.', name: 'reports' },
+        { description: 'Add, list and remove the members of a team.', name: 'team-members' },
+        { description: 'Create and manage teams and their working schedule.', name: 'teams' },
+        { description: 'Create and manage user accounts and roles.', name: 'users' },
+      ],
+    },
+  });
+  await app.register(swaggerUi, { routePrefix: '/docs' });
   await app.register(observability);
   await app.register(metrics, {
     production: Config.production(),
@@ -96,43 +133,6 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
     origin: Config.store.text('CORS_ORIGIN', 'http://localhost:5173').split(','),
   });
   await app.register(cookie);
-  await app.register(swagger, {
-    openapi: {
-      components: {
-        securitySchemes: {
-          bearerAuth: {
-            bearerFormat: 'JWT',
-            description: 'Access token returned by POST /v1/auth/login or /v1/auth/refresh.',
-            scheme: 'bearer',
-            type: 'http',
-          },
-          cookieAuth: {
-            description:
-              'Opaque refresh token stored in an HttpOnly cookie scoped to /v1/auth and set at sign-in.',
-            in: 'cookie',
-            name: Cookies.refresh,
-            type: 'apiKey',
-          },
-        },
-      },
-      info: {
-        description: 'Time Manager API. Employees clock in and out, managers manage teams.',
-        title: 'Time Manager API',
-        version: '0.1.0',
-      },
-      openapi: '3.0.3',
-      tags: [
-        { description: 'Sign in, token refresh, sign out and Microsoft single sign-on.', name: 'auth' },
-        { description: 'Clock in, clock out and manage working time entries.', name: 'clocks' },
-        { description: 'Liveness and readiness probes.', name: 'health' },
-        { description: 'Working time reports and KPIs for a user or a team.', name: 'reports' },
-        { description: 'Add, list and remove the members of a team.', name: 'team-members' },
-        { description: 'Create and manage teams and their working schedule.', name: 'teams' },
-        { description: 'Create and manage user accounts and roles.', name: 'users' },
-      ],
-    },
-  });
-  await app.register(swaggerUi, { routePrefix: '/docs' });
 
   return app;
 };

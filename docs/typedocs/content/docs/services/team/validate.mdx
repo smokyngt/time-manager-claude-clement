@@ -1,11 +1,8 @@
----
-title: "Validate"
-description: "Reference for the `services/team/validate` module: classes."
----
-
 ## Classes
 
 ### TeamValidate
+
+Defined in: [services/team/validate.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/validate.ts#L7)
 
 #### Constructors
 
@@ -23,51 +20,49 @@ new TeamValidate(): TeamValidate;
 
 ##### manager()
 
-<div className="route-badge"><span className="route-label">Route</span><code>team.validate.manager</code></div>
-
 ```ts
-static manager(id, route): Promise<void>;
+static manager(id): Promise<void>;
 ```
+
+Defined in: [services/team/validate.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/validate.ts#L14)
 
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `id` | `string` |
-| `route` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `id` | `string` | - |
 
 ###### Returns
 
 `Promise`\<`void`\>
 
-###### Throws
+###### Route
 
-- `TeamManagerInvalidError`
+team.validate.manager
+
+###### Throws
 
 ##### schedule()
 
-<div className="route-badge"><span className="route-label">Route</span><code>team.validate.schedule</code></div>
-
 ```ts
-static schedule(
-   start, 
-   end, 
-   route
-): void;
+static schedule(start, end): void;
 ```
+
+Defined in: [services/team/validate.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/validate.ts#L34)
 
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `start` | `string` |
-| `end` | `string` |
-| `route` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `start` | `string` | - |
+| `end` | `string` | - |
 
 ###### Returns
 
 `void`
 
-###### Throws
+###### Route
 
-- `TeamScheduleInvalidError`
+team.validate.schedule
+
+###### Throws

@@ -22,7 +22,7 @@ export class ClockRules {
   public static readonly maxDurationMs = 24 * 60 * 60 * 1000;
 
   /**
-   * @route clock.service.rules.overlap
+   * @route clock.helpers.rules.overlap
    * @param {OverlapParams} params
    * @returns {Promise<void>}
    * @throws {ClockOverlapError}
@@ -45,20 +45,20 @@ export class ClockRules {
     );
     if (row !== undefined) {
       throw ClockOverlapError({
-        metadata: { clock_id: row.id, route: 'clock.service.rules.overlap', user_id: userId },
+        metadata: { clock_id: row.id, route: 'clock.helpers.rules.overlap', user_id: userId },
       });
     }
   }
 
   /**
-   * @route clock.service.rules.validate
+   * @route clock.helpers.rules.validate
    * @param {ValidateParams} params
    * @returns {void}
    * @throws {ClockInvalidError}
    */
   public static validate(params: ValidateParams): void {
     const { clockedIn, clockedOut, now } = params;
-    const route = 'clock.service.rules.validate';
+    const route = 'clock.helpers.rules.validate';
     if (clockedIn > now) {
       throw ClockInvalidError({ metadata: { field: 'clocked_in_at', reason: 'future', route } });
     }

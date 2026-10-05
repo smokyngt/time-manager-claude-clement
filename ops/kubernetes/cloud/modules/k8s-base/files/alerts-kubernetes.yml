@@ -1,0 +1,456 @@
+# Kubernetes-specific alerts loaded by alert-rules.tf next to ops/observability/prometheus/rules/alerts.yml.
+# Metric sources: kube-state-metrics, kubelet, node-exporter, cert-manager, Velero, CloudNativePG, Vault,
+# External Secrets, Traefik. Runbooks live in the internal docs, Operations, Observability.
+groups:
+  - name: tm-k8s-nodes
+    rules:
+      - alert: KubeNodeNotReady
+        expr: kube_node_status_condition{condition="Ready",status="true"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Node {{ $labels.node }} is not Ready"
+          description: "The kubelet of {{ $labels.node }} has not reported Ready for 5 minutes; pods on it are rescheduled by the autohealer or stay Unknown."
+          runbook: "/internal/docs/operations/observability#kubenodenotready"
+
+      - alert: KubeNodePressure
+        expr: kube_node_status_condition{condition=~"MemoryPressure|DiskPressure|PIDPressure",status="true"} == 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node {{ $labels.node }} reports {{ $labels.condition }}"
+          description: "The kubelet will start evicting pods on {{ $labels.node }}. Check kubectl describe node and the top consumers."
+          runbook: "/internal/docs/operations/observability#kubenodepressure"
+
+      - alert: NodeFilesystemAlmostFull
+        expr: |
+          node_filesystem_avail_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|fuse.*",mountpoint="/"}
+            / node_filesystem_size_bytes{fstype!~"tmpfs|overlay|squashfs|ramfs|fuse.*",mountpoint="/"} < 0.15
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Root filesystem of {{ $labels.instance }} has less than 15% free"
+          description: "{{ $value | humanizePercentage }} left on /. Image garbage collection starts at 85% usage; clean container images and logs."
+          runbook: "/internal/docs/operations/observability#nodefilesystemalmostfull"
+
+      - alert: NodeMemoryHigh
+        expr: 1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes > 0.92
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node {{ $labels.instance }} uses more than 92% of its memory"
+          description: "Memory usage is {{ $value | humanizePercentage }}. Pods without memory requests are the usual cause; check kubectl top pods -A."
+          runbook: "/internal/docs/operations/observability#nodememoryhigh"
+
+  - name: tm-k8s-workloads
+    rules:
+      - alert: PodCrashLooping
+        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff"}[5m]) >= 1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) is in CrashLoopBackOff"
+          description: "The container keeps crashing. kubectl -n {{ $labels.namespace }} logs {{ $labels.pod }} -c {{ $labels.container }} --previous, then kubectl describe pod."
+          runbook: "/internal/docs/operations/observability#podcrashlooping"
+
+      - alert: AppPodCrashLooping
+        expr: max_over_time(kube_pod_container_status_waiting_reason{reason="CrashLoopBackOff",namespace="app"}[5m]) >= 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Application pod {{ $labels.pod }} is in CrashLoopBackOff"
+          description: "A Time Manager workload keeps crashing. If the last rollout caused it, kubectl -n app rollout undo deployment/<name>; otherwise read the previous container logs."
+          runbook: "/internal/docs/operations/observability#apppodcrashlooping"
+
+      - alert: PodNotReady
+        expr: sum by (namespace, pod) (kube_pod_status_phase{phase=~"Pending|Unknown"}) > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} has been Pending or Unknown for 15 minutes"
+          description: "Scheduling or volume attachment is stuck: kubectl describe pod, then check taints, quotas, PVC binding and node capacity."
+          runbook: "/internal/docs/operations/observability#podnotready"
+
+      - alert: ContainerOOMKilled
+        expr: |
+          increase(kube_pod_container_status_restarts_total[15m]) > 0
+            and on (namespace, pod, container) kube_pod_container_status_last_terminated_reason{reason="OOMKilled"} == 1
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.namespace }}/{{ $labels.pod }} ({{ $labels.container }}) was OOM killed"
+          description: "The memory limit is too low or the process leaks. Compare container_memory_working_set_bytes with the limit and raise the limit or fix the leak."
+          runbook: "/internal/docs/operations/observability#containeroomkilled"
+
+      - alert: DeploymentReplicasUnavailable
+        expr: kube_deployment_spec_replicas != kube_deployment_status_replicas_available
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Deployment {{ $labels.namespace }}/{{ $labels.deployment }} lacks available replicas"
+          description: "Desired and available replicas differ for 15 minutes. A rollout may be stuck: kubectl -n {{ $labels.namespace }} rollout status deployment/{{ $labels.deployment }}."
+          runbook: "/internal/docs/operations/observability#deploymentreplicasunavailable"
+
+      - alert: StatefulSetReplicasUnavailable
+        expr: kube_statefulset_status_replicas_ready != kube_statefulset_replicas
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }} lacks ready replicas"
+          description: "Vault, Loki or Tempo may be sealed, waiting for a volume or failing probes. Describe the pod and read its logs."
+          runbook: "/internal/docs/operations/observability#statefulsetreplicasunavailable"
+
+      - alert: DaemonSetPodsUnavailable
+        expr: kube_daemonset_status_number_unavailable > 0
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} has unavailable pods"
+          description: "{{ $value }} nodes run no ready pod. For falco and alloy-logs this is a monitoring or detection gap on those nodes."
+          runbook: "/internal/docs/operations/observability#daemonsetpodsunavailable"
+
+      - alert: JobFailed
+        expr: kube_job_status_failed > 0
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Job {{ $labels.namespace }}/{{ $labels.job_name }} failed"
+          description: "A pod of the Job exhausted its retries. kubectl -n {{ $labels.namespace }} logs job/{{ $labels.job_name }}. Backup and snapshot Jobs failing means the backup chain is broken."
+          runbook: "/internal/docs/operations/observability#jobfailed"
+
+      - alert: MigrationJobFailed
+        expr: kube_job_status_failed{namespace="app",job_name=~"api-migrate-.*"} > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Database migration Job {{ $labels.job_name }} failed"
+          description: "The api Deployment waits for this migration. Read the Job logs, fix the migration, delete the Job and apply again; never run it by hand against production without a verified backup."
+          runbook: "/internal/docs/operations/observability#migrationjobfailed"
+
+      - alert: CronJobNotSucceeding
+        expr: time() - kube_cronjob_status_last_successful_time{namespace=~"backup|vault|velero|databases"} > 93600
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "CronJob {{ $labels.namespace }}/{{ $labels.cronjob }} has not succeeded for over 26 hours"
+          description: "The last successful run finished {{ $value | humanizeDuration }} ago. The logical dump runs daily, so this means no restorable dump."
+          runbook: "/internal/docs/operations/observability#cronjobnotsucceeding"
+
+      - alert: VaultSnapshotStale
+        expr: time() - kube_cronjob_status_last_successful_time{cronjob=~".*(vault|raft).*snapshot.*|.*snapshot.*(vault|raft).*"} > 32400
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No Vault Raft snapshot for over 9 hours"
+          description: "The snapshot CronJob runs every 4 hours; the last success was {{ $value | humanizeDuration }} ago. Without snapshots a lost Raft quorum cannot be restored."
+          runbook: "/internal/docs/operations/observability#vaultsnapshotstale"
+
+      - alert: HpaMaxedOut
+        expr: kube_horizontalpodautoscaler_status_current_replicas == kube_horizontalpodautoscaler_spec_max_replicas
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "HPA {{ $labels.namespace }}/{{ $labels.horizontalpodautoscaler }} is at its maximum for 30 minutes"
+          description: "Load needs more replicas than allowed. Raise the maximum or find the cause of the sustained load."
+          runbook: "/internal/docs/operations/observability#hpamaxedout"
+
+  - name: tm-k8s-storage
+    rules:
+      - alert: PersistentVolumeUsageHigh
+        expr: |
+          kubelet_volume_stats_used_bytes{persistentvolumeclaim!~"audit-.*"}
+            / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim!~"audit-.*"} > 0.8
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Volume {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is more than 80% full"
+          description: "{{ $value | humanizePercentage }} used. Expand the PVC (storage class allowVolumeExpansion) before it fills; PostgreSQL stops writing on a full disk."
+          runbook: "/internal/docs/operations/observability#persistentvolumeusagehigh"
+
+      - alert: PersistentVolumeUsageCritical
+        expr: |
+          kubelet_volume_stats_used_bytes{persistentvolumeclaim!~"audit-.*"}
+            / kubelet_volume_stats_capacity_bytes{persistentvolumeclaim!~"audit-.*"} > 0.92
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Volume {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is more than 92% full"
+          description: "{{ $value | humanizePercentage }} used. Expand the PVC now."
+          runbook: "/internal/docs/operations/observability#persistentvolumeusagecritical"
+
+      - alert: VaultAuditVolumeFilling
+        expr: |
+          kubelet_volume_stats_used_bytes{namespace="vault",persistentvolumeclaim=~"audit-.*"}
+            / kubelet_volume_stats_capacity_bytes{namespace="vault",persistentvolumeclaim=~"audit-.*"} > 0.8
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vault audit volume {{ $labels.persistentvolumeclaim }} is more than 80% full"
+          description: "{{ $value | humanizePercentage }} used. When the audit device cannot write, Vault refuses every request. Rotate or compress the audit file, or expand the volume."
+          runbook: "/internal/docs/operations/observability#vaultauditvolumefilling"
+
+      - alert: PersistentVolumeClaimPending
+        expr: kube_persistentvolumeclaim_status_phase{phase="Pending"} == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} is Pending"
+          description: "No volume could be provisioned or bound. Check the storage class, the zone of the pod and the CSI controller events."
+          runbook: "/internal/docs/operations/observability#persistentvolumeclaimpending"
+
+      - alert: PersistentVolumeReleasedOrFailed
+        expr: kube_persistentvolume_status_phase{phase=~"Released|Failed"} == 1
+        for: 24h
+        labels:
+          severity: info
+        annotations:
+          summary: "PersistentVolume {{ $labels.persistentvolume }} is {{ $labels.phase }}"
+          description: "A Retain volume lost its claim. After a verified backup, remove it deliberately (kubectl delete pv) and delete the cloud volume."
+          runbook: "/internal/docs/operations/observability#persistentvolumereleasedorfailed"
+
+  - name: tm-k8s-certificates
+    rules:
+      - alert: CertificateNotReady
+        expr: certmanager_certificate_ready_status{condition="False"} == 1
+        for: 15m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} is not Ready"
+          description: "cert-manager cannot issue or renew it. kubectl -n {{ $labels.namespace }} describe certificate {{ $labels.name }}, then the CertificateRequest, Order and Challenge."
+          runbook: "/internal/docs/operations/observability#certificatenotready"
+
+      - alert: CertificateRenewalOverdue
+        expr: time() - certmanager_certificate_renewal_timestamp_seconds > 3600
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} should have been renewed over an hour ago"
+          description: "The renewal time passed {{ $value | humanizeDuration }} ago and the certificate was not replaced. Vault sealed or unreachable, an expired token role or a failing ACME challenge are the usual causes."
+          runbook: "/internal/docs/operations/observability#certificaterenewaloverdue"
+
+      - alert: CertificateExpiresSoon
+        expr: certmanager_certificate_expiration_timestamp_seconds - time() < 21600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Certificate {{ $labels.namespace }}/{{ $labels.name }} expires in under 6 hours"
+          description: "Expiry in {{ $value | humanizeDuration }}. TLS clients will start failing; fix the issuer now."
+          runbook: "/internal/docs/operations/observability#certificateexpiressoon"
+
+  - name: tm-k8s-backups
+    rules:
+      - alert: VeleroBackupFailed
+        expr: increase(velero_backup_failure_total[1h]) > 0 or increase(velero_backup_partial_failure_total[1h]) > 0
+        labels:
+          severity: critical
+        annotations:
+          summary: "A Velero backup of schedule {{ $labels.schedule }} failed"
+          description: "velero backup describe and velero backup logs on the latest backup of the schedule; check the BackupStorageLocation is Available."
+          runbook: "/internal/docs/operations/observability#velerobackupfailed"
+
+      - alert: VeleroBackupStale
+        expr: time() - velero_backup_last_successful_timestamp > 93600
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Velero schedule {{ $labels.schedule }} has no successful backup for over 26 hours"
+          description: "The last success was {{ $value | humanizeDuration }} ago."
+          runbook: "/internal/docs/operations/observability#velerobackupstale"
+
+      - alert: CnpgBackupFailed
+        expr: cnpg_collector_last_failed_backup_timestamp > cnpg_collector_last_available_backup_timestamp
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "The last CloudNativePG backup of {{ $labels.pod }} failed"
+          description: "kubectl -n databases get backup, then describe the failed Backup and check the barman object store credentials and bucket."
+          runbook: "/internal/docs/operations/observability#cnpgbackupfailed"
+
+      - alert: CnpgBackupStale
+        expr: cnpg_collector_last_available_backup_timestamp > 0 and time() - cnpg_collector_last_available_backup_timestamp > 93600
+        for: 10m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No successful base backup of {{ $labels.pod }} for over 26 hours"
+          description: "The last base backup finished {{ $value | humanizeDuration }} ago. Point-in-time recovery still works while WAL archiving succeeds, but the recovery window grows."
+          runbook: "/internal/docs/operations/observability#cnpgbackupstale"
+
+      - alert: CnpgNoBackupYet
+        expr: cnpg_collector_last_available_backup_timestamp == 0
+        for: 26h
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $labels.pod }} has never completed a base backup"
+          description: "No ScheduledBackup has produced a backup. A backup is not real until a restore drill passed."
+          runbook: "/internal/docs/operations/observability#cnpgnobackupyet"
+
+      - alert: CnpgWalArchivingFailing
+        expr: increase(cnpg_pg_stat_archiver_failed_count[15m]) > 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "WAL archiving of {{ $labels.pod }} is failing"
+          description: "WAL segments pile up on the primary volume and point-in-time recovery has a gap. Check the object store credentials and connectivity."
+          runbook: "/internal/docs/operations/observability#cnpgwalarchivingfailing"
+
+  - name: tm-k8s-postgres
+    rules:
+      - alert: CnpgInstanceDown
+        expr: cnpg_collector_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "PostgreSQL instance {{ $labels.pod }} is down"
+          description: "The CloudNativePG exporter cannot reach PostgreSQL on {{ $labels.pod }}. kubectl cnpg status, then the pod logs."
+          runbook: "/internal/docs/operations/observability#cnpginstancedown"
+
+      - alert: CnpgConnectionsSaturation
+        expr: sum by (namespace, pod) (cnpg_backends_total) / max by (namespace, pod) (cnpg_pg_settings_setting{name="max_connections"}) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections above 80% of max_connections on {{ $labels.pod }}"
+          description: "{{ $value | humanizePercentage }} of max_connections in use."
+          runbook: "/internal/docs/operations/observability#cnpgconnectionssaturation"
+
+      - alert: CnpgDeadlocks
+        expr: increase(cnpg_pg_stat_database_deadlocks[10m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL deadlocks detected on {{ $labels.pod }}"
+          description: "{{ $value }} deadlocks in the last 10 minutes on database {{ $labels.datname }}."
+          runbook: "/internal/docs/operations/observability#cnpgdeadlocks"
+
+      - alert: CnpgReplicationLag
+        expr: cnpg_pg_replication_lag > 30
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL replica {{ $labels.pod }} lags by {{ $value }}s"
+          description: "A failover now could lose that many seconds of transactions."
+          runbook: "/internal/docs/operations/observability#cnpgreplicationlag"
+
+  - name: tm-k8s-platform
+    rules:
+      - alert: PlatformTargetDown
+        expr: up{job=~"traefik|cert-manager|external-secrets|velero"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Platform component {{ $labels.job }} is not scraped"
+          description: "{{ $labels.instance }} has not answered /metrics for 5 minutes: the component is down or a NetworkPolicy/mesh policy blocks Prometheus."
+          runbook: "/internal/docs/operations/observability#platformtargetdown"
+
+      - alert: VaultDown
+        expr: up{job="vault"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vault pod {{ $labels.pod }} is not scraped"
+          description: "The pod is down, sealed with an expired metrics token, or blocked by a policy. A sealed Vault also stops the api from reading its secrets."
+          runbook: "/internal/docs/operations/observability#vaultdown"
+
+      - alert: VaultSealed
+        expr: vault_core_unsealed == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vault pod {{ $labels.pod }} is sealed"
+          description: "Unseal it with the Shamir keys (kubectl -n vault exec -it <pod> -- vault operator unseal). Workloads block in the wait-vault init container until Vault answers."
+          runbook: "/internal/docs/operations/observability#vaultsealed"
+
+      - alert: VaultNoActiveNode
+        expr: sum(vault_core_active) < 1
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vault has no active node"
+          description: "Raft has no leader: quorum lost or all pods sealed. Check vault operator raft list-peers from a surviving pod."
+          runbook: "/internal/docs/operations/observability#vaultnoactivenode"
+
+      - alert: VaultAuditFailing
+        expr: rate(vault_audit_log_request_failure[5m]) > 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Vault audit devices fail to log requests"
+          description: "Vault refuses requests it cannot audit. Check the audit volume usage and the stdout device."
+          runbook: "/internal/docs/operations/observability#vaultauditfailing"
+
+      - alert: ExternalSecretSyncFailing
+        expr: externalsecret_status_condition{condition="Ready",status="False"} == 1
+        for: 15m
+        labels:
+          severity: warning
+        annotations:
+          summary: "ExternalSecret {{ $labels.namespace }}/{{ $labels.name }} cannot sync"
+          description: "The Kubernetes Secret is stale or missing. kubectl describe externalsecret; usual causes are a sealed Vault, a missing KV key or an expired Kubernetes auth role."
+          runbook: "/internal/docs/operations/observability#externalsecretsyncfailing"
+
+      - alert: TraefikHighErrorRatio
+        expr: sum(rate(traefik_service_requests_total{code=~"5.."}[5m])) / sum(rate(traefik_service_requests_total[5m])) > 0.05 and sum(rate(traefik_service_requests_total[5m])) > 0.1
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "More than 5% of ingress responses are 5xx"
+          description: "{{ $value | humanizePercentage }} of the requests served by Traefik failed. Compare with the api error ratio to see whether the failure is behind or in front of the application."
+          runbook: "/internal/docs/operations/observability#traefikhigherrorratio"
+
+  - name: tm-k8s-security
+    rules:
+      - alert: FalcoNotRunning
+        expr: kube_daemonset_status_number_ready{namespace="falco",daemonset="falco"} < kube_daemonset_status_desired_number_scheduled{namespace="falco",daemonset="falco"}
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Falco does not run on every node"
+          description: "{{ $value }} Falco pods are ready; nodes without one have no runtime detection. Check kubectl -n falco describe pod (eBPF probe load failures show in the falco container logs)."
+          runbook: "/internal/docs/operations/security#falconotrunning"
+
+      - alert: KyvernoAdmissionUnavailable
+        expr: kube_deployment_status_replicas_available{namespace="kyverno",deployment="kyverno-admission-controller"} < 1
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Kyverno admission controller has no available replica"
+          description: "With failurePolicy Ignore admissions pass unchecked; with Fail every Pod creation is blocked. Check kubectl -n kyverno get pods."
+          runbook: "/internal/docs/operations/security#kyvernoadmissionunavailable"

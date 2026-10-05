@@ -11,7 +11,7 @@ export class OpenClock {
   public static readonly index = 'clocks_user_id_open_idx';
 
   /**
-   * @route clock.service.open.violated
+   * @route clock.helpers.open.violated
    * @param {unknown} error
    * @returns {boolean}
    */

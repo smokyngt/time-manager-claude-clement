@@ -1,8 +1,3 @@
----
-title: "Client"
-description: "Reference for the `db/client` module: type aliases, variables."
----
-
 ## Type Aliases
 
 ### Database
@@ -10,6 +5,8 @@ description: "Reference for the `db/client` module: type aliases, variables."
 ```ts
 type Database = typeof db;
 ```
+
+Defined in: [db/client.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/client.ts#L18)
 
 ## Variables
 
@@ -19,6 +16,8 @@ type Database = typeof db;
 const db: PostgresJsDatabase<db/schema> & object;
 ```
 
+Defined in: [db/client.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/client.ts#L16)
+
 ***
 
 ### sql
@@ -27,3 +26,5 @@ const db: PostgresJsDatabase<db/schema> & object;
 const sql: Sql<{
 }>;
 ```
+
+Defined in: [db/client.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/client.ts#L8)

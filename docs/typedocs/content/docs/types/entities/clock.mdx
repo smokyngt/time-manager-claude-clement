@@ -1,34 +1,37 @@
----
-title: "Clock"
-description: "Reference for the `types/entities/clock` module: interfaces, type aliases, variables."
----
-
-## Interfaces
+## Type Aliases
 
 ### Clock
 
+```ts
+type Clock = object;
+```
+
+Defined in: [types/entities/clock.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L3)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` |
-| <a id="property-clocked_out_at"></a> `clocked_out_at` | `number` \| `null` |
-| <a id="property-created_at"></a> `created_at` | `number` |
-| <a id="property-duration_ms"></a> `duration_ms` | `number` \| `null` |
-| <a id="property-id"></a> `id` | `string` |
-| <a id="property-note"></a> `note` | `string` \| `null` |
-| <a id="property-object"></a> `object` | `"clock"` |
-| <a id="property-source"></a> `source` | `"clock"` \| `"manual"` |
-| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` |
-| <a id="property-user_id"></a> `user_id` | `string` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` | [types/entities/clock.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L4) |
+| <a id="property-clocked_out_at"></a> `clocked_out_at` | `null` \| `number` | [types/entities/clock.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L5) |
+| <a id="property-created_at"></a> `created_at` | `number` | [types/entities/clock.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L6) |
+| <a id="property-duration_ms"></a> `duration_ms` | `null` \| `number` | [types/entities/clock.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L7) |
+| <a id="property-id"></a> `id` | `string` | [types/entities/clock.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L8) |
+| <a id="property-note"></a> `note` | `null` \| `string` | [types/entities/clock.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L9) |
+| <a id="property-object"></a> `object` | `"clock"` | [types/entities/clock.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L10) |
+| <a id="property-source"></a> `source` | [`ClockSource`](#clocksource) | [types/entities/clock.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L11) |
+| <a id="property-updated_at"></a> `updated_at` | `null` \| `number` | [types/entities/clock.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L12) |
+| <a id="property-user_id"></a> `user_id` | `string` | [types/entities/clock.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L13) |
 
-## Type Aliases
+***
 
 ### ClockSource
 
 ```ts
 type ClockSource = typeof CLOCK_SOURCES[number];
 ```
+
+Defined in: [types/entities/clock.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L16)
 
 ## Variables
 
@@ -37,3 +40,5 @@ type ClockSource = typeof CLOCK_SOURCES[number];
 ```ts
 const CLOCK_SOURCES: readonly ["clock", "manual"];
 ```
+
+Defined in: [types/entities/clock.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/types/entities/clock.ts#L1)

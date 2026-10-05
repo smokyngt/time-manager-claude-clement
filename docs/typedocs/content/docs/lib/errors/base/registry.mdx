@@ -1,11 +1,8 @@
----
-title: "Registry"
-description: "Reference for the `lib/errors/base/registry` module: classes, type aliases, functions."
----
-
 ## Classes
 
 ### AppError
+
+Defined in: [lib/errors/base/registry.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L24)
 
 #### Extends
 
@@ -18,6 +15,8 @@ description: "Reference for the `lib/errors/base/registry` module: classes, type
 ```ts
 new AppError(definition, options): AppError;
 ```
+
+Defined in: [lib/errors/base/registry.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L32)
 
 ###### Parameters
 
@@ -38,38 +37,44 @@ Error.constructor
 
 #### Properties
 
-| Property | Modifier | Type |
-| ------ | ------ | ------ |
-| <a id="property-code"></a> `code` | `readonly` | `string` |
-| <a id="property-correlation_id"></a> `correlation_id` | `readonly` | `string` \| `undefined` |
-| <a id="property-instance"></a> `instance` | `readonly` | `string` \| `undefined` |
-| <a id="property-metadata"></a> `metadata` | `readonly` | [`Metadata`](#metadata) |
-| <a id="property-retry_after"></a> `retry_after` | `readonly` | `number` \| `undefined` |
-| <a id="property-status"></a> `status` | `readonly` | `number` |
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-code"></a> `code` | `readonly` | `string` | [lib/errors/base/registry.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L25) |
+| <a id="property-correlation_id"></a> `correlation_id` | `readonly` | `string` \| `undefined` | [lib/errors/base/registry.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L26) |
+| <a id="property-instance"></a> `instance` | `readonly` | `string` \| `undefined` | [lib/errors/base/registry.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L27) |
+| <a id="property-metadata"></a> `metadata` | `readonly` | [`Metadata`](#metadata) | [lib/errors/base/registry.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L28) |
+| <a id="property-retry_after"></a> `retry_after` | `readonly` | `number` \| `undefined` | [lib/errors/base/registry.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L29) |
+| <a id="property-status"></a> `status` | `readonly` | `number` | [lib/errors/base/registry.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L30) |
 
 #### Methods
 
 ##### is()
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.app.is</code></div>
-
 ```ts
 static is(value): value is AppError;
 ```
 
+Defined in: [lib/errors/base/registry.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L48)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `value` | `unknown` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | `unknown` | - |
 
 ###### Returns
 
 `value is AppError`
 
+###### Route
+
+errors.app.is
+
 ***
 
 ### Registry
+
+Defined in: [lib/errors/base/registry.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L53)
 
 #### Constructors
 
@@ -87,79 +92,93 @@ new Registry(): Registry;
 
 ##### get()
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.registry.get</code></div>
-
 ```ts
 static get(code): ErrorDefinition | undefined;
 ```
 
+Defined in: [lib/errors/base/registry.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L61)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `code` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
 
 ###### Returns
 
 [`ErrorDefinition`](#errordefinition) \| `undefined`
 
-##### has()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.registry.has</code></div>
+errors.registry.get
+
+##### has()
 
 ```ts
 static has(code): boolean;
 ```
 
+Defined in: [lib/errors/base/registry.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L70)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `code` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `code` | `string` | - |
 
 ###### Returns
 
 `boolean`
 
-##### sanitize()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.registry.sanitize</code></div>
+errors.registry.has
+
+##### sanitize()
 
 ```ts
 static sanitize(value): Metadata;
 ```
 
+Defined in: [lib/errors/base/registry.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L79)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `value` | [`Metadata`](#metadata) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `value` | [`Metadata`](#metadata) | - |
 
 ###### Returns
 
 [`Metadata`](#metadata)
 
-##### set()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>errors.registry.set</code></div>
+errors.registry.sanitize
+
+##### set()
 
 ```ts
 static set(definition): void;
 ```
 
+Defined in: [lib/errors/base/registry.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L106)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `definition` | [`ErrorDefinition`](#errordefinition) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) | - |
 
 ###### Returns
 
 `void`
 
-###### Throws
+###### Route
 
-- `Error`
+errors.registry.set
+
+###### Throws
 
 ## Type Aliases
 
@@ -169,12 +188,14 @@ static set(definition): void;
 type ErrorDefinition = object;
 ```
 
+Defined in: [lib/errors/base/registry.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L1)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-code-1"></a> `code` | `string` |
-| <a id="property-defaultstatus"></a> `defaultStatus` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-code-1"></a> `code` | `string` | [lib/errors/base/registry.ts:2](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L2) |
+| <a id="property-defaultstatus"></a> `defaultStatus` | `number` | [lib/errors/base/registry.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L3) |
 
 ***
 
@@ -184,12 +205,14 @@ type ErrorDefinition = object;
 type ErrorFactory = (options?) => AppError & object;
 ```
 
+Defined in: [lib/errors/base/registry.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L6)
+
 #### Type Declaration
 
-| Name | Type |
-| ------ | ------ |
-| `code` | `string` |
-| `defaultStatus` | `number` |
+| Name | Type | Defined in |
+| ------ | ------ | ------ |
+| `code` | `string` | [lib/errors/base/registry.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L7) |
+| `defaultStatus` | `number` | [lib/errors/base/registry.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L8) |
 
 ***
 
@@ -199,18 +222,20 @@ type ErrorFactory = (options?) => AppError & object;
 type ErrorOptions = object;
 ```
 
+Defined in: [lib/errors/base/registry.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L11)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-cause"></a> `cause?` | `unknown` |
-| <a id="property-correlation_id-1"></a> `correlation_id?` | `string` |
-| <a id="property-instance-1"></a> `instance?` | `string` |
-| <a id="property-mergecausemetadata"></a> `mergeCauseMetadata?` | `boolean` |
-| <a id="property-message"></a> `message?` | `string` |
-| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> |
-| <a id="property-retry_after-1"></a> `retry_after?` | `number` |
-| <a id="property-status-1"></a> `status?` | `number` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cause"></a> `cause?` | `unknown` | [lib/errors/base/registry.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L12) |
+| <a id="property-correlation_id-1"></a> `correlation_id?` | `string` | [lib/errors/base/registry.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L13) |
+| <a id="property-instance-1"></a> `instance?` | `string` | [lib/errors/base/registry.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L14) |
+| <a id="property-mergecausemetadata"></a> `mergeCauseMetadata?` | `boolean` | [lib/errors/base/registry.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L15) |
+| <a id="property-message"></a> `message?` | `string` | [lib/errors/base/registry.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L16) |
+| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> | [lib/errors/base/registry.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L17) |
+| <a id="property-retry_after-1"></a> `retry_after?` | `number` | [lib/errors/base/registry.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L18) |
+| <a id="property-status-1"></a> `status?` | `number` | [lib/errors/base/registry.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L19) |
 
 ***
 
@@ -220,26 +245,30 @@ type ErrorOptions = object;
 type Metadata = Record<string, unknown>;
 ```
 
+Defined in: [lib/errors/base/registry.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L22)
+
 ## Functions
 
 ### registerError()
-
-<div className="route-badge"><span className="route-label">Route</span><code>errors.register</code></div>
 
 ```ts
 function registerError(definition): ErrorFactory;
 ```
 
+Defined in: [lib/errors/base/registry.ts:123](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/errors/base/registry.ts#L123)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `definition` | [`ErrorDefinition`](#errordefinition) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) | - |
 
 #### Returns
 
 [`ErrorFactory`](#errorfactory)
 
-#### Throws
+#### Route
 
-- `Error`
+errors.register
+
+#### Throws

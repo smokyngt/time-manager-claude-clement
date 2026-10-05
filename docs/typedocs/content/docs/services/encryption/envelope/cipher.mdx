@@ -1,0 +1,117 @@
+## Functions
+
+### open()
+
+```ts
+function open(runtime, sealed): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/cipher.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/cipher.ts#L88)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `sealed` | `string` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.cipher.open
+
+#### Throws
+
+***
+
+### openNullable()
+
+```ts
+function openNullable(runtime, sealed): Promise<string | null>;
+```
+
+Defined in: [services/encryption/envelope/cipher.ts:123](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/cipher.ts#L123)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `sealed` | `string` \| `null` | - |
+
+#### Returns
+
+`Promise`\<`string` \| `null`\>
+
+#### Route
+
+services.encryption.envelope.cipher.openNullable
+
+#### Throws
+
+***
+
+### seal()
+
+```ts
+function seal(
+   runtime, 
+   domain, 
+   plaintext
+): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/cipher.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/cipher.ts#L60)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+| `plaintext` | `string` | - |
+
+#### Returns
+
+`Promise`\<`string`\>
+
+#### Route
+
+services.encryption.envelope.cipher.seal
+
+#### Throws
+
+***
+
+### sealNullable()
+
+```ts
+function sealNullable(
+   runtime, 
+   domain, 
+   plaintext
+): Promise<string | null>;
+```
+
+Defined in: [services/encryption/envelope/cipher.ts:110](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/cipher.ts#L110)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+| `plaintext` | `string` \| `null` | - |
+
+#### Returns
+
+`Promise`\<`string` \| `null`\>
+
+#### Route
+
+services.encryption.envelope.cipher.sealNullable
+
+#### Throws

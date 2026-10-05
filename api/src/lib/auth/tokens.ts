@@ -3,7 +3,7 @@ import { jwtVerify, SignJWT } from 'jose';
 import { Config } from '@/config/index.js';
 import { TokenAuthenticationError } from '@/lib/errors/index.js';
 import { ROLES } from '@/types/entities/index.js';
-import { Duration } from '@/utils/duration.js';
+import { Time } from '@/utils/time.js';
 
 import type { Actor, Role  } from '@/types/entities/index.js';
 
@@ -26,6 +26,7 @@ export class Tokens {
    * @route tokens.access
    * @param {{ id: string; role: Role }} user
    * @returns {Promise<AccessToken>}
+   * @throws {ValidationError}
    */
   public static async access(user: { id: string; role: Role }): Promise<AccessToken> {
     const expiresIn = Tokens.accessTtl();
@@ -44,9 +45,10 @@ export class Tokens {
   /**
    * @route tokens.accessTtl
    * @returns {number}
+   * @throws {ValidationError}
    */
   public static accessTtl(): number {
-    return Duration.seconds(Config.store.text('JWT_ACCESS_TTL', '15m'), 900);
+    return Time.seconds(Config.store.text('JWT_ACCESS_TTL', '15m'));
   }
 
   /**
@@ -63,6 +65,7 @@ export class Tokens {
   /**
    * @route tokens.refresh
    * @returns {RefreshToken}
+   * @throws {ValidationError}
    */
   public static refresh(): RefreshToken {
     const bytes = crypto.getRandomValues(new Uint8Array(32));
@@ -78,9 +81,10 @@ export class Tokens {
   /**
    * @route tokens.refreshTtl
    * @returns {number}
+   * @throws {ValidationError}
    */
   public static refreshTtl(): number {
-    return Duration.seconds(Config.store.text('JWT_REFRESH_TTL', '7d'), 604_800);
+    return Time.seconds(Config.store.text('JWT_REFRESH_TTL', '7d'));
   }
 
   /**

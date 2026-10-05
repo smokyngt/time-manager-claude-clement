@@ -1,0 +1,273 @@
+## Classes
+
+### VaultStore
+
+Defined in: [config/vault/store.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L20)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultStore(): VaultStore;
+```
+
+###### Returns
+
+[`VaultStore`](#vaultstore)
+
+#### Methods
+
+##### boolean()
+
+```ts
+boolean(key, fallback): boolean;
+```
+
+Defined in: [config/vault/store.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L30)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+| `fallback` | `boolean` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.vault.store.boolean
+
+###### Throws
+
+##### get()
+
+```ts
+get(key): string;
+```
+
+Defined in: [config/vault/store.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L45)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.vault.store.get
+
+###### Throws
+
+##### has()
+
+```ts
+has(key): boolean;
+```
+
+Defined in: [config/vault/store.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L57)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.vault.store.has
+
+##### list()
+
+```ts
+list(key, fallback?): string[];
+```
+
+Defined in: [config/vault/store.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L67)
+
+###### Parameters
+
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `key` | `string` | `undefined` | - |
+| `fallback` | `string`[] | `[]` | - |
+
+###### Returns
+
+`string`[]
+
+###### Route
+
+config.vault.store.list
+
+##### load()
+
+```ts
+load(env): void;
+```
+
+Defined in: [config/vault/store.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L82)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `env` | [`VaultEnv`](#vaultenv) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.store.load
+
+##### merge()
+
+```ts
+merge(record): void;
+```
+
+Defined in: [config/vault/store.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L95)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `record` | `Record`\<`string`, `unknown`\> | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.store.merge
+
+##### number()
+
+```ts
+number(key, fallback): number;
+```
+
+Defined in: [config/vault/store.ts:112](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L112)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+| `fallback` | `number` | - |
+
+###### Returns
+
+`number`
+
+###### Route
+
+config.vault.store.number
+
+###### Throws
+
+##### optional()
+
+```ts
+optional(key): string | undefined;
+```
+
+Defined in: [config/vault/store.ts:126](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L126)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+
+###### Returns
+
+`string` \| `undefined`
+
+###### Route
+
+config.vault.store.optional
+
+##### reset()
+
+```ts
+reset(): void;
+```
+
+Defined in: [config/vault/store.ts:134](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L134)
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.store.reset
+
+##### text()
+
+```ts
+text(key, fallback): string;
+```
+
+Defined in: [config/vault/store.ts:144](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L144)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `key` | `string` | - |
+| `fallback` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.vault.store.text
+
+## Type Aliases
+
+### VaultEnv
+
+```ts
+type VaultEnv = Record<string, string | undefined>;
+```
+
+Defined in: [config/vault/store.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L4)
+
+## Variables
+
+### SECRET\_KEYS
+
+```ts
+const SECRET_KEYS: readonly string[];
+```
+
+Defined in: [config/vault/store.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L6)
+
+***
+
+### SENSITIVE\_KEYS
+
+```ts
+const SENSITIVE_KEYS: readonly string[];
+```
+
+Defined in: [config/vault/store.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/store.ts#L8)

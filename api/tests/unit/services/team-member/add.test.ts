@@ -68,7 +68,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.service.add', () => {
+describe('team_member.service.add', () => {
   it('adds users, reports unknown and archived ones, and writes an audit log', async () => {
     fakeDb.enqueue([user(), user({ archived_at: 5, id: ARCHIVED_ID })], [{ user_id: USER_ID }]);
     const result = await add({
@@ -149,6 +149,6 @@ describe('team.member.service.add', () => {
     expect(error.code).toBe('team.member.add.failed');
     expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.service.add');
+    expect(error.metadata['route']).toBe('team_member.service.add');
   });
 });

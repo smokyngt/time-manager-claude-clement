@@ -1,29 +1,25 @@
----
-title: "Delete()"
-description: "Reference for the `remove()` function in `services/clock/delete` (route `clock.service.delete`)."
-route: "clock.service.delete"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>clock.service.delete</code></div>
-
 ## Functions
 
 ### remove()
 
 ```ts
-function remove(params): Promise<DeleteResponse>;
+function remove(params): Promise<DeleteClockResponse>;
 ```
+
+Defined in: [services/clock/delete.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/clock/delete.ts#L18)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`DeleteParams`](/docs/services/clock#deleteparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`DeleteClockParams`](../clock.mdx#deleteclockparams) | - |
 
 #### Returns
 
-`Promise`\<[`DeleteResponse`](/docs/services/clock#deleteresponse)\>
+`Promise`\<[`DeleteClockResponse`](../clock.mdx#deleteclockresponse)\>
+
+#### Route
+
+clock.service.delete
 
 #### Throws
-
-- `ClockDeleteError`

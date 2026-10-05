@@ -1,11 +1,8 @@
----
-title: "Tokens"
-description: "Reference for the `lib/auth/tokens` module: classes, interfaces."
----
-
 ## Classes
 
 ### Tokens
+
+Defined in: [lib/auth/tokens.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L24)
 
 #### Constructors
 
@@ -23,155 +20,205 @@ new Tokens(): Tokens;
 
 ##### access()
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.access</code></div>
-
 ```ts
 static access(user): Promise<AccessToken>;
 ```
 
+Defined in: [lib/auth/tokens.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L31)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `user` | \{ `id`: `string`; `role`: `"admin"` \| `"employee"` \| `"manager"`; \} |
-| `user.id` | `string` |
-| `user.role` | `"admin"` \| `"employee"` \| `"manager"` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `user` | \{ `id`: `string`; `role`: `"admin"` \| `"employee"` \| `"manager"`; \} | - |
+| `user.id` | `string` | - |
+| `user.role` | `"admin"` \| `"employee"` \| `"manager"` | - |
 
 ###### Returns
 
 `Promise`\<[`AccessToken`](#accesstoken)\>
 
-##### accessTtl()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.accessTtl</code></div>
+tokens.access
+
+###### Throws
+
+##### accessTtl()
 
 ```ts
 static accessTtl(): number;
 ```
 
+Defined in: [lib/auth/tokens.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L50)
+
 ###### Returns
 
 `number`
 
-##### hash()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.hash</code></div>
+tokens.accessTtl
+
+###### Throws
+
+##### hash()
 
 ```ts
 static hash(token): string;
 ```
 
+Defined in: [lib/auth/tokens.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L59)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `token` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `token` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### refresh()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.refresh</code></div>
+tokens.hash
+
+##### refresh()
 
 ```ts
 static refresh(): RefreshToken;
 ```
 
+Defined in: [lib/auth/tokens.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L70)
+
 ###### Returns
 
 [`RefreshToken`](#refreshtoken)
 
-##### refreshTtl()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.refreshTtl</code></div>
+tokens.refresh
+
+###### Throws
+
+##### refreshTtl()
 
 ```ts
 static refreshTtl(): number;
 ```
 
+Defined in: [lib/auth/tokens.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L86)
+
 ###### Returns
 
 `number`
 
-##### secret()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.secret</code></div>
+tokens.refreshTtl
+
+###### Throws
+
+##### secret()
 
 ```ts
 static secret(name): Uint8Array;
 ```
 
+Defined in: [lib/auth/tokens.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L95)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `name` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
 
 ###### Returns
 
 `Uint8Array`
 
-##### secretText()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.secretText</code></div>
+tokens.secret
+
+##### secretText()
 
 ```ts
 static secretText(name): string;
 ```
 
+Defined in: [lib/auth/tokens.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L104)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `name` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
 
 ###### Returns
 
 `string`
 
-##### verify()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tokens.verify</code></div>
+tokens.secretText
+
+##### verify()
 
 ```ts
 static verify(token): Promise<Actor>;
 ```
 
+Defined in: [lib/auth/tokens.ts:114](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L114)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `token` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `token` | `string` | - |
 
 ###### Returns
 
-`Promise`\<[`Actor`](/docs/types/entities/actor#actor)\>
+`Promise`\<[`Actor`](../../types/entities/actor.mdx#actor)\>
+
+###### Route
+
+tokens.verify
 
 ###### Throws
 
-- `UnauthorizedError`
-
-## Interfaces
+## Type Aliases
 
 ### AccessToken
 
+```ts
+type AccessToken = object;
+```
+
+Defined in: [lib/auth/tokens.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L13)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-expires_in"></a> `expires_in` | `number` |
-| <a id="property-token"></a> `token` | `string` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-expires_in"></a> `expires_in` | `number` | [lib/auth/tokens.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L14) |
+| <a id="property-token"></a> `token` | `string` | [lib/auth/tokens.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L15) |
 
 ***
 
 ### RefreshToken
 
+```ts
+type RefreshToken = object;
+```
+
+Defined in: [lib/auth/tokens.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L18)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-expires_at"></a> `expires_at` | `number` |
-| <a id="property-hash"></a> `hash` | `string` |
-| <a id="property-token-1"></a> `token` | `string` |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-expires_at"></a> `expires_at` | `number` | [lib/auth/tokens.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L19) |
+| <a id="property-hash"></a> `hash` | `string` | [lib/auth/tokens.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L20) |
+| <a id="property-token-1"></a> `token` | `string` | [lib/auth/tokens.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/auth/tokens.ts#L21) |

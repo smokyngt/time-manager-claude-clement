@@ -9,7 +9,7 @@ import { UserMapper } from '@/utils/mappers/user.js';
 import type { ListTeamMembersParams, ListTeamMembersResponse } from './index.js';
 
 /**
- * @route team.member.service.list
+ * @route team_member.service.list
  * @param {ListTeamMembersParams} params
  * @returns {Promise<ListTeamMembersResponse>}
  * @throws {TeamMemberListError}
@@ -36,6 +36,6 @@ export const list = async (params: ListTeamMembersParams): Promise<ListTeamMembe
       total: page.total,
     };
   } catch (error) {
-    throw TeamMemberListError({ cause: error, metadata: { route: 'team.member.service.list' } });
+    throw TeamMemberListError({ cause: error, metadata: { route: 'team_member.service.list' } });
   }
 };

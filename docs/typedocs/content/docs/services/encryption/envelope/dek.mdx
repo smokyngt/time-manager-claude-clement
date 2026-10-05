@@ -1,0 +1,113 @@
+## Classes
+
+### Dek
+
+Defined in: [services/encryption/envelope/dek.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L20)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Dek(): Dek;
+```
+
+###### Returns
+
+[`Dek`](#dek)
+
+#### Methods
+
+##### clear()
+
+```ts
+static clear(domain?): void;
+```
+
+Defined in: [services/encryption/envelope/dek.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L29)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain?` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+services.encryption.envelope.dek.clear
+
+##### latest()
+
+```ts
+static latest(runtime, domain): Promise<number>;
+```
+
+Defined in: [services/encryption/envelope/dek.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L47)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+###### Returns
+
+`Promise`\<`number`\>
+
+###### Route
+
+services.encryption.envelope.dek.latest
+
+###### Throws
+
+##### read()
+
+```ts
+static read(
+   runtime, 
+   domain, 
+   version?
+): Promise<DekEntry>;
+```
+
+Defined in: [services/encryption/envelope/dek.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L70)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+| `version?` | `number` | - |
+
+###### Returns
+
+`Promise`\<[`DekEntry`](#dekentry)\>
+
+###### Route
+
+services.encryption.envelope.dek.read
+
+###### Throws
+
+## Type Aliases
+
+### DekEntry
+
+```ts
+type DekEntry = object;
+```
+
+Defined in: [services/encryption/envelope/dek.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L12)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-key"></a> `key` | `Buffer` | [services/encryption/envelope/dek.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L12) |
+| <a id="property-version"></a> `version` | `number` | [services/encryption/envelope/dek.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/dek.ts#L12) |

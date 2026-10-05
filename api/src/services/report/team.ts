@@ -8,6 +8,7 @@ import {
   ReportTeamNotFoundError,
 } from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
+import { Cipher } from '@/utils/crypto/cipher.js';
 import { Kpi } from '@/utils/kpi.js';
 
 import { ReportQuery } from './query.js';
@@ -53,15 +54,22 @@ export const team = async (params: ReportTeamParams): Promise<ReportTeamResponse
       ReportQuery.totals(range, members),
       ReportQuery.series(range, members),
     ]);
-    const rows = totals.map((total) => ({
-      days_worked: total.days_worked,
-      first_name: total.first_name,
-      last_name: total.last_name,
-      late_days: total.late_days,
-      overtime_ms: Kpi.overtime(total.worked_ms, Kpi.target(total.weekly_hours, total.workdays)),
-      user_id: total.user_id,
-      worked_ms: total.worked_ms,
-    }));
+    const rows = totals
+      .map((total) => ({
+        days_worked: total.days_worked,
+        first_name: Cipher.open(total.first_name),
+        last_name: Cipher.open(total.last_name),
+        late_days: total.late_days,
+        overtime_ms: Kpi.overtime(total.worked_ms, Kpi.target(total.weekly_hours, total.workdays)),
+        user_id: total.user_id,
+        worked_ms: total.worked_ms,
+      }))
+      .sort(
+        (left, right) =>
+          left.last_name.localeCompare(right.last_name) ||
+          left.first_name.localeCompare(right.first_name) ||
+          left.user_id.localeCompare(right.user_id),
+      );
     const worked = rows.reduce((sum, member) => sum + member.worked_ms, 0);
     const personDays = rows.reduce((sum, member) => sum + member.days_worked, 0);
     const lateDays = rows.reduce((sum, member) => sum + member.late_days, 0);

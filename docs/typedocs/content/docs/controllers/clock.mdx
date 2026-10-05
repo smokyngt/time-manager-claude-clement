@@ -1,0 +1,240 @@
+## Classes
+
+### ClockController
+
+Defined in: [controllers/clock/index.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L73)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new ClockController(): ClockController;
+```
+
+###### Returns
+
+[`ClockController`](#clockcontroller-1)
+
+#### Properties
+
+| Property | Modifier | Type | Default value | Defined in |
+| ------ | ------ | ------ | ------ | ------ |
+| <a id="property-clockin"></a> `clockIn` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `clockIn` | [controllers/clock/index.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L74) |
+| <a id="property-clockout"></a> `clockOut` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `clockOut` | [controllers/clock/index.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L75) |
+| <a id="property-create"></a> `create` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `create` | [controllers/clock/index.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L76) |
+| <a id="property-current"></a> `current` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `current` | [controllers/clock/index.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L77) |
+| <a id="property-delete"></a> `delete` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `remove` | [controllers/clock/index.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L78) |
+| <a id="property-list"></a> `list` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `list` | [controllers/clock/index.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L79) |
+| <a id="property-retrieve"></a> `retrieve` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `retrieve` | [controllers/clock/index.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L80) |
+| <a id="property-update"></a> `update` | `public` | (`req`, `reply`) => `Promise`\<`void`\> | `update` | [controllers/clock/index.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L81) |
+
+## Type Aliases
+
+### ClockInBody
+
+```ts
+type ClockInBody = object;
+```
+
+Defined in: [controllers/clock/index.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L13)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-note"></a> `note?` | `string` | [controllers/clock/index.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L14) |
+
+***
+
+### ClockOutBody
+
+```ts
+type ClockOutBody = object;
+```
+
+Defined in: [controllers/clock/index.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L17)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-note-1"></a> `note?` | `string` | [controllers/clock/index.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L18) |
+
+***
+
+### ClockResponse
+
+```ts
+type ClockResponse = object;
+```
+
+Defined in: [controllers/clock/index.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L21)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clock"></a> `clock` | [`Clock`](../types/entities/clock.mdx#clock) | [controllers/clock/index.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L22) |
+
+***
+
+### CreateClockBody
+
+```ts
+type CreateClockBody = ClockCreateData;
+```
+
+Defined in: [controllers/clock/index.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L25)
+
+***
+
+### CurrentClockResponse
+
+```ts
+type CurrentClockResponse = object;
+```
+
+Defined in: [controllers/clock/index.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L27)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-clock-1"></a> `clock` | [`Clock`](../types/entities/clock.mdx#clock) \| `null` | [controllers/clock/index.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L28) |
+
+***
+
+### DeleteClocksBody
+
+```ts
+type DeleteClocksBody = object;
+```
+
+Defined in: [controllers/clock/index.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L31)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-ids"></a> `ids` | `string`[] | [controllers/clock/index.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L32) |
+
+***
+
+### DeleteClocksResponse
+
+```ts
+type DeleteClocksResponse = object;
+```
+
+Defined in: [controllers/clock/index.ts:35](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L35)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-deleted"></a> `deleted` | `string`[] | [controllers/clock/index.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L36) |
+| <a id="property-failed"></a> `failed` | [`BulkFailure`](../types/entities/bulk.mdx#bulkfailure)[] | [controllers/clock/index.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L37) |
+| <a id="property-success"></a> `success` | `boolean` | [controllers/clock/index.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L38) |
+
+***
+
+### ListClocksBody
+
+```ts
+type ListClocksBody = object;
+```
+
+Defined in: [controllers/clock/index.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L41)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` | [controllers/clock/index.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L42) |
+| <a id="property-from"></a> `from?` | `number` \| `string` | [controllers/clock/index.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L43) |
+| <a id="property-limit"></a> `limit?` | `number` | [controllers/clock/index.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L44) |
+| <a id="property-open"></a> `open?` | `boolean` | [controllers/clock/index.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L45) |
+| <a id="property-order"></a> `order?` | `"asc"` \| `"desc"` | [controllers/clock/index.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L46) |
+| <a id="property-to"></a> `to?` | `number` \| `string` | [controllers/clock/index.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L47) |
+| <a id="property-user_ids"></a> `user_ids?` | `string`[] | [controllers/clock/index.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L48) |
+
+***
+
+### ListClocksResponse
+
+```ts
+type ListClocksResponse = object;
+```
+
+Defined in: [controllers/clock/index.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L51)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-items"></a> `items` | [`Clock`](../types/entities/clock.mdx#clock)[] | [controllers/clock/index.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L52) |
+| <a id="property-more"></a> `more` | `boolean` | [controllers/clock/index.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L53) |
+| <a id="property-next"></a> `next` | `null` \| `string` | [controllers/clock/index.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L54) |
+| <a id="property-total"></a> `total` | `number` | [controllers/clock/index.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L55) |
+
+***
+
+### RetrieveClockParams
+
+```ts
+type RetrieveClockParams = object;
+```
+
+Defined in: [controllers/clock/index.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L58)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id"></a> `id` | `string` | [controllers/clock/index.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L59) |
+
+***
+
+### UpdateClocksBody
+
+```ts
+type UpdateClocksBody = object;
+```
+
+Defined in: [controllers/clock/index.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L62)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-data"></a> `data` | [`ClockUpdateData`](../services/clock.mdx#clockupdatedata) | [controllers/clock/index.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L63) |
+| <a id="property-ids-1"></a> `ids` | `string`[] | [controllers/clock/index.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L64) |
+
+***
+
+### UpdateClocksResponse
+
+```ts
+type UpdateClocksResponse = object;
+```
+
+Defined in: [controllers/clock/index.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L67)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-failed-1"></a> `failed` | [`BulkFailure`](../types/entities/bulk.mdx#bulkfailure)[] | [controllers/clock/index.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L68) |
+| <a id="property-success-1"></a> `success` | `boolean` | [controllers/clock/index.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L69) |
+| <a id="property-updated"></a> `updated` | `string`[] | [controllers/clock/index.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L70) |
+
+## Variables
+
+### clockController
+
+```ts
+const clockController: ClockController;
+```
+
+Defined in: [controllers/clock/index.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/clock/index.ts#L84)

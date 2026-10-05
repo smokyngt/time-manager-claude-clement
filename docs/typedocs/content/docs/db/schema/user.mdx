@@ -1,8 +1,3 @@
----
-title: "User"
-description: "Reference for the `db/schema/user` module: type aliases, variables."
----
-
 ## Type Aliases
 
 ### UserInsert
@@ -10,6 +5,8 @@ description: "Reference for the `db/schema/user` module: type aliases, variables
 ```ts
 type UserInsert = typeof users.$inferInsert;
 ```
+
+Defined in: [db/schema/user.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/user.ts#L33)
 
 ***
 
@@ -19,6 +16,8 @@ type UserInsert = typeof users.$inferInsert;
 type UserRow = typeof users.$inferSelect;
 ```
 
+Defined in: [db/schema/user.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/user.ts#L34)
+
 ## Variables
 
 ### userRole
@@ -26,6 +25,8 @@ type UserRow = typeof users.$inferSelect;
 ```ts
 const userRole: PgEnum<["admin", "employee", "manager"]>;
 ```
+
+Defined in: [db/schema/user.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/user.ts#L5)
 
 ***
 
@@ -35,3 +36,5 @@ const userRole: PgEnum<["admin", "employee", "manager"]>;
 const users: PgTableWithColumns<{
 }>;
 ```
+
+Defined in: [db/schema/user.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/user.ts#L7)

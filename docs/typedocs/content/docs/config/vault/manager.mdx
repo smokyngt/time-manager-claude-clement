@@ -1,0 +1,134 @@
+## Classes
+
+### VaultCache
+
+Defined in: [config/vault/manager.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L13)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new VaultCache(config): VaultCache;
+```
+
+Defined in: [config/vault/manager.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L18)
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `config` | [`VaultConfig`](../vault.mdx#vaultconfig-1) |
+
+###### Returns
+
+[`VaultCache`](#vaultcache)
+
+#### Methods
+
+##### check()
+
+```ts
+check(): Promise<boolean>;
+```
+
+Defined in: [config/vault/manager.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L26)
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+###### Route
+
+config.vault.cache.check
+
+##### get()
+
+```ts
+get(path, ttl?): Promise<Record<string, unknown>>;
+```
+
+Defined in: [config/vault/manager.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L43)
+
+###### Parameters
+
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `path` | `string` | `undefined` | - |
+| `ttl` | `number` | `DEFAULT_TTL` | - |
+
+###### Returns
+
+`Promise`\<`Record`\<`string`, `unknown`\>\>
+
+###### Route
+
+config.vault.cache.get
+
+###### Throws
+
+##### invalidate()
+
+```ts
+invalidate(path?): void;
+```
+
+Defined in: [config/vault/manager.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L57)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `path?` | `string` | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+config.vault.cache.invalidate
+
+##### refresh()
+
+```ts
+refresh(path, ttl?): Promise<Record<string, unknown>>;
+```
+
+Defined in: [config/vault/manager.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L73)
+
+###### Parameters
+
+| Parameter | Type | Default value | Description |
+| ------ | ------ | ------ | ------ |
+| `path` | `string` | `undefined` | - |
+| `ttl` | `number` | `DEFAULT_TTL` | - |
+
+###### Returns
+
+`Promise`\<`Record`\<`string`, `unknown`\>\>
+
+###### Route
+
+config.vault.cache.refresh
+
+###### Throws
+
+## Type Aliases
+
+### VaultCacheEntry
+
+```ts
+type VaultCacheEntry = object;
+```
+
+Defined in: [config/vault/manager.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L3)
+
+#### Properties
+
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-data"></a> `data` | `Record`\<`string`, `unknown`\> | [config/vault/manager.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L4) |
+| <a id="property-expires"></a> `expires` | `number` | [config/vault/manager.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L5) |
+| <a id="property-lease"></a> `lease?` | `string` | [config/vault/manager.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L6) |
+| <a id="property-timer"></a> `timer?` | `ReturnType`\<*typeof* `setTimeout`\> | [config/vault/manager.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/vault/manager.ts#L7) |

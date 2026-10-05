@@ -1,29 +1,25 @@
----
-title: "Retrieve()"
-description: "Reference for the `retrieve()` function in `services/team/retrieve` (route `team.service.retrieve`)."
-route: "team.service.retrieve"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.service.retrieve</code></div>
-
 ## Functions
 
 ### retrieve()
 
 ```ts
-function retrieve(params): Promise<RetrieveResponse>;
+function retrieve(params): Promise<RetrieveTeamResponse>;
 ```
+
+Defined in: [services/team/retrieve.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/retrieve.ts#L18)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`RetrieveParams`](/docs/services/team#retrieveparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`RetrieveTeamParams`](../team.mdx#retrieveteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`RetrieveResponse`](/docs/services/team#retrieveresponse)\>
+`Promise`\<[`RetrieveTeamResponse`](../team.mdx#retrieveteamresponse)\>
+
+#### Route
+
+team.service.retrieve
 
 #### Throws
-
-- `TeamRetrieveError`

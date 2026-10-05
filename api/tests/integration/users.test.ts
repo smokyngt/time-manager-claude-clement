@@ -1,30 +1,29 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, test } from 'bun:test';
+import { eq } from 'drizzle-orm';
 
-import { Harness } from './setup.js';
+import { db } from '@/db/client.js';
+import { auditLogs, users } from '@/db/schema/index.js';
+import { Digest } from '@/utils/crypto/digest.js';
 
-import type { User } from '@/types/entities/user.js';
+import { Harness, MISSING_ID } from './setup.js';
 
-interface BulkBody {
+import type { ErrorBody, Reply } from './setup.js';
+import type { User } from '@/types/entities/index.js';
+
+type BulkBody = {
   data: {
     deleted?: string[];
     failed: { code: string; id: string }[];
     success: boolean;
     updated?: string[];
   };
-}
+};
 
-interface ErrorBody {
-  code: string;
-  message: string;
-  request_id: string;
-  status: number;
-}
-
-interface ListBody {
+type ListBody = {
   data: { items: User[]; more: boolean; next: null | string; total: number };
-}
+};
 
-const MISSING_ID = '00000000-0000-4000-8000-0000000000ff';
+type UserBody = { data: { user: User } };
 
 const newUser = (overrides: Record<string, unknown> = {}): Record<string, unknown> => ({
   email: 'new.user@example.com',
@@ -51,17 +50,57 @@ describe('users', () => {
     test('lets an admin create an admin, a manager and an employee', async () => {
       const admin = await Harness.member('admin');
       for (const role of ['admin', 'manager', 'employee'] as const) {
-        const result = await Harness.call<{ data: User; event: { type: string } }>(
+        const result = await Harness.call<Reply<{ user: User }>>(
           'POST',
           '/v1/users/new',
           { body: newUser({ email: `${role}@example.com`, role }), token: admin.access_token },
         );
         expect(result.status).toBe(200);
-        expect(result.body.data.role).toBe(role);
-        expect(result.body.data.object).toBe('user');
-        expect(result.body.data.archived_at).toBeNull();
-        expect(result.body.data).not.toHaveProperty('password_hash');
+        expect(result.body.event.code).toBe('user.created');
+        expect(result.body.event.correlation_id).toBe(result.headers['x-request-id'] as string);
+        expect(result.body.data.user.role).toBe(role);
+        expect(result.body.data.user.object).toBe('user');
+        expect(result.body.data.user.archived_at).toBeNull();
+        expect(result.body.data.user).not.toHaveProperty('password_hash');
       }
+    });
+
+    test('seals personal data at rest and returns it in clear', async () => {
+      const admin = await Harness.member('admin');
+      const created = await Harness.call<UserBody>('POST', '/v1/users/new', {
+        body: newUser({ phone_number: '+33 6 12 34 56 78' }),
+        token: admin.access_token,
+      });
+      expect(created.body.data.user).toMatchObject({
+        email: 'new.user@example.com',
+        first_name: 'New',
+        last_name: 'User',
+        phone_number: '+33 6 12 34 56 78',
+      });
+      expect(created.body.data.user).not.toHaveProperty('email_hash');
+      const [stored] = await db
+        .select()
+        .from(users)
+        .where(eq(users.id, created.body.data.user.id));
+      for (const value of [stored?.email, stored?.first_name, stored?.last_name, stored?.phone_number]) {
+        expect(value).toStartWith('v1.');
+      }
+      expect(stored?.email_hash).toBe(Digest.email('new.user@example.com'));
+    });
+
+    test('writes an audit log entry with ids only', async () => {
+      const admin = await Harness.member('admin');
+      const created = await Harness.call<UserBody>('POST', '/v1/users/new', {
+        body: newUser(),
+        token: admin.access_token,
+      });
+      const [entry] = await db.select().from(auditLogs).where(eq(auditLogs.event, 'user.created'));
+      expect(entry).toMatchObject({
+        actor_id: admin.row.id,
+        actor_role: 'admin',
+        metadata: { role: 'employee', user_id: created.body.data.user.id },
+      });
+      expect(JSON.stringify(entry)).not.toContain('new.user@example.com');
     });
 
     test('lets the created user log in', async () => {
@@ -86,7 +125,7 @@ describe('users', () => {
         token: manager.access_token,
       });
       expect(peer.status).toBe(403);
-      expect(peer.body.code).toBe('FORBIDDEN');
+      expect(peer.body.code).toBe('unauthorized');
       const admin = await Harness.call<ErrorBody>('POST', '/v1/users/new', {
         body: newUser({ email: 'boss@example.com', role: 'admin' }),
         token: manager.access_token,
@@ -116,24 +155,41 @@ describe('users', () => {
         token: admin.access_token,
       });
       expect(result.status).toBe(409);
-      expect(result.body.code).toBe('USER_CONFLICT');
+      expect(result.body.code).toBe('duplicate.key');
     });
   });
 
   describe('validation', () => {
-    test('rejects an unknown property with the error envelope', async () => {
+    test('strips an unknown property silently', async () => {
+      const admin = await Harness.member('admin');
+      const result = await Harness.call<UserBody>('POST', '/v1/users/new', {
+        body: newUser({ password_hash: 'x', unexpected: true }),
+        token: admin.access_token,
+      });
+      expect(result.status).toBe(200);
+      expect(result.body.data.user).not.toHaveProperty('unexpected');
+      const [stored] = await db.select().from(users).where(eq(users.id, result.body.data.user.id));
+      expect(stored?.password_hash).toStartWith('$argon2id$');
+    });
+
+    test('rejects an invalid body with the error envelope', async () => {
       const admin = await Harness.member('admin');
       const result = await Harness.call<ErrorBody>('POST', '/v1/users/new', {
-        body: newUser({ unexpected: true }),
+        body: newUser({ email: 'not-an-email' }),
         token: admin.access_token,
       });
       expect(result.status).toBe(400);
-      expect(Object.keys(result.body).sort()).toEqual(['code', 'message', 'request_id', 'status']);
-      expect(result.body.code).toBe('VALIDATION_ERROR');
-      expect(result.body.status).toBe(400);
-      expect(typeof result.body.message).toBe('string');
-      expect(typeof result.body.request_id).toBe('string');
-      expect(result.body.request_id.length).toBeGreaterThan(0);
+      expect(result.body).toMatchObject({
+        code: 'validation.error',
+        instance: '/v1/users/new',
+        status: 400,
+      });
+      expect(result.body.correlation_id).toBe(result.headers['x-request-id'] as string);
+      expect(typeof result.body.timestamp).toBe('number');
+      expect(result.body).not.toHaveProperty('message');
+      expect(result.body).not.toHaveProperty('request_id');
+      expect(result.body.errors?.length).toBeGreaterThan(0);
+      expect(result.body.errors?.[0]).toMatchObject({ code: 'format', path: 'body.email' });
     });
 
     test('rejects a missing field and a short password', async () => {
@@ -150,10 +206,10 @@ describe('users', () => {
       expect(short.status).toBe(400);
     });
 
-    test('rejects an unknown property on list and update', async () => {
+    test('rejects wrong types on list and an empty update', async () => {
       const admin = await Harness.member('admin');
       const list = await Harness.call<ErrorBody>('POST', '/v1/users/list', {
-        body: { nope: 1 },
+        body: { limit: 'many', role: 'owner' },
         token: admin.access_token,
       });
       expect(list.status).toBe(400);
@@ -164,10 +220,21 @@ describe('users', () => {
       expect(update.status).toBe(400);
     });
 
+    test('rejects malformed JSON with json.invalid', async () => {
+      const response = await Harness.app.inject({
+        headers: { 'content-type': 'application/json' },
+        method: 'POST',
+        payload: '{bad',
+        url: '/v1/auth/login',
+      });
+      expect(response.statusCode).toBe(400);
+      expect(response.json<ErrorBody>().code).toBe('json.invalid');
+    });
+
     test('answers 404 with the envelope on an unknown route', async () => {
       const result = await Harness.call<ErrorBody>('GET', '/v1/nothing-here');
       expect(result.status).toBe(404);
-      expect(Object.keys(result.body).sort()).toEqual(['code', 'message', 'request_id', 'status']);
+      expect(result.body).toMatchObject({ code: 'route.not.found', instance: '/v1/nothing-here', status: 404 });
     });
   });
 
@@ -267,11 +334,11 @@ describe('users', () => {
     test('returns a user to an admin and the employee itself', async () => {
       const admin = await Harness.member('admin');
       const employee = await Harness.member('employee');
-      const asAdmin = await Harness.call<{ data: User }>('GET', `/v1/users/${employee.row.id}`, {
+      const asAdmin = await Harness.call<UserBody>('GET', `/v1/users/${employee.row.id}`, {
         token: admin.access_token,
       });
       expect(asAdmin.status).toBe(200);
-      expect(asAdmin.body.data.id).toBe(employee.row.id);
+      expect(asAdmin.body.data.user.id).toBe(employee.row.id);
       const asSelf = await Harness.call('GET', `/v1/users/${employee.row.id}`, {
         token: employee.access_token,
       });
@@ -284,7 +351,7 @@ describe('users', () => {
         token: admin.access_token,
       });
       expect(result.status).toBe(404);
-      expect(result.body.code).toBe('USER_NOT_FOUND');
+      expect(result.body.code).toBe('user.not.found');
     });
 
     test('answers 403 when an employee reads someone else', async () => {
@@ -296,13 +363,14 @@ describe('users', () => {
       expect(result.status).toBe(403);
     });
 
-    test('answers 403 when a manager reads an admin and 400 on a bad id', async () => {
+    test('hides an admin from a manager with a 404 and answers 400 on a bad id', async () => {
       const manager = await Harness.member('manager');
       const admin = await Harness.user({ role: 'admin' });
-      const forbidden = await Harness.call<ErrorBody>('GET', `/v1/users/${admin.id}`, {
+      const hidden = await Harness.call<ErrorBody>('GET', `/v1/users/${admin.id}`, {
         token: manager.access_token,
       });
-      expect(forbidden.status).toBe(403);
+      expect(hidden.status).toBe(404);
+      expect(hidden.body.code).toBe('user.not.found');
       const bad = await Harness.call<ErrorBody>('GET', '/v1/users/not-a-uuid', {
         token: manager.access_token,
       });
@@ -322,12 +390,12 @@ describe('users', () => {
       expect(result.status).toBe(200);
       expect(result.body.data.success).toBe(false);
       expect([...(result.body.data.updated ?? [])].sort()).toEqual([first.id, second.id].sort());
-      expect(result.body.data.failed).toEqual([{ code: 'USER_NOT_FOUND', id: MISSING_ID }]);
-      const check = await Harness.call<{ data: User }>('GET', `/v1/users/${first.id}`, {
+      expect(result.body.data.failed).toEqual([{ code: 'user.not.found', id: MISSING_ID }]);
+      const check = await Harness.call<UserBody>('GET', `/v1/users/${first.id}`, {
         token: admin.access_token,
       });
-      expect(check.body.data.first_name).toBe('Renamed');
-      expect(check.body.data.updated_at).not.toBeNull();
+      expect(check.body.data.user.first_name).toBe('Renamed');
+      expect(check.body.data.user.updated_at).not.toBeNull();
     });
 
     test('reports success when every id is updated and dedupes ids', async () => {
@@ -405,14 +473,14 @@ describe('users', () => {
       expect(result.status).toBe(200);
       expect(result.body.data.success).toBe(false);
       expect(result.body.data.deleted).toEqual([target.id]);
-      expect(result.body.data.failed).toEqual([{ code: 'USER_NOT_FOUND', id: MISSING_ID }]);
+      expect(result.body.data.failed).toEqual([{ code: 'user.not.found', id: MISSING_ID }]);
       const check = await Harness.call<ErrorBody>('GET', `/v1/users/${target.id}`, {
         token: admin.access_token,
       });
       expect(check.status).toBe(404);
     });
 
-    test('forbids deleting oneself, an employee and a manager targeting a manager', async () => {
+    test('forbids deleting oneself or as an employee and hides a peer manager', async () => {
       const admin = await Harness.member('admin');
       const self = await Harness.call<ErrorBody>('DELETE', '/v1/users', {
         body: { ids: [admin.row.id] },
@@ -427,11 +495,13 @@ describe('users', () => {
       expect(byEmployee.status).toBe(403);
       const manager = await Harness.member('manager');
       const peer = await Harness.user({ role: 'manager' });
-      const byManager = await Harness.call<ErrorBody>('DELETE', '/v1/users', {
+      const byManager = await Harness.call<BulkBody>('DELETE', '/v1/users', {
         body: { ids: [peer.id] },
         token: manager.access_token,
       });
-      expect(byManager.status).toBe(403);
+      expect(byManager.status).toBe(200);
+      expect(byManager.body.data.deleted).toEqual([]);
+      expect(byManager.body.data.failed).toEqual([{ code: 'user.not.found', id: peer.id }]);
     });
   });
 
@@ -439,20 +509,20 @@ describe('users', () => {
     test('archives then restores a user', async () => {
       const admin = await Harness.member('admin');
       const target = await Harness.user();
-      const archived = await Harness.call<{ data: User }>(
+      const archived = await Harness.call<UserBody>(
         'POST',
         `/v1/users/${target.id}/archive`,
         { token: admin.access_token },
       );
       expect(archived.status).toBe(200);
-      expect(archived.body.data.archived_at).not.toBeNull();
-      const restored = await Harness.call<{ data: User }>(
+      expect(archived.body.data.user.archived_at).not.toBeNull();
+      const restored = await Harness.call<UserBody>(
         'POST',
         `/v1/users/${target.id}/restore`,
         { token: admin.access_token },
       );
       expect(restored.status).toBe(200);
-      expect(restored.body.data.archived_at).toBeNull();
+      expect(restored.body.data.user.archived_at).toBeNull();
     });
 
     test('blocks login while archived', async () => {

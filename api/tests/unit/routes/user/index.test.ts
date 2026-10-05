@@ -24,7 +24,7 @@ const answer =
 
 await mock.module('@/controllers/user/index.js', () => ({
   ...realControllers,
-  user: {
+  userController: {
     archive: answer(UserArchived({ payload: { actor, user_id: OTHER_ID } }), { user }),
     create: answer(UserCreated({ payload: { actor, user_id: OTHER_ID } }), { user }),
     delete: answer(UserDeleted({ payload: { actor, deleted: 0, failed: 0 } }), {

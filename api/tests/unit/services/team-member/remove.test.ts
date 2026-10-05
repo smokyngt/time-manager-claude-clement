@@ -48,7 +48,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.service.remove', () => {
+describe('team_member.service.remove', () => {
   it('removes members, reports non members and writes an audit log', async () => {
     fakeDb.enqueue([{ user_id: USER_ID }]);
     const result = await remove({
@@ -81,7 +81,7 @@ describe('team.member.service.remove', () => {
     expect(error.code).toBe('team.member.remove.failed');
     expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.service.remove');
+    expect(error.metadata['route']).toBe('team_member.service.remove');
     expect(logCreate).not.toHaveBeenCalled();
   });
 });

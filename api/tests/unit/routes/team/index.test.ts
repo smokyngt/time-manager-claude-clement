@@ -32,7 +32,7 @@ const answer =
 
 await mock.module('@/controllers/team/index.js', () => ({
   ...realControllers,
-  team: {
+  teamController: {
     archive: answer(TeamArchived({ payload: { actor, team_id: TEAM_ID } }), { team }),
     create: answer(TeamCreated({ payload: { actor, team_id: TEAM_ID } }), { team }),
     delete: answer(TeamDeleted({ payload: { actor, deleted: 0, failed: 0 } }), {

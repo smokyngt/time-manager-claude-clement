@@ -1,29 +1,25 @@
----
-title: "In()"
-description: "Reference for the `clockIn()` function in `services/clock/in` (route `clock.service.in`)."
-route: "clock.service.in"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>clock.service.in</code></div>
-
 ## Functions
 
 ### clockIn()
 
 ```ts
-function clockIn(params): Promise<InResponse>;
+function clockIn(params): Promise<ClockInResponse>;
 ```
+
+Defined in: [services/clock/in.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/clock/in.ts#L21)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`InParams`](/docs/services/clock#inparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ClockInParams`](../clock.mdx#clockinparams) | - |
 
 #### Returns
 
-`Promise`\<[`InResponse`](/docs/services/clock#inresponse)\>
+`Promise`\<[`ClockInResponse`](../clock.mdx#clockinresponse)\>
+
+#### Route
+
+clock.service.in
 
 #### Throws
-
-- `ClockInError`

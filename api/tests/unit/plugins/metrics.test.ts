@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import Fastify from 'fastify';
 
-import { ErrorHandler } from '@/middlewares/error.js';
 import { Metrics } from '@/lib/telemetry/metrics.js';
+import { ErrorHandler } from '@/middlewares/error.js';
 import { metrics } from '@/plugins/metrics.js';
 
 import type { MetricsOptions } from '@/plugins/metrics.js';

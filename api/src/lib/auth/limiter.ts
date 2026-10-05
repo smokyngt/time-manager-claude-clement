@@ -1,5 +1,5 @@
 import { Config } from '@/config/index.js';
-import { Duration } from '@/utils/duration.js';
+import { Time } from '@/utils/time.js';
 
 type Entry = {
   count: number;
@@ -42,6 +42,7 @@ export class Limiter {
    * @route limiter.fail
    * @param {string} email
    * @returns {void}
+   * @throws {ValidationError}
    */
   public static fail(email: string): void {
     const key = Limiter.key(email);
@@ -53,10 +54,7 @@ export class Limiter {
       return;
     }
     if (Limiter.entries.size >= CAPACITY) Limiter.prune(now);
-    const window = Duration.seconds(
-      Config.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'),
-      900,
-    );
+    const window = Time.seconds(Config.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'));
     Limiter.entries.set(key, { count: 1, reset: now + window * 1000 });
   }
 

@@ -1,0 +1,136 @@
+## Classes
+
+### ConfigStore
+
+Defined in: [config/store.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L1)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new ConfigStore(): ConfigStore;
+```
+
+###### Returns
+
+[`ConfigStore`](#configstore)
+
+#### Methods
+
+##### flag()
+
+```ts
+flag(name, fallback): boolean;
+```
+
+Defined in: [config/store.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L8)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `fallback` | `boolean` | - |
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.store.flag
+
+##### number()
+
+```ts
+number(name, fallback): number;
+```
+
+Defined in: [config/store.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L20)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `fallback` | `number` | - |
+
+###### Returns
+
+`number`
+
+###### Route
+
+config.store.number
+
+##### optional()
+
+```ts
+optional(name): string | undefined;
+```
+
+Defined in: [config/store.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L32)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+
+###### Returns
+
+`string` \| `undefined`
+
+###### Route
+
+config.store.optional
+
+##### production()
+
+```ts
+production(): boolean;
+```
+
+Defined in: [config/store.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L41)
+
+###### Returns
+
+`boolean`
+
+###### Route
+
+config.store.production
+
+##### text()
+
+```ts
+text(name, fallback): string;
+```
+
+Defined in: [config/store.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L51)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `fallback` | `string` | - |
+
+###### Returns
+
+`string`
+
+###### Route
+
+config.store.text
+
+## Variables
+
+### store
+
+```ts
+const store: ConfigStore;
+```
+
+Defined in: [config/store.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/config/store.ts#L57)

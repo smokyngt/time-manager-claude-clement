@@ -5,9 +5,9 @@ export class Postgres {
    * @returns {boolean}
    */
   public static conflict(error: unknown): boolean {
-    const candidate = error as { cause?: unknown; code?: unknown } | null;
-    if (candidate === null || typeof candidate !== 'object') return false;
-    if (candidate.code === '23505') return true;
-    return candidate.cause !== undefined && Postgres.conflict(candidate.cause);
+    if (typeof error !== 'object' || error === null) return false;
+    if ('code' in error && error.code === '23505') return true;
+
+    return 'cause' in error && error.cause !== undefined && Postgres.conflict(error.cause);
   }
 }

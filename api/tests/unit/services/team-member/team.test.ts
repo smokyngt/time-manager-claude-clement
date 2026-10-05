@@ -44,7 +44,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.service.team', () => {
+describe('team_member.service.team', () => {
   it('returns the team row', async () => {
     fakeDb.enqueue([row]);
     const result = await team({ id: TEAM_ID });
@@ -64,6 +64,6 @@ describe('team.member.service.team', () => {
     const error = await caught(team({ id: TEAM_ID }));
     expect(error.code).toBe('team.member.list.failed');
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.service.team');
+    expect(error.metadata['route']).toBe('team_member.service.team');
   });
 });

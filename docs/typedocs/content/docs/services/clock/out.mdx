@@ -1,29 +1,25 @@
----
-title: "Out()"
-description: "Reference for the `clockOut()` function in `services/clock/out` (route `clock.service.out`)."
-route: "clock.service.out"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>clock.service.out</code></div>
-
 ## Functions
 
 ### clockOut()
 
 ```ts
-function clockOut(params): Promise<OutResponse>;
+function clockOut(params): Promise<ClockOutResponse>;
 ```
+
+Defined in: [services/clock/out.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/clock/out.ts#L22)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`OutParams`](/docs/services/clock#outparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ClockOutParams`](../clock.mdx#clockoutparams) | - |
 
 #### Returns
 
-`Promise`\<[`OutResponse`](/docs/services/clock#outresponse)\>
+`Promise`\<[`ClockOutResponse`](../clock.mdx#clockoutresponse)\>
+
+#### Route
+
+clock.service.out
 
 #### Throws
-
-- `ClockOutError`

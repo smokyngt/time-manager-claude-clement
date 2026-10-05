@@ -1,0 +1,115 @@
+// Grafana Alloy gateway on Kubernetes: OTLP receiver, black-box probes, stack self-scrape.
+//
+//   api --OTLP(TLS)--> alloy --> tempo                          (traces)
+//   probes, stack /metrics --> alloy --remote_write--> prometheus (metrics)
+//
+// Workload metrics (api, web, postgres, platform) are scraped by Prometheus itself through
+// ServiceMonitor/PodMonitor resources; pod logs are shipped by the alloy-logs DaemonSet.
+// Rendered by Terraform from files/alloy-gateway.alloy.tftpl.
+
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+otelcol.receiver.otlp "default" {
+  grpc {
+    endpoint = "0.0.0.0:4317"
+%{ if otlp_tls ~}
+    tls {
+      cert_file       = "/etc/alloy-tls/tls.crt"
+      key_file        = "/etc/alloy-tls/tls.key"
+      reload_interval = "1h"
+    }
+%{ endif ~}
+  }
+
+  http {
+    endpoint = "0.0.0.0:4318"
+%{ if otlp_tls ~}
+    tls {
+      cert_file       = "/etc/alloy-tls/tls.crt"
+      key_file        = "/etc/alloy-tls/tls.key"
+      reload_interval = "1h"
+    }
+%{ endif ~}
+  }
+
+  output {
+    traces = [otelcol.processor.memory_limiter.default.input]
+  }
+}
+
+otelcol.processor.memory_limiter "default" {
+  check_interval         = "1s"
+  limit_percentage       = 80
+  spike_limit_percentage = 25
+
+  output {
+    traces = [otelcol.processor.batch.default.input]
+  }
+}
+
+otelcol.processor.batch "default" {
+  timeout             = "5s"
+  send_batch_size     = 1024
+  send_batch_max_size = 2048
+
+  output {
+    traces = [otelcol.exporter.otlp.tempo.input]
+  }
+}
+
+otelcol.exporter.otlp "tempo" {
+  client {
+    endpoint = "${tempo_endpoint}"
+
+    tls {
+      insecure = true
+    }
+  }
+}
+
+prometheus.remote_write "prometheus" {
+  endpoint {
+    url = "${prometheus_write_url}"
+  }
+}
+
+prometheus.exporter.blackbox "probes" {
+  config = "{ modules: { http_2xx: { prober: http, timeout: 5s, http: { method: GET, valid_status_codes: [200], preferred_ip_protocol: ip4, tls_config: { ca_file: ${ca_file} } } } } }"
+%{ for name, address in probe_targets ~}
+
+  target {
+    name    = "${name}"
+    address = "${address}"
+    module  = "http_2xx"
+  }
+%{ endfor ~}
+}
+
+prometheus.scrape "probes" {
+  job_name        = "probes"
+  targets         = prometheus.exporter.blackbox.probes.targets
+  scrape_interval = "15s"
+  scrape_timeout  = "10s"
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.exporter.self "alloy" { }
+
+prometheus.scrape "alloy" {
+  job_name        = "alloy"
+  targets         = prometheus.exporter.self.alloy.targets
+  scrape_interval = "30s"
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+%{ for job, address in stack_targets ~}
+
+prometheus.scrape "${job}" {
+  job_name        = "${job}"
+  targets         = [{"__address__" = "${address}", "instance" = "${job}"}]
+  scrape_interval = "30s"
+  forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+%{ endfor ~}

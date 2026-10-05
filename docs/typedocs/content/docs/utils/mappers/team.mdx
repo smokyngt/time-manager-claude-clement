@@ -1,0 +1,54 @@
+## Classes
+
+### TeamMapper
+
+Defined in: [utils/mappers/team.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/mappers/team.ts#L6)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new TeamMapper(): TeamMapper;
+```
+
+###### Returns
+
+[`TeamMapper`](#teammapper)
+
+#### Methods
+
+##### entity()
+
+```ts
+static entity(row, memberCount): Team;
+```
+
+Defined in: [utils/mappers/team.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/mappers/team.ts#L14)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `row` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
+| `row.archived_at` | `number` \| `null` | - |
+| `row.created_at` | `number` | - |
+| `row.description` | `string` \| `null` | - |
+| `row.id` | `string` | - |
+| `row.manager_id` | `string` | - |
+| `row.name` | `string` | - |
+| `row.updated_at` | `number` \| `null` | - |
+| `row.weekly_hours_target` | `number` | - |
+| `row.work_end` | `string` | - |
+| `row.work_start` | `string` | - |
+| `memberCount` | `number` | - |
+
+###### Returns
+
+[`Team`](../../types/entities/team.mdx#team)
+
+###### Route
+
+team.mapper.entity
+
+###### Throws

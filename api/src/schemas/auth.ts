@@ -84,27 +84,32 @@ export const AuthCallbackQuerySchema = {
   properties: {
     code: {
       description: 'Authorization code issued by Microsoft.',
+      example: '0.AXoA1b2c3d4e5f6',
       maxLength: 4096,
       minLength: 1,
       type: 'string',
     },
     error: {
       description: 'Error code sent by Microsoft when the user refused.',
+      example: 'access_denied',
       maxLength: 200,
       type: 'string',
     },
     error_description: {
       description: 'Error details sent by Microsoft.',
+      example: 'The user declined to consent.',
       maxLength: 2000,
       type: 'string',
     },
     session_state: {
       description: 'Session identifier sent by Microsoft, ignored.',
+      example: '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10',
       maxLength: 200,
       type: 'string',
     },
     state: {
       description: 'State echoed back by Microsoft.',
+      example: 'Zm9vYmFyYmF6',
       maxLength: 200,
       minLength: 1,
       type: 'string',

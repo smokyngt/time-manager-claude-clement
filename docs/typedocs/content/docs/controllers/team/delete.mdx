@@ -1,11 +1,3 @@
----
-title: "Delete()"
-description: "Reference for the `remove()` function in `controllers/team/delete` (route `team.controller.delete`)."
-route: "team.controller.delete"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.controller.delete</code></div>
-
 ## Functions
 
 ### remove()
@@ -14,17 +6,21 @@ route: "team.controller.delete"
 function remove(req, reply): Promise<void>;
 ```
 
+Defined in: [controllers/team/delete.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/controllers/team/delete.ts#L20)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`DeleteBody`](/docs/controllers/team#deletebody); \}\> |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`DeleteResponse`](/docs/controllers/team#deleteresponse)\>; \}\> |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`DeleteTeamsBody`](../team.mdx#deleteteamsbody); \}\> | - |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/misc/reply.mdx#replyenvelope)\<[`DeleteTeamsResponse`](../team.mdx#deleteteamsresponse)\>; \}\> | - |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Throws
+#### Route
 
-- `TeamDeleteError`
+team.controller.delete
+
+#### Throws

@@ -1,0 +1,122 @@
+// Grafana Alloy log collector (DaemonSet): pod logs of the selected namespaces -> Loki.
+// Each instance tails only the pods scheduled on its own node through the Kubernetes API.
+// Only namespace, pod, container, service and level become Loki labels; request_id and
+// trace_id are structured metadata (searchable without exploding the index).
+// Rendered by Terraform from files/alloy-logs.alloy.tftpl.
+
+logging {
+  level  = "info"
+  format = "logfmt"
+}
+
+discovery.kubernetes "pods" {
+  role = "pod"
+
+  selectors {
+    role  = "pod"
+    field = "spec.nodeName=" + sys.env("NODE_NAME")
+  }
+}
+
+discovery.relabel "pod_logs" {
+  targets = discovery.kubernetes.pods.targets
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    regex         = "(${log_namespaces})"
+    action        = "keep"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_phase"]
+    regex         = "Pending|Succeeded|Failed|Unknown"
+    action        = "drop"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_namespace"]
+    target_label  = "namespace"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_name"]
+    target_label  = "pod"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label  = "container"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_container_name"]
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+    regex         = "(.+)"
+    target_label  = "service"
+  }
+
+  rule {
+    source_labels = ["__meta_kubernetes_pod_label_app"]
+    regex         = "(.+)"
+    target_label  = "service"
+  }
+}
+
+loki.source.kubernetes "pods" {
+  targets    = discovery.relabel.pod_logs.output
+  forward_to = [loki.process.pipeline.receiver]
+}
+
+loki.process "pipeline" {
+  forward_to = [loki.write.loki.receiver]
+
+  stage.match {
+    selector = "{service=\"api\"}"
+
+    stage.json {
+      expressions = {
+        level      = "level",
+        request_id = "request_id",
+        trace_id   = "trace_id",
+      }
+    }
+
+    stage.template {
+      source   = "level"
+      template = `{{ $v := printf "%v" .Value }}{{ if eq $v "10" }}trace{{ else if eq $v "20" }}debug{{ else if eq $v "30" }}info{{ else if eq $v "40" }}warn{{ else if eq $v "50" }}error{{ else if eq $v "60" }}fatal{{ else if or (eq $v "<nil>") (eq $v "") }}unknown{{ else if eq $v "warning" }}warn{{ else }}{{ ToLower $v }}{{ end }}`
+    }
+
+    stage.labels {
+      values = {
+        level = "",
+      }
+    }
+
+    stage.structured_metadata {
+      values = {
+        request_id = "",
+        trace_id   = "",
+      }
+    }
+  }
+
+  stage.match {
+    selector = "{service!=\"api\"}"
+
+    stage.static_labels {
+      values = {
+        level = "unknown",
+      }
+    }
+  }
+}
+
+loki.write "loki" {
+  endpoint {
+    url = "${loki_push_url}"
+  }
+}

@@ -2,50 +2,73 @@ import { setDefaultTimeout } from 'bun:test';
 import { migrate } from 'drizzle-orm/postgres-js/migrator';
 import { resolve } from 'node:path';
 
+import { Cipher } from '@/utils/crypto/cipher.js';
+import { Digest } from '@/utils/crypto/digest.js';
 import { Password } from '@/utils/password.js';
 
-import type { UserRow } from '@/db/schema/user.js';
-import type { Role, User } from '@/types/entities/user.js';
+import type { UserRow } from '@/db/schema/index.js';
+import type { Role, User } from '@/types/entities/index.js';
 import type { FastifyInstance, InjectOptions } from 'fastify';
 
-export interface CallOptions {
+export type CallOptions = {
   body?: unknown;
   cookie?: string;
-  token?: string;
-}
+  token?: string;};
 
-export interface CallResult<Body = Record<string, unknown>> {
+export type CallResult<Body = Record<string, unknown>> = {
   body: Body;
   cookies: Record<string, string>;
+  headers: Record<string, number | string | string[] | undefined>;
   status: number;
-}
+};
 
-export interface Credentials {
+export type Credentials = {
   email: string;
-  password: string;
-}
+  password: string;};
 
-export interface Login {
+export type ErrorBody = {
+  code: string;
+  correlation_id: string;
+  errors?: { code: string; params: Record<string, unknown>; path: string }[];
+  instance: string;
+  status: number;
+  timestamp: number;
+};
+
+export type Login = {
   access_token: string;
   refresh: string;
-  user: User;
-}
+  user: User;};
 
-export interface Member extends Login {
+export type Member = {
   credentials: Credentials;
-  row: UserRow;
-}
+  row: UserRow;} & Login;
 
-export interface UserSeed {
+export type Reply<Data> = {
+  data: Data;
+  event: { code: string; correlation_id: string; metadata: Record<string, unknown>; payload: Record<string, unknown> };
+  timestamp: number;
+};
+
+export type TeamSeed = {
+  archived_at?: null | number;
+  description?: string;
+  manager_id: string;
+  members?: string[];
+  name?: string;
+};
+
+export type UserSeed = {
   archived_at?: null | number;
   email?: string;
   first_name?: string;
   last_name?: string;
   password?: string;
-  role?: Role;
-}
+  role?: Role;};
 
 setDefaultTimeout(60_000);
+
+export const MISSING_ID = '00000000-0000-4000-8000-0000000000ff';
 
 const REFRESH_COOKIE = 'tm_refresh';
 const DEFAULT_PASSWORD = 'integration-password-1';
@@ -54,6 +77,7 @@ const RATE_LIMIT_VARIABLES = [
   'AUTH_LOGIN_RATE_LIMIT_MAX',
   'AUTH_RATE_LIMIT_MAX',
   'USER_RATE_LIMIT_MAX',
+  'TEAM_MEMBER_RATE_LIMIT_MAX',
   'TEAM_RATE_LIMIT_MAX',
   'CLOCK_RATE_LIMIT_MAX',
   'REPORT_RATE_LIMIT_MAX',
@@ -88,8 +112,32 @@ export class Harness {
     return {
       body: (text === '' ? {} : JSON.parse(text)) as Body,
       cookies,
+      headers: response.headers,
       status: response.statusCode,
     };
+  }
+
+  public static async clock(seed: {
+    clocked_in_at: number;
+    clocked_out_at?: null | number;
+    note?: string;
+    user_id: string;
+  }): Promise<string> {
+    const { db } = await import('@/db/client.js');
+    const { clocks } = await import('@/db/schema/index.js');
+    const [row] = await db
+      .insert(clocks)
+      .values({
+        clocked_in_at: seed.clocked_in_at,
+        clocked_out_at: seed.clocked_out_at ?? null,
+        note: seed.note === undefined ? null : Cipher.seal(seed.note),
+        source: 'manual',
+        user_id: seed.user_id,
+      })
+      .returning({ id: clocks.id });
+    if (row === undefined) throw new Error('clock insert returned no row');
+
+    return row.id;
   }
 
   public static async login(credentials: Credentials): Promise<Login> {
@@ -144,23 +192,52 @@ export class Harness {
     Harness.instance = undefined;
   }
 
+  public static async team(seed: TeamSeed): Promise<string> {
+    const { db } = await import('@/db/client.js');
+    const { teamMembers, teams } = await import('@/db/schema/index.js');
+    Harness.counter += 1;
+    const [row] = await db
+      .insert(teams)
+      .values({
+        archived_at: seed.archived_at ?? null,
+        description: seed.description === undefined ? null : Cipher.seal(seed.description),
+        manager_id: seed.manager_id,
+        name: Cipher.seal(seed.name ?? `Team ${String(Harness.counter)}`),
+      })
+      .returning({ id: teams.id });
+    if (row === undefined) throw new Error('team insert returned no row');
+    const members = seed.members ?? [];
+    if (members.length > 0) {
+      await db
+        .insert(teamMembers)
+        .values(members.map((userId) => ({ team_id: row.id, user_id: userId })));
+    }
+
+    return row.id;
+  }
+
   public static async user(seed: UserSeed = {}): Promise<UserRow> {
     const { db } = await import('@/db/client.js');
-    const { users } = await import('@/db/schema/user.js');
+    const { users } = await import('@/db/schema/index.js');
     Harness.counter += 1;
+    const email = (
+      seed.email ?? `user${String(Harness.counter)}.${crypto.randomUUID()}@example.com`
+    ).toLowerCase();
     const [row] = await db
       .insert(users)
       .values({
         archived_at: seed.archived_at ?? null,
-        email: seed.email ?? `user${String(Harness.counter)}.${crypto.randomUUID()}@example.com`,
-        first_name: seed.first_name ?? 'Jane',
-        last_name: seed.last_name ?? 'Doe',
+        email: Cipher.seal(email),
+        email_hash: Digest.email(email),
+        first_name: Cipher.seal(seed.first_name ?? 'Jane'),
+        last_name: Cipher.seal(seed.last_name ?? 'Doe'),
         password_hash: await Password.hash(seed.password ?? DEFAULT_PASSWORD),
         role: seed.role ?? 'employee',
       })
       .returning();
     if (row === undefined) throw new Error('user insert returned no row');
-    return row;
+
+    return { ...row, email };
   }
 
   private static guard(): void {

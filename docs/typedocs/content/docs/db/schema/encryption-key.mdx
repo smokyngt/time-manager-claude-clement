@@ -1,0 +1,50 @@
+## Type Aliases
+
+### EncryptionKeyInsert
+
+```ts
+type EncryptionKeyInsert = typeof encryptionKeys.$inferInsert;
+```
+
+Defined in: [db/schema/encryption-key.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/encryption-key.ts#L22)
+
+***
+
+### EncryptionKeyRow
+
+```ts
+type EncryptionKeyRow = typeof encryptionKeys.$inferSelect;
+```
+
+Defined in: [db/schema/encryption-key.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/encryption-key.ts#L23)
+
+## Variables
+
+### encryptionDomain
+
+```ts
+const encryptionDomain: PgEnum<["content", "hash", "pii"]>;
+```
+
+Defined in: [db/schema/encryption-key.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/encryption-key.ts#L3)
+
+***
+
+### encryptionKeys
+
+```ts
+const encryptionKeys: PgTableWithColumns<{
+}>;
+```
+
+Defined in: [db/schema/encryption-key.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/encryption-key.ts#L7)
+
+***
+
+### encryptionStatus
+
+```ts
+const encryptionStatus: PgEnum<["active", "decrypt-only"]>;
+```
+
+Defined in: [db/schema/encryption-key.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/db/schema/encryption-key.ts#L5)

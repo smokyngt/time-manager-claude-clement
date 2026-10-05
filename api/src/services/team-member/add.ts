@@ -14,7 +14,7 @@ import type { AddTeamMembersParams, AddTeamMembersResponse } from './index.js';
 import type { BulkFailure } from '@/types/entities/index.js';
 
 /**
- * @route team.member.service.add
+ * @route team_member.service.add
  * @param {AddTeamMembersParams} params
  * @returns {Promise<AddTeamMembersResponse>}
  * @throws {TeamMemberTeamArchivedError | UnauthorizedError | TeamMemberAddError}
@@ -25,7 +25,7 @@ export const add = async (params: AddTeamMembersParams): Promise<AddTeamMembersR
     const userIds = [...new Set(params.user_ids)];
     if (team.archived_at !== null) {
       throw TeamMemberTeamArchivedError({
-        metadata: { route: 'team.member.service.add', team_id: team.id },
+        metadata: { route: 'team_member.service.add', team_id: team.id },
       });
     }
     const rows = await db.select().from(users).where(inArray(users.id, userIds));
@@ -44,7 +44,7 @@ export const add = async (params: AddTeamMembersParams): Promise<AddTeamMembersR
       }
       if (!roles.includes(row.role)) {
         throw UnauthorizedError({
-          metadata: { route: 'team.member.service.add', team_id: team.id, user_id: userId },
+          metadata: { route: 'team_member.service.add', team_id: team.id, user_id: userId },
         });
       }
       eligible.push(userId);
@@ -66,6 +66,6 @@ export const add = async (params: AddTeamMembersParams): Promise<AddTeamMembersR
 
     return { added, failed, success: failed.length === 0 };
   } catch (error) {
-    throw TeamMemberAddError({ cause: error, metadata: { route: 'team.member.service.add' } });
+    throw TeamMemberAddError({ cause: error, metadata: { route: 'team_member.service.add' } });
   }
 };

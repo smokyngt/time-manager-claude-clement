@@ -1,29 +1,25 @@
----
-title: "Team()"
-description: "Reference for the `team()` function in `services/report/team` (route `report.service.team`)."
-route: "report.service.team"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>report.service.team</code></div>
-
 ## Functions
 
 ### team()
 
 ```ts
-function team(params): Promise<TeamResponse>;
+function team(params): Promise<ReportTeamResponse>;
 ```
+
+Defined in: [services/report/team.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/report/team.ts#L24)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`TeamParams`](/docs/services/report#teamparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`ReportTeamParams`](../report.mdx#reportteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`TeamResponse`](/docs/services/report#teamresponse)\>
+`Promise`\<[`ReportTeamResponse`](../report.mdx#reportteamresponse)\>
+
+#### Route
+
+report.service.team
 
 #### Throws
-
-- `ReportInvalidError | ReportTeamError | ReportTeamNotFoundError`

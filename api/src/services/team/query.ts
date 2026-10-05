@@ -7,7 +7,7 @@ import type { SQL } from 'drizzle-orm';
 
 export class TeamQuery {
   /**
-   * @route team.service.query.count
+   * @route team.query.count
    * @param {string} id
    * @returns {Promise<number>}
    */
@@ -21,7 +21,7 @@ export class TeamQuery {
   }
 
   /**
-   * @route team.service.query.counts
+   * @route team.query.counts
    * @param {string[]} ids
    * @returns {Promise<Map<string, number>>}
    */
@@ -37,7 +37,7 @@ export class TeamQuery {
   }
 
   /**
-   * @route team.service.query.member
+   * @route team.query.member
    * @param {string} userId
    * @returns {SQL}
    */

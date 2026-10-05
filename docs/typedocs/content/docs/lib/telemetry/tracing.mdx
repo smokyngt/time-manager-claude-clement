@@ -1,11 +1,8 @@
----
-title: "Tracing"
-description: "Reference for the `lib/telemetry/tracing` module: classes."
----
-
 ## Classes
 
 ### Tracing
+
+Defined in: [lib/telemetry/tracing.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/tracing.ts#L17)
 
 #### Constructors
 
@@ -23,21 +20,27 @@ new Tracing(): Tracing;
 
 ##### enabled()
 
-<div className="route-badge"><span className="route-label">Route</span><code>tracing.enabled</code></div>
-
 ```ts
 static enabled(): boolean;
 ```
 
+Defined in: [lib/telemetry/tracing.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/tracing.ts#L22)
+
 ###### Returns
 
 `boolean`
+
+###### Route
+
+tracing.enabled
 
 ##### span()
 
 ```ts
 static span<Result>(name, fn): Promise<Result>;
 ```
+
+Defined in: [lib/telemetry/tracing.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/tracing.ts#L33)
 
 ###### Type Parameters
 
@@ -47,35 +50,49 @@ static span<Result>(name, fn): Promise<Result>;
 
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `name` | `string` |
-| `fn` | (`span`) => `Promise`\<`Result`\> |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `name` | `string` | - |
+| `fn` | (`span`) => `Promise`\<`Result`\> | - |
 
 ###### Returns
 
 `Promise`\<`Result`\>
 
-##### start()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tracing.start</code></div>
+tracing.span
+
+###### Throws
+
+##### start()
 
 ```ts
 static start(): boolean;
 ```
 
+Defined in: [lib/telemetry/tracing.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/tracing.ts#L54)
+
 ###### Returns
 
 `boolean`
 
-##### stop()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>tracing.stop</code></div>
+tracing.start
+
+##### stop()
 
 ```ts
 static stop(): Promise<void>;
 ```
 
+Defined in: [lib/telemetry/tracing.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/telemetry/tracing.ts#L83)
+
 ###### Returns
 
 `Promise`\<`void`\>
+
+###### Route
+
+tracing.stop

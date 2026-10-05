@@ -1,0 +1,357 @@
+## Classes
+
+### Envelope
+
+Defined in: [services/encryption/envelope/index.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L52)
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new Envelope(): Envelope;
+```
+
+###### Returns
+
+[`Envelope`](#envelope)
+
+#### Properties
+
+| Property | Modifier | Type | Defined in |
+| ------ | ------ | ------ | ------ |
+| <a id="property-nullable"></a> `nullable` | `readonly` | `NullableEnvelope` | [services/encryption/envelope/index.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L53) |
+
+#### Methods
+
+##### bootstrap()
+
+```ts
+static bootstrap(domain?): Promise<void>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L62)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain?` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+###### Returns
+
+`Promise`\<`void`\>
+
+###### Route
+
+services.encryption.envelope.bootstrap
+
+###### Throws
+
+##### email()
+
+```ts
+static email(address): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L73)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `address` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`\>
+
+###### Route
+
+services.encryption.envelope.email
+
+###### Throws
+
+##### hash()
+
+```ts
+static hash(purpose, value): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:84](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L84)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `purpose` | `string` | - |
+| `value` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`\>
+
+###### Route
+
+services.encryption.envelope.hash
+
+###### Throws
+
+##### open()
+
+```ts
+static open(sealed): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L94)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `sealed` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`\>
+
+###### Route
+
+services.encryption.envelope.open
+
+###### Throws
+
+##### reset()
+
+```ts
+static reset(): void;
+```
+
+Defined in: [services/encryption/envelope/index.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L102)
+
+###### Returns
+
+`void`
+
+###### Route
+
+services.encryption.envelope.reset
+
+##### rewrap()
+
+```ts
+static rewrap(domain): Promise<RewrapResult>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:113](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L113)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+###### Returns
+
+`Promise`\<[`RewrapResult`](envelope/rotate.mdx#rewrapresult)\>
+
+###### Route
+
+services.encryption.envelope.rewrap
+
+###### Throws
+
+##### rotate()
+
+```ts
+static rotate(domain): Promise<number>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:123](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L123)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+###### Returns
+
+`Promise`\<`number`\>
+
+###### Route
+
+services.encryption.envelope.rotate
+
+###### Throws
+
+##### runtime()
+
+```ts
+static runtime(): Runtime;
+```
+
+Defined in: [services/encryption/envelope/index.ts:131](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L131)
+
+###### Returns
+
+[`Runtime`](envelope/keys.mdx#runtime)
+
+###### Route
+
+services.encryption.envelope.runtime
+
+##### seal()
+
+```ts
+static seal(domain, plaintext): Promise<string>;
+```
+
+Defined in: [services/encryption/envelope/index.ts:142](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L142)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+| `plaintext` | `string` | - |
+
+###### Returns
+
+`Promise`\<`string`\>
+
+###### Route
+
+services.encryption.envelope.seal
+
+###### Throws
+
+##### use()
+
+```ts
+static use(runtime): void;
+```
+
+Defined in: [services/encryption/envelope/index.ts:151](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/index.ts#L151)
+
+###### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](envelope/keys.mdx#runtime) | - |
+
+###### Returns
+
+`void`
+
+###### Route
+
+services.encryption.envelope.use
+
+## References
+
+### bootstrap
+
+Re-exports [bootstrap](envelope/bootstrap.mdx#bootstrap)
+
+***
+
+### bootstrapAll
+
+Re-exports [bootstrapAll](envelope/bootstrap.mdx#bootstrapall)
+
+***
+
+### Dek
+
+Re-exports [Dek](envelope/dek.mdx#dek)
+
+***
+
+### DekEntry
+
+Re-exports [DekEntry](envelope/dek.mdx#dekentry)
+
+***
+
+### EncryptionDecryptFailedError
+
+Re-exports [EncryptionDecryptFailedError](envelope/keys.mdx#encryptiondecryptfailederror)
+
+***
+
+### EncryptionKeyUnavailableError
+
+Re-exports [EncryptionKeyUnavailableError](envelope/keys.mdx#encryptionkeyunavailableerror)
+
+***
+
+### EncryptionRotationConflictError
+
+Re-exports [EncryptionRotationConflictError](envelope/keys.mdx#encryptionrotationconflicterror)
+
+***
+
+### ensureTransitKey
+
+Re-exports [ensureTransitKey](envelope/transit.mdx#ensuretransitkey)
+
+***
+
+### EnvelopeLog
+
+Re-exports [EnvelopeLog](envelope/keys.mdx#envelopelog)
+
+***
+
+### KEY\_DOMAINS
+
+Re-exports [KEY_DOMAINS](envelope/keys.mdx#key_domains)
+
+***
+
+### KeyDomain
+
+Re-exports [KeyDomain](envelope/keys.mdx#keydomain)
+
+***
+
+### RewrapResult
+
+Re-exports [RewrapResult](envelope/rotate.mdx#rewrapresult)
+
+***
+
+### rotateDEK
+
+Re-exports [rotateDEK](envelope/rotate.mdx#rotatedek)
+
+***
+
+### rotateTransitKEK
+
+Re-exports [rotateTransitKEK](envelope/rotate.mdx#rotatetransitkek)
+
+***
+
+### Runtime
+
+Re-exports [Runtime](envelope/keys.mdx#runtime)
+
+***
+
+### TransitClient
+
+Re-exports [TransitClient](envelope/transit.mdx#transitclient)
+
+***
+
+### transitKeyName
+
+Re-exports [transitKeyName](envelope/keys.mdx#transitkeyname)
+
+***
+
+### TransitReply
+
+Re-exports [TransitReply](envelope/transit.mdx#transitreply)

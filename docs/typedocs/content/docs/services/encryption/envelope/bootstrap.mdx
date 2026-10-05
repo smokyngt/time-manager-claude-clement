@@ -1,0 +1,66 @@
+## Functions
+
+### bootstrap()
+
+```ts
+function bootstrap(runtime, domain): Promise<{
+  created_at: number;
+  domain: "content" | "hash" | "pii";
+  id: string;
+  status: "active" | "decrypt-only";
+  version: number;
+  wrapped_key: string;
+}>;
+```
+
+Defined in: [services/encryption/envelope/bootstrap.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/bootstrap.ts#L58)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+| `domain` | `"content"` \| `"hash"` \| `"pii"` | - |
+
+#### Returns
+
+`Promise`\<\{
+  `created_at`: `number`;
+  `domain`: `"content"` \| `"hash"` \| `"pii"`;
+  `id`: `string`;
+  `status`: `"active"` \| `"decrypt-only"`;
+  `version`: `number`;
+  `wrapped_key`: `string`;
+\}\>
+
+#### Route
+
+services.encryption.envelope.bootstrap
+
+#### Throws
+
+***
+
+### bootstrapAll()
+
+```ts
+function bootstrapAll(runtime): Promise<object[]>;
+```
+
+Defined in: [services/encryption/envelope/bootstrap.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/encryption/envelope/bootstrap.ts#L82)
+
+#### Parameters
+
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `runtime` | [`Runtime`](keys.mdx#runtime) | - |
+
+#### Returns
+
+`Promise`\<`object`[]\>
+
+#### Route
+
+services.encryption.envelope.bootstrap.all
+
+#### Throws

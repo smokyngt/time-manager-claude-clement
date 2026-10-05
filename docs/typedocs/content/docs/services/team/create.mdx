@@ -1,29 +1,25 @@
----
-title: "Create()"
-description: "Reference for the `create()` function in `services/team/create` (route `team.service.create`)."
-route: "team.service.create"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.service.create</code></div>
-
 ## Functions
 
 ### create()
 
 ```ts
-function create(params): Promise<CreateResponse>;
+function create(params): Promise<CreateTeamResponse>;
 ```
+
+Defined in: [services/team/create.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/create.ts#L19)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`CreateParams`](/docs/services/team#createparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`CreateTeamParams`](../team.mdx#createteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`CreateResponse`](/docs/services/team#createresponse)\>
+`Promise`\<[`CreateTeamResponse`](../team.mdx#createteamresponse)\>
+
+#### Route
+
+team.service.create
 
 #### Throws
-
-- `TeamCreateError`

@@ -2,6 +2,7 @@ import js from '@eslint/js';
 import importX from 'eslint-plugin-import-x';
 import jsdoc from 'eslint-plugin-jsdoc';
 import perfectionist from 'eslint-plugin-perfectionist';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
@@ -45,6 +46,10 @@ export default tseslint.config(
         },
       ],
     },
+  },
+  {
+    files: ['docker/**/*.js'],
+    languageOptions: { globals: globals.node },
   },
   {
     files: ['tests/**/*.ts'],

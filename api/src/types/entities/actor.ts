@@ -1,7 +1,7 @@
 import type { Role } from './user.js';
 
-export interface Actor {
+export type Actor = {
   id: string;
   role: Role;
   team_ids: string[];
-}
+};

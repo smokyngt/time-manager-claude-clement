@@ -1,27 +1,28 @@
----
-title: "Clock"
-description: "Reference for the `lib/events/domains/clock` module: variables."
----
-
 ## Variables
 
 ### ClockCreated
 
 ```ts
 const ClockCreated: EventFactory<{
+  actor: string;
   clock_id: string;
 }>;
 ```
 
+Defined in: [lib/events/domains/clock.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L3)
+
 ***
 
-### ClockCurrent
+### ClockCurrentRetrieved
 
 ```ts
-const ClockCurrent: EventFactory<{
+const ClockCurrentRetrieved: EventFactory<{
+  actor: string;
   open: boolean;
 }>;
 ```
+
+Defined in: [lib/events/domains/clock.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L5)
 
 ***
 
@@ -29,20 +30,13 @@ const ClockCurrent: EventFactory<{
 
 ```ts
 const ClockDeleted: EventFactory<{
+  actor: string;
   deleted: number;
   failed: number;
 }>;
 ```
 
-***
-
-### ClockIn
-
-```ts
-const ClockIn: EventFactory<{
-  clock_id: string;
-}>;
-```
+Defined in: [lib/events/domains/clock.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L9)
 
 ***
 
@@ -50,20 +44,13 @@ const ClockIn: EventFactory<{
 
 ```ts
 const ClockListed: EventFactory<{
+  actor: string;
   count: number;
   total: number;
 }>;
 ```
 
-***
-
-### ClockOut
-
-```ts
-const ClockOut: EventFactory<{
-  clock_id: string;
-}>;
-```
+Defined in: [lib/events/domains/clock.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L11)
 
 ***
 
@@ -71,9 +58,38 @@ const ClockOut: EventFactory<{
 
 ```ts
 const ClockRetrieved: EventFactory<{
+  actor: string;
   clock_id: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/clock.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L13)
+
+***
+
+### ClockStarted
+
+```ts
+const ClockStarted: EventFactory<{
+  actor: string;
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L15)
+
+***
+
+### ClockStopped
+
+```ts
+const ClockStopped: EventFactory<{
+  actor: string;
+  clock_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/clock.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L17)
 
 ***
 
@@ -81,7 +97,10 @@ const ClockRetrieved: EventFactory<{
 
 ```ts
 const ClockUpdated: EventFactory<{
+  actor: string;
   failed: number;
   updated: number;
 }>;
 ```
+
+Defined in: [lib/events/domains/clock.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/clock.ts#L19)

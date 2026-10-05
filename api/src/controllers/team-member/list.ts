@@ -10,7 +10,7 @@ import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
- * @route team.member.controller.list
+ * @route team_member.controller.list
  * @param {FastifyRequest<{ Body: ListTeamMembersBody; Params: ListTeamMembersParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<ListTeamMembersResponse> }>} reply
  * @returns {Promise<void>}
@@ -47,7 +47,7 @@ export const list = async (
   } catch (error) {
     throw TeamMemberListError({
       cause: error,
-      metadata: { route: 'team.member.controller.list' },
+      metadata: { route: 'team_member.controller.list' },
     });
   }
 };

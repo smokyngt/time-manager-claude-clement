@@ -10,7 +10,7 @@ import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
- * @route team.member.controller.add
+ * @route team_member.controller.add
  * @param {FastifyRequest<{ Body: AddTeamMembersBody; Params: AddTeamMembersParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<AddTeamMembersResponse> }>} reply
  * @returns {Promise<void>}
@@ -25,7 +25,7 @@ export const add = async (
     const userIds = [...new Set(req.body.user_ids)];
     if (userIds.length === 0 || userIds.length > RequestLimits.bulk) {
       throw ValidationError({
-        metadata: { field: 'user_ids', route: 'team.member.controller.add' },
+        metadata: { field: 'user_ids', route: 'team_member.controller.add' },
       });
     }
     const { team } = await teamMemberService.team({ id: req.params.id });
@@ -52,7 +52,7 @@ export const add = async (
   } catch (error) {
     throw TeamMemberAddError({
       cause: error,
-      metadata: { route: 'team.member.controller.add' },
+      metadata: { route: 'team_member.controller.add' },
     });
   }
 };

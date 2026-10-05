@@ -76,14 +76,14 @@ variable "chart_versions" {
 variable "features" {
   description = "Feature switches shared by every concern."
   type = object({
-    restore_jobs         = optional(bool, false)
-    longhorn_backup      = optional(bool, false)
-    runtime_security     = optional(bool, true)
-    kyverno              = optional(bool, false)
-    microsoft_egress     = optional(bool, false)
-    grafana_oidc         = optional(bool, false)
-    letsencrypt_staging  = optional(bool, false)
-    vault_ui_exposed     = optional(bool, false)
+    restore_jobs           = optional(bool, false)
+    longhorn_backup        = optional(bool, false)
+    runtime_security       = optional(bool, true)
+    kyverno                = optional(bool, false)
+    microsoft_egress       = optional(bool, false)
+    grafana_oidc           = optional(bool, false)
+    letsencrypt_staging    = optional(bool, false)
+    vault_ui_exposed       = optional(bool, false)
     cloudflare_origin_pull = optional(bool, false)
   })
   default = {}

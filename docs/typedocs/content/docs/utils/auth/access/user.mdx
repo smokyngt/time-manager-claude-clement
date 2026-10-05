@@ -1,11 +1,8 @@
----
-title: "User"
-description: "Reference for the `utils/auth/access/user` module: classes, type aliases."
----
-
 ## Classes
 
 ### UserAccess
+
+Defined in: [utils/auth/access/user.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L17)
 
 #### Constructors
 
@@ -23,8 +20,6 @@ new UserAccess(): UserAccess;
 
 ##### allow()
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.user.allow</code></div>
-
 ```ts
 allow(
    actor, 
@@ -33,59 +28,71 @@ allow(
 ): boolean;
 ```
 
+Defined in: [utils/auth/access/user.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L25)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `action` | [`UserAction`](#useraction) |
-| `target?` | [`UserTarget`](#usertarget) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `action` | [`UserAction`](#useraction) | - |
+| `target?` | [`UserTarget`](#usertarget) | - |
 
 ###### Returns
 
 `boolean`
 
-##### fields()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.user.fields</code></div>
+access.user.allow
+
+##### fields()
 
 ```ts
 fields(actor, target): string[];
 ```
 
+Defined in: [utils/auth/access/user.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L44)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `target` | [`UserTarget`](#usertarget) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `target` | [`UserTarget`](#usertarget) | - |
 
 ###### Returns
 
 `string`[]
 
-##### reach()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.user.reach</code></div>
+access.user.fields
+
+##### reach()
 
 ```ts
 reach(actor, id): boolean;
 ```
 
+Defined in: [utils/auth/access/user.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L57)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `id` | `string` |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `id` | `string` | - |
 
 ###### Returns
 
 `boolean`
 
-##### require()
+###### Route
 
-<div className="route-badge"><span className="route-label">Route</span><code>access.user.require</code></div>
+access.user.reach
+
+##### require()
 
 ```ts
 require(
@@ -95,40 +102,48 @@ require(
 ): void;
 ```
 
+Defined in: [utils/auth/access/user.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L69)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `action` | [`UserAction`](#useraction) |
-| `target?` | [`UserTarget`](#usertarget) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `action` | [`UserAction`](#useraction) | - |
+| `target?` | [`UserTarget`](#usertarget) | - |
 
 ###### Returns
 
 `void`
 
+###### Route
+
+access.user.require
+
 ###### Throws
 
-- `UnauthorizedError`
-
 ##### scope()
-
-<div className="route-badge"><span className="route-label">Route</span><code>access.user.scope</code></div>
 
 ```ts
 scope(actor, target): Promise<boolean>;
 ```
 
+Defined in: [utils/auth/access/user.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L83)
+
 ###### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
-| `target` | `Required`\<[`UserTarget`](#usertarget)\> |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `actor` | [`Actor`](../../../types/entities/actor.mdx#actor) | - |
+| `target` | `Required`\<[`UserTarget`](#usertarget)\> | - |
 
 ###### Returns
 
 `Promise`\<`boolean`\>
+
+###### Route
+
+access.user.scope
 
 ## Type Aliases
 
@@ -138,6 +153,8 @@ scope(actor, target): Promise<boolean>;
 type UserAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
 ```
 
+Defined in: [utils/auth/access/user.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L6)
+
 ***
 
 ### UserTarget
@@ -146,9 +163,11 @@ type UserAction = "archive" | "create" | "delete" | "list" | "read" | "restore" 
 type UserTarget = object;
 ```
 
+Defined in: [utils/auth/access/user.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L8)
+
 #### Properties
 
-| Property | Type |
-| ------ | ------ |
-| <a id="property-id"></a> `id?` | `string` |
-| <a id="property-role"></a> `role` | [`Role`](/docs/types/entities/user#role) |
+| Property | Type | Defined in |
+| ------ | ------ | ------ |
+| <a id="property-id"></a> `id?` | `string` | [utils/auth/access/user.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L9) |
+| <a id="property-role"></a> `role` | [`Role`](../../../types/entities/user.mdx#role) | [utils/auth/access/user.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/utils/auth/access/user.ts#L10) |

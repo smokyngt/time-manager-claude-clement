@@ -7,7 +7,7 @@ import type { Actor } from '@/types/entities/index.js';
 
 export class Membership {
   /**
-   * @route utils.membership.manages
+   * @route membership.manages
    * @param {Actor} actor
    * @param {string} userId
    * @returns {Promise<boolean>}
@@ -32,7 +32,7 @@ export class Membership {
   }
 
   /**
-   * @route utils.membership.members
+   * @route membership.members
    * @param {string} managerId
    * @returns {Promise<string[]>}
    */
@@ -47,7 +47,7 @@ export class Membership {
   }
 
   /**
-   * @route utils.membership.reaches
+   * @route membership.reaches
    * @param {Actor} actor
    * @param {string} userId
    * @returns {Promise<boolean>}
@@ -59,7 +59,7 @@ export class Membership {
   }
 
   /**
-   * @route utils.membership.teams
+   * @route membership.teams
    * @param {string} userId
    * @returns {Promise<string[]>}
    */

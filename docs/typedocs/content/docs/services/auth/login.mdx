@@ -1,11 +1,3 @@
----
-title: "Login()"
-description: "Reference for the `login()` function in `services/auth/login` (route `auth.service.login`)."
-route: "auth.service.login"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>auth.service.login</code></div>
-
 ## Functions
 
 ### login()
@@ -14,16 +6,20 @@ route: "auth.service.login"
 function login(params): Promise<SessionResult>;
 ```
 
+Defined in: [services/auth/login.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/auth/login.ts#L26)
+
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`LoginParams`](/docs/services/auth#loginparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`AuthLoginParams`](../auth.mdx#authloginparams) | - |
 
 #### Returns
 
-`Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\>
+`Promise`\<[`SessionResult`](session.mdx#sessionresult)\>
+
+#### Route
+
+auth.service.login
 
 #### Throws
-
-- `AuthLoginError`

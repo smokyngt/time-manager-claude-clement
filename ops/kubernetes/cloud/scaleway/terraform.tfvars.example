@@ -1,0 +1,8 @@
+project_id           = "00000000-0000-0000-0000-000000000000"
+tenant               = "acme"
+base_domain          = "example.com"
+acme_email           = "ops@example.com"
+seed_admin_email     = "admin@example.com"
+kube_api_allowed_ips = ["203.0.113.7/32"]
+admin_allowed_cidrs  = ["203.0.113.7/32"]
+cloudflare_zone_id   = ""

@@ -1,7 +1,12 @@
----
-title: "Auth"
-description: "Reference for the `lib/events/domains/auth` module: variables."
----
+## Type Aliases
+
+### EmptyPayload
+
+```ts
+type EmptyPayload = Record<string, never>;
+```
+
+Defined in: [lib/events/domains/auth.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L3)
 
 ## Variables
 
@@ -9,9 +14,11 @@ description: "Reference for the `lib/events/domains/auth` module: variables."
 
 ```ts
 const AuthLoggedIn: EventFactory<{
-  user_id: string;
+  actor: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L5)
 
 ***
 
@@ -19,9 +26,11 @@ const AuthLoggedIn: EventFactory<{
 
 ```ts
 const AuthLoggedOut: EventFactory<{
-  user_id: string | null;
+  actor?: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L7)
 
 ***
 
@@ -29,17 +38,21 @@ const AuthLoggedOut: EventFactory<{
 
 ```ts
 const AuthMicrosoftLinked: EventFactory<{
-  user_id: string;
+  actor: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L9)
 
 ***
 
 ### AuthMicrosoftStarted
 
 ```ts
-const AuthMicrosoftStarted: EventFactory<Record<string, never>>;
+const AuthMicrosoftStarted: EventFactory<EmptyPayload>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L13)
 
 ***
 
@@ -47,9 +60,24 @@ const AuthMicrosoftStarted: EventFactory<Record<string, never>>;
 
 ```ts
 const AuthRefreshed: EventFactory<{
-  user_id: string;
+  actor: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L17)
+
+***
+
+### AuthRefreshReused
+
+```ts
+const AuthRefreshReused: EventFactory<{
+  actor: string;
+  family_id: string;
+}>;
+```
+
+Defined in: [lib/events/domains/auth.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L19)
 
 ***
 
@@ -57,6 +85,8 @@ const AuthRefreshed: EventFactory<{
 
 ```ts
 const AuthRetrieved: EventFactory<{
-  user_id: string;
+  actor: string;
 }>;
 ```
+
+Defined in: [lib/events/domains/auth.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/lib/events/domains/auth.ts#L23)

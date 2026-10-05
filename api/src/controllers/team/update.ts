@@ -29,6 +29,9 @@ export const update = async (
       throw ValidationError({ metadata: { field: 'ids', route: 'team.controller.update' } });
     }
     const keys = Object.keys(data);
+    if (keys.length === 0) {
+      throw ValidationError({ metadata: { field: 'data', route: 'team.controller.update' } });
+    }
     const failed: BulkFailure[] = [];
     const targets: Team[] = [];
     const loaded = await Promise.all(

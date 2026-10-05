@@ -75,7 +75,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.controller.list', () => {
+describe('team_member.controller.list', () => {
   it('checks visibility, applies defaults and replies', async () => {
     const reply = await run(actor, {});
     expect(view).toHaveBeenCalledWith(actor, team);
@@ -133,6 +133,6 @@ describe('team.member.controller.list', () => {
     const error = await caught(run(actor, {}));
     expect(error.code).toBe('team.member.list.failed');
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.controller.list');
+    expect(error.metadata['route']).toBe('team_member.controller.list');
   });
 });

@@ -1,5 +1,5 @@
-const HOUR_MS = 3_600_000;
-const DAY_MS = 86_400_000;
+import { Time } from './time.js';
+
 const WORKDAYS_PER_WEEK = 5;
 
 export class Kpi {
@@ -51,7 +51,7 @@ export class Kpi {
   public static target(weeklyHours: number, workdays: number): number {
     if (weeklyHours <= 0 || workdays <= 0) return 0;
 
-    return Math.round((weeklyHours * HOUR_MS * workdays) / WORKDAYS_PER_WEEK);
+    return Math.round((weeklyHours * Time.hour * workdays) / WORKDAYS_PER_WEEK);
   }
 
   /**
@@ -62,7 +62,7 @@ export class Kpi {
    */
   public static valid(from: number, to: number): boolean {
     return (
-      Number.isFinite(from) && Number.isFinite(to) && to > from && to - from <= Kpi.maxDays * DAY_MS
+      Number.isFinite(from) && Number.isFinite(to) && to > from && to - from <= Kpi.maxDays * Time.day
     );
   }
 }

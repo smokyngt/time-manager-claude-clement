@@ -1,29 +1,25 @@
----
-title: "Update()"
-description: "Reference for the `update()` function in `services/team/update` (route `team.service.update`)."
-route: "team.service.update"
----
-
-<div className="route-badge"><span className="route-label">Route</span><code>team.service.update</code></div>
-
 ## Functions
 
 ### update()
 
 ```ts
-function update(params): Promise<UpdateResponse>;
+function update(params): Promise<UpdateTeamResponse>;
 ```
+
+Defined in: [services/team/update.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2b5c8ee989eec289a924ed48bcc930c04d0ca897/api/src/services/team/update.ts#L23)
 
 #### Parameters
 
-| Parameter | Type |
-| ------ | ------ |
-| `params` | [`UpdateParams`](/docs/services/team#updateparams) |
+| Parameter | Type | Description |
+| ------ | ------ | ------ |
+| `params` | [`UpdateTeamParams`](../team.mdx#updateteamparams) | - |
 
 #### Returns
 
-`Promise`\<[`UpdateResponse`](/docs/services/team#updateresponse)\>
+`Promise`\<[`UpdateTeamResponse`](../team.mdx#updateteamresponse)\>
+
+#### Route
+
+team.service.update
 
 #### Throws
-
-- `TeamUpdateError`

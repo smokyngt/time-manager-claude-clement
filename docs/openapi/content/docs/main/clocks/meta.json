@@ -1,0 +1,15 @@
+{
+  "title": "Clocks",
+  "description": "Clock in, clock out and manage working time entries.",
+  "pages": [
+    "index",
+    "post-clocks-in",
+    "post-clocks-out",
+    "get-clocks-current",
+    "post-clocks-new",
+    "post-clocks-list",
+    "patch-clocks",
+    "delete-clocks",
+    "get-clocks-by-id"
+  ]
+}

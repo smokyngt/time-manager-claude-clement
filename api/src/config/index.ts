@@ -1,6 +1,7 @@
 import { isIP } from 'node:net';
 
 import { Keys } from '@/utils/crypto/keys.js';
+import { Time } from '@/utils/time.js';
 
 import { store } from './store.js';
 
@@ -95,6 +96,15 @@ export class Config {
    */
   public static validate(): string[] {
     const problems: string[] = [];
+    for (const name of ['AUTH_ACCOUNT_RATE_LIMIT_WINDOW', 'JWT_ACCESS_TTL', 'JWT_REFRESH_TTL']) {
+      const raw = Config.store.optional(name);
+      if (raw === undefined) continue;
+      try {
+        Time.seconds(raw);
+      } catch {
+        problems.push(`${name} must be a duration such as 30s, 15m, 12h or 7d`);
+      }
+    }
     if (!Config.production()) return problems;
     const microsoft = Config.store.optional('MICROSOFT_CLIENT_ID') !== undefined;
     const names = ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET'];

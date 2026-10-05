@@ -57,7 +57,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
   throw new TypeError('expected the promise to reject');
 };
 
-describe('team.member.service.list', () => {
+describe('team_member.service.list', () => {
   it('paginates the members of the team', async () => {
     const result = await list(base);
     expect(result.more).toBe(true);
@@ -77,7 +77,7 @@ describe('team.member.service.list', () => {
     expect(error.code).toBe('team.member.list.failed');
     expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team.member.service.list');
+    expect(error.metadata['route']).toBe('team_member.service.list');
   });
 
   it('keeps a validation error raised by the cursor', async () => {
