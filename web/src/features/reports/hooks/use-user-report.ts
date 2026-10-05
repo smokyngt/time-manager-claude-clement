@@ -5,11 +5,11 @@ import { useQuery } from '@tanstack/react-query'
 import { QueryKeys } from '@/config/query-keys'
 import { sdk } from '@/config/sdk'
 
-export function useUserReport(params: null | UserReportParams) {
+export function useUserReport(params: UserReportParams, enabled = true) {
   const query = useQuery({
-    enabled: params !== null,
+    enabled,
     meta: { suppressError: true },
-    queryFn: async () => (await sdk.reports.user(params!)).report,
+    queryFn: async () => (await sdk.reports.user(params)).report,
     queryKey: QueryKeys.userReport({ ...params }),
   })
 

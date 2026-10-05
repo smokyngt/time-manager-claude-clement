@@ -18,9 +18,8 @@ export function UserReportView({ userId }: UserReportViewProps) {
   const { t } = useTranslation('reports')
   const { auto, change, now, period, state } = usePeriod()
   const { error, isError, loading, refetch, report } = useUserReport(
-    period.error
-      ? null
-      : { from: period.from, granularity: period.granularity, to: period.to, userId },
+    { from: period.from, granularity: period.granularity, to: period.to, userId },
+    !period.error,
   )
 
   return (

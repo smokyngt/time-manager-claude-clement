@@ -18,9 +18,8 @@ export function TeamReportView({ teamId }: TeamReportViewProps) {
   const { t } = useTranslation('reports')
   const { auto, change, now, period, state } = usePeriod()
   const { error, isError, loading, refetch, report } = useTeamReport(
-    period.error
-      ? null
-      : { from: period.from, granularity: period.granularity, teamId, to: period.to },
+    { from: period.from, granularity: period.granularity, teamId, to: period.to },
+    !period.error,
   )
 
   return (
