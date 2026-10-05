@@ -322,6 +322,16 @@ groups:
 
   - name: tm-k8s-postgres
     rules:
+      - alert: CnpgWalArchiveBacklog
+        expr: cnpg_collector_pg_wal_archive_status{value="ready"} > 100
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "{{ $value }} WAL segments wait for archiving on {{ $labels.pod }}"
+          description: "Archiving is slower than WAL production or failing; the primary volume fills up. Check the object store and the barman-cloud logs."
+          runbook: "/internal/docs/operations/observability#cnpgwalarchivebacklog"
+
       - alert: CnpgInstanceDown
         expr: cnpg_collector_up == 0
         for: 2m
