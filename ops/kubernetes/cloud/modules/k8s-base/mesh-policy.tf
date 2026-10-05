@@ -66,6 +66,20 @@ locals {
             name: ${var.prometheus_service_account}
             namespace: ${local.ns.monitoring}
     YAML
+    "mtls-alloy"      = <<-YAML
+      apiVersion: policy.linkerd.io/v1alpha1
+      kind: MeshTLSAuthentication
+      metadata:
+        name: alloy
+        namespace: ${local.app_ns}
+        labels:
+          ${indent(4, yamlencode(local.common_labels))}
+      spec:
+        identityRefs:
+          - kind: ServiceAccount
+            name: alloy
+            namespace: ${local.ns.monitoring}
+    YAML
     "network-traefik" = <<-YAML
       apiVersion: policy.linkerd.io/v1alpha1
       kind: NetworkAuthentication
@@ -98,6 +112,8 @@ locals {
       "web-probes"       = { server = "web", authn = [{ kind = "NetworkAuthentication", name = "kubelet-probes" }] }
       "api-from-web"     = { server = "api", authn = [{ kind = "MeshTLSAuthentication", name = "web" }] }
       "api-from-prom"    = { server = "api", authn = [{ kind = "MeshTLSAuthentication", name = "prometheus" }] }
+      "api-from-alloy"   = { server = "api", authn = [{ kind = "MeshTLSAuthentication", name = "alloy" }] }
+      "web-from-alloy"   = { server = "web", authn = [{ kind = "MeshTLSAuthentication", name = "alloy" }] }
       "api-probes"       = { server = "api", authn = [{ kind = "NetworkAuthentication", name = "kubelet-probes" }] }
     },
     { for k, v in { "api-from-traefik" = { server = "api", authn = [{ kind = "NetworkAuthentication", name = "traefik-ingress" }] } } : k => v if var.expose_api_publicly },

@@ -81,7 +81,7 @@ locals {
   api_vault_role    = "time-manager-api"
   api_ca_mount      = "/etc/vault-ca"
   api_ca_file       = "${local.api_ca_mount}/ca.crt"
-  api_otlp_endpoint = "http://${var.alloy_service_name}.${local.ns.monitoring}.svc.cluster.local:4318"
+  api_otlp_endpoint = local.otlp_endpoint_http
 
   api_env = merge(
     {
@@ -854,6 +854,14 @@ locals {
         egress = [{
           to    = [{ podSelector = { matchLabels = local.workload_selector.api } }]
           ports = [local.app_tcp["8000"], local.app_tcp["4143"]]
+        }]
+      }
+      "allow-alloy-to-workloads" = {
+        podSelector = { matchExpressions = [{ key = "app", operator = "In", values = [local.api_name, local.web_name] }] }
+        policyTypes = ["Ingress"]
+        ingress = [{
+          from  = [{ namespaceSelector = { matchLabels = local.peer_namespace.monitoring }, podSelector = { matchLabels = var.alloy_pod_labels } }]
+          ports = [local.app_tcp["8000"], local.app_tcp["8080"], local.app_tcp["4143"]]
         }]
       }
       "allow-monitoring-to-api" = {
