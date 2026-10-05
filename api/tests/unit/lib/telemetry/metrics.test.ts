@@ -49,7 +49,7 @@ describe('Metrics counters', () => {
 
 describe('Metrics.bind', () => {
   it('reads open clocks and pool size at scrape time', async () => {
-    Metrics.bind({ openClocks: async () => 7, poolMax: 10 });
+    Metrics.bind({ openClocks: () => Promise.resolve(7), poolMax: 10 });
     const { body } = await Metrics.scrape(undefined);
     expect(body).toContain('tm_open_clocks 7');
     expect(body).toContain('tm_db_pool_max_connections 10');

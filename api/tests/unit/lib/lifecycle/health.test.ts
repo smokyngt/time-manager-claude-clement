@@ -4,7 +4,7 @@ import { Health } from '@/lib/lifecycle/health.js';
 
 describe('Health.check', () => {
   it('is true when the probe resolves', async () => {
-    expect(await Health.check(async () => 1, 50)).toBe(true);
+    expect(await Health.check(() => Promise.resolve(1), 50)).toBe(true);
   });
 
   it('is false when the probe rejects', async () => {

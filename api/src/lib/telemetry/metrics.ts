@@ -41,7 +41,7 @@ const binding: MetricsBinding = {};
 const build = (registry: Registry<RegistryContentType>, exemplars: boolean): Instruments => {
   collectDefaultMetrics({ prefix: 'tm_', register: registry });
   new Gauge({
-    async collect() {
+    async collect(): Promise<void> {
       if (binding.openClocks === undefined) {
         this.set(0);
 
@@ -58,7 +58,7 @@ const build = (registry: Registry<RegistryContentType>, exemplars: boolean): Ins
     registers: [registry],
   });
   new Gauge({
-    collect() {
+    collect(): void {
       if (binding.poolMax !== undefined) this.set(binding.poolMax);
     },
     help: 'Configured maximum size of the database connection pool.',

@@ -78,7 +78,7 @@ describe('GET /metrics', () => {
     let hidden: unknown;
     const app = Fastify();
     app.addHook('onRoute', (route) => {
-      if (route.url === '/metrics') hidden = (route.schema)?.hide;
+      if (route.url === '/metrics') hidden = route.schema?.hide;
     });
     await app.register(metrics, { production: false });
     await app.ready();

@@ -17,9 +17,9 @@ const makeApp = (order: string[], close: () => Promise<unknown>) => ({
 });
 
 const makeSql = (order: string[], fail = false) => ({
-  end: async () => {
+  end: () => {
     order.push('sql.end');
-    if (fail) throw new Error('boom');
+    return fail ? Promise.reject(new Error('boom')) : Promise.resolve();
   },
 });
 
@@ -27,7 +27,7 @@ describe('Lifecycle.stop', () => {
   it('closes the server before the database and returns 0', async () => {
     const order: string[] = [];
     const code = await Lifecycle.stop(
-      makeApp(order, async () => undefined),
+      makeApp(order, () => Promise.resolve(undefined)),
       makeSql(order),
       'SIGTERM',
     );
@@ -49,7 +49,7 @@ describe('Lifecycle.stop', () => {
   it('returns 1 when the database close fails', async () => {
     const order: string[] = [];
     const code = await Lifecycle.stop(
-      makeApp(order, async () => undefined),
+      makeApp(order, () => Promise.resolve(undefined)),
       makeSql(order, true),
       'SIGTERM',
     );
@@ -87,7 +87,11 @@ describe('Lifecycle.shutdown', () => {
 
   it('registers the four process handlers', () => {
     const { handlers, runtime } = makeRuntime();
-    Lifecycle.shutdown({ app: makeApp([], async () => undefined), runtime, sql: makeSql([]) });
+    Lifecycle.shutdown({
+      app: makeApp([], () => Promise.resolve(undefined)),
+      runtime,
+      sql: makeSql([]),
+    });
     expect([...handlers.keys()].sort()).toEqual([
       'SIGINT',
       'SIGTERM',
@@ -100,7 +104,7 @@ describe('Lifecycle.shutdown', () => {
     const { exit, handlers, runtime } = makeRuntime();
     const order: string[] = [];
     Lifecycle.shutdown({
-      app: makeApp(order, async () => undefined),
+      app: makeApp(order, () => Promise.resolve(undefined)),
       runtime,
       sql: makeSql(order),
     });
@@ -113,7 +117,7 @@ describe('Lifecycle.shutdown', () => {
 
   it('logs and exits 1 on unhandled rejection and uncaught exception', () => {
     const { exit, handlers, runtime } = makeRuntime();
-    const app = makeApp([], async () => undefined);
+    const app = makeApp([], () => Promise.resolve(undefined));
     Lifecycle.shutdown({ app, runtime, sql: makeSql([]) });
     handlers.get('unhandledRejection')?.(new Error('a'));
     handlers.get('uncaughtException')?.(new Error('b'));

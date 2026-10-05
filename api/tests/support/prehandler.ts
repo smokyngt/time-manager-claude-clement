@@ -1,4 +1,4 @@
-import { expect } from 'bun:test';
+import { expect, spyOn } from 'bun:test';
 
 import { Roles } from '@/config/auth/roles.js';
 import { SCOPES } from '@/config/auth/scopes.js';
@@ -6,7 +6,6 @@ import { Tokens } from '@/lib/auth/tokens.js';
 import { Identity } from '@/middlewares/auth/identity.js';
 
 import type { Scope } from '@/config/auth/scopes.js';
-import type { Role } from '@/types/entities/user.js';
 import type { FastifyInstance, FastifyPluginAsync } from 'fastify';
 
 export type PrehandlerRoute = {
@@ -20,8 +19,7 @@ const USER_ID = '00000000-0000-4000-8000-0000000000c1';
 
 export class Prehandler {
   private static granted: readonly Scope[] = [];
-  private static original: null | typeof Roles.scopes = null;
-  private static originalLoad: null | typeof Identity.load = null;
+  private static readonly spies: { mockRestore: () => void }[] = [];
 
   /**
    * @route prehandler.allowed
@@ -66,12 +64,13 @@ export class Prehandler {
    * @returns {void}
    */
   public static install(): void {
-    if (Prehandler.original !== null) return;
-    Prehandler.original = Roles.scopes;
-    Prehandler.originalLoad = Identity.load;
-    Roles.scopes = (): readonly Scope[] => Prehandler.granted;
-    Identity.load = (actorId: string) =>
-      Promise.resolve({ id: actorId, role: 'employee', team_ids: [] });
+    if (Prehandler.spies.length > 0) return;
+    Prehandler.spies.push(
+      spyOn(Roles, 'scopes').mockImplementation(() => Prehandler.granted),
+      spyOn(Identity, 'load').mockImplementation((actorId: string) =>
+        Promise.resolve({ id: actorId, role: 'employee', team_ids: [] }),
+      ),
+    );
   }
 
   /**
@@ -79,19 +78,8 @@ export class Prehandler {
    * @returns {void}
    */
   public static restore(): void {
-    if (Prehandler.original === null || Prehandler.originalLoad === null) return;
-    Roles.scopes = Prehandler.original;
-    Identity.load = Prehandler.originalLoad;
-    Prehandler.original = null;
-    Prehandler.originalLoad = null;
-  }
-
-  /**
-   * @route prehandler.scopes
-   * @returns {readonly Scope[]}
-   */
-  public static scopes(): readonly Scope[] {
-    return SCOPES;
+    for (const spy of Prehandler.spies) spy.mockRestore();
+    Prehandler.spies.length = 0;
   }
 
   /**

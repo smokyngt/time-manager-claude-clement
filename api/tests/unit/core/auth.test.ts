@@ -1,4 +1,4 @@
-import { afterAll, afterEach, describe, expect, it } from 'bun:test';
+import { afterAll, afterEach, describe, expect, it, spyOn } from 'bun:test';
 
 import { Tokens } from '@/lib/auth/tokens.js';
 import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
@@ -11,27 +11,26 @@ import { Fake } from '../../support/fake.js';
 
 import type { Role } from '@/types/entities/user.js';
 
-const realLoad = Identity.load;
 let loaded: { archived: boolean; missing: boolean; role: Role } = {
   archived: false,
   missing: false,
   role: 'employee',
 };
 
-Identity.load = (actorId: string) => {
+const spy = spyOn(Identity, 'load').mockImplementation((actorId: string) => {
   if (loaded.missing || loaded.archived) {
     return Promise.reject(TokenAuthenticationError({ metadata: { actor_id: actorId } }));
   }
 
   return Promise.resolve({ id: actorId, role: loaded.role, team_ids: [] });
-};
+});
 
 afterEach(() => {
   loaded = { archived: false, missing: false, role: 'employee' };
 });
 
 afterAll(() => {
-  Identity.load = realLoad;
+  spy.mockRestore();
 });
 
 const request = async (role: Role = 'employee') => {
@@ -88,7 +87,7 @@ describe('middlewares.auth', () => {
     await auth({ scopes: [] })(await request(), Fake.reply());
   });
 
-  it('Access.context throws 401 without a user and role.require throws 403', async () => {
+  it('Access.context throws 401 without a user and role.require throws 403', () => {
     expect(() => Access.context(Fake.request())).toThrow();
     const req = Fake.request({ actor: { id: 'e', role: 'employee', team_ids: [] } });
     expect(() => Access.role.require(req, ['admin'])).toThrow();

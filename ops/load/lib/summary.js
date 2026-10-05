@@ -51,8 +51,8 @@ export function markdown(data, scenario) {
   lines.push('', '### Latency by endpoint', '', '| Endpoint | Kind | Requests | avg | p95 | p99 | max |', '|---|---|---|---|---|---|---|');
   for (const [name, kind] of Object.entries(ENDPOINTS)) {
     const v = values(data, `http_req_duration{name:${name}}`);
-    if (!v) continue;
     const count = values(data, `http_reqs{name:${name}}`);
+    if (!v || !count || count.count === 0) continue;
     lines.push(`| \`${name}\` | ${kind} | ${count ? count.count : '-'} | ${ms(v.avg)} | ${ms(v['p(95)'])} | ${ms(v['p(99)'])} | ${ms(v.max)} |`);
   }
 

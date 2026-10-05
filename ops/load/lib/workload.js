@@ -1,7 +1,7 @@
 import { sleep } from 'k6';
 
 import { openSessions, tokenFor } from './auth.js';
-import { DAY_MS, EMPLOYEES, MANAGERS, THINK } from './config.js';
+import { ALL_ACCOUNTS, DAY_MS, EMPLOYEES, MANAGERS, THINK } from './config.js';
 import { call, checkEnvelope, checkError, checkPage, clockConflicts } from './http.js';
 
 // Real, role-based user journeys shared by every scenario.
@@ -10,10 +10,11 @@ import { call, checkEnvelope, checkError, checkPage, clockConflicts } from './ht
  * setup(): log in once per demo account and discover the teams each manager manages.
  * Returns plain JSON, handed to every VU.
  */
-export function prepare() {
-  const sessions = openSessions();
+/** @param {string[]} [accounts] demo accounts to log in (default: all 14) */
+export function prepare(accounts = ALL_ACCOUNTS) {
+  const sessions = openSessions(accounts);
   const teams = {};
-  for (const email of MANAGERS) {
+  for (const email of MANAGERS.filter((account) => accounts.includes(account))) {
     const res = call('teams.list', 'POST', '/v1/teams/list', { limit: 100 }, sessions[email].token);
     const page = checkPage(res, 'teams.list');
     teams[email] = ((page && page.items) || [])

@@ -3,13 +3,18 @@
 import { sleep } from 'k6';
 
 import { tokenFor } from './lib/auth.js';
-import { DAY_MS, EMPLOYEES, MANAGERS } from './lib/config.js';
+import { DAY_MS, EMPLOYEES as ALL_EMPLOYEES, MANAGERS } from './lib/config.js';
 import { call, checkEnvelope, checkError, checkPage, clockConflicts } from './lib/http.js';
 import { summarize } from './lib/summary.js';
 import { thresholds } from './lib/thresholds.js';
 import { prepare } from './lib/workload.js';
 
+// A smoke test only needs a few accounts: 2 managers + 3 employees = 5 logins, under the default
+// login rate limit (10/min) so it runs against an untouched configuration.
+const EMPLOYEES = ALL_EMPLOYEES.slice(0, 3);
+
 export const options = {
+  setupTimeout: '3m',
   scenarios: {
     smoke: { executor: 'constant-vus', vus: 1, duration: '30s' },
   },
@@ -18,7 +23,7 @@ export const options = {
 };
 
 export function setup() {
-  const data = prepare();
+  const data = prepare([...MANAGERS, ...EMPLOYEES]);
   checkEnvelope(call('auth.me', 'GET', '/v1/auth/me', null, data.sessions[MANAGERS[0]].token), 'auth.me');
   return data;
 }

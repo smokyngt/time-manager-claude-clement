@@ -13,7 +13,7 @@ export class Reply {
    */
   public static async send<Data, Payload>(
     req: FastifyRequest,
-    reply: FastifyReply,
+    reply: FastifyReply<{ Reply: ReplyEnvelope<Data> }>,
     event: AppEvent<Payload>,
     data: Data,
   ): Promise<void> {

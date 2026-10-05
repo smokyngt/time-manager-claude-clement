@@ -17,6 +17,7 @@ const stages = (target) => [
 ];
 
 export const options = {
+  setupTimeout: '5m', // 14 logins; slow when AUTH_LOGIN_RATE_LIMIT_MAX is left at its default of 10/min
   scenarios: {
     employees: { executor: 'ramping-vus', exec: 'employees', startVUs: 0, stages: stages(employeeVus), gracefulRampDown: '15s' },
     managers: { executor: 'ramping-vus', exec: 'managers', startVUs: 0, stages: stages(managerVus), gracefulRampDown: '15s' },

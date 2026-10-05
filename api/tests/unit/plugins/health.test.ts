@@ -32,7 +32,7 @@ describe('GET /health', () => {
 
 describe('GET /health/ready', () => {
   it('returns 200 when the database answers', async () => {
-    const app = await build(async () => [{ '?column?': 1 }]);
+    const app = await build(() => Promise.resolve([{ '?column?': 1 }]));
     apps.push(app);
     const response = await app.inject({ method: 'GET', url: '/health/ready' });
     expect(response.statusCode).toBe(200);

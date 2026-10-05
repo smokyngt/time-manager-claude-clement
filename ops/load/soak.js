@@ -6,6 +6,7 @@ import { thresholds } from './lib/thresholds.js';
 import { mixedJourney, prepare } from './lib/workload.js';
 
 export const options = {
+  setupTimeout: '5m', // 14 logins; slow when AUTH_LOGIN_RATE_LIMIT_MAX is left at its default of 10/min
   scenarios: {
     soak: {
       executor: 'ramping-vus',

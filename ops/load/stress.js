@@ -20,6 +20,7 @@ for (let i = 0; i < steps; i += 1) {
 stages.push({ duration: '30s', target: 0 });
 
 export const options = {
+  setupTimeout: '5m', // 14 logins; slow when AUTH_LOGIN_RATE_LIMIT_MAX is left at its default of 10/min
   scenarios: {
     stress: {
       executor: 'ramping-arrival-rate',

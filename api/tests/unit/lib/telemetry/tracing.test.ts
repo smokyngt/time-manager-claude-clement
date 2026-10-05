@@ -29,11 +29,11 @@ describe('Tracing.start', () => {
 
 describe('Tracing.span', () => {
   it('returns the callback result', async () => {
-    expect(await Tracing.span('test.ok', async () => 42)).toBe(42);
+    expect(await Tracing.span('test.ok', () => Promise.resolve(42))).toBe(42);
   });
 
   it('rethrows callback errors', async () => {
     const failing = Tracing.span('test.fail', () => Promise.reject(new Error('boom')));
-    expect(failing).rejects.toThrow('boom');
+    await expect(failing).rejects.toThrow('boom');
   });
 });

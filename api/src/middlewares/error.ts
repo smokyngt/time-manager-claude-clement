@@ -61,7 +61,7 @@ export class ErrorHandler {
       const shape = current as Shape;
       links.push({
         code: typeof shape.code === 'string' ? shape.code : undefined,
-        message: current instanceof Error ? current.message : String(current),
+        message: typeof shape.message === 'string' ? shape.message : '',
         name: current instanceof Error ? current.name : typeof current,
       });
       current = shape.cause;

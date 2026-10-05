@@ -13,6 +13,7 @@ beforeAll(async () => {
   app = Fastify({ genReqId: (req) => Telemetry.id(req), requestIdHeader: false });
   await app.register(observability);
   app.get('/ping', () => ({ ok: true }));
+  app.get('/metrics', () => 'x');
   await app.ready();
 });
 
@@ -61,7 +62,6 @@ describe('observability plugin', () => {
   });
 
   it('does not record the metrics endpoint itself', async () => {
-    app.get('/metrics', () => 'x');
     await app.inject({ method: 'GET', url: '/metrics' });
     const { body } = await Metrics.scrape(undefined);
     expect(body).not.toContain('route="/metrics"');

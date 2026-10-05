@@ -8,6 +8,7 @@ const base = Number(__ENV.BASE_VUS || 10);
 const peak = Number(__ENV.SPIKE_VUS || 100);
 
 export const options = {
+  setupTimeout: '5m', // 14 logins; slow when AUTH_LOGIN_RATE_LIMIT_MAX is left at its default of 10/min
   scenarios: {
     spike: {
       executor: 'ramping-vus',
