@@ -4,7 +4,7 @@ import type { TeamReportParams, UserReportParams } from '@/features/reports/api/
 
 import { fetchTeamReport, fetchUserReport } from '@/features/reports/api/reports'
 
-export function useTeamReport(params: TeamReportParams | null) {
+export function useTeamReport(params: null | TeamReportParams) {
   return useQuery({
     enabled: params !== null,
     queryFn: () => fetchTeamReport(params as TeamReportParams),

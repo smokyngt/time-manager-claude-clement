@@ -1,6 +1,6 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { caught, makeActor, makeReply, makeReq } from '../../../helpers/fixtures.js';
+import { caught, makeActor, makeReply, makeReq, MANAGER_ID } from '../../../helpers/fixtures.js';
 import { installUserService } from '../../../helpers/user-service.js';
 
 const harness = await installUserService();
@@ -19,6 +19,8 @@ import type { ListBody, ListResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
+
+const TEAM_ID = '00000000-0000-4000-8000-0000000000e1';
 
 const { list } = await import('@/controllers/user/list.js');
 
@@ -77,5 +79,19 @@ describe('user.controller.list', () => {
     expect(error.code).toBe('USER_LIST_ERROR');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('user.controller.list');
+  });
+
+  it('scopes a manager to managed members and forwards team_id', async () => {
+    await run(makeActor('manager'), { team_id: TEAM_ID });
+    expect(lastParams()).toMatchObject({
+      filters: { managed_by: MANAGER_ID, role: 'employee', team_id: TEAM_ID },
+    });
+  });
+
+  it('does not scope an admin', async () => {
+    await run(makeActor('admin'), { team_id: TEAM_ID });
+    const filters = (lastParams()['filters'] ?? {}) as Record<string, unknown>;
+    expect(filters['managed_by']).toBeUndefined();
+    expect(filters['team_id']).toBe(TEAM_ID);
   });
 });

@@ -9,8 +9,8 @@ import type { LoginValues } from '@/features/auth/login-schema'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { getLoginErrorMessage } from '@/features/auth/auth-errors'
 import { loginSchema } from '@/features/auth/login-schema'
-import { getErrorMessage } from '@/lib/api/errors'
 import { useAuth } from '@/lib/auth/use-auth'
 
 export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
@@ -31,7 +31,7 @@ export function LoginForm({ onSuccess }: { onSuccess: () => void }) {
       await login(values)
       onSuccess()
     } catch (error) {
-      const message = getErrorMessage(error)
+      const message = getLoginErrorMessage(error)
       setFormError(message)
       toast.error(message)
     }

@@ -70,3 +70,5 @@ export class TeamAccess {
     }
   }
 }
+
+export const teamAccess = new TeamAccess();

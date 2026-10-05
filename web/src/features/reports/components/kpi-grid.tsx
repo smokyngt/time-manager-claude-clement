@@ -11,16 +11,13 @@ import {
 import type { UserKpis } from '@/features/reports/api/types'
 
 import { KpiCard } from '@/features/reports/components/kpi-card'
-import {
-  formatDuration,
-  formatPercent,
-  formatSignedDuration,
-} from '@/features/reports/lib/format'
+import { formatDuration, formatPercent, formatSignedDuration } from '@/features/reports/lib/format'
 
 export const KPI_GRID_CLASS = 'grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-6'
 
 export function KpiGrid({ kpis }: { kpis: UserKpis }) {
-  const overtime_tone = kpis.overtime_ms < 0 ? 'negative' : kpis.overtime_ms > 0 ? 'positive' : undefined
+  const overtime_tone =
+    kpis.overtime_ms < 0 ? 'negative' : kpis.overtime_ms > 0 ? 'positive' : undefined
   return (
     <div className={KPI_GRID_CLASS}>
       <KpiCard

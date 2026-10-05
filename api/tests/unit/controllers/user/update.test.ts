@@ -11,18 +11,24 @@ import {
   MISSING_ID,
   OTHER_ID,
 } from '../../../helpers/fixtures.js';
+import { installMembership } from '../../../helpers/membership.js';
 import { installUserService, makeUser } from '../../../helpers/user-service.js';
 
 const harness = await installUserService();
+const membership = await installMembership();
+const { managed, teamed } = membership;
 const { directory, svc } = harness;
 
 afterAll(() => {
   harness.restore();
+  membership.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
   directory.clear();
+  managed.clear();
+  teamed.clear();
 });
 
 import type { UpdateBody, UpdateResponse } from '@/controllers/user/index.js';
@@ -154,5 +160,26 @@ describe('user.controller.update', () => {
   it('requires authentication', async () => {
     const error = await caught(run(null, { data: { first_name: 'X' }, ids: [OTHER_ID] }));
     expect(error.code).toBe('UNAUTHORIZED');
+  });
+
+  it('forbids a manager from updating an employee of another manager team', async () => {
+    seed();
+    teamed.add(OTHER_ID);
+    const error = await caught(
+      run(makeActor('manager'), { data: { first_name: 'X' }, ids: [OTHER_ID] }),
+    );
+    expect(error.code).toBe('FORBIDDEN');
+    expect(svc.update).not.toHaveBeenCalled();
+  });
+
+  it('lets a manager update an unassigned employee and an own team member', async () => {
+    seed();
+    teamed.add(EMPLOYEE_ID);
+    managed.add(EMPLOYEE_ID);
+    const fake = await run(makeActor('manager'), {
+      data: { first_name: 'X' },
+      ids: [OTHER_ID, EMPLOYEE_ID],
+    });
+    expect(fake.sent).toMatchObject({ data: { success: true } });
   });
 });

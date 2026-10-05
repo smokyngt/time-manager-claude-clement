@@ -22,7 +22,8 @@ export function buildChartPoints(
   range: { from: number; granularity: Granularity; target_ms?: number; to: number },
 ) {
   const buckets = series.map((point, index) => {
-    const next = series[index + 1]?.period_start ?? nextPeriodStart(point.period_start, range.granularity)
+    const next =
+      series[index + 1]?.period_start ?? nextPeriodStart(point.period_start, range.granularity)
     const start = Math.max(point.period_start, range.from)
     const end = Math.min(next - 1, range.to)
     return { point, weekdays: countWeekdays(start, end) }

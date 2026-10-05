@@ -43,6 +43,7 @@ export interface ListBody {
   limit?: number;
   order?: 'asc' | 'desc';
   role?: Role;
+  team_id?: string;
 }
 
 export interface ListResponse {

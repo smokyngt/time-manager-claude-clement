@@ -1,24 +1,43 @@
-import { UsersRoundIcon } from 'lucide-react'
+import { useState } from 'react'
 
 import { PageHeader } from '@/components/layout/page-header'
-import { Card, CardContent } from '@/components/ui/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { NewTeamDialog } from '@/features/teams/components/new-team-dialog'
+import { TeamsGrid } from '@/features/teams/components/teams-grid'
+import { canCreateTeam } from '@/features/teams/permissions'
+import { useAuth } from '@/lib/auth/use-auth'
 
 export function TeamsPage() {
+  const { user } = useAuth()
+  const [status, setStatus] = useState('active')
+
   return (
-    <>
-      <PageHeader description="Organize employees into teams" title="Teams" />
-      <Card>
-        <CardContent className="flex flex-col items-center gap-3 py-12 text-center">
-          <div className="grid size-12 place-items-center rounded-full bg-accent text-accent-foreground">
-            <UsersRoundIcon aria-hidden className="size-6" />
-          </div>
-          <h2 className="font-semibold">No teams yet</h2>
-          <p className="max-w-sm text-sm text-muted-foreground">
-            Team management is coming soon. You will be able to create teams and assign employees
-            here.
-          </p>
-        </CardContent>
-      </Card>
-    </>
+    <div className="space-y-6">
+      <PageHeader
+        actions={
+          <>
+            <Select onValueChange={setStatus} value={status}>
+              <SelectTrigger aria-label="Filter teams" className="w-36">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="archived">Archived</SelectItem>
+              </SelectContent>
+            </Select>
+            {canCreateTeam(user) ? <NewTeamDialog /> : null}
+          </>
+        }
+        description="Organize employees into teams"
+        title="Teams"
+      />
+      <TeamsGrid archived={status === 'archived'} />
+    </div>
   )
 }

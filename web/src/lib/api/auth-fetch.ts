@@ -21,7 +21,10 @@ export function createAuthFetch(deps: AuthFetchDeps) {
 
   return async function authFetch(request: Request) {
     const { pathname } = new URL(request.url, window.location.origin)
-    if (skip_paths.some((path) => pathname.endsWith(path))) return base_fetch(request)
+    if (skip_paths.some((path) => pathname.endsWith(path))) {
+      // No refresh/retry, but logout still needs the bearer token.
+      return base_fetch(withToken(request, deps.get_token()))
+    }
 
     const retry_request = request.clone()
     const response = await base_fetch(withToken(request, deps.get_token()))

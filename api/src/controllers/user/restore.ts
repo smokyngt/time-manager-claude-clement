@@ -29,6 +29,9 @@ export const restore = async (
     }
     const { user: target } = await userService.retrieve({ id });
     Access.user.require(actor, 'restore', target);
+    if (!(await Access.user.scope(actor, target.id))) {
+      throw ForbiddenError({ metadata: { route: 'user.controller.restore' } });
+    }
     const { user } = await userService.restore({ actor, id });
     await Reply.send(req, reply, UserRestored({ payload: { user_id: user.id } }), user);
   } catch (error) {

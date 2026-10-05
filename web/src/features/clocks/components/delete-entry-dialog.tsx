@@ -16,13 +16,7 @@ import { useDeleteClock } from '@/features/clocks/hooks/use-clock-mutations'
 import { formatClockTime, formatDateLabel } from '@/features/clocks/lib/format'
 import { getErrorMessage } from '@/lib/api/errors'
 
-export function DeleteEntryDialog({
-  clock,
-  onClose,
-}: {
-  clock: Clock
-  onClose: () => void
-}) {
+export function DeleteEntryDialog({ clock, onClose }: { clock: Clock; onClose: () => void }) {
   const { isPending, mutateAsync } = useDeleteClock()
 
   async function confirm() {

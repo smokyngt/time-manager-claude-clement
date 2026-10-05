@@ -1,0 +1,26 @@
+import { team } from '@/controllers/team/index.js';
+import { auth } from '@/plugins/auth.js';
+import { TeamDeleteBodySchema, TeamResponses } from '@/schemas/team.js';
+
+import type { DeleteBody, DeleteResponse } from '@/controllers/team/index.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyPluginAsync } from 'fastify';
+
+export const deleteRoute: FastifyPluginAsync = async (fastify) => {
+  fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
+    '',
+    {
+      preHandler: auth({ scopes: ['teams:manage'] }),
+      schema: {
+        body: TeamDeleteBodySchema,
+        description:
+          'Permanently deletes teams and their memberships. Admin only. Authorization is checked for every item before any deletion.',
+        response: TeamResponses.delete,
+        security: [{ bearerAuth: [] }],
+        summary: 'Delete teams in bulk',
+        tags: ['teams'],
+      },
+    },
+    team.delete,
+  );
+};

@@ -10,18 +10,24 @@ import {
   MISSING_ID,
   OTHER_ID,
 } from '../../../helpers/fixtures.js';
+import { installMembership } from '../../../helpers/membership.js';
 import { installUserService, makeUser } from '../../../helpers/user-service.js';
 
 const harness = await installUserService();
+const membership = await installMembership();
+const { managed, teamed } = membership;
 const { directory, svc } = harness;
 
 afterAll(() => {
   harness.restore();
+  membership.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
   directory.clear();
+  managed.clear();
+  teamed.clear();
 });
 
 import type { DeleteBody, DeleteResponse } from '@/controllers/user/index.js';
@@ -112,5 +118,13 @@ describe('user.controller.delete', () => {
     );
     const error = await caught(run(makeActor('admin'), { ids }));
     expect(error.code).toBe('VALIDATION_ERROR');
+  });
+
+  it('forbids a manager from deleting an employee of another manager team', async () => {
+    seed();
+    teamed.add(OTHER_ID);
+    const error = await caught(run(makeActor('manager'), { ids: [OTHER_ID] }));
+    expect(error.code).toBe('FORBIDDEN');
+    expect(svc.delete).not.toHaveBeenCalled();
   });
 });

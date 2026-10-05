@@ -169,6 +169,12 @@ export const UserListBodySchema = {
       type: 'string',
     },
     role: roleProperty,
+    team_id: {
+      description: 'Only members of this team.',
+      example: ID_EXAMPLE,
+      format: 'uuid',
+      type: 'string',
+    },
   },
   type: 'object',
 } as const;

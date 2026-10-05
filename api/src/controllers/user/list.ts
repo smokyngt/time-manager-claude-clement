@@ -24,7 +24,7 @@ export const list = async (
 ): Promise<void> => {
   try {
     const actor = Access.role.require(req, ['admin', 'manager']);
-    const { archived, cursor, ids, limit, order, role } = req.body;
+    const { archived, cursor, ids, limit, order, role, team_id: teamId } = req.body;
     if (actor.role === 'manager' && role !== undefined && role !== 'employee') {
       throw ForbiddenError({ metadata: { route: 'user.controller.list' } });
     }
@@ -35,7 +35,9 @@ export const list = async (
         created_after: Time.bound(req.body.created_after),
         created_before: Time.bound(req.body.created_before),
         ids,
+        managed_by: actor.role === 'manager' ? actor.id : undefined,
         role: actor.role === 'manager' ? 'employee' : role,
+        team_id: teamId,
       },
       limit: limit ?? RequestLimits.limitDefault,
       order: order ?? 'desc',

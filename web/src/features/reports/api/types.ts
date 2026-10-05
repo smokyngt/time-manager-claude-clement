@@ -97,7 +97,16 @@ interface JsonBody<T> {
 }
 
 interface ReportResponses<T> {
-  200: { content: { 'application/json': { data: T; event: null | string } }; headers: Record<string, unknown> }
-  403: { content: { 'application/json': components['schemas']['ApiError'] }; headers: Record<string, unknown> }
-  422: { content: { 'application/json': components['schemas']['ApiError'] }; headers: Record<string, unknown> }
+  200: {
+    content: { 'application/json': { data: T; event: null | string } }
+    headers: Record<string, unknown>
+  }
+  403: {
+    content: { 'application/json': components['schemas']['ApiError'] }
+    headers: Record<string, unknown>
+  }
+  422: {
+    content: { 'application/json': components['schemas']['ApiError'] }
+    headers: Record<string, unknown>
+  }
 }

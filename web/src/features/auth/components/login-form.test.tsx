@@ -2,6 +2,7 @@ import { screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
 
+import { ApiError } from '@/lib/api/errors'
 import { LoginForm } from '@/features/auth/components/login-form'
 import { loginSchema } from '@/features/auth/login-schema'
 import { renderWithAuth } from '@/test/render'
@@ -30,14 +31,51 @@ describe('LoginForm', () => {
   })
 
   it('shows an inline error when login fails', async () => {
-    const login = vi.fn(() => Promise.reject(new Error('Invalid credentials')))
+    const login = vi.fn(() =>
+      Promise.reject(
+        new ApiError({
+          code: 'AUTH_INVALID_CREDENTIALS',
+          message: 'x',
+          request_id: '',
+          status: 401,
+        }),
+      ),
+    )
     renderWithAuth(<LoginForm onSuccess={vi.fn()} />, { login })
 
     await userEvent.type(screen.getByLabelText('Email'), 'a@b.co')
     await userEvent.type(screen.getByLabelText('Password'), 'wrong')
     await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Invalid credentials')
+    expect(await screen.findByRole('alert')).toHaveTextContent('Invalid email or password')
+  })
+
+  it('shows a rate limit message on 429', async () => {
+    const login = vi.fn(() =>
+      Promise.reject(
+        new ApiError({ code: 'RATE_LIMITED', message: 'x', request_id: '', status: 429 }),
+      ),
+    )
+    renderWithAuth(<LoginForm onSuccess={vi.fn()} />, { login })
+
+    await userEvent.type(screen.getByLabelText('Email'), 'a@b.co')
+    await userEvent.type(screen.getByLabelText('Password'), 'wrong')
+    await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Too many attempts, try again in a minute',
+    )
+  })
+
+  it('shows a generic message on network errors', async () => {
+    const login = vi.fn(() => Promise.reject(new TypeError('Failed to fetch')))
+    renderWithAuth(<LoginForm onSuccess={vi.fn()} />, { login })
+
+    await userEvent.type(screen.getByLabelText('Email'), 'a@b.co')
+    await userEvent.type(screen.getByLabelText('Password'), 'wrong')
+    await userEvent.click(screen.getByRole('button', { name: 'Sign in' }))
+
+    expect(await screen.findByRole('alert')).toHaveTextContent('Something went wrong')
   })
 
   it('calls onSuccess after a successful login', async () => {

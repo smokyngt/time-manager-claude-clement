@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router'
 
 import { FullPageSpinner } from '@/components/layout/full-page-spinner'
@@ -6,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth/components/login-form'
 import { MICROSOFT_LOGIN_URL } from '@/lib/api/config'
+import { consumeFrom, peekFrom, saveFrom, sanitizeFrom } from '@/lib/auth/redirect'
 import { useAuth } from '@/lib/auth/use-auth'
 
 function MicrosoftIcon() {
@@ -23,7 +25,12 @@ export function LoginPage() {
   const { status } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
-  const from = (location.state as { from?: string } | null)?.from ?? '/'
+  const state_from = (location.state as { from?: string } | null)?.from
+  const from = state_from ? sanitizeFrom(state_from) : (peekFrom() ?? '/')
+
+  useEffect(() => {
+    if (status === 'authenticated') consumeFrom()
+  }, [status])
 
   if (status === 'loading') return <FullPageSpinner />
   if (status === 'authenticated') return <Navigate replace to={from} />
@@ -42,6 +49,7 @@ export function LoginPage() {
           <CardContent className="space-y-5">
             <LoginForm
               onSuccess={() => {
+                consumeFrom()
                 void navigate(from, { replace: true })
               }}
             />
@@ -51,7 +59,12 @@ export function LoginPage() {
               <span className="h-px flex-1 bg-border" />
             </div>
             <Button asChild className="w-full" variant="outline">
-              <a href={MICROSOFT_LOGIN_URL}>
+              <a
+                href={MICROSOFT_LOGIN_URL}
+                onClick={() => {
+                  saveFrom(from)
+                }}
+              >
                 <MicrosoftIcon />
                 Sign in with Microsoft
               </a>

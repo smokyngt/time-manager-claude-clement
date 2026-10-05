@@ -52,6 +52,9 @@ export const update = async (
         continue;
       }
       Access.user.require(actor, 'update', item.user);
+      if (!(await Access.user.scope(actor, item.user.id))) {
+        throw ForbiddenError({ metadata: { route: 'user.controller.update' } });
+      }
       const allowed = Access.user.fields(actor, item.user);
       if (!keys.every((key) => allowed.includes(key))) {
         throw ForbiddenError({ metadata: { route: 'user.controller.update' } });

@@ -189,7 +189,11 @@ export const TeamUpdateDataSchema = {
   description: 'Fields to change. Only an admin can change manager_id.',
   minProperties: 1,
   properties: {
-    description: { ...descriptionProperty, description: 'Description, null to clear it.', nullable: true },
+    description: {
+      ...descriptionProperty,
+      description: 'Description, null to clear it.',
+      nullable: true,
+    },
     manager_id: managerIdProperty,
     name: nameProperty,
     weekly_hours_target: weeklyHoursTargetProperty,

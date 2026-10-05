@@ -6,6 +6,12 @@ export interface components {
   responses: never
   schemas: {
     AccessToken: { access_token: string }
+    AuthSession: {
+      access_token: string
+      expires_in: number
+      token_type: 'Bearer'
+      user: components['schemas']['User']
+    }
     ApiError: { code: string; message: string; request_id: string; status: number }
     CreateUserBody: {
       email: string
@@ -37,8 +43,9 @@ export interface paths {
     post: {
       requestBody: Body<components['schemas']['Login']>
       responses: {
-        200: Envelope<components['schemas']['AccessToken']>
+        200: Envelope<components['schemas']['AuthSession']>
         401: Json<components['schemas']['ApiError']>
+        429: Json<components['schemas']['ApiError']>
       }
     }
   }
@@ -56,7 +63,7 @@ export interface paths {
   '/v1/auth/refresh': {
     post: {
       responses: {
-        200: Envelope<components['schemas']['AccessToken']>
+        200: Envelope<components['schemas']['AuthSession']>
         401: Json<components['schemas']['ApiError']>
       }
     }

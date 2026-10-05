@@ -29,6 +29,9 @@ export const retrieve = async (
     }
     const { user } = await userService.retrieve({ id });
     Access.user.require(actor, 'read', user);
+    if (!(await Access.user.scope(actor, user.id))) {
+      throw ForbiddenError({ metadata: { route: 'user.controller.retrieve' } });
+    }
     await Reply.send(req, reply, UserRetrieved({ payload: { user_id: user.id } }), user);
   } catch (error) {
     throw UserRetrieveError({ cause: error, metadata: { route: 'user.controller.retrieve' } });

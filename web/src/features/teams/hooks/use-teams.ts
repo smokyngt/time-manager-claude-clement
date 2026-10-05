@@ -1,6 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 
+import type { CreateTeamBody, UpdateTeamData } from '@/features/teams/api/types'
+
 import {
   archiveTeam,
   createTeam,
@@ -12,8 +14,6 @@ import {
 } from '@/features/teams/api/teams'
 import { teamKeys } from '@/features/teams/hooks/team-keys'
 import { getErrorMessage } from '@/lib/api/errors'
-
-import type { CreateTeamBody, UpdateTeamData } from '@/features/teams/api/types'
 
 function useInvalidateTeams() {
   const query_client = useQueryClient()

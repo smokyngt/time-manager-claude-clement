@@ -59,6 +59,11 @@ jobs:
         run: bun run lint
       - name: Unit tests
         run: bun run test:unit
+      - name: Apply migrations
+        run: bun run db:migrate
+      - name: Integration tests
+        if: hashFiles('api/tests/integration/**') != ''
+        run: bun test tests/integration
       - name: Generate OpenAPI spec
         run: bun run openapi:generate
 
@@ -93,6 +98,87 @@ jobs:
       - name: Build
         run: bun run build
 
+  e2e:
+    name: Web E2E (Playwright)
+    needs: [api, web]
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: timemanager
+          POSTGRES_PASSWORD: timemanager
+          POSTGRES_DB: timemanager_e2e
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U timemanager -d timemanager_e2e"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgres://timemanager:timemanager@localhost:5432/timemanager_e2e
+      JWT_ACCESS_SECRET: ci-access-secret-0123456789abcdef0123456789abcdef
+      JWT_REFRESH_SECRET: ci-refresh-secret-0123456789abcdef0123456789abcdef
+      SEED_ADMIN_EMAIL: admin@example.com
+      SEED_ADMIN_PASSWORD: ci-admin-password
+      CORS_ORIGIN: http://localhost:5173
+      WEB_URL: http://localhost:5173
+      PORT: "8000"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Detect e2e suite
+        id: detect
+        run: echo "present=${{ hashFiles('web/e2e/**') != '' }}" >> "$GITHUB_OUTPUT"
+      - name: Set up Bun
+        if: steps.detect.outputs.present == 'true'
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.x
+      - name: Install API dependencies
+        if: steps.detect.outputs.present == 'true'
+        working-directory: api
+        run: bun install --frozen-lockfile
+      - name: Install web dependencies
+        if: steps.detect.outputs.present == 'true'
+        working-directory: web
+        run: bun install --frozen-lockfile
+      - name: Migrate and seed
+        if: steps.detect.outputs.present == 'true'
+        working-directory: api
+        run: bun run db:migrate && bun run db:seed
+      - name: Start API
+        if: steps.detect.outputs.present == 'true'
+        working-directory: api
+        run: |
+          nohup bun src/server.ts > /tmp/api.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -fsS http://localhost:8000/health && exit 0
+            sleep 1
+          done
+          cat /tmp/api.log
+          exit 1
+      - name: Install Playwright browser
+        if: steps.detect.outputs.present == 'true'
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: Run Playwright tests
+        if: steps.detect.outputs.present == 'true'
+        working-directory: web
+        run: bunx playwright test
+      - name: Upload Playwright report
+        if: failure() && steps.detect.outputs.present == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: web/playwright-report
+          if-no-files-found: ignore
+      - name: Show API log
+        if: failure() && steps.detect.outputs.present == 'true'
+        run: cat /tmp/api.log
+
   docker:
     name: Docker images (build only)
     needs: [api, web]
@@ -112,14 +198,6 @@ jobs:
           push: false
           cache-from: type=gha,scope=api
           cache-to: type=gha,scope=api,mode=max
-      - name: Build API migrate image
-        uses: docker/build-push-action@v6
-        with:
-          context: ./api
-          file: ./api/Dockerfile.prod
-          target: migrate
-          push: false
-          cache-from: type=gha,scope=api
       - name: Build web image
         uses: docker/build-push-action@v6
         with:

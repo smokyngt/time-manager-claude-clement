@@ -61,6 +61,8 @@ export class Kpi {
    * @returns {boolean}
    */
   public static valid(from: number, to: number): boolean {
-    return Number.isFinite(from) && Number.isFinite(to) && to > from && to - from <= Kpi.maxDays * DAY_MS;
+    return (
+      Number.isFinite(from) && Number.isFinite(to) && to > from && to - from <= Kpi.maxDays * DAY_MS
+    );
   }
 }

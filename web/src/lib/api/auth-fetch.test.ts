@@ -106,4 +106,20 @@ describe('createAuthFetch', () => {
     expect(response.status).toBe(401)
     expect(refresh).not.toHaveBeenCalled()
   })
+
+  it('sends the bearer token on logout without retrying', async () => {
+    const base_fetch = vi.fn(() => Promise.resolve(new Response('{}', { status: 401 })))
+    const refresh = vi.fn()
+    const authFetch = createAuthFetch({
+      base_fetch,
+      get_token: () => 'abc',
+      on_auth_failure: vi.fn(),
+      refresh,
+    })
+
+    await authFetch(makeRequest('/v1/auth/logout'))
+
+    expect(authHeader(sentRequest(base_fetch, 0))).toBe('Bearer abc')
+    expect(refresh).not.toHaveBeenCalled()
+  })
 })

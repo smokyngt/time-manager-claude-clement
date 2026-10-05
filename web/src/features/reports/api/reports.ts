@@ -1,10 +1,6 @@
 import createClient from 'openapi-fetch'
 
-import type {
-  ReportsPaths,
-  TeamReportParams,
-  UserReportParams,
-} from '@/features/reports/api/types'
+import type { ReportsPaths, TeamReportParams, UserReportParams } from '@/features/reports/api/types'
 
 import { createAuthFetch } from '@/lib/api/auth-fetch'
 import { API_URL } from '@/lib/api/config'

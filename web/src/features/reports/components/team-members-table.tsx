@@ -67,7 +67,7 @@ export function TeamMembersTable({ members }: { members: TeamMemberReport[] }) {
               >
                 <Button
                   className="-mr-2.5"
-                  onClick={() => toggle(column.key)}
+                  onClick={() => { toggle(column.key); }}
                   size="sm"
                   variant="ghost"
                 >

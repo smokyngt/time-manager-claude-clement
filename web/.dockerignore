@@ -9,6 +9,9 @@ coverage
 Dockerfile*
 .dockerignore
 nginx.conf.bak
+e2e
+playwright-report
+test-results
 *.md
 *.log
 .vscode

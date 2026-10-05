@@ -1,4 +1,5 @@
 import type { components } from '@/lib/api/schema'
+import type { SessionData } from '@/lib/auth/session'
 
 import { api } from '@/lib/api/client'
 import { toApiError } from '@/lib/api/errors'
@@ -12,12 +13,15 @@ export async function fetchMe() {
   return data.data
 }
 
-export async function loginRequest(body: components['schemas']['Login']) {
+export async function loginRequest(body: components['schemas']['Login']): Promise<SessionData> {
   const { data, error, response } = await api.POST('/v1/auth/login', { body })
   if (error) throw toApiError(error, response.status)
-  return data.data.access_token
+  const { access_token, expires_in, user } = data.data
+  return { access_token, expires_in, user }
 }
 
+/** Revokes the refresh cookie (sent via `credentials: 'include'` on the api client). */
 export async function logoutRequest() {
-  await api.POST('/v1/auth/logout')
+  const { error, response } = await api.POST('/v1/auth/logout')
+  if (error) throw toApiError(error, response.status)
 }

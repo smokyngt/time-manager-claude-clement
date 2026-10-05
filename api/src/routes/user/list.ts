@@ -13,7 +13,8 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
       preHandler: auth({ scopes: ['users:manage'] }),
       schema: {
         body: UserListBodySchema,
-        description: 'Cursor paginated list ordered by creation time. Managers only see employees.',
+        description:
+          'Cursor paginated list ordered by creation time. Managers only see employees they manage or employees without a team.',
         response: UserResponses.list,
         security: [{ bearerAuth: [] }],
         summary: 'List users',

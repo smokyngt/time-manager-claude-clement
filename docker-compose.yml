@@ -1,7 +1,8 @@
 # Production stack: `docker compose up --build`
 # Only the web container (nginx) is published; db and api stay on the internal network.
-# Migrations run in a dedicated one-shot `migrate` service: the API image stays small
-# (production deps only, no drizzle-kit), and scaling the API never races on migrations.
+# The api container applies migrations and the idempotent admin seed on startup, using the
+# same runtime image (compiled dist/db/*.js + drizzle/), so no drizzle-kit or extra service.
+# This assumes a single api replica; scale out only after moving migrations to a release step.
 
 x-api-env: &api-env
   NODE_ENV: ${NODE_ENV:-production}
@@ -18,8 +19,20 @@ x-api-env: &api-env
   MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
   MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
   MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8080/v1/auth/microsoft/callback}
-  SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
-  SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+  SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
+  SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
+  # nginx terminates the proxy hop; set COOKIE_SECURE=true once served over HTTPS.
+  COOKIE_SECURE: ${COOKIE_SECURE:-false}
+  TRUST_PROXY: ${TRUST_PROXY:-true}
+  MIGRATIONS_DIR: drizzle
+  DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
+  APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Paris}
+  USER_RATE_LIMIT_MAX: ${USER_RATE_LIMIT_MAX:-100}
+  USER_RATE_LIMIT_WINDOW: ${USER_RATE_LIMIT_WINDOW:-1 minute}
+  AUTH_RATE_LIMIT_MAX: ${AUTH_RATE_LIMIT_MAX:-100}
+  AUTH_RATE_LIMIT_WINDOW: ${AUTH_RATE_LIMIT_WINDOW:-1 minute}
+  AUTH_LOGIN_RATE_LIMIT_MAX: ${AUTH_LOGIN_RATE_LIMIT_MAX:-10}
+  AUTH_LOGIN_RATE_LIMIT_WINDOW: ${AUTH_LOGIN_RATE_LIMIT_WINDOW:-1 minute}
 
 services:
   db:
@@ -39,18 +52,6 @@ services:
       start_period: 10s
     networks: [backend]
 
-  migrate:
-    build:
-      context: ./api
-      dockerfile: Dockerfile.prod
-      target: migrate
-    environment: *api-env
-    depends_on:
-      db:
-        condition: service_healthy
-    restart: "no"
-    networks: [backend]
-
   api:
     build:
       context: ./api
@@ -58,11 +59,10 @@ services:
       target: runtime
     restart: unless-stopped
     environment: *api-env
+    command: ["sh", "-c", "bun run db:migrate:prod && bun run db:seed:prod && exec bun run start"]
     depends_on:
       db:
         condition: service_healthy
-      migrate:
-        condition: service_completed_successfully
     networks: [backend]
 
   web:

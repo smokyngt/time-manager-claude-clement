@@ -34,7 +34,13 @@ export function LatenessChart({
       <ResponsiveContainer height="100%" width="100%">
         <BarChart data={data} margin={{ bottom: 0, left: -20, right: 8, top: 8 }}>
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-          <XAxis axisLine={false} dataKey="name" minTickGap={16} tick={AXIS_TICK} tickLine={false} />
+          <XAxis
+            axisLine={false}
+            dataKey="name"
+            minTickGap={16}
+            tick={AXIS_TICK}
+            tickLine={false}
+          />
           <YAxis allowDecimals={false} axisLine={false} tick={AXIS_TICK} tickLine={false} />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}

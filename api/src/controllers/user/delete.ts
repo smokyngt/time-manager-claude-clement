@@ -50,6 +50,9 @@ export const remove = async (
         continue;
       }
       Access.user.require(actor, 'delete', item.user);
+      if (!(await Access.user.scope(actor, item.user.id))) {
+        throw ForbiddenError({ metadata: { route: 'user.controller.delete' } });
+      }
       targets.push(item.user);
     }
     const deleted: string[] = [];

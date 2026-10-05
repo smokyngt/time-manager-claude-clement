@@ -3,10 +3,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import type { UpdateClockData } from '@/features/clocks/api/types'
 
 import { createClock, deleteClocks, updateClocks } from '@/features/clocks/api/clocks'
-import {
-  CLOCKS_QUERY_KEY,
-  REPORTS_QUERY_KEY,
-} from '@/features/clocks/hooks/query-keys'
+import { CLOCKS_QUERY_KEY, REPORTS_QUERY_KEY } from '@/features/clocks/hooks/query-keys'
 
 function useInvalidateClocks() {
   const query_client = useQueryClient()

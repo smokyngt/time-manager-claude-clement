@@ -45,6 +45,19 @@ describe('user.service.list', () => {
     expect(calls[0]?.[1]['filters']).toBeUndefined();
   });
 
+  it('builds a filter for team_id and manager scope', async () => {
+    await list({
+      filters: {
+        managed_by: '00000000-0000-4000-8000-0000000000b1',
+        team_id: '00000000-0000-4000-8000-0000000000e1',
+      },
+      limit: 5,
+      order: 'asc',
+    });
+    const calls = paginate.mock.calls as unknown as [unknown, Record<string, unknown>][];
+    expect(calls[0]?.[1]['filters']).toBeDefined();
+  });
+
   it('wraps failures and keeps the cause', async () => {
     const failure = new Error('db down');
     paginate.mockImplementationOnce(() => Promise.reject(failure));

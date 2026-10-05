@@ -9,6 +9,7 @@ coverage
 Dockerfile*
 .dockerignore
 *.md
+tests
 *.log
 .vscode
 .idea

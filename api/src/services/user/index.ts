@@ -91,7 +91,9 @@ export interface UserFilters {
   created_after?: number;
   created_before?: number;
   ids?: string[];
+  managed_by?: string;
   role?: Role;
+  team_id?: string;
 }
 
 export interface UserServiceType {

@@ -10,16 +10,13 @@ import {
 
 import type { TeamKpis } from '@/features/reports/api/types'
 
-import { KPI_GRID_CLASS } from '@/features/reports/components/kpi-grid'
 import { KpiCard } from '@/features/reports/components/kpi-card'
-import {
-  formatDuration,
-  formatPercent,
-  formatSignedDuration,
-} from '@/features/reports/lib/format'
+import { KPI_GRID_CLASS } from '@/features/reports/components/kpi-grid'
+import { formatDuration, formatPercent, formatSignedDuration } from '@/features/reports/lib/format'
 
 export function TeamKpiGrid({ kpis }: { kpis: TeamKpis }) {
-  const overtime_tone = kpis.overtime_ms < 0 ? 'negative' : kpis.overtime_ms > 0 ? 'positive' : undefined
+  const overtime_tone =
+    kpis.overtime_ms < 0 ? 'negative' : kpis.overtime_ms > 0 ? 'positive' : undefined
   return (
     <div className={KPI_GRID_CLASS}>
       <KpiCard

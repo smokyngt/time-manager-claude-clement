@@ -58,7 +58,13 @@ export function WorkedHoursChart({
       <ResponsiveContainer height="100%" width="100%">
         <ComposedChart data={data} margin={{ bottom: 0, left: -20, right: 8, top: 8 }}>
           <CartesianGrid stroke="var(--border)" strokeDasharray="3 3" vertical={false} />
-          <XAxis axisLine={false} dataKey="name" minTickGap={16} tick={AXIS_TICK} tickLine={false} />
+          <XAxis
+            axisLine={false}
+            dataKey="name"
+            minTickGap={16}
+            tick={AXIS_TICK}
+            tickLine={false}
+          />
           <YAxis axisLine={false} tick={AXIS_TICK} tickLine={false} unit="h" />
           <Tooltip
             contentStyle={TOOLTIP_STYLE}

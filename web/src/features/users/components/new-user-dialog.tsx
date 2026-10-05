@@ -4,7 +4,8 @@ import { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-import type { NewUserValues } from '@/features/users/new-user-schema'
+import type { NewUserValues } from '@/features/users/schemas'
+import type { Role } from '@/features/users/types'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -17,26 +18,14 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
+import { FormField } from '@/features/users/components/form-field'
+import { RoleSelect } from '@/features/users/components/role-select'
 import { useCreateUser } from '@/features/users/hooks/use-users'
-import { newUserSchema } from '@/features/users/new-user-schema'
+import { assignableRoles } from '@/features/users/permissions'
+import { newUserSchema, PASSWORD_MIN_LENGTH } from '@/features/users/schemas'
 import { ApiError, getErrorMessage } from '@/lib/api/errors'
 
-const TEXT_FIELDS = [
-  { autoComplete: 'off', label: 'First name', name: 'first_name', type: 'text' },
-  { autoComplete: 'off', label: 'Last name', name: 'last_name', type: 'text' },
-  { autoComplete: 'off', label: 'Email', name: 'email', type: 'email' },
-  { autoComplete: 'off', label: 'Phone number', name: 'phone_number', type: 'tel' },
-] as const
-
-export function NewUserDialog() {
+export function NewUserDialog({ actorRole }: { actorRole: Role }) {
   const [open, setOpen] = useState(false)
   const [form_error, setFormError] = useState<null | string>(null)
   const { isPending, mutateAsync } = useCreateUser()
@@ -48,14 +37,28 @@ export function NewUserDialog() {
     reset,
     setError,
   } = useForm<NewUserValues>({
-    defaultValues: { email: '', first_name: '', last_name: '', phone_number: '', role: 'employee' },
+    defaultValues: {
+      email: '',
+      first_name: '',
+      last_name: '',
+      password: '',
+      phone_number: '',
+      role: 'employee',
+    },
     resolver: zodResolver(newUserSchema),
   })
 
   async function onSubmit(values: NewUserValues) {
     setFormError(null)
     try {
-      await mutateAsync(values)
+      await mutateAsync({
+        email: values.email,
+        first_name: values.first_name,
+        last_name: values.last_name,
+        password: values.password === '' ? undefined : values.password,
+        phone_number: values.phone_number === '' ? undefined : values.phone_number,
+        role: actorRole === 'admin' ? values.role : 'employee',
+      })
       toast.success(`${values.first_name} ${values.last_name} was created`)
       reset()
       setOpen(false)
@@ -91,7 +94,9 @@ export function NewUserDialog() {
         <DialogHeader>
           <DialogTitle>New user</DialogTitle>
           <DialogDescription>
-            Create an account. The user can then sign in with their email.
+            {actorRole === 'admin'
+              ? 'Create an account and choose its role.'
+              : 'Create an employee account.'}
           </DialogDescription>
         </DialogHeader>
         <form
@@ -105,43 +110,81 @@ export function NewUserDialog() {
             </p>
           ) : null}
           <div className="grid gap-4 sm:grid-cols-2">
-            {TEXT_FIELDS.map((field) => (
-              <div
-                className={field.name === 'email' ? 'space-y-2 sm:col-span-2' : 'space-y-2'}
-                key={field.name}
-              >
-                <Label htmlFor={`new-user-${field.name}`}>{field.label}</Label>
-                <Input
-                  aria-invalid={Boolean(errors[field.name])}
-                  autoComplete={field.autoComplete}
-                  id={`new-user-${field.name}`}
-                  type={field.type}
-                  {...register(field.name)}
-                />
-                {errors[field.name] ? (
-                  <p className="text-sm text-destructive">{errors[field.name]?.message}</p>
-                ) : null}
-              </div>
-            ))}
-            <div className="space-y-2 sm:col-span-2">
-              <Label htmlFor="new-user-role">Role</Label>
-              <Controller
-                control={control}
-                name="role"
-                render={({ field }) => (
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <SelectTrigger id="new-user-role">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="employee">Employee</SelectItem>
-                      <SelectItem value="manager">Manager</SelectItem>
-                      <SelectItem value="admin">Admin</SelectItem>
-                    </SelectContent>
-                  </Select>
-                )}
+            <FormField error={errors.first_name?.message} id="new-user-first_name" label="First name">
+              <Input
+                aria-invalid={Boolean(errors.first_name)}
+                autoComplete="off"
+                id="new-user-first_name"
+                {...register('first_name')}
               />
-            </div>
+            </FormField>
+            <FormField error={errors.last_name?.message} id="new-user-last_name" label="Last name">
+              <Input
+                aria-invalid={Boolean(errors.last_name)}
+                autoComplete="off"
+                id="new-user-last_name"
+                {...register('last_name')}
+              />
+            </FormField>
+            <FormField
+              className="sm:col-span-2"
+              error={errors.email?.message}
+              id="new-user-email"
+              label="Email"
+            >
+              <Input
+                aria-invalid={Boolean(errors.email)}
+                autoComplete="off"
+                id="new-user-email"
+                type="email"
+                {...register('email')}
+              />
+            </FormField>
+            <FormField
+              className="sm:col-span-2"
+              error={errors.phone_number?.message}
+              id="new-user-phone_number"
+              label="Phone number (optional)"
+            >
+              <Input
+                aria-invalid={Boolean(errors.phone_number)}
+                autoComplete="off"
+                id="new-user-phone_number"
+                type="tel"
+                {...register('phone_number')}
+              />
+            </FormField>
+            {actorRole === 'admin' ? (
+              <FormField className="sm:col-span-2" id="new-user-role" label="Role">
+                <Controller
+                  control={control}
+                  name="role"
+                  render={({ field }) => (
+                    <RoleSelect
+                      id="new-user-role"
+                      onChange={field.onChange}
+                      roles={assignableRoles(actorRole)}
+                      value={field.value}
+                    />
+                  )}
+                />
+              </FormField>
+            ) : null}
+            <FormField
+              className="sm:col-span-2"
+              error={errors.password?.message}
+              hint={`Optional, minimum ${PASSWORD_MIN_LENGTH} characters. Leave empty if the user signs in with Microsoft only.`}
+              id="new-user-password"
+              label="Initial password"
+            >
+              <Input
+                aria-invalid={Boolean(errors.password)}
+                autoComplete="new-password"
+                id="new-user-password"
+                type="password"
+                {...register('password')}
+              />
+            </FormField>
           </div>
           <DialogFooter>
             <Button disabled={isPending} type="submit">

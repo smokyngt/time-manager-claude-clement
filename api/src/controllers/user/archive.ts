@@ -29,6 +29,9 @@ export const archive = async (
     }
     const { user: target } = await userService.retrieve({ id });
     Access.user.require(actor, 'archive', target);
+    if (!(await Access.user.scope(actor, target.id))) {
+      throw ForbiddenError({ metadata: { route: 'user.controller.archive' } });
+    }
     const { user } = await userService.archive({ actor, id });
     await Reply.send(req, reply, UserArchived({ payload: { user_id: user.id } }), user);
   } catch (error) {

@@ -9,18 +9,24 @@ import {
   MISSING_ID,
   OTHER_ID,
 } from '../../../helpers/fixtures.js';
+import { installMembership } from '../../../helpers/membership.js';
 import { installUserService, makeUser } from '../../../helpers/user-service.js';
 
 const harness = await installUserService();
+const membership = await installMembership();
+const { managed, teamed } = membership;
 const { directory, svc } = harness;
 
 afterAll(() => {
   harness.restore();
+  membership.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
   directory.clear();
+  managed.clear();
+  teamed.clear();
 });
 
 import type { RestoreParams } from '@/controllers/user/index.js';
@@ -74,5 +80,21 @@ describe('user.controller.restore', () => {
     const error = await caught(run(makeActor('admin'), MISSING_ID));
     expect(error.code).toBe('USER_NOT_FOUND');
     expect(error.status).toBe(404);
+  });
+
+  it('forbids a manager from an employee of another manager team', async () => {
+    directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
+    teamed.add(OTHER_ID);
+    const error = await caught(run(makeActor('manager'), OTHER_ID));
+    expect(error.code).toBe('FORBIDDEN');
+    expect(svc.restore).not.toHaveBeenCalled();
+  });
+
+  it('lets a manager act on a member of a team they manage', async () => {
+    directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
+    teamed.add(OTHER_ID);
+    managed.add(OTHER_ID);
+    const fake = await run(makeActor('manager'), OTHER_ID);
+    expect(fake.sent).toMatchObject({ data: { id: OTHER_ID } });
   });
 });

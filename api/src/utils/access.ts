@@ -1,4 +1,5 @@
 import { ForbiddenError, UnauthorizedError } from '@/lib/errors/index.js';
+import { Membership } from '@/utils/membership.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 import type { Role } from '@/types/entities/user.js';
@@ -104,6 +105,20 @@ class UserAccess {
         metadata: { action, role: actor.role, route: 'access.user.require', target: target?.id },
       });
     }
+  }
+
+  /**
+   * @route access.user.scope
+   * @param {Actor} actor
+   * @param {string} id
+   * @returns {Promise<boolean>}
+   */
+  public async scope(actor: Actor, id: string): Promise<boolean> {
+    if (actor.role !== 'manager' || actor.id === id) return true;
+    if (await Membership.manages(actor, id)) return true;
+    const teams = await Membership.teams(id);
+
+    return teams.length === 0;
   }
 }
 
