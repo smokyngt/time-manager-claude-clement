@@ -1,0 +1,42 @@
+# syntax=docker/dockerfile:1
+# Production image for the API. Stages: deps -> build -> (migrate | runtime)
+
+# ---- all dependencies (cached on lockfile only) ----
+FROM oven/bun:1.3 AS deps
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile
+
+# ---- build ----
+FROM deps AS build
+COPY . .
+RUN bun run build
+
+# ---- production dependencies only ----
+FROM oven/bun:1.3 AS prod-deps
+WORKDIR /app
+COPY package.json bun.lock ./
+RUN bun install --frozen-lockfile --production
+
+# ---- one-shot migration image (needs drizzle-kit, a dev dependency) ----
+FROM build AS migrate
+ENV NODE_ENV=production
+USER bun
+CMD ["bun", "run", "db:migrate"]
+
+# ---- runtime ----
+FROM oven/bun:1.3-slim AS runtime
+WORKDIR /app
+ENV NODE_ENV=production PORT=8000
+
+COPY --from=prod-deps --chown=bun:bun /app/node_modules ./node_modules
+COPY --from=build --chown=bun:bun /app/dist ./dist
+COPY --chown=bun:bun package.json ./
+
+USER bun
+EXPOSE 8000
+
+HEALTHCHECK --interval=15s --timeout=3s --start-period=10s --retries=3 \
+  CMD bun -e "fetch('http://127.0.0.1:'+(process.env.PORT||8000)+'/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
+
+CMD ["bun", "dist/server.js"]

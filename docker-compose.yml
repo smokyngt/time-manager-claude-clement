@@ -1,0 +1,86 @@
+# Production stack: `docker compose up --build`
+# Only the web container (nginx) is published; db and api stay on the internal network.
+# Migrations run in a dedicated one-shot `migrate` service: the API image stays small
+# (production deps only, no drizzle-kit), and scaling the API never races on migrations.
+
+x-api-env: &api-env
+  NODE_ENV: ${NODE_ENV:-production}
+  PORT: ${PORT:-8000}
+  LOG_LEVEL: ${LOG_LEVEL:-info}
+  DATABASE_URL: postgres://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}
+  JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
+  JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+  JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
+  CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
+  WEB_URL: ${WEB_URL:-http://localhost:8080}
+  MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
+  MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
+  MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
+  MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8080/v1/auth/microsoft/callback}
+  SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-}
+  SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    networks: [backend]
+
+  migrate:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+      target: migrate
+    environment: *api-env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    networks: [backend]
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.prod
+      target: runtime
+    restart: unless-stopped
+    environment: *api-env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks: [backend]
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.prod
+      args:
+        VITE_API_URL: ${VITE_API_URL:-}
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    networks: [backend]
+
+volumes:
+  db-data:
+
+networks:
+  backend:

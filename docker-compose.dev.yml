@@ -1,0 +1,68 @@
+# Development stack with hot reload: `docker compose -f docker-compose.dev.yml up --build`
+# Source is bind-mounted; node_modules lives in an anonymous volume so the host's is never used.
+
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-timemanager}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-timemanager}
+      POSTGRES_DB: ${POSTGRES_DB:-timemanager}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-dev-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.dev
+    command: sh -c "bun run db:migrate && bun run dev"
+    environment:
+      NODE_ENV: development
+      PORT: 8000
+      LOG_LEVEL: ${LOG_LEVEL:-debug}
+      DATABASE_URL: postgres://${POSTGRES_USER:-timemanager}:${POSTGRES_PASSWORD:-timemanager}@db:5432/${POSTGRES_DB:-timemanager}
+      JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-access-secret-change-me-0123456789}
+      JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-dev-refresh-secret-change-me-0123456789}
+      JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
+      JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      WEB_URL: ${WEB_URL:-http://localhost:5173}
+      MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID:-}
+      MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET:-}
+      MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-common}
+      MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8000/v1/auth/microsoft/callback}
+      SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:-admin@example.com}
+      SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-admin-password-dev}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+      - /app/node_modules
+    depends_on:
+      db:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile.dev
+    environment:
+      VITE_API_URL: ${VITE_API_URL:-http://localhost:8000}
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web:/app
+      - /app/node_modules
+    depends_on:
+      - api
+
+volumes:
+  db-dev-data:

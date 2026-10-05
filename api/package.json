@@ -1,0 +1,44 @@
+{
+  "name": "time-manager-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "bun build src/server.ts --target=bun --outdir=dist",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "bun src/db/migrate.ts",
+    "db:seed": "bun src/db/seed.ts",
+    "dev": "bun --watch src/server.ts",
+    "lint": "eslint . --max-warnings=0",
+    "openapi:generate": "bun scripts/openapi.ts",
+    "start": "bun dist/server.js",
+    "test:unit": "bun test tests/unit",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@fastify/cookie": "^11.1.2",
+    "@fastify/cors": "^11.3.0",
+    "@fastify/helmet": "^13.1.1",
+    "@fastify/rate-limit": "^11.2.0",
+    "@fastify/swagger": "^9.9.1",
+    "@fastify/swagger-ui": "^6.1.1",
+    "drizzle-orm": "^0.45.3",
+    "fastify": "5",
+    "jose": "^6.2.12",
+    "postgres": "^3.4.9"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/bun": "^1.4.2",
+    "drizzle-kit": "^0.31.11",
+    "eslint": "9",
+    "eslint-import-resolver-typescript": "^4.4.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-jsdoc": "^65.1.0",
+    "eslint-plugin-perfectionist": "^5.12.1",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.9",
+    "typescript": "5.9",
+    "typescript-eslint": "^8.71.1"
+  }
+}
