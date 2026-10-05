@@ -50,7 +50,9 @@ export interface paths {
     }
   }
   '/v1/auth/logout': {
-    post: { responses: { 200: Envelope<null> } }
+    post: {
+      responses: { 200: Envelope<null>; 401: Json<components['schemas']['ApiError']> }
+    }
   }
   '/v1/auth/me': {
     get: {

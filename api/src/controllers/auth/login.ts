@@ -1,6 +1,8 @@
 import { Cookies } from '@/lib/auth/cookies.js';
+import { Limiter } from '@/lib/auth/limiter.js';
 import { AuthLoginError } from '@/lib/errors/domains/auth.js';
 import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
+import { RateLimitError } from '@/lib/errors/index.js';
 import { authService } from '@/services/auth/index.js';
 import { Reply } from '@/utils/reply.js';
 
@@ -21,7 +23,14 @@ export const login = async (
 ): Promise<void> => {
   try {
     const { email, password } = req.body;
-    const session = await authService.login({ email, password });
+    if (Limiter.blocked(email)) {
+      throw RateLimitError({ metadata: { route: 'auth.controller.login' } });
+    }
+    const session = await authService.login({ email, password }).catch((error: unknown) => {
+      Limiter.fail(email);
+      throw error;
+    });
+    Limiter.clear(email);
     Cookies.set(reply, session.refresh_token, session.refresh_expires_in);
     const data: SessionResponse = {
       access_token: session.access_token,

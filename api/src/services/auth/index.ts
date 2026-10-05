@@ -42,12 +42,12 @@ export interface LoginParams {
 export type LoginResponse = SessionResult;
 
 export interface LogoutParams {
-  actor: Actor;
   token: string | undefined;
 }
 
 export interface LogoutResponse {
   success: boolean;
+  user_id: null | string;
 }
 
 export interface MeParams {

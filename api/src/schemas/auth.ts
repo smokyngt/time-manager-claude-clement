@@ -91,12 +91,11 @@ export const AuthResponses = {
     200: ReplyEnvelopeSchema(AuthSessionSchema, 'auth.logged_in'),
     400: errorResponse('Invalid request body.'),
     401: errorResponse('Invalid credentials.'),
-    429: errorResponse('Rate limit exceeded.'),
+    429: errorResponse('Rate limit exceeded, per IP or per account.'),
     500: errorResponse('Unexpected error.'),
   },
   logout: {
     200: ReplyEnvelopeSchema(AuthLogoutDataSchema, 'auth.logged_out'),
-    401: errorResponse('Missing or invalid access token.'),
     429: errorResponse('Rate limit exceeded.'),
     500: errorResponse('Unexpected error.'),
   },

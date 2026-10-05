@@ -1,4 +1,4 @@
-import { UserRetrieveError } from '@/lib/errors/domains/user.js';
+import { UserNotFoundError, UserRetrieveError } from '@/lib/errors/domains/user.js';
 import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserRetrieved } from '@/lib/events/domains/user.js';
 import { userService } from '@/services/user/index.js';
@@ -28,10 +28,10 @@ export const retrieve = async (
       throw ForbiddenError({ metadata: { route: 'user.controller.retrieve' } });
     }
     const { user } = await userService.retrieve({ id });
-    Access.user.require(actor, 'read', user);
-    if (!(await Access.user.scope(actor, user.id))) {
-      throw ForbiddenError({ metadata: { route: 'user.controller.retrieve' } });
+    if (!(await Access.user.scope(actor, user))) {
+      throw UserNotFoundError({ metadata: { route: 'user.controller.retrieve', user_id: id } });
     }
+    Access.user.require(actor, 'read', user);
     await Reply.send(req, reply, UserRetrieved({ payload: { user_id: user.id } }), user);
   } catch (error) {
     throw UserRetrieveError({ cause: error, metadata: { route: 'user.controller.retrieve' } });

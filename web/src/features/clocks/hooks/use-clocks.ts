@@ -1,5 +1,6 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 
+import type { ClockPage } from '@/features/clocks/api/types'
 import type { ClockFilters } from '@/features/clocks/hooks/query-keys'
 
 import { listClocks } from '@/features/clocks/api/clocks'
@@ -12,7 +13,7 @@ export function useClocks(filters: ClockFilters, enabled = true) {
     enabled,
     getNextPageParam: (last_page) => (last_page.more ? (last_page.next ?? undefined) : undefined),
     initialPageParam: undefined as string | undefined,
-    queryFn: ({ pageParam }) =>
+    queryFn: ({ pageParam }): Promise<ClockPage> =>
       listClocks({ ...filters, cursor: pageParam, limit: PAGE_SIZE, order: 'desc' }),
     queryKey: clockListKey(filters),
   })

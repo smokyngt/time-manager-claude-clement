@@ -1,11 +1,12 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/refresh-token.js';
 import { users } from '@/db/schema/user.js';
 import { UserArchiveError, UserNotFoundError } from '@/lib/errors/domains/user.js';
 import { logService } from '@/services/log/index.js';
 import { UserMapper } from '@/utils/user-mapper.js';
+
+import { revoke } from './revoke.js';
 
 import type { ArchiveParams, ArchiveResponse } from './index.js';
 
@@ -27,10 +28,7 @@ export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> =
     if (row === undefined) {
       throw UserNotFoundError({ metadata: { route: 'user.service.archive', user_id: id } });
     }
-    await db
-      .update(refreshTokens)
-      .set({ revoked_at: now })
-      .where(and(eq(refreshTokens.user_id, id), isNull(refreshTokens.revoked_at)));
+    await revoke(id);
     await logService.create({ actor, event: 'user.archived', metadata: { user_id: id } });
     return { user: UserMapper.entity(row) };
   } catch (error) {

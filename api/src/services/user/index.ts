@@ -107,6 +107,7 @@ export interface UserServiceType {
 }
 
 export interface UserUpdateData {
+  current_password?: string;
   email?: string;
   first_name?: string;
   last_name?: string;

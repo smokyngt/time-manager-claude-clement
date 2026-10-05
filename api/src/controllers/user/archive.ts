@@ -1,4 +1,4 @@
-import { UserArchiveError } from '@/lib/errors/domains/user.js';
+import { UserNotFoundError, UserArchiveError } from '@/lib/errors/domains/user.js';
 import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserArchived } from '@/lib/events/domains/user.js';
 import { userService } from '@/services/user/index.js';
@@ -28,10 +28,10 @@ export const archive = async (
       throw ForbiddenError({ metadata: { route: 'user.controller.archive' } });
     }
     const { user: target } = await userService.retrieve({ id });
-    Access.user.require(actor, 'archive', target);
-    if (!(await Access.user.scope(actor, target.id))) {
-      throw ForbiddenError({ metadata: { route: 'user.controller.archive' } });
+    if (!(await Access.user.scope(actor, target))) {
+      throw UserNotFoundError({ metadata: { route: 'user.controller.archive', user_id: id } });
     }
+    Access.user.require(actor, 'archive', target);
     const { user } = await userService.archive({ actor, id });
     await Reply.send(req, reply, UserArchived({ payload: { user_id: user.id } }), user);
   } catch (error) {

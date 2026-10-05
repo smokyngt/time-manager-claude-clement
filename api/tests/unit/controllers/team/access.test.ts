@@ -54,6 +54,6 @@ describe('team access', () => {
   });
 
   it('throws a forbidden error with the route in metadata', () => {
-    expect(() => teamAccess.require(makeActor('employee'), 'create')).toThrow();
+    expect(() => { teamAccess.require(makeActor('employee'), 'create'); }).toThrow();
   });
 });

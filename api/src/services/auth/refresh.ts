@@ -36,7 +36,7 @@ export const refresh = async (params: RefreshParams): Promise<RefreshResponse> =
             .where(and(eq(refreshTokens.id, stored.id), isNull(refreshTokens.revoked_at)))
             .returning({ id: refreshTokens.id })
         : [];
-    if (claimed === undefined) {
+    if (claimed === undefined && !(await Session.grace({ now, stored }))) {
       if (stored.revoked_at !== null || stored.expires_at <= now) {
         await Session.revoke(stored.family_id);
       }

@@ -4,7 +4,6 @@ import { collectDefaultMetrics, Gauge, Histogram, Registry } from 'prom-client';
 import { NotFoundError, UnauthorizedError } from '@/lib/errors/index.js';
 import { Metrics } from '@/lib/telemetry/metrics.js';
 
-import type { FastifyPluginAsync } from 'fastify';
 
 export interface MetricsOptions {
   poolMax?: number;
@@ -19,7 +18,7 @@ export interface MetricsOptions {
  * @returns {Promise<void>}
  * @throws {NotFoundError | UnauthorizedError}
  */
-export const metrics: FastifyPluginAsync<MetricsOptions> = fp<MetricsOptions>(
+export const metrics = fp<MetricsOptions>(
   async (app, options): Promise<void> => {
     const register = new Registry();
     collectDefaultMetrics({ register });

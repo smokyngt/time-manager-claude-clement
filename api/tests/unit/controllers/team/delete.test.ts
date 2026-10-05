@@ -24,11 +24,10 @@ afterEach(() => {
   directory.clear();
 });
 
+import type { DeleteBody, DeleteResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-
-import type { DeleteBody, DeleteResponse } from '@/controllers/team/index.js';
 
 const { remove } = await import('@/controllers/team/delete.js');
 

@@ -22,10 +22,8 @@ BACKUP_KEEP_MONTHLY="${BACKUP_KEEP_MONTHLY:-6}"
 BACKUP_S3_URI="${BACKUP_S3_URI:-}"
 BACKUP_S3_ENDPOINT_URL="${BACKUP_S3_ENDPOINT_URL:-}"
 BACKUP_AGE_IDENTITY_FILE="${BACKUP_AGE_IDENTITY_FILE:-}"
+# shellcheck disable=SC2034 # used by backup.sh
 LAST_SUCCESS_FILE="${BACKUP_LAST_SUCCESS_FILE:-$BACKUP_DIR/last-success}"
-
-# Matches the timestamp embedded in every backup name: 20261005T021500Z
-TS_REGEX='[0-9]{8}T[0-9]{6}Z'
 
 require_cmds() {
   local c
@@ -204,6 +202,36 @@ stream_dump() {
       ;;
     *) cat -- "$1" ;;
   esac
+}
+
+# resolve_backup WHAT REMOTE: set FILE to a local path of the backup named WHAT
+# ("latest" or a name/path). With REMOTE=true it is downloaded from S3 into
+# TMP_DIR (the caller removes it). BACKUP_PREFIX must already be set.
+TMP_DIR=""
+FILE=""
+resolve_backup() {
+  local what="$1" remote="$2"
+  if [[ "$remote" == true ]]; then
+    [[ -n "$BACKUP_S3_URI" ]] || die "--remote needs BACKUP_S3_URI"
+    require_cmds aws
+    TMP_DIR="$(mktemp -d)"
+    if [[ "$what" == "latest" ]]; then
+      what="$(s3_list_dumps | head -n1)"
+      [[ -n "$what" ]] || die "no backup found at $(s3_base)/"
+    fi
+    what="$(basename "$what")"
+    log "downloading $what from $(s3_base)/"
+    s3 cp "$(s3_base)/$what" "$TMP_DIR/$what" --only-show-errors
+    s3 cp "$(s3_base)/$what.sha256" "$TMP_DIR/$what.sha256" --only-show-errors || warn "no remote checksum file"
+    FILE="$TMP_DIR/$what"
+  else
+    if [[ "$what" == "latest" ]]; then
+      what="$(list_local_dumps | head -n1)"
+      [[ -n "$what" ]] || die "no backup found in $BACKUP_DIR"
+    fi
+    if [[ -f "$what" ]]; then FILE="$what"; else FILE="$BACKUP_DIR/$what"; fi
+    [[ -f "$FILE" ]] || die "backup not found: $what"
+  fi
 }
 
 # restore_into FILE: restore FILE into the database addressed by PG* variables.

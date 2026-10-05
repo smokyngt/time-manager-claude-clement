@@ -36,6 +36,12 @@ export const UserNotFoundError = registerError({
   message: 'The user does not exist.',
 });
 
+export const UserPasswordInvalidError = registerError({
+  code: 'USER_PASSWORD_INVALID',
+  defaultStatus: 403,
+  message: 'The current password is missing or incorrect.',
+});
+
 export const UserRestoreError = registerError({
   code: 'USER_RESTORE_ERROR',
   defaultStatus: 500,

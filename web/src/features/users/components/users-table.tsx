@@ -210,7 +210,7 @@ export function UsersTable() {
                   <TableCell className="font-medium">
                     {user.first_name} {user.last_name}
                     {user.archived_at !== null ? (
-                      <Badge className="ml-2" variant="secondary">
+                      <Badge className="ml-2" variant="outline">
                         Archived
                       </Badge>
                     ) : null}

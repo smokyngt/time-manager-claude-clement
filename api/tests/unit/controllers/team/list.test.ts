@@ -25,11 +25,10 @@ afterEach(() => {
   directory.clear();
 });
 
+import type { ListBody, ListResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-
-import type { ListBody, ListResponse } from '@/controllers/team/index.js';
 
 const { list } = await import('@/controllers/team/list.js');
 

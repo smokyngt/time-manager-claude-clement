@@ -1,4 +1,4 @@
-import { UserDeleteError } from '@/lib/errors/domains/user.js';
+import { UserNotFoundError, UserDeleteError } from '@/lib/errors/domains/user.js';
 import { AppError, ForbiddenError, InternalError, ValidationError } from '@/lib/errors/index.js';
 import { UserDeleted } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
@@ -49,10 +49,11 @@ export const remove = async (
         });
         continue;
       }
-      Access.user.require(actor, 'delete', item.user);
-      if (!(await Access.user.scope(actor, item.user.id))) {
-        throw ForbiddenError({ metadata: { route: 'user.controller.delete' } });
+      if (!(await Access.user.scope(actor, item.user))) {
+        failed.push({ code: UserNotFoundError.code, id: item.id });
+        continue;
       }
+      Access.user.require(actor, 'delete', item.user);
       targets.push(item.user);
     }
     const deleted: string[] = [];

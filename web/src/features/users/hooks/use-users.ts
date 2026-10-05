@@ -1,6 +1,8 @@
+import type { InfiniteData } from '@tanstack/react-query'
+
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
-import type { UserFilters, UserUpdateData } from '@/features/users/types'
+import type { UserFilters, UserPage, UserUpdateData } from '@/features/users/types'
 
 import {
   archiveUsers,
@@ -51,9 +53,15 @@ export function useUser(id: string | undefined) {
 }
 
 export function useUsers(filters: UserFilters) {
-  return useInfiniteQuery({
+  return useInfiniteQuery<
+    UserPage,
+    Error,
+    InfiniteData<UserPage, string | undefined>,
+    readonly unknown[],
+    string | undefined
+  >({
     getNextPageParam: (page) => (page.more ? (page.next ?? undefined) : undefined),
-    initialPageParam: undefined as string | undefined,
+    initialPageParam: undefined,
     queryFn: ({ pageParam }) => listUsers(filters, pageParam),
     queryKey: [...USERS_QUERY_KEY, 'list', filters],
   })

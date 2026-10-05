@@ -23,7 +23,11 @@ export const create = async (params: CreateParams): Promise<CreateResponse> => {
     const { actor, data } = params;
     const { clocked_in_at: clockedIn, clocked_out_at: clockedOut, note, user_id: userId } = data;
     ClockRules.validate({ clockedIn, clockedOut, now: Date.now() });
-    const [owner] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId)).limit(1);
+    const [owner] = await db
+      .select({ id: users.id })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
     if (owner === undefined) {
       throw UserNotFoundError({ metadata: { route: 'clock.service.create', user_id: userId } });
     }

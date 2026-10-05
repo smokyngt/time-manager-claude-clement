@@ -26,7 +26,7 @@ Bun everywhere (`bun install`, `bun.lock` committed). Each package has its own `
 | `start` | run `dist/` | – |
 | `typecheck` | `tsc --noEmit` | `tsc -b --noEmit` |
 | `lint` | eslint | eslint |
-| `test:unit` | `bun test tests/unit` | `bun test` / vitest |
+| `test:unit` | `bun test tests/unit` | `vitest run` |
 | `openapi:generate` | writes `api/openapi.json` | – |
 | `api:types` | – | generates `src/lib/api/schema.d.ts` from `../api/openapi.json` |
 | `db:generate` / `db:migrate` | drizzle-kit | – |
@@ -57,7 +57,7 @@ Environment variables (web, build time): `VITE_API_URL` (empty string = same ori
 - Refresh token: opaque random token, stored hashed in the `refresh_tokens` table, sent as an `httpOnly`, `Secure` (prod), `SameSite=Lax` cookie `tm_refresh` scoped to path `/v1/auth`. Rotated on every refresh; reuse revokes the family.
 - Endpoints: `POST /v1/auth/login`, `POST /v1/auth/refresh`, `POST /v1/auth/logout`, `GET /v1/auth/me`, `GET /v1/auth/microsoft`, `GET /v1/auth/microsoft/callback`.
 - No public signup. Users are created by a manager/admin through `POST /v1/users/new`.
-- Roles: `employee`, `manager`, `admin` (final list depends on the project spec).
+- Roles: `employee`, `manager`, `admin`.
 
 ## Wire format
 

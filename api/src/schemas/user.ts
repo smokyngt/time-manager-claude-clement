@@ -117,6 +117,14 @@ export const UserIdParamsSchema = {
 export const UserCreateBodySchema = {
   additionalProperties: false,
   properties: {
+    current_password: {
+      description: 'Current password. Required when the actor changes their own password.',
+      example: 'correct-horse-battery',
+      maxLength: 128,
+      minLength: 10,
+      type: 'string',
+      writeOnly: true,
+    },
     email: emailProperty,
     first_name: firstNameProperty,
     last_name: lastNameProperty,

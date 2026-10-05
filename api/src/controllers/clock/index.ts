@@ -17,8 +17,6 @@ export interface BulkFailure {
   id: string;
 }
 
-export type CreateBody = ClockCreateData;
-
 export interface ClockControllerType {
   create: (
     req: FastifyRequest<{ Body: CreateBody }>,
@@ -53,6 +51,8 @@ export interface ClockControllerType {
     reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
   ) => Promise<void>;
 }
+
+export type CreateBody = ClockCreateData;
 
 export interface CurrentResponse {
   clock: Clock | null;

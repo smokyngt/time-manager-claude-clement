@@ -37,7 +37,9 @@ describe('clock.service.update', () => {
     expect(values['note']).toBe('fixed');
     expect(typeof values['updated_at']).toBe('number');
     expect(clock.note).toBe('fixed');
-    expect(fakeDb.calls.filter((call) => call.op === 'select')).toHaveLength(2);
+    expect(
+      fakeDb.calls.filter((call) => call.op === 'select' && call.method === 'from'),
+    ).toHaveLength(1);
     expect(logCreate).toHaveBeenCalledWith({
       actor,
       event: 'clock.updated',

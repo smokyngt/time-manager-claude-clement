@@ -61,7 +61,11 @@ const params = (overrides: Record<string, unknown> = {}) => ({
 
 describe('report.service.user', () => {
   it('computes kpis and the series', async () => {
-    fakeDb.enqueue([{ id: OTHER_ID }], [totals()], [{ late: 1, period_start: FROM, worked_ms: 8 * HOUR }]);
+    fakeDb.enqueue(
+      [{ id: OTHER_ID }],
+      [totals()],
+      [{ late: 1, period_start: FROM, worked_ms: 8 * HOUR }],
+    );
     const { report } = await user(params());
     expect(report.object).toBe('user_report');
     expect(report.user_id).toBe(OTHER_ID);
@@ -78,7 +82,11 @@ describe('report.service.user', () => {
   });
 
   it('returns zeros when the user has no activity', async () => {
-    fakeDb.enqueue([{ id: OTHER_ID }], [totals({ days_worked: 0, late_days: 0, worked_ms: 0 })], []);
+    fakeDb.enqueue(
+      [{ id: OTHER_ID }],
+      [totals({ days_worked: 0, late_days: 0, worked_ms: 0 })],
+      [],
+    );
     const { report } = await user(params());
     expect(report.kpis.average_daily_ms).toBe(0);
     expect(report.kpis.lateness_rate).toBe(0);

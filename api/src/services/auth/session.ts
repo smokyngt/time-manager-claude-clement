@@ -1,10 +1,11 @@
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, gt, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { refreshTokens } from '@/db/schema/refresh-token.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { UserMapper } from '@/utils/user-mapper.js';
 
+import type { RefreshTokenRow } from '@/db/schema/refresh-token.js';
 import type { UserRow } from '@/db/schema/user.js';
 import type { User } from '@/types/entities/user.js';
 
@@ -16,7 +17,33 @@ export interface SessionResult {
   user: User;
 }
 
+const GRACE = 10_000;
+
 export class Session {
+  /**
+   * @route auth.session.grace
+   * @param {{ now: number; stored: RefreshTokenRow }} params
+   * @returns {Promise<boolean>}
+   */
+  public static async grace(params: { now: number; stored: RefreshTokenRow }): Promise<boolean> {
+    const { now, stored } = params;
+    if (stored.revoked_at === null || now - stored.revoked_at >= GRACE) return false;
+    if (stored.expires_at <= now) return false;
+    const [live] = await db
+      .select({ id: refreshTokens.id })
+      .from(refreshTokens)
+      .where(
+        and(
+          eq(refreshTokens.family_id, stored.family_id),
+          isNull(refreshTokens.revoked_at),
+          gt(refreshTokens.expires_at, now),
+        ),
+      )
+      .limit(1);
+
+    return live !== undefined;
+  }
+
   /**
    * @route auth.session.issue
    * @param {{ family_id?: string; user: UserRow }} params

@@ -20,7 +20,7 @@ export default defineConfig({
   },
   webServer: [
     {
-      command: 'cd ../api && bun run db:migrate && bun run db:seed && bun run dev',
+      command: 'cd ../api && bun run db:migrate && bun run db:seed && bun src/server.ts',
       env: {
         AUTH_LOGIN_RATE_LIMIT_MAX: '1000',
         AUTH_RATE_LIMIT_MAX: '1000',

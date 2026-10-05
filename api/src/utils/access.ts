@@ -16,7 +16,7 @@ export interface UserTarget {
   role: Role;
 }
 
-const SELF_FIELDS = ['first_name', 'last_name', 'password', 'phone_number'];
+const SELF_FIELDS = ['current_password', 'first_name', 'last_name', 'password', 'phone_number'];
 const MANAGER_FIELDS = ['email', 'first_name', 'last_name', 'password', 'phone_number'];
 const ADMIN_FIELDS = [...MANAGER_FIELDS, 'role'];
 
@@ -110,13 +110,14 @@ class UserAccess {
   /**
    * @route access.user.scope
    * @param {Actor} actor
-   * @param {string} id
+   * @param {UserTarget} target
    * @returns {Promise<boolean>}
    */
-  public async scope(actor: Actor, id: string): Promise<boolean> {
-    if (actor.role !== 'manager' || actor.id === id) return true;
-    if (await Membership.manages(actor, id)) return true;
-    const teams = await Membership.teams(id);
+  public async scope(actor: Actor, target: Required<UserTarget>): Promise<boolean> {
+    if (actor.role !== 'manager' || actor.id === target.id) return true;
+    if (await Membership.manages(actor, target.id)) return true;
+    if (target.role !== 'employee') return false;
+    const teams = await Membership.teams(target.id);
 
     return teams.length === 0;
   }

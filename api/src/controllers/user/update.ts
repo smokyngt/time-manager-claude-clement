@@ -1,4 +1,4 @@
-import { UserUpdateError } from '@/lib/errors/domains/user.js';
+import { UserNotFoundError, UserUpdateError } from '@/lib/errors/domains/user.js';
 import { AppError, ForbiddenError, InternalError, ValidationError } from '@/lib/errors/index.js';
 import { UserUpdated } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
@@ -51,10 +51,11 @@ export const update = async (
         });
         continue;
       }
-      Access.user.require(actor, 'update', item.user);
-      if (!(await Access.user.scope(actor, item.user.id))) {
-        throw ForbiddenError({ metadata: { route: 'user.controller.update' } });
+      if (!(await Access.user.scope(actor, item.user))) {
+        failed.push({ code: UserNotFoundError.code, id: item.id });
+        continue;
       }
+      Access.user.require(actor, 'update', item.user);
       const allowed = Access.user.fields(actor, item.user);
       if (!keys.every((key) => allowed.includes(key))) {
         throw ForbiddenError({ metadata: { route: 'user.controller.update' } });

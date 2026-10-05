@@ -95,7 +95,8 @@ export const ClockSchema = {
     },
     object: { description: 'Object type.', enum: ['clock'], example: 'clock', type: 'string' },
     source: {
-      description: 'How the clock was recorded: by the user (clock) or entered by a manager (manual).',
+      description:
+        'How the clock was recorded: by the user (clock) or entered by a manager (manual).',
       enum: CLOCK_SOURCES,
       example: 'clock',
       type: 'string',
@@ -222,7 +223,11 @@ export const ClockDeleteBodySchema = {
 export const ClockCurrentDataSchema = {
   additionalProperties: false,
   properties: {
-    clock: { ...ClockSchema, description: 'The open clock, null when not clocked in.', nullable: true },
+    clock: {
+      ...ClockSchema,
+      description: 'The open clock, null when not clocked in.',
+      nullable: true,
+    },
   },
   required: ['clock'],
   type: 'object',

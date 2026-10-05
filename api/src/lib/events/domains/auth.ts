@@ -2,7 +2,7 @@ import { registerEvent } from '../index.js';
 
 export const AuthLoggedIn = registerEvent<{ user_id: string }>('auth.logged_in');
 
-export const AuthLoggedOut = registerEvent<{ user_id: string }>('auth.logged_out');
+export const AuthLoggedOut = registerEvent<{ user_id: null | string }>('auth.logged_out');
 
 export const AuthMicrosoftLinked = registerEvent<{ user_id: string }>('auth.microsoft_linked');
 

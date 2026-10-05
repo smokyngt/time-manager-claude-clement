@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { decodeJwt, jwtVerify } from 'jose';
 
 import { db } from '@/db/client.js';
@@ -33,7 +33,7 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
     const rejected = (): Error =>
       AuthMicrosoftRejectedError({ metadata: { route: 'auth.service.callback' } });
     if (stateCookie === undefined) throw rejected();
-    const verified = await jwtVerify(stateCookie, Tokens.secret('JWT_REFRESH_SECRET'), {
+    const verified = await jwtVerify(stateCookie, Tokens.secret('OAUTH_STATE_SECRET'), {
       algorithms: ['HS256'],
       audience: 'oauth-state',
     }).catch(() => undefined);
@@ -57,38 +57,45 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
     if (typeof body.id_token !== 'string') throw rejected();
     const claims = decodeJwt(body.id_token);
     const audience = Array.isArray(claims.aud) ? claims.aud : [claims.aud];
-    const issuer = claims.iss ?? '';
+    const tenant = typeof claims['tid'] === 'string' ? claims['tid'].toLowerCase() : undefined;
+    const oid = typeof claims['oid'] === 'string' ? claims['oid'] : undefined;
     if (
       !audience.includes(config.client_id) ||
       claims['nonce'] !== verified.payload['nonce'] ||
       (claims.exp ?? 0) * 1000 < Date.now() ||
-      !issuer.startsWith('https://login.microsoftonline.com/')
+      tenant !== config.tenant ||
+      oid === undefined ||
+      claims.iss !== `https://login.microsoftonline.com/${tenant}/v2.0`
     ) {
       throw rejected();
     }
-    const oid = typeof claims['oid'] === 'string' ? claims['oid'] : claims.sub;
-    const rawEmail = claims['email'] ?? claims['preferred_username'];
-    const email = typeof rawEmail === 'string' ? rawEmail.toLowerCase() : undefined;
-    if (oid === undefined) throw rejected();
-    const [byOid] = await db.select().from(users).where(eq(users.microsoft_id, oid)).limit(1);
+    const microsoftId = `${tenant}:${oid}`;
+    const email =
+      typeof claims['email'] === 'string' ? claims['email'].trim().toLowerCase() : undefined;
+    const [byId] = await db
+      .select()
+      .from(users)
+      .where(eq(users.microsoft_id, microsoftId))
+      .limit(1);
     const [byEmail] =
-      byOid !== undefined || email === undefined
+      byId !== undefined || email === undefined
         ? []
         : await db.select().from(users).where(eq(users.email, email)).limit(1);
-    const row = byOid ?? byEmail;
+    const row = byId ?? byEmail;
     if (row === undefined) {
       throw AuthMicrosoftUnknownUserError({ metadata: { route: 'auth.service.callback' } });
     }
     if (row.archived_at !== null) throw rejected();
     let linked = row;
-    if (byOid === undefined) {
+    if (byId === undefined) {
       if (row.microsoft_id !== null) throw rejected();
       const [updated] = await db
         .update(users)
-        .set({ microsoft_id: oid, updated_at: Date.now() })
-        .where(eq(users.id, row.id))
+        .set({ microsoft_id: microsoftId, updated_at: Date.now() })
+        .where(and(eq(users.id, row.id), isNull(users.microsoft_id)))
         .returning();
-      linked = updated ?? row;
+      if (updated === undefined) throw rejected();
+      linked = updated;
       await logService.create({
         actor: row,
         event: 'auth.microsoft_linked',

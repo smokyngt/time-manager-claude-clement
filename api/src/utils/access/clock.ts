@@ -36,7 +36,12 @@ export class ClockAccess {
   public async require(actor: Actor, action: ClockAction, target: ClockTarget): Promise<void> {
     if (!(await this.allow(actor, action, target))) {
       throw ForbiddenError({
-        metadata: { action, role: actor.role, route: 'access.clock.require', target: target.user_id },
+        metadata: {
+          action,
+          role: actor.role,
+          route: 'access.clock.require',
+          target: target.user_id,
+        },
       });
     }
   }

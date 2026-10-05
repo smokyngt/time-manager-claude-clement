@@ -38,7 +38,7 @@ export function AccountCard({
             <div className="space-y-1 sm:col-span-2">
               <dt className="text-muted-foreground">Sign-in</dt>
               <dd>
-                <Badge variant="secondary">Microsoft linked</Badge>
+                <Badge variant="outline">Microsoft linked</Badge>
               </dd>
             </div>
           ) : null}

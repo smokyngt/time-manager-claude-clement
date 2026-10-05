@@ -24,11 +24,10 @@ afterEach(() => {
   directory.clear();
 });
 
+import type { UpdateBody, UpdateResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-
-import type { UpdateBody, UpdateResponse } from '@/controllers/team/index.js';
 
 const { update } = await import('@/controllers/team/update.js');
 

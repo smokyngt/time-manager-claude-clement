@@ -29,7 +29,7 @@ export const authorize = async (): Promise<AuthorizeResponse> => {
       .setProtectedHeader({ alg: 'HS256' })
       .setAudience('oauth-state')
       .setExpirationTime(`${STATE_TTL}s`)
-      .sign(Tokens.secret('JWT_REFRESH_SECRET'));
+      .sign(Tokens.secret('OAUTH_STATE_SECRET'));
     return { max_age: STATE_TTL, state_cookie: stateCookie, url };
   } catch (error) {
     throw AuthMicrosoftError({ cause: error, metadata: { route: 'auth.service.authorize' } });

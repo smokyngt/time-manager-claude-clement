@@ -1,6 +1,6 @@
 # Time Manager - web
 
-React 19, Vite, TypeScript (strict), React Router v7, TanStack Query, Tailwind v4, shadcn/ui.
+React 19, Vite, TypeScript (strict), React Router v8, TanStack Query, Tailwind v4, shadcn/ui.
 
 ## Setup
 

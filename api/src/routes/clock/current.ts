@@ -12,7 +12,8 @@ export const currentRoute: FastifyPluginAsync = async (fastify) => {
     {
       preHandler: auth({ scopes: ['clocks:read'] }),
       schema: {
-        description: 'Returns the open clock of the caller, or null when the caller is not clocked in.',
+        description:
+          'Returns the open clock of the caller, or null when the caller is not clocked in.',
         response: ClockResponses.current,
         security: [{ bearerAuth: [] }],
         summary: 'Retrieve the current clock',

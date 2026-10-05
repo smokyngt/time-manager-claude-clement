@@ -26,7 +26,7 @@ Only the presentation tier is reachable from outside in production; `api` and `d
 
 - **Separation of concerns**: the UI never touches SQL and the database never contains UI logic. Each tier changes for its own reasons.
 - **Independent evolution and deployment**: the SPA, the API and the database are separate containers with separate images and lockfiles. The contract between them is the OpenAPI document (`api/openapi.json`), from which the web client types are generated (`bun run api:types`).
-- **Independent scaling**: the stateless API can run as several replicas behind nginx; the database scales separately. Migrations run in a one-shot `migrate` service so replicas never race.
+- **Independent scaling**: the stateless API can run as several replicas behind nginx; the database scales separately. Note that the production API container currently applies migrations on startup, so run a single replica until migrations move to a release step.
 - **Security boundary**: authentication, authorization, validation and rate limiting live in one trusted tier. The database accepts connections only from the API.
 - **Testability**: services contain no Fastify types and are unit-tested against a fake database; the SPA is tested with Vitest and Testing Library.
 - **Replaceable clients**: any client that speaks the REST contract (a future mobile app, scripts) can reuse the logic tier.

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
 import { TeamActions } from '@/features/teams/components/team-actions'
-import { TEAM, makeUser, renderTeamUi } from '@/features/teams/test-utils'
+import { makeUser, renderTeamUi, TEAM } from '@/features/teams/test-utils'
 
 vi.mock('@/features/teams/api/teams', () => ({}))
 vi.mock('@/features/teams/api/users', () => ({
