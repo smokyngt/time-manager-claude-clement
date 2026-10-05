@@ -1,0 +1,78 @@
+---
+title: Démarrage rapide
+description: Connectez-vous, pointez votre arrivée et votre départ, et lisez votre premier rapport avec le SDK TypeScript.
+---
+
+Ce guide vous mène d'un client vide à votre premier rapport. Vous avez besoin d'une instance Time Manager en fonctionnement et d'un compte. Il n'y a pas d'inscription publique : un admin ou un manager crée votre compte. Si vous exécutez votre propre instance, suivez d'abord l'[auto-hébergement](../platform/self-hosting). Le compte admin créé au démarrage convient pour ce guide.
+
+## Installer le SDK
+
+```bash
+bun add @time-manager/sdk
+```
+
+## Créer le client
+
+Le client ne conserve aucune session. Vous lui donnez une fonction qui renvoie le jeton d'accès courant, et il l'appelle avant chaque requête.
+
+```ts
+import { TimeManagerClient } from '@time-manager/sdk';
+
+let accessToken: string | null = null;
+
+const client = new TimeManagerClient({
+  baseUrl: 'http://localhost:8080',
+  getToken: () => accessToken,
+  onTokenRefresh: (token) => {
+    accessToken = token;
+  },
+  onLogout: () => {
+    accessToken = null;
+  },
+});
+```
+
+## Se connecter
+
+```ts
+const session = await client.auth.login({
+  email: 'jane.doe@example.com',
+  password: 'correct-horse-battery',
+});
+
+accessToken = session.accessToken;
+console.log(session.user.role, session.scopes);
+```
+
+Le jeton d'accès dure 15 minutes par défaut. L'API définit aussi un cookie de rafraîchissement `httpOnly`, que le SDK utilise pour renouveler le jeton lorsqu'une requête renvoie `401`.
+
+## Pointer l'arrivée et le départ
+
+```ts
+const { clock } = await client.clocks.in({ note: 'Starting at the office' });
+console.log(clock.clockedInAt, clock.clockedOutAt); // clockedOutAt is null while the clock is open
+
+const closed = await client.clocks.out();
+console.log(closed.clock.durationMs);
+```
+
+Appeler `clocks.in` deux fois de suite échoue avec `clock.conflict` (409) : un utilisateur a au plus un pointage ouvert.
+
+## Lire un rapport
+
+```ts
+const { report } = await client.reports.user({
+  userId: session.user.id,
+  from: 1767225600000, // 2026-01-01T00:00:00Z
+  to: 1769904000000, // 2026-02-01T00:00:00Z
+  granularity: 'week',
+});
+
+console.log(report.kpis.workedMs, report.kpis.overtimeMs);
+```
+
+## Étapes suivantes
+
+- Découvrez les concepts de [rôles](./concepts/roles), d'[équipes](./concepts/teams) et de [pointages](./concepts/clocks).
+- Lisez la [vue d'ensemble de l'API](../api/overview) pour l'enveloppe et la pagination.
+- Parcourez les guides du SDK, en commençant par l'[installation et la configuration du client](../sdks/installation).

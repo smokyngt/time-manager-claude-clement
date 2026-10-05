@@ -1,0 +1,29 @@
+---
+title: Équipes
+description: Comment les équipes regroupent des utilisateurs sous un manager, avec un horaire de travail et un objectif d'heures hebdomadaires.
+---
+
+Une équipe regroupe des utilisateurs sous un manager. Elle porte aussi l'horaire de travail que les rapports utilisent pour calculer les heures supplémentaires et les retards.
+
+| Champ | Signification |
+| --- | --- |
+| `name` | De 1 à 100 caractères. |
+| `description` | Facultative, jusqu'à 500 caractères. |
+| `manager_id` | L'utilisateur qui dirige l'équipe, qui doit être un `manager` ou un `admin` actif. |
+| `weekly_hours_target` | Heures par semaine pour chaque membre, de 1 à 80, 35 par défaut. |
+| `work_start`, `work_end` | La journée de travail au format `HH:MM` dans le fuseau horaire de l'entreprise, `09:00` et `17:00` par défaut. `work_end` doit être postérieur à `work_start`. |
+| `member_count` | Le nombre de membres. |
+
+## Appartenance
+
+Un utilisateur peut appartenir à plusieurs équipes. Seuls le manager d'une équipe et les admins peuvent ajouter ou retirer des membres, et les managers peuvent ajouter uniquement des employés. Vous ne pouvez pas ajouter un utilisateur archivé ni ajouter qui que ce soit à une équipe archivée.
+
+## Plusieurs équipes
+
+Lorsqu'un utilisateur appartient à plusieurs équipes, les rapports utilisent le `weekly_hours_target` le plus élevé et le `work_start` le plus tôt parmi ses équipes non archivées. Un utilisateur sans équipe utilise 35 heures et `09:00`.
+
+## Archiver et supprimer
+
+Archiver une équipe la conserve avec ses membres, mais met fin à la relation de gestion via cette équipe. Vous pouvez la restaurer plus tard. Supprimer une équipe est définitif et réservé aux admins.
+
+Consultez le [guide des équipes](../../sdks/teams) et le [guide des membres d'équipe](../../sdks/team-members) pour les opérations.

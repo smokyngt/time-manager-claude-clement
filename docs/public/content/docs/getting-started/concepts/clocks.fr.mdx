@@ -1,0 +1,28 @@
+---
+title: Pointages
+description: Comment fonctionnent les pointages, y compris la règle du pointage ouvert unique, les saisies manuelles et les corrections.
+---
+
+Un pointage est une période de travail d'un utilisateur. Il a une heure `clocked_in_at` et, une fois que l'utilisateur a pointé son départ, une heure `clocked_out_at` et une `duration_ms`. Tant que le pointage est ouvert, `clocked_out_at` et `duration_ms` valent `null`.
+
+## Source
+
+Chaque pointage a une `source` :
+
+- `clock` : l'utilisateur a pointé lui-même son arrivée et son départ.
+- `manual` : un manager ou un admin l'a saisi.
+
+## Règles
+
+- Un utilisateur a au plus un pointage ouvert. Pointer l'arrivée alors qu'un pointage est ouvert, ou le départ alors qu'aucun ne l'est, échoue avec `clock.conflict` (409).
+- `clocked_out_at` doit être postérieur à `clocked_in_at`.
+- Les horodatages ne peuvent pas être dans le futur.
+- Un pointage ne peut pas dépasser 24 heures.
+- Un pointage manuel ou corrigé ne peut pas chevaucher un autre pointage du même utilisateur. Un chevauchement échoue avec `clock.overlap` (409).
+- La note est facultative et contient jusqu'à 500 caractères.
+
+## Qui peut faire quoi
+
+Chacun pointe lui-même son arrivée et son départ. Les managers peuvent ajouter des saisies manuelles, corriger et supprimer les pointages des membres des équipes qu'ils gèrent. Les admins peuvent le faire pour tout le monde. Les employés ne voient que leurs propres pointages. Voir les [rôles](./roles).
+
+Consultez le [guide des pointages](../../sdks/clocks) pour les opérations.

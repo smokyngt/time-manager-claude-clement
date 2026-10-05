@@ -1,0 +1,38 @@
+---
+title: KPI
+description: Les indicateurs que calculent les rapports d'utilisateur et d'équipe, et la définition de chacun.
+---
+
+Les rapports sont en lecture seule et calculés à partir des pointages fermés. Un pointage ouvert compte jusqu'à l'heure courante. Vous choisissez une plage et une granularité.
+
+## Plage et granularité
+
+`from` est inclus et `to` est exclu, tous deux en millisecondes epoch. La plage peut couvrir au plus 366 jours ; une plage plus longue échoue avec `report.invalid` (400). La granularité est `day`, `week` ou `month`, et détermine la taille de chaque intervalle de `series`. Les intervalles sans travail sont présents avec la valeur `0`.
+
+## Rapport d'utilisateur
+
+| KPI | Définition |
+| --- | --- |
+| `worked_ms` | Temps de travail total sur la plage. |
+| `days_worked` | Jours distincts avec au moins un pointage. |
+| `average_daily_ms` | `worked_ms / days_worked`, `0` si aucun jour n'a été travaillé. |
+| `target_ms` | L'objectif hebdomadaire de l'utilisateur, proratisé aux jours ouvrés (du lundi au vendredi) de la plage. |
+| `overtime_ms` | `worked_ms - target_ms`. Négatif lorsque l'utilisateur a travaillé moins que l'objectif. |
+| `late_days` | Jours dont le premier pointage d'arrivée a lieu plus de 5 minutes après `work_start`. |
+| `lateness_rate` | `late_days / days_worked`, entre 0 et 1. |
+
+La formule des heures supplémentaires est :
+
+$$
+\text{overtime} = \text{worked} - \text{target}
+$$
+
+## Rapport d'équipe
+
+Un rapport d'équipe ajoute `member_count` et `active_members` (les membres ayant travaillé), et additionne `worked_ms`, `late_days` et `overtime_ms` sur les membres. Il liste aussi chaque membre avec `worked_ms`, `days_worked`, `late_days` et `overtime_ms`.
+
+## Quel horaire s'applique
+
+L'objectif et le seuil de retard proviennent des équipes non archivées de l'utilisateur. Voir les [équipes](./teams). Les limites de jour utilisent le fuseau horaire de l'entreprise ; voir les [fuseaux horaires](../../best-practices/timezones).
+
+Consultez le [guide des rapports](../../sdks/reports) pour les opérations.

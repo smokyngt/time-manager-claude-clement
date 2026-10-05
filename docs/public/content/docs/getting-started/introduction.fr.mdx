@@ -1,0 +1,40 @@
+---
+title: Introduction
+description: Ce qu'est Time Manager, qui l'utilise, et où trouver la référence de l'API, le SDK TypeScript et le guide d'auto-hébergement.
+---
+
+Time Manager enregistre le temps de travail. Les employés pointent leur arrivée et leur départ, les managers suivent leurs équipes grâce aux KPI, et les admins dirigent toute l'entreprise.
+
+Vous pouvez utiliser Time Manager de trois façons :
+
+- Par l'application web, que les employés et les managers utilisent au quotidien.
+- Par l'API HTTP sous `/v1`, que vous appelez depuis vos propres outils.
+- Par le SDK TypeScript `@time-manager/sdk`, un client typé pour l'API.
+
+## Ce que vous pouvez faire
+
+- Créer des utilisateurs et les organiser en équipes avec un manager, un objectif d'heures hebdomadaires et une journée de travail.
+- Laisser les employés pointer leur arrivée et leur départ, et laisser les managers corriger ou ajouter des pointages pour leur équipe.
+- Lire des KPI par utilisateur ou par équipe : temps travaillé, heures supplémentaires, jours travaillés et retards.
+- Se connecter avec un mot de passe ou, pour les utilisateurs enregistrés, avec un compte Microsoft.
+
+## Organisation de la documentation
+
+| Section | À lire pour |
+| --- | --- |
+| [Démarrage](./quickstart) | Faire votre première requête et découvrir les concepts de base. |
+| [API](../api/overview) | Comprendre l'enveloppe, la pagination, les scopes, les limites et les erreurs. |
+| [SDK](../sdks/installation) | Utiliser le client TypeScript ressource par ressource. |
+| [Plateforme](../platform/self-hosting) | Exécuter, configurer, sauvegarder et surveiller votre propre instance. |
+| [Bonnes pratiques](../best-practices/security) | Stocker les jetons en sécurité et gérer correctement les fuseaux horaires. |
+
+## Conventions de cette documentation
+
+- Chaque identifiant, champ, code et scope apparaît en style `code`.
+- L'API utilise `snake_case` sur le réseau. Le SDK convertit en `camelCase` : les exemples du SDK utilisent donc `firstName` là où l'API utilise `first_name`.
+- Les horodatages sont des millisecondes epoch en UTC.
+- Les statuts HTTP sont écrits en chiffres, par exemple `409`.
+
+## Étape suivante
+
+Suivez le [démarrage rapide](./quickstart) pour vous connecter et pointer pour la première fois.

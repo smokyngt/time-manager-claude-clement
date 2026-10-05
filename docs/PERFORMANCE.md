@@ -81,11 +81,11 @@ k6 run -o experimental-prometheus-rw --tag testid=load-$(date +%s) ops/load/load
 
 ## GitHub Actions
 
-`.github/workflows/load-test.yml`: manual (`workflow_dispatch`, input `scenario`) and weekly (Monday 03:43 UTC, `load`). It starts a `postgres:17-alpine` service, runs `db:migrate` and `db:seed:demo`, starts the API with `bun src/server.ts` and rate limits raised, waits for `/health`, then runs the script with `grafana/setup-k6-action` and `grafana/run-k6-action`. The job fails when a threshold fails. The runner (2 vCPU shared with the API and PostgreSQL) is a regression detector, not a capacity benchmark: compare runs with each other, not with production.
+`.github/workflows/load-test.yml`: manual (`workflow_dispatch`, input `scenario`) and weekly (Monday 03:43 UTC, `load`). It starts a `postgres:17-alpine` service, runs `db:migrate` and `db:seed:demo`, starts the API with `bun src/server.ts` and rate limits raised, waits for `/health`, then runs the script with `grafana/setup-k6-action` and `grafana/run-k6-action`. The job fails when a threshold fails. The runner (shared with the API and PostgreSQL) is a regression detector, not a capacity benchmark: compare runs with each other, not with production.
 
 ## Baseline: smoke run
 
-Run on 2026-10-05, k6 v1.3.0 and API on the same 1 vCPU sandbox (Bun 1.3, PostgreSQL 16 `timemanager_load`, demo data: 14 users, 3 teams, 724 clocks), default API rate limits, `k6 run ops/load/smoke.js`. Result: **PASS**, 26 iterations, 320 requests, 0.00 % errors, 694 / 694 checks.
+Run on 2026-10-05, k6 v1.3.0 and API on the same 4 vCPU sandbox (Bun 1.3, PostgreSQL 16 `timemanager_load`, demo data: 14 users, 3 teams, 724 clocks), default API rate limits, `k6 run ops/load/smoke.js`. Result: **PASS**, 26 iterations, 320 requests, 0.00 % errors, 694 / 694 checks.
 
 | Endpoint | Kind | Requests | avg | p95 | max |
 |---|---|---|---|---|---|
@@ -109,7 +109,7 @@ Overall p50 / p90 / p95: 12.0 / 32.6 / 53.6 ms. Every endpoint is far inside its
 Short validation runs of the other scenarios on the same machine (rate limits raised, shortened with the environment variables above; these are script checks, not baselines):
 
 * `load.js` (`RAMP=20s HOLD=10s`, 50 VUs): PASS, 3264 requests, 0 % errors, 100 % checks, p95 44 ms, 5 expected clock conflicts.
-* `stress.js` (3 steps of 10 s from 50 it/s, +100 it/s): the single-process API on this 1 vCPU box saturated at roughly 60 iterations/s (about 240 requests/s): `dropped_iterations` appeared, p95 reached seconds and errors reached 2 %. This is the knee of the sandbox, useful only to show the scenario detects it.
+* `stress.js` (3 steps of 10 s from 50 it/s, +100 it/s): the single-process API on this 4 vCPU box (k6 and API competing) saturated at roughly 60 iterations/s (about 240 requests/s): `dropped_iterations` appeared, p95 reached seconds and errors reached 2 %. This is the knee of the sandbox, useful only to show the scenario detects it.
 * `soak.js`, `spike.js`: syntax and options validated with `k6 inspect`; `soak.js` smoke-run for 10 s. Full-length runs belong to CI or a dedicated host.
 
 ## Notes for maintainers

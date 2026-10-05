@@ -1,0 +1,30 @@
+---
+title: Rôles
+description: Les trois rôles de Time Manager, ce que chacun peut faire, et ce qu'est un utilisateur géré.
+---
+
+Chaque utilisateur a exactement un rôle : `employee`, `manager` ou `admin`. Le rôle détermine les [scopes](../../api/scopes) de votre jeton d'accès et les enregistrements que vous pouvez voir.
+
+| Rôle | Ce qu'il peut faire |
+| --- | --- |
+| `employee` | Pointer son arrivée et son départ, modifier son propre profil, voir ses propres pointages et rapports, et voir les équipes auxquelles il appartient. |
+| `manager` | Tout ce qu'un employé peut faire, et créer des employés, créer et diriger les équipes qu'il gère, gérer les membres de ces équipes, et voir ou corriger les pointages et rapports de ces membres. |
+| `admin` | Tout, sur chaque utilisateur, équipe et pointage. |
+
+## Utilisateurs gérés
+
+Un utilisateur géré, relativement à un manager, est un utilisateur qui appartient à au moins une équipe non archivée que ce manager gère. Archiver une équipe met fin à la relation de gestion via cette équipe. Si l'utilisateur n'est dans aucune autre équipe de ce manager, le manager ne voit plus ses pointages ni ses rapports.
+
+Les admins gèrent tout le monde. Les employés ne gèrent personne.
+
+Pour l'administration des utilisateurs uniquement, un manager peut aussi agir sur un employé non affecté : un employé qui n'appartient à aucune équipe non archivée. Cela permet à un manager de créer un employé puis de le placer dans une équipe. Les pointages, les rapports et les données d'équipe n'utilisent jamais cette extension.
+
+## Visibilité
+
+Les enregistrements hors de votre visibilité se comportent comme s'ils n'existaient pas. Demander un utilisateur, une équipe ou un pointage que vous ne pouvez pas voir renvoie `404`, pas `403`. Un `403` signifie que l'enregistrement est visible pour vous mais que l'action n'est pas autorisée, par exemple un employé qui tente de modifier son propre `role`.
+
+## Changements de rôle
+
+Les scopes sont déduits du rôle à l'émission du jeton d'accès. Un changement de rôle s'applique aux nouveaux jetons d'accès : il prend donc effet au prochain rafraîchissement, dans la durée de vie du jeton d'accès (15 minutes par défaut).
+
+Seuls les admins peuvent définir ou changer un rôle, et seuls les admins peuvent créer des managers ou des admins.
