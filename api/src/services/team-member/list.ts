@@ -5,7 +5,7 @@ import { teamMembers } from '@/db/schema/team.js';
 import { users } from '@/db/schema/user.js';
 import { TeamMemberListError } from '@/lib/errors/domains/team-member.js';
 import { Cursor } from '@/utils/http/cursor.js';
-import { UserMapper } from '@/utils/user-mapper.js';
+import { UserMapper } from '@/utils/mappers/user.js';
 
 import type { ListParams, ListResponse } from './index.js';
 

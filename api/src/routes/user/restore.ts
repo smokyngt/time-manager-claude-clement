@@ -1,19 +1,19 @@
 import { user } from '@/controllers/user/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { UserIdParamsSchema, UserResponses } from '@/schemas/user.js';
 
-import type { RestoreParams } from '@/controllers/user/index.js';
-import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { RestoreParams, UserResponse } from '@/controllers/user/index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const restoreRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Params: RestoreParams; Reply: ReplyEnvelope<User> }>(
+const restore: FastifyPluginAsync = async (fastify) => {
+  fastify.post<{ Params: RestoreParams; Reply: ReplyEnvelope<UserResponse> }>(
     '/:id/restore',
     {
       preHandler: auth({ scopes: ['users:manage'] }),
       schema: {
-        description: 'Restore a user. Archived users cannot sign in.',
+        description:
+          'Restore an archived user so they can sign in again.',
         params: UserIdParamsSchema,
         response: UserResponses.restore,
         security: [{ bearerAuth: [] }],
@@ -24,3 +24,5 @@ export const restoreRoute: FastifyPluginAsync = async (fastify) => {
     user.restore,
   );
 };
+
+export { restore };

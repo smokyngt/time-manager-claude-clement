@@ -1,0 +1,29 @@
+---
+title: Rate limits
+description: How many requests you can send, how the API identifies you, and how to react to a 429.
+---
+
+The API limits the number of requests per time window. When you exceed a limit, it returns `429` with `rate.limit.exceeded` and a `Retry-After` header that gives the seconds to wait.
+
+## Who is counted
+
+Authenticated requests are counted per user. Other requests are counted per IP address.
+
+## Default limits
+
+| Group | Default | Setting |
+| --- | --- | --- |
+| Users | 100 per minute | `USER_RATE_LIMIT_MAX`, `USER_RATE_LIMIT_WINDOW` |
+| Auth | 100 per minute | `AUTH_RATE_LIMIT_MAX`, `AUTH_RATE_LIMIT_WINDOW` |
+| Login | 10 per minute per IP address | `AUTH_LOGIN_RATE_LIMIT_MAX`, `AUTH_LOGIN_RATE_LIMIT_WINDOW` |
+| Login attempts per account | 5 failures per 15 minutes | `AUTH_ACCOUNT_RATE_LIMIT_MAX`, `AUTH_ACCOUNT_RATE_LIMIT_WINDOW` |
+
+The health routes and `/metrics` are not limited. Whoever runs the instance can change the limits; see [configuration](../platform/configuration). Each resource group applies its own `<GROUP>_RATE_LIMIT_MAX` and `<GROUP>_RATE_LIMIT_WINDOW`, with 100 per minute as the default.
+
+## What to do on a 429
+
+1. Stop sending requests for the number of seconds in `Retry-After`.
+2. Retry. Do not retry in a tight loop.
+3. If you send many requests, batch them with the bulk routes of up to 100 ids.
+
+The SDK throws a `RateLimitError` with a `retryAfter` property. See [error handling](../sdks/error-handling).

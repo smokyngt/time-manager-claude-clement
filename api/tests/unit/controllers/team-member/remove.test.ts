@@ -75,7 +75,7 @@ describe('team.member.controller.remove', () => {
     const actor = actorOf('manager');
     const reply = await run(actor, { user_ids: [USER_ID, USER_ID] });
     expect(removeService).toHaveBeenCalledWith({ actor, id: TEAM_ID, user_ids: [USER_ID] });
-    expect(reply.payload).toMatchObject({
+    expect((reply as unknown as { payload: unknown }).payload).toMatchObject({
       data: { failed: [], removed: [USER_ID], success: true },
       event: {
         code: 'team.members.removed',

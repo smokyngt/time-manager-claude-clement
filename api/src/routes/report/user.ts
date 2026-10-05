@@ -1,6 +1,6 @@
 import { report } from '@/controllers/report/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ReportUserBodySchema, ReportResponses } from '@/schemas/report.js';
+import { ReportResponses, ReportUserBodySchema } from '@/schemas/report.js';
 
 import type { UserBody } from '@/controllers/report/index.js';
 import type { UserReport } from '@/types/entities/report.js';

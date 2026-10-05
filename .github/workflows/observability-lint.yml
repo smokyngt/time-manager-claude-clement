@@ -1,0 +1,141 @@
+name: Observability lint
+
+on:
+  pull_request:
+    paths:
+      - "ops/observability/**"
+      - "docker-compose.observability.yml"
+      - ".github/workflows/observability-lint.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: observability-lint-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROMETHEUS_IMAGE: prom/prometheus:v3.5.0
+  ALERTMANAGER_IMAGE: prom/alertmanager:v0.28.1
+  ALLOY_IMAGE: grafana/alloy:v1.10.2
+  LOKI_IMAGE: grafana/loki:3.5.5
+
+jobs:
+  dashboards:
+    name: Grafana dashboards and provisioning
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Validate dashboard JSON
+        run: |
+          set -euo pipefail
+          shopt -s globstar nullglob
+          files=(ops/observability/grafana/dashboards/**/*.json)
+          test "${#files[@]}" -gt 0
+          for f in "${files[@]}"; do
+            jq -e '
+              (.uid | type == "string" and length > 0)
+              and (.title | type == "string" and length > 0)
+              and (.schemaVersion >= 39)
+              and (.timezone == "browser")
+              and (.refresh == "30s")
+              and ((.tags // []) | index("time-manager") != null)
+              and ([.. | objects | select(has("gridPos") and .type != "row" and ((.description // "") == ""))] | length == 0)
+            ' "$f" > /dev/null || { echo "::error file=$f::invalid dashboard (uid, title, schemaVersion, timezone, refresh, tags or panel description)"; exit 1; }
+            echo "ok $f"
+          done
+          dup=$(jq -r '.uid' "${files[@]}" | sort | uniq -d)
+          test -z "$dup" || { echo "::error::duplicate dashboard uid: $dup"; exit 1; }
+      - name: Generated files are up to date
+        run: python3 ops/observability/grafana/tools/generate.py --check
+      - name: Provisioning YAML parses
+        run: |
+          python3 - <<'PY'
+          import glob, sys, yaml
+          for f in sorted(glob.glob("ops/observability/grafana/provisioning/**/*.y*ml", recursive=True)):
+              yaml.safe_load(open(f))
+              print("ok", f)
+          PY
+
+  prometheus:
+    name: Prometheus and Alertmanager
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: promtool check config
+        run: |
+          docker run --rm --entrypoint promtool \
+            -v "$PWD/ops/observability/prometheus:/etc/prometheus:ro" \
+            "$PROMETHEUS_IMAGE" check config /etc/prometheus/prometheus.yml
+      - name: promtool check rules
+        run: |
+          docker run --rm --entrypoint promtool \
+            -v "$PWD/ops/observability/prometheus:/etc/prometheus:ro" \
+            "$PROMETHEUS_IMAGE" check rules /etc/prometheus/rules/recording.yml /etc/prometheus/rules/alerts.yml
+      - name: promtool test rules
+        run: |
+          docker run --rm --entrypoint promtool \
+            -v "$PWD/ops/observability/prometheus:/etc/prometheus:ro" \
+            "$PROMETHEUS_IMAGE" test rules /etc/prometheus/tests/alerts.test.yml
+      - name: amtool check-config
+        run: |
+          echo -n "https://example.invalid/hook" > /tmp/alert-webhook-url
+          for cfg in alertmanager.yml alertmanager.webhook.yml; do
+            docker run --rm --entrypoint amtool \
+              -v "$PWD/ops/observability/alertmanager:/etc/alertmanager:ro" \
+              -v /tmp/alert-webhook-url:/tmp/alert-webhook-url:ro \
+              "$ALERTMANAGER_IMAGE" check-config "/etc/alertmanager/$cfg"
+          done
+      - name: Alertmanager entrypoint syntax
+        run: sh -n ops/observability/alertmanager/entrypoint.sh
+
+  alloy:
+    name: Alloy, Loki and Tempo configs
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: alloy fmt (must be already formatted)
+        run: |
+          docker run --rm -v "$PWD/ops/observability/alloy:/cfg:ro" "$ALLOY_IMAGE" \
+            fmt /cfg/config.alloy > /tmp/config.formatted.alloy
+          diff -u ops/observability/alloy/config.alloy /tmp/config.formatted.alloy
+      - name: alloy validate
+        run: |
+          docker run --rm -e METRICS_TOKEN=ci-token -v "$PWD/ops/observability/alloy:/cfg:ro" "$ALLOY_IMAGE" \
+            validate /cfg/config.alloy
+      - name: loki verify-config
+        run: |
+          docker run --rm -v "$PWD/ops/observability/loki:/etc/loki:ro" "$LOKI_IMAGE" \
+            -config.file=/etc/loki/loki.yaml -verify-config
+
+  compose:
+    name: Compose override
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: docker compose config
+        run: |
+          cp .env.example .env.ci
+          {
+            echo "METRICS_TOKEN=ci-metrics-token"
+            echo "GRAFANA_ADMIN_USER=admin"
+            echo "GRAFANA_ADMIN_PASSWORD=ci-grafana-password"
+          } >> .env.ci
+          docker compose --env-file .env.ci \
+            -f docker-compose.yml -f docker-compose.observability.yml config -q
+      - name: Required variables are enforced
+        run: |
+          grep -Ev '^(METRICS_TOKEN|GRAFANA_ADMIN_USER|GRAFANA_ADMIN_PASSWORD)=' .env.example > .env.ci
+          if docker compose --env-file .env.ci \
+            -f docker-compose.yml -f docker-compose.observability.yml config -q 2> /tmp/err; then
+            echo "::error::compose accepted a missing GRAFANA_ADMIN_PASSWORD / METRICS_TOKEN"; exit 1
+          fi
+          grep -Eq "GRAFANA_ADMIN_USER|METRICS_TOKEN|GRAFANA_ADMIN_PASSWORD" /tmp/err

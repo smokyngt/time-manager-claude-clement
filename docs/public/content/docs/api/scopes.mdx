@@ -1,0 +1,46 @@
+---
+title: Scopes
+description: The scopes each route requires and the scopes each role holds.
+---
+
+A scope is a coarse permission that the API checks before a route runs. Each role holds a fixed set of scopes, and the access token does not carry them: the API derives them from the role.
+
+The login, refresh and `GET /v1/auth/me` responses list your scopes in `scopes`. A route that requires a scope you do not hold returns `403`.
+
+## Scopes per role
+
+| Scope | `employee` | `manager` | `admin` |
+| --- | :-: | :-: | :-: |
+| `auth:self` | yes | yes | yes |
+| `users:read` | yes | yes | yes |
+| `users:write` | yes | yes | yes |
+| `users:manage` | no | yes | yes |
+| `teams:read` | yes | yes | yes |
+| `teams:manage` | no | yes | yes |
+| `clocks:read` | yes | yes | yes |
+| `clocks:write` | yes | yes | yes |
+| `clocks:manage` | no | yes | yes |
+| `reports:read` | yes | yes | yes |
+
+Managers and admins hold the same scopes. They differ in which records they can reach, and in who can change roles or delete teams. See [roles](../getting-started/concepts/roles).
+
+## Scopes per route
+
+| Route | Scope |
+| --- | --- |
+| `POST /v1/auth/logout`, `GET /v1/auth/me` | `auth:self` |
+| `GET /v1/users/:id` | `users:read` |
+| `PATCH /v1/users` | `users:write` |
+| `POST /v1/users/new`, `/list`, `/:id/archive`, `/:id/restore`, `DELETE /v1/users` | `users:manage` |
+| `POST /v1/teams/list`, `GET /v1/teams/:id`, `POST /v1/teams/:id/members/list` | `teams:read` |
+| `POST /v1/teams/new`, `PATCH /v1/teams`, `DELETE /v1/teams`, archive, restore, `members/add`, `members/remove` | `teams:manage` |
+| `POST /v1/clocks/in`, `/out` | `clocks:write` |
+| `GET /v1/clocks/current`, `POST /v1/clocks/list`, `GET /v1/clocks/:id` | `clocks:read` |
+| `POST /v1/clocks/new`, `PATCH /v1/clocks`, `DELETE /v1/clocks` | `clocks:manage` |
+| `POST /v1/reports/user`, `POST /v1/reports/team` | `reports:read` |
+
+## Scopes are not enough
+
+A scope lets a request reach the route. A second check then decides whether you may act on the target record: yourself, a managed user, or a team you manage. An employee holds `users:write` and can edit their own profile, but not another user's.
+
+For self-service edits, employees can change only `first_name`, `last_name`, `phone_number` and `password`. Changing your own `email` or `role` is denied.

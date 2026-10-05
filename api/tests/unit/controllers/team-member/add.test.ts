@@ -80,7 +80,7 @@ describe('team.member.controller.add', () => {
       team,
       user_ids: [USER_ID],
     });
-    expect(reply.payload).toMatchObject({
+    expect((reply as unknown as { payload: unknown }).payload).toMatchObject({
       data: { added: [USER_ID], failed: [], success: true },
       event: {
         code: 'team.members.added',

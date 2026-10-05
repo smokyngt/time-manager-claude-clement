@@ -13,9 +13,6 @@ RUN bun install --frozen-lockfile
 FROM deps AS build
 COPY . .
 RUN bun run build
-# Maintenance entrypoints (key rotation, session purge) -> dist/db/{rotate,purge}.js.
-# Redundant once api/package.json's build script lists them; harmless to keep.
-RUN bun build src/db/rotate.ts src/db/purge.ts --target=bun --root=src --outdir=dist
 
 # ---- production dependencies only ----
 FROM oven/bun:1.3 AS prod-deps

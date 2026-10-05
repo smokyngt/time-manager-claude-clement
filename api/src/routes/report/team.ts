@@ -1,6 +1,6 @@
 import { report } from '@/controllers/report/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ReportTeamBodySchema, ReportResponses } from '@/schemas/report.js';
+import { ReportResponses, ReportTeamBodySchema } from '@/schemas/report.js';
 
 import type { TeamBody } from '@/controllers/report/index.js';
 import type { TeamReport } from '@/types/entities/report.js';

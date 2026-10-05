@@ -1,0 +1,73 @@
+---
+title: Error handling
+description: The error classes the SDK throws, how to read code, status and correlationId, and how to handle conflicts, validation failures and rate limits.
+---
+
+Every failure throws a subclass of `TimeManagerError`. Branch on the class for the category and on `code` for the exact cause. Never show `code`, `status` or the raw message to end users.
+
+## Error classes
+
+| Class | Status | Extra properties |
+| --- | --- | --- |
+| `AuthenticationError` | 401 | |
+| `ForbiddenError` | 403 | |
+| `NotFoundError` | 404 | |
+| `ConflictError` | 409 | |
+| `ValidationError` | 400 | `errors`: the list of field failures, each with `code`, `path` and `params` |
+| `RateLimitError` | 429 | `retryAfter`: seconds to wait, or `null` |
+| `ServerError` | 5xx | |
+| `NetworkError` | 0 | `isTimeout`: `true` when the SDK timeout aborted the request |
+
+All of them share `code`, `status`, `correlationId`, `instance` and `metadata`. `metadata` is empty in production. `ErrorCodes` lists every API code, so you can compare against `ErrorCodes.ClockConflict` instead of a string.
+
+A bulk method does not throw for items that fail. It resolves with a `failed` array of `{ id, code }`. Check it after every bulk call.
+
+## Behaviour
+
+- A `403` means you can see the record but may not do this. A `404` also covers records you cannot see.
+- A `409` with `clock.conflict` means the clock is already open (clocking in) or not open (clocking out). A `409` with `clock.overlap` means the entry overlaps another clock of the user.
+- A `400` with `report.invalid` means the report range is longer than 366 days.
+- Log `correlationId` with every error. It is the id support needs to find the request.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+import {
+  ConflictError,
+  ErrorCodes,
+  NetworkError,
+  RateLimitError,
+  TimeManagerError,
+  ValidationError,
+} from '@time-manager/sdk';
+
+try {
+  await client.clocks.in();
+} catch (error) {
+  if (error instanceof ConflictError && error.code === ErrorCodes.ClockConflict) {
+    console.log('Already clocked in');
+  } else if (error instanceof ValidationError) {
+    for (const issue of error.errors) {
+      console.log(issue.path, issue.code, issue.params);
+    }
+  } else if (error instanceof RateLimitError) {
+    await new Promise((resolve) => setTimeout(resolve, (error.retryAfter ?? 1) * 1000));
+  } else if (error instanceof NetworkError) {
+    console.log(error.isTimeout ? 'Timed out' : 'Offline');
+  } else if (error instanceof TimeManagerError) {
+    console.error(error.status, error.code, error.correlationId);
+  } else {
+    throw error;
+  }
+}
+```
+
+</Tab>
+</Tabs>
+
+## Sessions
+
+You do not handle expired access tokens yourself. The SDK refreshes and retries once. If the refresh fails, it calls `onLogout` and throws an `AuthenticationError`; send the user to the sign-in page there. See [auth](./auth).
+
+The full list of codes is in [API errors](../api/errors).

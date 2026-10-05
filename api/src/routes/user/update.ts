@@ -1,12 +1,12 @@
 import { user } from '@/controllers/user/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { UserResponses, UserUpdateBodySchema } from '@/schemas/user.js';
 
 import type { UpdateBody, UpdateResponse } from '@/controllers/user/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const updateRoute: FastifyPluginAsync = async (fastify) => {
+const update: FastifyPluginAsync = async (fastify) => {
   fastify.patch<{ Body: UpdateBody; Reply: ReplyEnvelope<UpdateResponse> }>(
     '',
     {
@@ -24,3 +24,5 @@ export const updateRoute: FastifyPluginAsync = async (fastify) => {
     user.update,
   );
 };
+
+export { update };

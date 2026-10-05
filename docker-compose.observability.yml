@@ -20,7 +20,7 @@ services:
       METRICS_TOKEN: ${METRICS_TOKEN:?METRICS_TOKEN is required (Alloy scrapes /metrics with it)}
       OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://alloy:4318}
       OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
-      OTEL_SERVICE_NAME: time-manager-api
+      OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-time-manager-api}
       OTEL_METRICS_EXPORTER: none
       OTEL_LOGS_EXPORTER: none
     labels:

@@ -26,7 +26,7 @@ export const list = async (
     const actor = Access.role.require(req, ['admin', 'manager']);
     const { archived, cursor, ids, limit, order, role, team_id: teamId } = req.body;
     if (actor.role === 'manager' && role !== undefined && role !== 'employee') {
-      throw UnauthorizedError({ metadata: { route: 'user.controller.list', role } });
+      throw UnauthorizedError({ metadata: { role, route: 'user.controller.list' } });
     }
     const result = await userService.list({
       cursor,

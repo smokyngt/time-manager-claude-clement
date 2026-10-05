@@ -1,12 +1,12 @@
 import { user } from '@/controllers/user/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { UserDeleteBodySchema, UserResponses } from '@/schemas/user.js';
 
 import type { DeleteBody, DeleteResponse } from '@/controllers/user/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const deleteRoute: FastifyPluginAsync = async (fastify) => {
+const deleteRoute: FastifyPluginAsync = async (fastify) => {
   fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
     '',
     {
@@ -24,3 +24,5 @@ export const deleteRoute: FastifyPluginAsync = async (fastify) => {
     user.delete,
   );
 };
+
+export { deleteRoute };

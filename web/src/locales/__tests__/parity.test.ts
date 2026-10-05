@@ -16,7 +16,9 @@ function placeholders(text: string) {
 }
 
 function leaf(tree: unknown, path: string): unknown {
-  return path.split('.').reduce<unknown>((node, key) => (node as Record<string, unknown>)[key], tree)
+  return path
+    .split('.')
+    .reduce<unknown>((node, key) => (node as Record<string, unknown>)[key], tree)
 }
 
 describe('locale parity', () => {

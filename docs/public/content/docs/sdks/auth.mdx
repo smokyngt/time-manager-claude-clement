@@ -1,0 +1,50 @@
+---
+title: Auth
+description: Sign in with a password, refresh the session, sign out, read the current user and start Microsoft sign-in.
+---
+
+The `auth` resource wraps the `/v1/auth` routes. It signs a user in, keeps the session alive and returns who is signed in. Accounts are created by a manager or an admin; there is no sign-up method.
+
+## Behaviour
+
+- `login` returns the session: `accessToken`, `expiresIn` (seconds), `tokenType`, `scopes` and `user`. The SDK does not store the token. Put `session.accessToken` where your `getToken` reads it. The API also sets an `httpOnly` refresh cookie.
+- Wrong credentials, and emails that do not exist, both fail with `auth.invalid.credentials` (401). Archived users cannot sign in. Login is limited to 10 requests per minute per IP address by default.
+- `refresh` renews the session through the cookie. You rarely call it: the SDK refreshes on its own when a request returns `401`. Concurrent refreshes share one request. A reused or expired refresh token fails with `auth.session.invalid` (401).
+- `me` returns the signed-in `user` and the `scopes` of the current token.
+- `logout` ends the session and clears the cookie. Discard your access token afterwards.
+- Microsoft sign-in works only for users that already exist. `microsoftUrl` returns the URL to navigate the browser to; do not call it with `fetch`. An unknown account fails with `auth.microsoft.unknown.user` (403), and a server without Microsoft configuration answers `auth.microsoft.unavailable` (503).
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Sign in
+const session = await client.auth.login({
+  email: 'jane.doe@example.com',
+  password: 'correct-horse-battery',
+});
+accessToken = session.accessToken;
+console.log(session.expiresIn, session.scopes);
+
+// Read the current user and scopes
+const { user, scopes } = await client.auth.me();
+console.log(user.role, scopes.includes('teams:manage'));
+
+// Refresh explicitly (the SDK also does this on 401)
+const renewed = await client.auth.refresh();
+accessToken = renewed.accessToken;
+
+// Start Microsoft sign-in in the browser
+window.location.assign(client.auth.microsoftUrl());
+
+// Sign out
+await client.auth.logout();
+accessToken = null;
+```
+
+</Tab>
+</Tabs>
+
+## Next step
+
+Handle `AuthenticationError` and `onLogout` as described in [error handling](./error-handling). For the endpoints and token lifetimes, see [API authentication](../api/authentication).

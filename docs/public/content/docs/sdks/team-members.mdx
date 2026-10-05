@@ -1,0 +1,40 @@
+---
+title: Team members
+description: Add users to a team, remove them, and list the members of a team.
+---
+
+A team member is a user who belongs to a team. The `teamMembers` resource wraps `/v1/teams/:id/members` and always takes the team id first.
+
+## Behaviour
+
+- `add` and `remove` need the `teams:manage` scope. Admins can change every team. Managers can change only the teams they manage, and can add employees only.
+- Both methods are bulk. They take 1 to 100 user ids, ignore duplicates and return `{ success, failed }` plus `added` or `removed`. Read `failed` for per-user outcomes, such as `team.member.user.not.found` (404) for an unknown user.
+- Adding to an archived team fails with `team.member.team.archived` (409). Adding an archived user fails with `team.member.user.archived` (409). A team you cannot manage returns `team.member.team.not.found` (404).
+- A user can belong to several teams. Adding a user who is already a member keeps them a member.
+- `list` returns the members as users, with `cursor`, `limit` (1 to 100, default 25) and `order`. Anyone who can see the team can list its members: its manager, its members and admins.
+- Removing a member does not delete the user or their clocks. If the user is in no other team of that manager, the manager no longer manages them.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Add members
+const added = await client.teamMembers.add('team-id', ['user-id', 'other-user-id']);
+console.log(added.added);
+for (const failure of added.failed) {
+  console.warn(failure.id, failure.code);
+}
+
+// List members
+const page = await client.teamMembers.list('team-id', { limit: 50, order: 'asc' });
+console.log(page.total, page.items.map((member) => member.email));
+
+// Remove members
+const removed = await client.teamMembers.remove('team-id', ['other-user-id']);
+console.log(removed.removed, removed.success);
+```
+
+</Tab>
+</Tabs>
+
+For the team itself, see [teams](./teams).

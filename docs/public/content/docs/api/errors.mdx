@@ -1,0 +1,122 @@
+---
+title: Errors
+description: The error body, how to read validation failures, and every error code grouped by resource.
+---
+
+Failed requests return a non-`2xx` status and a problem body instead of the success envelope.
+
+```json
+{
+  "code": "team.not.found",
+  "correlation_id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+  "instance": "/v1/teams/5d1f2c88-3a41-4b7e-8f0a-6c2d9e7b4a31",
+  "status": 404,
+  "timestamp": 1767225600000
+}
+```
+
+| Field | Meaning |
+| --- | --- |
+| `code` | A stable, machine-readable code. Branch on it, never on the text. |
+| `correlation_id` | The request id. Quote it when you report a problem. |
+| `instance` | The request path. |
+| `status` | The HTTP status. |
+| `errors` | Field failures, present on `validation.error` only. |
+| `metadata` | Diagnostic details, present outside production only. |
+
+Codes are dotted lowercase: `<resource>.<problem>`. The list below is the set the SDK exposes as `ErrorCodes`.
+
+## Validation failures
+
+A `400` with `validation.error` carries `errors[]`. Each entry has the failing keyword, the location and its parameters:
+
+```json
+{
+  "code": "validation.error",
+  "status": 400,
+  "errors": [
+    { "code": "maxLength", "path": "body.name", "params": { "limit": 100 } }
+  ]
+}
+```
+
+## Statuses
+
+| Status | Meaning |
+| --- | --- |
+| `400` | The request is invalid. |
+| `401` | The token is missing, invalid or expired. |
+| `403` | You can see the record but may not do this. |
+| `404` | The record does not exist, or you cannot see it. |
+| `409` | The request conflicts with the current state. |
+| `429` | You sent too many requests. See [rate limits](./rate-limits). |
+| `500` | Unexpected failure. Report the `correlation_id`. |
+| `503` | A feature is not configured, for example Microsoft sign-in. |
+
+## General codes
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `validation.error` | 400 | A field is missing or outside its [limits](./limits). |
+| `json.invalid` | 400 | The body is not valid JSON. |
+| `token.authentication.failed` | 401 | The access token is missing, invalid or expired. Refresh it. |
+| `unauthorized` | 403 | You are not allowed to do this. |
+| `route.not.found` | 404 | The route does not exist. |
+| `duplicate.key` | 409 | A unique value already exists. |
+| `rate.limit.exceeded` | 429 | Too many requests. |
+| `internal.unexpected` | 500 | Unexpected failure. |
+
+## Authentication
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `auth.invalid.credentials` | 401 | The email or password is incorrect. |
+| `auth.session.invalid` | 401 | The refresh token is invalid, expired or reused. |
+| `auth.microsoft.rejected` | 401 | Microsoft rejected the sign-in. |
+| `auth.microsoft.unknown.user` | 403 | No account matches the Microsoft identity. |
+| `auth.microsoft.unavailable` | 503 | Microsoft sign-in is not configured. |
+
+## Users
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `user.not.found` | 404 | The user does not exist or is not visible. |
+| `user.conflict` | 409 | A user with this email already exists. |
+| `user.password.invalid` | 403 | The current password is missing or incorrect. |
+
+## Teams and members
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `team.not.found` | 404 | The team does not exist or is not visible. |
+| `team.manager.invalid` | 400 | The manager must be an active `manager` or `admin`. |
+| `team.schedule.invalid` | 400 | `work_end` must be after `work_start`. |
+| `team.member.not.found` | 404 | The user is not a member of this team. |
+| `team.member.team.not.found` | 404 | The team does not exist. |
+| `team.member.user.not.found` | 404 | The user does not exist. |
+| `team.member.team.archived` | 409 | The team is archived. |
+| `team.member.user.archived` | 409 | The user is archived. |
+
+## Clocks
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `clock.not.found` | 404 | The clock does not exist or is not visible. |
+| `clock.conflict` | 409 | The clock state does not allow this: already clocked in, or not clocked in. |
+| `clock.overlap` | 409 | The clock overlaps another clock of the same user. |
+| `clock.invalid` | 400 | The timestamps are invalid: out before in, in the future, or longer than 24 hours. |
+
+## Reports
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `report.invalid` | 400 | The range is invalid, for example longer than 366 days. |
+| `report.team.not.found` | 404 | The team does not exist or is not visible. |
+
+## Operation failures
+
+Each operation also has a `<resource>.<operation>.failed` code, such as `team.create.failed` or `clock.in.failed`, with status `500`. It means an unexpected failure during that operation. Report the `correlation_id`.
+
+## Per-item codes
+
+Bulk responses report per-item failures as `{ id, code }` using the same codes. See [bulk semantics](./overview#bulk-semantics).

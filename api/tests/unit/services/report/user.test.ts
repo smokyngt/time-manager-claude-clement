@@ -1,35 +1,20 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { ADMIN_ID, caught, EMPLOYEE_ID, makeActor, OTHER_ID } from '../../../helpers/fixtures.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 
-class ExecDb extends FakeDb {
-  public execute(): Promise<unknown> {
-    const next = this.next();
-
-    return next instanceof Error ? Promise.reject(next) : Promise.resolve(next);
-  }
-}
+import { FakeDb } from '../../../support/db.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
-const realMembership = { ...(await import('@/utils/membership.js')) };
-const fakeDb = new ExecDb();
-const reaches = mock((_actor: unknown, _userId: string) => Promise.resolve(true));
+const fakeDb = new FakeDb();
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
-await mock.module('@/utils/membership.js', () => ({
-  ...realMembership,
-  Membership: { reaches },
-}));
 
 afterAll(() => {
   void mock.module('@/db/client.js', () => realDb);
-  void mock.module('@/utils/membership.js', () => realMembership);
 });
 
 afterEach(() => {
   mock.clearAllMocks();
   fakeDb.reset();
-  reaches.mockImplementation(() => Promise.resolve(true));
 });
 
 const { user } = await import('@/services/report/user.js');
@@ -37,13 +22,24 @@ const { user } = await import('@/services/report/user.js');
 const FROM = 1_767_225_600_000;
 const TO = FROM + 7 * 86_400_000;
 const HOUR = 3_600_000;
+const USER_ID = '00000000-0000-4000-8000-0000000000c2';
+
+const caught = async (promise: Promise<unknown>): Promise<AppError> => {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AppError) return error;
+    throw error;
+  }
+  throw new TypeError('expected the promise to reject');
+};
 
 const totals = (overrides: Record<string, unknown> = {}) => ({
   days_worked: 4,
   first_name: 'Jane',
   last_name: 'Doe',
   late_days: 1,
-  user_id: OTHER_ID,
+  user_id: USER_ID,
   weekly_hours: 35,
   workdays: 5,
   worked_ms: 30 * HOUR,
@@ -51,24 +47,23 @@ const totals = (overrides: Record<string, unknown> = {}) => ({
 });
 
 const params = (overrides: Record<string, unknown> = {}) => ({
-  actor: makeActor('admin'),
   from: FROM,
   granularity: 'day' as const,
   to: TO,
-  user_id: OTHER_ID,
+  user_id: USER_ID,
   ...overrides,
 });
 
 describe('report.service.user', () => {
   it('computes kpis and the series', async () => {
     fakeDb.enqueue(
-      [{ id: OTHER_ID }],
+      [{ id: USER_ID }],
       [totals()],
       [{ late: 1, period_start: FROM, worked_ms: 8 * HOUR }],
     );
     const { report } = await user(params());
     expect(report.object).toBe('user_report');
-    expect(report.user_id).toBe(OTHER_ID);
+    expect(report.user_id).toBe(USER_ID);
     expect(report.kpis).toEqual({
       average_daily_ms: 7.5 * HOUR,
       days_worked: 4,
@@ -82,11 +77,7 @@ describe('report.service.user', () => {
   });
 
   it('returns zeros when the user has no activity', async () => {
-    fakeDb.enqueue(
-      [{ id: OTHER_ID }],
-      [totals({ days_worked: 0, late_days: 0, worked_ms: 0 })],
-      [],
-    );
+    fakeDb.enqueue([{ id: USER_ID }], [totals({ days_worked: 0, late_days: 0, worked_ms: 0 })], []);
     const { report } = await user(params());
     expect(report.kpis.average_daily_ms).toBe(0);
     expect(report.kpis.lateness_rate).toBe(0);
@@ -95,33 +86,27 @@ describe('report.service.user', () => {
   });
 
   it('prorates the target on the working days of the range', async () => {
-    fakeDb.enqueue([{ id: OTHER_ID }], [totals({ weekly_hours: 40, workdays: 3 })], []);
+    fakeDb.enqueue([{ id: USER_ID }], [totals({ weekly_hours: 40, workdays: 3 })], []);
     const { report } = await user(params());
     expect(report.kpis.target_ms).toBe(24 * HOUR);
   });
 
-  it('throws REPORT_INVALID when to is not after from', async () => {
+  it('throws report.invalid when to is not after from', async () => {
     const error = await caught(user(params({ to: FROM })));
-    expect(error.code).toBe('REPORT_INVALID');
+    expect(error.code).toBe('report.invalid');
     expect(error.status).toBe(400);
+    expect(fakeDb.calls).toHaveLength(0);
   });
 
-  it('throws REPORT_INVALID when the range exceeds 366 days', async () => {
+  it('throws report.invalid when the range exceeds 366 days', async () => {
     const error = await caught(user(params({ to: FROM + 367 * 86_400_000 })));
-    expect(error.code).toBe('REPORT_INVALID');
+    expect(error.code).toBe('report.invalid');
   });
 
-  it('throws FORBIDDEN when the actor cannot reach the user', async () => {
-    reaches.mockImplementation(() => Promise.resolve(false));
-    const error = await caught(user(params({ actor: makeActor('employee', EMPLOYEE_ID) })));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(error.status).toBe(403);
-  });
-
-  it('throws USER_NOT_FOUND when the user does not exist', async () => {
+  it('throws report.user.not.found when the user does not exist', async () => {
     fakeDb.enqueue([]);
-    const error = await caught(user(params({ actor: makeActor('admin', ADMIN_ID) })));
-    expect(error.code).toBe('USER_NOT_FOUND');
+    const error = await caught(user(params()));
+    expect(error.code).toBe('report.user.not.found');
     expect(error.status).toBe(404);
   });
 
@@ -129,7 +114,8 @@ describe('report.service.user', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(user(params()));
-    expect(error.code).toBe('REPORT_USER_ERROR');
+    expect(error.code).toBe('report.user.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('report.service.user');
   });

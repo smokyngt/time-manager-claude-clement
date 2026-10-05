@@ -1,0 +1,101 @@
+---
+title: Overview
+description: Base URL, request conventions, the response envelope, pagination and bulk semantics of the Time Manager API.
+---
+
+The API is JSON over HTTPS. Every route lives under `/v1`, and every field uses `snake_case`.
+
+## Base URL
+
+| Environment | Base URL |
+| --- | --- |
+| Production stack (Docker Compose) | `http://localhost:8080/v1` |
+| Development stack | `http://localhost:8000/v1` |
+| Your deployment | `https://your-domain/v1` |
+
+An interactive reference is served at `/docs` on the API, and the OpenAPI document at `/docs/json`. `GET /health` reports that the process is running, and `GET /health/ready` reports that its dependencies are available.
+
+## Requests
+
+- Send `Content-Type: application/json` on requests with a body.
+- Send `Authorization: Bearer <access_token>` on every route except `login`, `refresh` and the Microsoft routes. See [authentication](./authentication).
+- Timestamps are epoch milliseconds in UTC. List filters also accept ISO 8601 date-times.
+- Send an `x-request-id` header (up to 128 characters of letters, digits, `_` and `-`) to choose your own correlation id. Otherwise the API generates one.
+
+Mutations follow one pattern per resource:
+
+| Operation | Method and path |
+| --- | --- |
+| create | `POST /new` |
+| list | `POST /list` |
+| retrieve | `GET /:id` |
+| update | `PATCH /` with `{ ids, data }` |
+| archive, restore | `POST /:id/archive`, `POST /:id/restore` |
+| delete | `DELETE /` with `{ ids }` |
+
+Input is validated strictly. Unknown fields are removed, strings are trimmed and control characters are stripped. A request body can nest at most 10 levels.
+
+## Response envelope
+
+Every success returns `200` with this envelope:
+
+```json
+{
+  "data": {
+    "team": { "id": "5d1f2c88-3a41-4b7e-8f0a-6c2d9e7b4a31", "object": "team" }
+  },
+  "event": {
+    "code": "team.created",
+    "correlation_id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+    "metadata": {},
+    "payload": { "actor": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10" }
+  },
+  "timestamp": 1767225600000
+}
+```
+
+`data` is always a named object, such as `{ team }`, `{ clock }`, `{ items, more, next, total }` or `{ success, updated, failed }`. `event.code` says what happened, and `event.correlation_id` is the id to quote when you report a problem. Failures use a different shape; see [errors](./errors).
+
+## Pagination
+
+List routes use cursor pagination. They accept these fields in the body:
+
+| Field | Meaning | Limit |
+| --- | --- | --- |
+| `limit` | Page size. | 1 to 100, default 25. |
+| `cursor` | The `next` value of the previous page. | Up to 200 characters. |
+| `order` | `asc` or `desc` on `created_at`. | Default `desc`. |
+
+The response is `{ items, more, next, total }`. `more` tells you whether another page exists, `next` is the cursor to send for it (`null` on the last page), and `total` counts every item that matches your filters.
+
+```json
+{ "limit": 50, "cursor": "MTc2NzIyNTYwMDAwMC4wYjNm..." }
+```
+
+Treat the cursor as opaque. Stop when `more` is `false`.
+
+## Bulk semantics
+
+`update` and `delete` take up to 100 ids. Duplicates are ignored, and an empty list or more than 100 ids returns `400`.
+
+The API processes a bulk request in this order:
+
+1. It checks that you may act on every id. If one id is visible to you but not allowed, the whole request fails with `403` and nothing changes.
+2. Ids that do not exist, or that you cannot see, are reported in `failed` with a `.not.found` code. The others still run.
+3. Each remaining id runs on its own. An id that fails, for example because of an overlap, is reported in `failed` and does not stop the others.
+
+The response lists the outcome:
+
+```json
+{
+  "success": false,
+  "updated": ["5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"],
+  "failed": [{ "id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10", "code": "clock.overlap" }]
+}
+```
+
+`success` is `true` only when `failed` is empty. The list of processed ids is named `updated`, `deleted`, `added` or `removed` depending on the operation. Always read `failed`: a `200` response does not mean every id succeeded.
+
+## Archive and delete
+
+Archiving sets `archived_at` and keeps the record. Archived records are hidden from lists unless you filter with `archived: true`, and you can restore them. Deleting is permanent.

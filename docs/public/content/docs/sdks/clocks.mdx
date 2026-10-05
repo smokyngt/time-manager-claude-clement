@@ -1,0 +1,67 @@
+---
+title: Clocks
+description: Clock in and out, read the current clock, create manual entries, list, retrieve, correct and delete clocks.
+---
+
+A clock is one period of work of one user. The `clocks` resource wraps `/v1/clocks`. Users clock themselves in and out; managers and admins can add and correct entries for the people they manage.
+
+## Behaviour
+
+- `in` and `out` act on the caller and need `clocks:write`. Both take an optional `note` of up to 500 characters.
+- A user has at most one open clock. `in` while a clock is open, and `out` when none is open, fail with `clock.conflict` (409).
+- `current` returns `{ clock }`, where `clock` is `null` when the user is clocked out. `clockedOutAt` and `durationMs` are `null` while a clock is open.
+- `create` adds a manual entry with `source: 'manual'`. It needs `clocks:manage`: managers can do it for users they manage, admins for everyone. `clockedOutAt` must be after `clockedInAt`, neither can be in the future, and an entry cannot last more than 24 hours; otherwise the request fails with `clock.invalid` (400). An entry that overlaps another clock of the same user fails with `clock.overlap` (409).
+- `list` accepts `userIds`, `from` and `to` (bounds on `clockedInAt`, as numbers, `Date` objects or ISO strings), `open`, `cursor`, `limit` and `order`. Employees always get their own clocks. Managers get their own and those of managed users. Admins get everyone.
+- `retrieve` works for the owner, the owner's manager and admins. A clock you cannot see returns `clock.not.found` (404).
+- `update` and `delete` are bulk (1 to 100 ids), need `clocks:manage` and return a result with `failed`. A correction that overlaps another clock appears in `failed` with `clock.overlap`. `delete` is permanent.
+- Notes are encrypted at rest and visible to the owner, their manager and admins.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Clock in and out
+const { clock } = await client.clocks.in({ note: 'Starting at the office' });
+const closed = await client.clocks.out({ note: 'Done for the day' });
+console.log(closed.clock.durationMs);
+
+// Current clock
+const current = await client.clocks.current();
+console.log(current.clock === null ? 'Clocked out' : current.clock.clockedInAt);
+
+// Create a manual entry for a managed user
+const manual = await client.clocks.create({
+  userId: 'user-id',
+  clockedInAt: 1767600000000, // 2026-01-05T08:00:00Z
+  clockedOutAt: 1767628800000, // 2026-01-05T16:00:00Z
+  note: 'Forgot to clock in',
+});
+
+// List
+const page = await client.clocks.list({
+  userIds: ['user-id'],
+  from: 1767225600000,
+  to: new Date('2026-02-01T00:00:00Z'),
+  open: false,
+  order: 'asc',
+});
+console.log(page.total, page.items[0]?.durationMs);
+
+// Retrieve
+const found = await client.clocks.retrieve('clock-id');
+console.log(found.clock.source);
+
+// Correct several clocks
+const result = await client.clocks.update(['clock-id'], {
+  clockedOutAt: 1767632400000,
+  note: 'Corrected by the manager',
+});
+console.log(result.updated, result.failed);
+
+// Delete permanently
+const removed = await client.clocks.delete(['clock-id']);
+console.log(removed.deleted);
+```
+
+</Tab>
+</Tabs>

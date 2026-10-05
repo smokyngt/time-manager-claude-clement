@@ -1,0 +1,70 @@
+---
+title: Authentication
+description: The authentication endpoints, token lifetimes, the refresh cookie and the Microsoft sign-in flow.
+---
+
+All authentication routes live under `/v1/auth`. There is no public sign-up: a manager or admin creates every account.
+
+| Method and path | Scope | Purpose |
+| --- | --- | --- |
+| `POST /login` | none | Sign in with email and password. |
+| `POST /refresh` | none, uses the cookie | Rotate the refresh token and issue a new access token. |
+| `POST /logout` | `auth:self` | End the current session. |
+| `GET /me` | `auth:self` | Return the signed-in user. |
+| `GET /microsoft` | none | Start Microsoft sign-in (redirects with `302`). |
+| `GET /microsoft/callback` | none | Finish Microsoft sign-in (redirects with `302` to the web application). |
+
+## Sign in
+
+```bash
+curl -i -X POST http://localhost:8080/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{ "email": "jane.doe@example.com", "password": "correct-horse-battery" }'
+```
+
+The response returns the session in `data`:
+
+| Field | Meaning |
+| --- | --- |
+| `access_token` | A JWT to send as a Bearer token. |
+| `expires_in` | Lifetime in seconds, `900` by default. |
+| `token_type` | Always `Bearer`. |
+| `scopes` | The [scopes](./scopes) of the user's role. |
+| `user` | The signed-in user. |
+
+The response also sets the `tm_refresh` cookie.
+
+## Tokens
+
+| Token | Lifetime | Where it lives |
+| --- | --- | --- |
+| Access token | 15 minutes (`JWT_ACCESS_TTL`) | In memory. Sent in the `Authorization` header. |
+| Refresh token | 7 days (`JWT_REFRESH_TTL`) | In the `tm_refresh` cookie: `HttpOnly`, `SameSite=Lax`, `Secure` in production, path `/v1/auth`. |
+
+The access token carries the user id and role. The API derives the [scopes](./scopes) from the role, so a role change reaches you at the next refresh.
+
+## Refresh
+
+Call `POST /v1/auth/refresh` with the cookie and no body. You receive a new access token and a new cookie, and the previous refresh token stops working. Presenting a token that was already rotated revokes the whole session and returns `401`. The user then signs in again.
+
+A refresh fails with `auth.session.invalid` (401) when the token is unknown, expired or reused, or when the user was archived. The API clears the cookie when that happens.
+
+## Sign in with Microsoft
+
+Microsoft sign-in is optional and only works for registered users. Navigate the browser to `GET /v1/auth/microsoft`; do not call it with `fetch`. Microsoft asks the user to sign in, then redirects to the callback. The API redirects the browser to the web application, which calls `POST /v1/auth/refresh` to get an access token.
+
+Possible failures:
+
+| Code | Status | Meaning |
+| --- | --- | --- |
+| `auth.microsoft.unavailable` | 503 | The server has no Microsoft configuration. |
+| `auth.microsoft.unknown.user` | 403 | No account matches this Microsoft identity. Ask a manager to create it. |
+| `auth.microsoft.rejected` | 401 | Microsoft rejected the sign-in. |
+
+## Sign out
+
+`POST /v1/auth/logout` ends the session and clears the cookie. Discard the access token on the client; it stays valid until it expires.
+
+## Limits
+
+`POST /login` is limited to 10 requests per minute per IP address by default, and to a number of failed attempts per account. See [rate limits](./rate-limits).

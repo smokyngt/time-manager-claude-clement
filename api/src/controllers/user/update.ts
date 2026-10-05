@@ -1,3 +1,5 @@
+import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 import { UserNotFoundError, UserUpdateError } from '@/lib/errors/domains/user.js';
 import { UserUpdated } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
@@ -15,7 +17,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: UpdateBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {UserUpdateError}
+ * @throws {UnauthorizedError | UserUpdateError | ValidationError}
  */
 export const update = async (
   req: FastifyRequest<{ Body: UpdateBody }>,
@@ -34,8 +36,9 @@ export const update = async (
     const loaded = await Promise.all(
       ids.map(async (id) => {
         if (!Access.user.reach(actor, id)) {
-          throw UnauthorizedError({ metadata: { route: 'user.controller.update' } });
+          throw UnauthorizedError({ metadata: { route: 'user.controller.update', user_id: id } });
         }
+
         return userService.retrieve({ id }).then(
           ({ user }) => ({ id, user }),
           (error: unknown) => ({ error, id }),
@@ -57,7 +60,9 @@ export const update = async (
       Access.user.require(actor, 'update', item.user);
       const allowed = Access.user.fields(actor, item.user);
       if (!keys.every((key) => allowed.includes(key))) {
-        throw UnauthorizedError({ metadata: { route: 'user.controller.update' } });
+        throw UnauthorizedError({
+          metadata: { route: 'user.controller.update', user_id: item.id },
+        });
       }
       targets.push(item.user);
     }
@@ -79,7 +84,9 @@ export const update = async (
     await Reply.send(
       req,
       reply,
-      UserUpdated({ payload: { failed: failed.length, updated: updated.length } }),
+      UserUpdated({
+        payload: { actor: actor.id, failed: failed.length, updated: updated.length },
+      }),
       result,
     );
   } catch (error) {

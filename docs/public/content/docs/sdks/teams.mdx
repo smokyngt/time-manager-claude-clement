@@ -1,0 +1,60 @@
+---
+title: Teams
+description: Create, list, retrieve, update, archive, restore and delete teams.
+---
+
+A team groups users under a manager and defines the working day and the weekly hours target that reports use. The `teams` resource wraps `/v1/teams`. To manage who belongs to a team, use [team members](./team-members).
+
+## Behaviour
+
+- Creating a team needs the `teams:manage` scope. A manager always becomes the manager of the team they create, whatever `managerId` they send. An admin can set any `managerId`, who must be an active `manager` or `admin`; otherwise the request fails with `team.manager.invalid` (400).
+- `weeklyHoursTarget` is a whole number from 1 to 80 and defaults to 35. `workStart` and `workEnd` are `HH:MM` strings in the company timezone and default to `09:00` and `17:00`. A `workEnd` that is not after `workStart` fails with `team.schedule.invalid` (400).
+- A team name has 1 to 100 characters, a description up to 500.
+- Visibility: an admin sees every team. A manager sees the teams they manage or belong to. An employee sees the teams they belong to. A team you cannot see returns `team.not.found` (404).
+- `list` accepts `ids`, `managerId`, `memberId`, `archived`, `createdAfter` and `createdBefore`, plus `cursor`, `limit` and `order`.
+- `update` is bulk. It takes up to 100 ids and the same `data` for all of them, and returns `{ success, updated, failed }`. Managers update the teams they manage. Only an admin can change `managerId`. Pass `description: null` to clear the description.
+- `archive` keeps the team and ends the management relationship through it; `restore` brings it back. Archiving does not delete the membership.
+- `delete` is permanent and bulk, and only admins can do it. Ids that do not exist appear in `failed` with `team.not.found`.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Create
+const { team } = await client.teams.create({
+  name: 'Customer support',
+  description: 'Customer support team of the Paris office.',
+  managerId: 'manager-id',
+  weeklyHoursTarget: 35,
+  workStart: '09:00',
+  workEnd: '17:00',
+});
+console.log(team.id, team.memberCount);
+
+// List
+const page = await client.teams.list({ memberId: 'user-id', archived: false });
+console.log(page.total, page.items.map((item) => item.name));
+
+// Retrieve
+const found = await client.teams.retrieve('team-id');
+console.log(found.team.workStart, found.team.workEnd);
+
+// Update the schedule of several teams
+const result = await client.teams.update(['team-id', 'other-team-id'], {
+  workStart: '08:30',
+  workEnd: '16:30',
+  weeklyHoursTarget: 32,
+});
+console.log(result.updated, result.failed);
+
+// Archive and restore
+await client.teams.archive('team-id');
+await client.teams.restore('team-id');
+
+// Delete permanently (admins only)
+const removed = await client.teams.delete(['team-id']);
+console.log(removed.deleted);
+```
+
+</Tab>
+</Tabs>

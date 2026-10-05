@@ -1,3 +1,5 @@
+import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 import { UserDeleteError, UserNotFoundError } from '@/lib/errors/domains/user.js';
 import { UserDeleted } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
@@ -15,7 +17,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: DeleteBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {UserDeleteError}
+ * @throws {UnauthorizedError | UserDeleteError | ValidationError}
  */
 export const remove = async (
   req: FastifyRequest<{ Body: DeleteBody }>,
@@ -32,8 +34,9 @@ export const remove = async (
     const loaded = await Promise.all(
       ids.map(async (id) => {
         if (!Access.user.reach(actor, id)) {
-          throw UnauthorizedError({ metadata: { route: 'user.controller.delete' } });
+          throw UnauthorizedError({ metadata: { route: 'user.controller.delete', user_id: id } });
         }
+
         return userService.retrieve({ id }).then(
           ({ user }) => ({ id, user }),
           (error: unknown) => ({ error, id }),
@@ -73,7 +76,9 @@ export const remove = async (
     await Reply.send(
       req,
       reply,
-      UserDeleted({ payload: { deleted: deleted.length, failed: failed.length } }),
+      UserDeleted({
+        payload: { actor: actor.id, deleted: deleted.length, failed: failed.length },
+      }),
       result,
     );
   } catch (error) {

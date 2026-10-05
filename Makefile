@@ -33,10 +33,10 @@ demo: ## Load demo data (dev stack must be running: make dev)
 	$(COMPOSE_DEV) exec api bun run db:seed:demo
 
 rotate-keys: ## Re-encrypt data with the current ENCRYPTION_KEY (see docs/ENCRYPTION.md)
-	$(COMPOSE) run --rm --no-deps api bun dist/db/rotate.js
+	$(COMPOSE) run --rm --no-deps api bun run db:rotate:prod
 
 purge-sessions: ## Delete expired/revoked refresh tokens (prod stack)
-	$(COMPOSE) run --rm --no-deps api bun dist/db/purge.js
+	$(COMPOSE) run --rm --no-deps api bun run db:purge:prod
 
 obs-up: ## Start the prod stack with Grafana/Prometheus/Tempo/Loki (requires METRICS_TOKEN)
 	$(COMPOSE_OBS) up --build -d

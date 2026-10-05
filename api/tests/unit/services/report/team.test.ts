@@ -1,25 +1,11 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import {
-  caught,
-  EMPLOYEE_ID,
-  makeActor,
-  MANAGER_ID,
-  MISSING_ID,
-  OTHER_ID,
-} from '../../../helpers/fixtures.js';
+import { AppError } from '@/lib/errors/base/registry.js';
 
-class ExecDb extends FakeDb {
-  public execute(): Promise<unknown> {
-    const next = this.next();
-
-    return next instanceof Error ? Promise.reject(next) : Promise.resolve(next);
-  }
-}
+import { FakeDb } from '../../../support/db.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
-const fakeDb = new ExecDb();
+const fakeDb = new FakeDb();
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
 
 afterAll(() => {
@@ -37,13 +23,26 @@ const FROM = 1_767_225_600_000;
 const TO = FROM + 7 * 86_400_000;
 const HOUR = 3_600_000;
 const TEAM_ID = '00000000-0000-4000-8000-0000000000e1';
+const MANAGER_ID = '00000000-0000-4000-8000-0000000000b1';
+const MEMBER_ID = '00000000-0000-4000-8000-0000000000c2';
+const IDLE_ID = '00000000-0000-4000-8000-0000000000c1';
 
-const member = (user_id: string, overrides: Record<string, unknown> = {}) => ({
+const caught = async (promise: Promise<unknown>): Promise<AppError> => {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AppError) return error;
+    throw error;
+  }
+  throw new TypeError('expected the promise to reject');
+};
+
+const member = (userId: string, overrides: Record<string, unknown> = {}) => ({
   days_worked: 4,
   first_name: 'Jane',
   last_name: 'Doe',
   late_days: 1,
-  user_id,
+  user_id: userId,
   weekly_hours: 35,
   workdays: 5,
   worked_ms: 30 * HOUR,
@@ -51,7 +50,6 @@ const member = (user_id: string, overrides: Record<string, unknown> = {}) => ({
 });
 
 const params = (overrides: Record<string, unknown> = {}) => ({
-  actor: makeActor('manager'),
   from: FROM,
   granularity: 'week' as const,
   team_id: TEAM_ID,
@@ -62,8 +60,8 @@ const params = (overrides: Record<string, unknown> = {}) => ({
 describe('report.service.team', () => {
   it('aggregates member totals into team kpis', async () => {
     fakeDb.enqueue(
-      [{ manager_id: MANAGER_ID }],
-      [member(OTHER_ID), member(EMPLOYEE_ID, { days_worked: 0, late_days: 0, worked_ms: 0 })],
+      [{ id: TEAM_ID }],
+      [member(MEMBER_ID), member(IDLE_ID, { days_worked: 0, late_days: 0, worked_ms: 0 })],
       [{ late: 1, period_start: FROM, worked_ms: 30 * HOUR }],
     );
     const { report } = await team(params());
@@ -85,57 +83,51 @@ describe('report.service.team', () => {
       last_name: 'Doe',
       late_days: 1,
       overtime_ms: -5 * HOUR,
-      user_id: OTHER_ID,
+      user_id: MEMBER_ID,
       worked_ms: 30 * HOUR,
     });
     expect(report.series).toEqual([{ period_start: FROM, worked_ms: 30 * HOUR }]);
   });
 
   it('returns empty kpis for a team without members', async () => {
-    fakeDb.enqueue([{ manager_id: MANAGER_ID }], [], []);
+    fakeDb.enqueue([{ id: TEAM_ID }], [], []);
     const { report } = await team(params());
     expect(report.kpis.member_count).toBe(0);
     expect(report.kpis.average_daily_ms).toBe(0);
     expect(report.kpis.lateness_rate).toBe(0);
   });
 
-  it('lets an admin read any team', async () => {
-    fakeDb.enqueue([{ manager_id: MISSING_ID }], [], []);
-    const { report } = await team(params({ actor: makeActor('admin') }));
-    expect(report.team_id).toBe(TEAM_ID);
+  it('applies the manager filter to the team lookup', async () => {
+    fakeDb.enqueue([{ id: TEAM_ID }], [], []);
+    await team(params({ manager_id: MANAGER_ID }));
+    expect(fakeDb.calls.filter((call) => call.method === 'where')).toHaveLength(1);
   });
 
-  it('throws FORBIDDEN for a manager of another team', async () => {
-    fakeDb.enqueue([{ manager_id: MISSING_ID }]);
-    const error = await caught(team(params()));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(error.status).toBe(403);
-  });
-
-  it('throws REPORT_TEAM_NOT_FOUND when the team does not exist', async () => {
+  it('throws report.team.not.found when the team is not visible', async () => {
     fakeDb.enqueue([]);
-    const error = await caught(team(params()));
-    expect(error.code).toBe('REPORT_TEAM_NOT_FOUND');
+    const error = await caught(team(params({ manager_id: MANAGER_ID })));
+    expect(error.code).toBe('report.team.not.found');
     expect(error.status).toBe(404);
   });
 
-  it('throws REPORT_INVALID on a reversed range without querying', async () => {
+  it('throws report.invalid on a reversed range without querying', async () => {
     const error = await caught(team(params({ from: TO, to: FROM })));
-    expect(error.code).toBe('REPORT_INVALID');
+    expect(error.code).toBe('report.invalid');
     expect(error.status).toBe(400);
     expect(fakeDb.calls).toHaveLength(0);
   });
 
-  it('throws REPORT_INVALID when the range exceeds 366 days', async () => {
+  it('throws report.invalid when the range exceeds 366 days', async () => {
     const error = await caught(team(params({ to: FROM + 367 * 86_400_000 })));
-    expect(error.code).toBe('REPORT_INVALID');
+    expect(error.code).toBe('report.invalid');
   });
 
   it('wraps unexpected failures and keeps the cause', async () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(team(params()));
-    expect(error.code).toBe('REPORT_TEAM_ERROR');
+    expect(error.code).toBe('report.team.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('report.service.team');
   });

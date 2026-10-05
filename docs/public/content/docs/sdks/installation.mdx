@@ -1,0 +1,74 @@
+---
+title: Installation and client setup
+description: Install @time-manager/sdk, create a TimeManagerClient, wire the token callbacks and learn how the SDK shapes requests and responses.
+---
+
+`@time-manager/sdk` is a typed TypeScript client for the Time Manager API. It exposes one `TimeManagerClient` with six resources: `auth`, `users`, `teams`, `teamMembers`, `clocks` and `reports`.
+
+<Callout type="warn">
+The package is private and lives in the repository under `sdks/typescript`. Until it is published to a registry, depend on it through a workspace path or a path alias, as the web application does.
+</Callout>
+
+## Install
+
+```bash
+bun add @time-manager/sdk
+```
+
+The SDK uses the global `fetch`, so it runs in browsers, Bun and Node.js 18 or later.
+
+## Create the client
+
+The client stores no token. You give it a `getToken` function, and it calls that function before every request.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+import { TimeManagerClient } from '@time-manager/sdk';
+
+let accessToken: string | null = null;
+
+export const client = new TimeManagerClient({
+  baseUrl: 'https://time.example.com',
+  getToken: () => accessToken,
+  onTokenRefresh: (token) => {
+    accessToken = token;
+  },
+  onLogout: () => {
+    accessToken = null;
+    window.location.assign('/login');
+  },
+  timeoutMs: 10_000,
+});
+```
+
+</Tab>
+</Tabs>
+
+| Option | Type | Meaning |
+| --- | --- | --- |
+| `baseUrl` | `string` | The API origin without a trailing slash. An empty string means the same origin. |
+| `getToken` | `() => string \| null` | Returns the current access token, or `null` when signed out. |
+| `onTokenRefresh` | `(token, session) => void` | Called with the new access token after a successful refresh. |
+| `onLogout` | `() => void` | Called when a refresh fails and the session is over. |
+| `fetch` | `typeof fetch` | A custom `fetch`, for tests or special runtimes. |
+| `timeoutMs` | `number` | Request timeout, `15000` by default. |
+
+## What the SDK does for you
+
+- It converts `camelCase` to `snake_case` in requests and back in responses. You write `firstName`; the API receives `first_name`.
+- It unwraps the response envelope and returns `data`: a named object such as `{ team }`, a page `{ items, more, next, total }`, or a bulk result.
+- It sends the bearer token and the refresh cookie (`credentials: 'include'`).
+- When a request fails with `token.authentication.failed` (401), it refreshes the session once, shared across concurrent requests, and retries the request. If the refresh fails, it calls `onLogout` and throws an `AuthenticationError`.
+- It aborts a request after `timeoutMs` and throws a `NetworkError` with `isTimeout` set.
+- It throws a typed error on every non-`2xx` response. See [error handling](./error-handling).
+
+## Conventions in the guides
+
+- Methods that change several records take `ids` first and the data second: `users.update(ids, data)`.
+- Lists return `{ items, more, next, total }`. Pass `cursor` to fetch the next page.
+- A bulk method resolves even when some ids fail. Read `failed`.
+- Timestamps are numbers in epoch milliseconds. Date filters also accept `Date` objects and ISO strings.
+
+Continue with [error handling](./error-handling) and [auth](./auth).

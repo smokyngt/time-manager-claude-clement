@@ -1,0 +1,49 @@
+---
+title: Reports
+description: Compute the KPIs of a user or a team over a date range.
+---
+
+A report summarises worked time over a range, for one user or one team. The `reports` resource wraps `/v1/reports` and is read-only. Definitions of each KPI are in [KPIs](../getting-started/concepts/kpis).
+
+## Behaviour
+
+- Both methods need the `reports:read` scope and take `from`, `to` and a `granularity` of `day`, `week` or `month`. `from` and `to` are epoch milliseconds; `from` is inclusive and `to` is exclusive.
+- The range cannot exceed 366 days. A longer range fails with `report.invalid` (400).
+- `user` is available to the user themself, to the manager of the user and to admins. A user you cannot see returns `user.not.found` (404).
+- `team` is available to the manager of the team and to admins. Employees cannot read team reports. An unknown or invisible team returns `report.team.not.found` (404).
+- Reports use closed clocks. An open clock counts up to the current time.
+- The user report returns `kpis` (`workedMs`, `daysWorked`, `averageDailyMs`, `targetMs`, `overtimeMs`, `lateDays`, `latenessRate`) and a `series` of `{ periodStart, workedMs, late }`. Periods with no work are present with zeros.
+- The team report returns `kpis` (`workedMs`, `averageDailyMs`, `memberCount`, `activeMembers`, `lateDays`, `latenessRate`, `overtimeMs`), a `series` of `{ periodStart, workedMs }` and a `members` array with one entry per member.
+- `targetMs` and the lateness threshold come from the user's non-archived teams. See [teams](./teams).
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// User report
+const { report } = await client.reports.user({
+  userId: 'user-id',
+  from: 1767225600000, // 2026-01-01T00:00:00Z
+  to: 1769904000000, // 2026-02-01T00:00:00Z
+  granularity: 'week',
+});
+console.log(report.kpis.workedMs, report.kpis.overtimeMs, report.kpis.latenessRate);
+for (const point of report.series) {
+  console.log(point.periodStart, point.workedMs, point.late);
+}
+
+// Team report
+const teamReport = await client.reports.team({
+  teamId: 'team-id',
+  from: 1767225600000,
+  to: 1769904000000,
+  granularity: 'day',
+});
+console.log(teamReport.report.kpis.activeMembers);
+for (const member of teamReport.report.members) {
+  console.log(member.firstName, member.workedMs, member.overtimeMs);
+}
+```
+
+</Tab>
+</Tabs>

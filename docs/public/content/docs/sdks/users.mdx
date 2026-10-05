@@ -1,0 +1,69 @@
+---
+title: Users
+description: Create, list, retrieve, update, archive, restore and delete users.
+---
+
+A user is a person who signs in to Time Manager: an `employee`, a `manager` or an `admin`. Users belong to teams and own clocks. The `users` resource wraps `/v1/users`.
+
+## Behaviour
+
+- Creating a user needs the `users:manage` scope. A manager can create employees only, and `role` defaults to `employee`. Only an admin can create a manager or an admin. The `password` is optional at creation.
+- Emails are unique and stored in lowercase. A second user with the same email fails with `user.conflict` (409).
+- Visibility depends on the role. An admin sees every user. A manager sees employees they manage plus unassigned employees. An employee can retrieve only their own record. A user you cannot see returns `user.not.found` (404).
+- `update` and `delete` are bulk: they take up to 100 ids and return a result with `failed`. Access to every id is checked first; one id you may not touch rejects the whole request with 403. Ids you cannot see appear in `failed` with `user.not.found`.
+- Employees and managers can change their own `firstName`, `lastName`, `phoneNumber` and `password`. Managers can also change the `email` of employees in their scope. Only admins can change `role`. Pass `phoneNumber: null` to clear the phone number.
+- `archive` deactivates a user and keeps their history. Archived users cannot sign in, and you can `restore` them. `delete` is permanent. You cannot archive or delete yourself.
+- `list` accepts the filters `ids`, `teamId`, `role`, `archived`, `createdAfter` and `createdBefore`, plus `cursor`, `limit` (1 to 100, default 25) and `order`. A manager always sees employees only.
+- Names must be 1 to 100 characters. A password has 10 to 128 characters. A phone number has 6 to 20 characters.
+- Microsoft sign-in works only for registered users, so create the user first.
+
+<Tabs items={['TypeScript']}>
+<Tab value="TypeScript">
+
+```ts
+// Create
+const { user } = await client.users.create({
+  email: 'jane.doe@example.com',
+  firstName: 'Jane',
+  lastName: 'Doe',
+  phoneNumber: '+33 6 12 34 56 78',
+  password: 'correct-horse-battery',
+  role: 'employee',
+});
+
+// List
+const page = await client.users.list({
+  teamId: 'team-id',
+  archived: false,
+  order: 'asc',
+  limit: 50,
+});
+console.log(page.total, page.items[0]?.email);
+if (page.more) {
+  const next = await client.users.list({ teamId: 'team-id', cursor: page.next ?? undefined });
+}
+
+// Retrieve
+const found = await client.users.retrieve('user-id');
+console.log(found.user.firstName);
+
+// Update: the same change for several users
+const updated = await client.users.update(['user-id', 'other-user-id'], {
+  phoneNumber: null,
+  lastName: 'Martin',
+});
+if (!updated.success) {
+  console.log(updated.failed); // [{ id, code }]
+}
+
+// Archive and restore
+await client.users.archive('user-id');
+await client.users.restore('user-id');
+
+// Delete permanently
+const removed = await client.users.delete(['user-id']);
+console.log(removed.deleted, removed.failed);
+```
+
+</Tab>
+</Tabs>

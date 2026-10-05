@@ -1,12 +1,12 @@
 import { user } from '@/controllers/user/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import { UserListBodySchema, UserResponses } from '@/schemas/user.js';
 
 import type { ListBody, ListResponse } from '@/controllers/user/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const listRoute: FastifyPluginAsync = async (fastify) => {
+const list: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: ListBody; Reply: ReplyEnvelope<ListResponse> }>(
     '/list',
     {
@@ -24,3 +24,5 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
     user.list,
   );
 };
+
+export { list };

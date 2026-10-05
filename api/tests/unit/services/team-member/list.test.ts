@@ -7,6 +7,7 @@ import { FakeDb } from '../../../support/db.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realCursor = { ...(await import('@/utils/http/cursor.js')) };
+const realMapper = { ...(await import('@/utils/mappers/user.js')) };
 const fakeDb = new FakeDb();
 const row = {
   archived_at: null,
@@ -21,13 +22,20 @@ const row = {
   role: 'employee',
   updated_at: null,
 };
+const entity = mock((input: Record<string, unknown>) => ({
+  id: input['id'],
+  object: 'user',
+  role: input['role'],
+}));
 const paginate = mock(() => Promise.resolve({ items: [row], more: true, next: 'abc', total: 5 }));
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
 await mock.module('@/utils/http/cursor.js', () => ({ ...realCursor, Cursor: { paginate } }));
+await mock.module('@/utils/mappers/user.js', () => ({ ...realMapper, UserMapper: { entity } }));
 
 afterAll(() => {
   void mock.module('@/db/client.js', () => realDb);
   void mock.module('@/utils/http/cursor.js', () => realCursor);
+  void mock.module('@/utils/mappers/user.js', () => realMapper);
 });
 
 afterEach(() => {
@@ -55,8 +63,8 @@ describe('team.member.service.list', () => {
     expect(result.more).toBe(true);
     expect(result.next).toBe('abc');
     expect(result.total).toBe(5);
-    expect(result.items[0]?.object).toBe('user');
-    expect(Object.keys(result.items[0] ?? {})).not.toContain('password_hash');
+    expect(result.items).toEqual([{ id: row.id, object: 'user', role: 'employee' }]);
+    expect(entity).toHaveBeenCalledTimes(1);
     const calls = paginate.mock.calls as unknown as [unknown, Record<string, unknown>][];
     expect(calls[0]?.[1]).toMatchObject({ limit: 10, order: 'desc', sort: 'created_at' });
     expect(calls[0]?.[1]['filters']).toBeDefined();

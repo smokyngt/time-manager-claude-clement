@@ -5,7 +5,9 @@ import { LANGUAGES, resources } from '@/lib/i18n'
 
 function leaf(tree: unknown, path: string): unknown {
   return path.split('.').reduce<unknown>((node, key) => {
-    return typeof node === 'object' && node !== null ? (node as Record<string, unknown>)[key] : undefined
+    return typeof node === 'object' && node !== null
+      ? (node as Record<string, unknown>)[key]
+      : undefined
   }, tree)
 }
 

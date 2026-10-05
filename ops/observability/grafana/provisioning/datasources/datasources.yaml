@@ -27,7 +27,12 @@ datasources:
       prometheusVersion: 3.5.0
       manageAlerts: true
       # Metric spike -> exemplar -> trace.
+      # Tempo's metrics-generator labels exemplars `traceID`; an API exposing OpenMetrics
+      # exemplars would use `trace_id`.
       exemplarTraceIdDestinations:
+        - name: traceID
+          datasourceUid: tempo
+          urlDisplayLabel: View trace in Tempo
         - name: trace_id
           datasourceUid: tempo
           urlDisplayLabel: View trace in Tempo
