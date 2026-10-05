@@ -42,7 +42,7 @@ describe('resources', () => {
   test('users', async () => {
     const { calls, client } = setup({ user: { id: '1' }, ...bulk });
     const created = await client.users.create({ email: 'e', firstName: 'f', lastName: 'l' });
-    expect(created.id).toBe('1');
+    expect(created.user.id).toBe('1');
     await client.users.list({ cursor: 'c', teamId: 't' });
     await client.users.retrieve('1');
     await client.users.update(['1'], { phoneNumber: null });
@@ -106,7 +106,7 @@ describe('resources', () => {
     const { calls, client } = setup({ clock: { id: 'c' }, ...bulk });
     await client.clocks.in({ note: 'hi' });
     await client.clocks.out({});
-    expect((await client.clocks.current())?.id).toBe('c');
+    expect((await client.clocks.current()).clock?.id).toBe('c');
     await client.clocks.create({ clockedInAt: 1, clockedOutAt: 2, userId: 'u' });
     await client.clocks.list({ open: true, userIds: ['u'] });
     await client.clocks.retrieve('c');

@@ -1,8 +1,12 @@
 import type { HttpClient } from '../http.js';
 import type {
+  ArchiveUserResponse,
   BulkDeleteResponse,
   BulkUpdateResponse,
+  CreateUserResponse,
   ListResponse,
+  RestoreUserResponse,
+  RetrieveUserResponse,
   User,
   UserCreateParams,
   UserListParams,
@@ -14,13 +18,13 @@ export class UsersResource {
   public constructor(private readonly http: HttpClient) {}
 
   /** Archives a user. */
-  public async archive(id: string): Promise<User> {
-    return (await this.http.post<{ user: User }>(`/v1/users/${id}/archive`)).user;
+  public archive(id: string): Promise<ArchiveUserResponse> {
+    return this.http.post<ArchiveUserResponse>(`/v1/users/${id}/archive`);
   }
 
   /** Creates a user. */
-  public async create(params: UserCreateParams): Promise<User> {
-    return (await this.http.post<{ user: User }>('/v1/users/new', params)).user;
+  public create(params: UserCreateParams): Promise<CreateUserResponse> {
+    return this.http.post<CreateUserResponse>('/v1/users/new', params);
   }
 
   /** Deletes users permanently. */
@@ -34,13 +38,13 @@ export class UsersResource {
   }
 
   /** Restores an archived user. */
-  public async restore(id: string): Promise<User> {
-    return (await this.http.post<{ user: User }>(`/v1/users/${id}/restore`)).user;
+  public restore(id: string): Promise<RestoreUserResponse> {
+    return this.http.post<RestoreUserResponse>(`/v1/users/${id}/restore`);
   }
 
   /** Retrieves one user. */
-  public async retrieve(id: string): Promise<User> {
-    return (await this.http.get<{ user: User }>(`/v1/users/${id}`)).user;
+  public retrieve(id: string): Promise<RetrieveUserResponse> {
+    return this.http.get<RetrieveUserResponse>(`/v1/users/${id}`);
   }
 
   /** Applies the same changes to several users. */

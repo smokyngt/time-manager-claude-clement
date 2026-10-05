@@ -1,8 +1,12 @@
 import type { HttpClient } from '../http.js';
 import type {
+  ArchiveTeamResponse,
   BulkDeleteResponse,
   BulkUpdateResponse,
+  CreateTeamResponse,
   ListResponse,
+  RestoreTeamResponse,
+  RetrieveTeamResponse,
   Team,
   TeamCreateParams,
   TeamListParams,
@@ -14,13 +18,13 @@ export class TeamsResource {
   public constructor(private readonly http: HttpClient) {}
 
   /** Archives a team. */
-  public async archive(id: string): Promise<Team> {
-    return (await this.http.post<{ team: Team }>(`/v1/teams/${id}/archive`)).team;
+  public archive(id: string): Promise<ArchiveTeamResponse> {
+    return this.http.post<ArchiveTeamResponse>(`/v1/teams/${id}/archive`);
   }
 
   /** Creates a team. */
-  public async create(params: TeamCreateParams): Promise<Team> {
-    return (await this.http.post<{ team: Team }>('/v1/teams/new', params)).team;
+  public create(params: TeamCreateParams): Promise<CreateTeamResponse> {
+    return this.http.post<CreateTeamResponse>('/v1/teams/new', params);
   }
 
   /** Deletes teams permanently. */
@@ -34,13 +38,13 @@ export class TeamsResource {
   }
 
   /** Restores an archived team. */
-  public async restore(id: string): Promise<Team> {
-    return (await this.http.post<{ team: Team }>(`/v1/teams/${id}/restore`)).team;
+  public restore(id: string): Promise<RestoreTeamResponse> {
+    return this.http.post<RestoreTeamResponse>(`/v1/teams/${id}/restore`);
   }
 
   /** Retrieves one team. */
-  public async retrieve(id: string): Promise<Team> {
-    return (await this.http.get<{ team: Team }>(`/v1/teams/${id}`)).team;
+  public retrieve(id: string): Promise<RetrieveTeamResponse> {
+    return this.http.get<RetrieveTeamResponse>(`/v1/teams/${id}`);
   }
 
   /** Applies the same changes to several teams. */

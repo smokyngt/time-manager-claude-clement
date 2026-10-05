@@ -2,12 +2,16 @@ import type { HttpClient } from '../http.js';
 import type {
   BulkDeleteResponse,
   BulkUpdateResponse,
-  Clock,
+  ClockInResponse,
   ClockCreateParams,
   ClockListParams,
   ClockNoteParams,
+  ClockOutResponse,
   ClockUpdateData,
+  CreateClockResponse,
+  CurrentClockResponse,
   ListResponse,
+  RetrieveClockResponse,
 } from '../types.js';
 
 /** Clock endpoints (`/v1/clocks`). */
@@ -15,13 +19,13 @@ export class ClocksResource {
   public constructor(private readonly http: HttpClient) {}
 
   /** Creates a manual clock entry. */
-  public async create(params: ClockCreateParams): Promise<Clock> {
-    return (await this.http.post<{ clock: Clock }>('/v1/clocks/new', params)).clock;
+  public create(params: ClockCreateParams): Promise<CreateClockResponse> {
+    return this.http.post<CreateClockResponse>('/v1/clocks/new', params);
   }
 
   /** Returns the open clock of the caller, null when clocked out. */
-  public async current(): Promise<Clock | null> {
-    return (await this.http.get<{ clock: Clock | null }>('/v1/clocks/current')).clock;
+  public current(): Promise<CurrentClockResponse> {
+    return this.http.get<CurrentClockResponse>('/v1/clocks/current');
   }
 
   /** Deletes clocks permanently. */
@@ -30,8 +34,8 @@ export class ClocksResource {
   }
 
   /** Clocks the caller in. */
-  public async in(params: ClockNoteParams = {}): Promise<Clock> {
-    return (await this.http.post<{ clock: Clock }>('/v1/clocks/in', params)).clock;
+  public in(params: ClockNoteParams = {}): Promise<ClockInResponse> {
+    return this.http.post<ClockInResponse>('/v1/clocks/in', params);
   }
 
   /** Lists clocks with filters and cursor pagination. */
@@ -40,13 +44,13 @@ export class ClocksResource {
   }
 
   /** Clocks the caller out. */
-  public async out(params: ClockNoteParams = {}): Promise<Clock> {
-    return (await this.http.post<{ clock: Clock }>('/v1/clocks/out', params)).clock;
+  public out(params: ClockNoteParams = {}): Promise<ClockOutResponse> {
+    return this.http.post<ClockOutResponse>('/v1/clocks/out', params);
   }
 
   /** Retrieves one clock. */
-  public async retrieve(id: string): Promise<Clock> {
-    return (await this.http.get<{ clock: Clock }>(`/v1/clocks/${id}`)).clock;
+  public retrieve(id: string): Promise<RetrieveClockResponse> {
+    return this.http.get<RetrieveClockResponse>(`/v1/clocks/${id}`);
   }
 
   /** Applies the same corrections to several clocks. */

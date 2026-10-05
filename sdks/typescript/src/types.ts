@@ -203,7 +203,7 @@ export interface Team {
 /** Parameters of `teams.create`. */
 export interface TeamCreateParams {
   /** Description (500 characters max). */
-  description?: string;
+  description?: null | string;
   /** Managing user; forced to the caller for managers. */
   managerId?: string;
   /** Name (1 to 100 characters). */
@@ -478,4 +478,94 @@ export interface UserUpdateData {
   phoneNumber?: null | string;
   /** New role. */
   role?: Role;
+}
+
+/** Response of `users.create`. */
+export interface CreateUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `users.retrieve`. */
+export interface RetrieveUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `users.archive`. */
+export interface ArchiveUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `users.restore`. */
+export interface RestoreUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `teams.create`. */
+export interface CreateTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `teams.retrieve`. */
+export interface RetrieveTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `teams.archive`. */
+export interface ArchiveTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `teams.restore`. */
+export interface RestoreTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `clocks.create`. */
+export interface CreateClockResponse {
+  /** The created clock. */
+  clock: Clock;
+}
+
+/** Response of `clocks.retrieve`. */
+export interface RetrieveClockResponse {
+  /** The clock. */
+  clock: Clock;
+}
+
+/** Response of `clocks.in`. */
+export interface ClockInResponse {
+  /** The newly opened clock. */
+  clock: Clock;
+}
+
+/** Response of `clocks.out`. */
+export interface ClockOutResponse {
+  /** The closed clock. */
+  clock: Clock;
+}
+
+/** Response of `clocks.current`. */
+export interface CurrentClockResponse {
+  /** The open clock, null when clocked out. */
+  clock: Clock | null;
+}
+
+/** Response of `reports.user`. */
+export interface UserReportResponse {
+  /** The user report. */
+  report: UserReport;
+}
+
+/** Response of `reports.team`. */
+export interface TeamReportResponse {
+  /** The team report. */
+  report: TeamReport;
 }
