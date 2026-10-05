@@ -51,7 +51,7 @@ jobs:
       K6_PROMETHEUS_RW_SERVER_URL: ${{ secrets.K6_PROMETHEUS_RW_SERVER_URL }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
@@ -59,7 +59,7 @@ jobs:
           bun-version: 1.3.x
 
       - name: Cache Bun dependencies
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ~/.bun/install/cache
           key: bun-api-${{ runner.os }}-${{ hashFiles('api/bun.lock') }}
@@ -139,7 +139,7 @@ jobs:
 
       - name: Upload k6 results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: k6-${{ env.SCENARIO }}-${{ github.run_id }}
           path: |

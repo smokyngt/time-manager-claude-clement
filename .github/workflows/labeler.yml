@@ -16,6 +16,6 @@ jobs:
       pull-requests: write
     steps:
       # pull_request_target: config is read from the base branch; PR code is never checked out.
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v7
         with:
           sync-labels: true
