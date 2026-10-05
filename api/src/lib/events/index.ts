@@ -4,14 +4,14 @@ export interface AppEvent<Payload> {
   payload: Payload;
 }
 
+export type EventFactory<Payload> = ((options: EventOptions<Payload>) => AppEvent<Payload>) & {
+  code: string;
+};
+
 export interface EventOptions<Payload> {
   metadata?: Record<string, unknown>;
   payload: Payload;
 }
-
-export type EventFactory<Payload> = ((options: EventOptions<Payload>) => AppEvent<Payload>) & {
-  code: string;
-};
 
 /**
  * @route events.register

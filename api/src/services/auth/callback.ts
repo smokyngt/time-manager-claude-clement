@@ -13,8 +13,9 @@ import {
 } from '@/lib/errors/domains/auth.js';
 import { logService } from '@/services/log/index.js';
 
-import type { CallbackParams, CallbackResponse } from './index.js';
 import { Session } from './session.js';
+
+import type { CallbackParams, CallbackResponse } from './index.js';
 
 /**
  * @route auth.service.callback

@@ -1,17 +1,15 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { UserDeleteError } from '@/lib/errors/domains/user.js';
-import { UserDeleted } from '@/lib/events/domains/user.js';
 import { AppError, ForbiddenError, InternalError, ValidationError } from '@/lib/errors/index.js';
+import { UserDeleted } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { userService } from '@/services/user/index.js';
 import { Access } from '@/utils/access.js';
 import { Reply } from '@/utils/reply.js';
 
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { User } from '@/types/entities/user.js';
-
 import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
+import type { User } from '@/types/entities/user.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.delete
@@ -45,7 +43,10 @@ export const remove = async (
     );
     for (const item of loaded) {
       if ('error' in item) {
-        failed.push({ code: AppError.is(item.error) ? item.error.code : InternalError.code, id: item.id });
+        failed.push({
+          code: AppError.is(item.error) ? item.error.code : InternalError.code,
+          id: item.id,
+        });
         continue;
       }
       Access.user.require(actor, 'delete', item.user);

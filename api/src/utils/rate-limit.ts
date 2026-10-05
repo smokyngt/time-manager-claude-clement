@@ -1,15 +1,14 @@
-import type { FastifyRequest } from 'fastify';
-
 import { Config } from '@/config/index.js';
-import { RateLimitError } from '@/lib/errors/index.js';
 import { Tokens } from '@/lib/auth/tokens.js';
+import { RateLimitError } from '@/lib/errors/index.js';
 
 import type { AppError } from '@/lib/errors/index.js';
+import type { FastifyRequest } from 'fastify';
 
 export interface RateLimitOptions {
-  errorResponseBuilder: typeof RateLimit.error;
+  errorResponseBuilder: (req: FastifyRequest) => AppError;
   global: boolean;
-  keyGenerator: typeof RateLimit.key;
+  keyGenerator: (req: FastifyRequest) => Promise<string>;
   max: number;
   timeWindow: string;
 }
@@ -46,9 +45,9 @@ export class RateLimit {
   public static options(entity: string): RateLimitOptions {
     const prefix = entity.toUpperCase();
     return {
-      errorResponseBuilder: RateLimit.error,
+      errorResponseBuilder: (req) => RateLimit.error(req),
       global: true,
-      keyGenerator: RateLimit.key,
+      keyGenerator: (req) => RateLimit.key(req),
       max: Config.store.number(`${prefix}_RATE_LIMIT_MAX`, 100),
       timeWindow: Config.store.text(`${prefix}_RATE_LIMIT_WINDOW`, '1 minute'),
     };

@@ -22,9 +22,19 @@ export const list = async (params: ListParams): Promise<ListResponse> => {
       role === undefined ? undefined : eq(users.role, role),
       after === undefined ? undefined : gte(users.created_at, after),
       before === undefined ? undefined : lte(users.created_at, before),
-      archived === undefined ? undefined : archived ? isNotNull(users.archived_at) : isNull(users.archived_at),
+      archived === undefined
+        ? undefined
+        : archived
+          ? isNotNull(users.archived_at)
+          : isNull(users.archived_at),
     );
-    const page = await Cursor.paginate(users, { cursor, filters: where, limit, order, sort: 'created_at' });
+    const page = await Cursor.paginate(users, {
+      cursor,
+      filters: where,
+      limit,
+      order,
+      sort: 'created_at',
+    });
     return {
       items: page.items.map((row) => UserMapper.entity(row)),
       more: page.more,

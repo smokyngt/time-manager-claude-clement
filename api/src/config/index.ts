@@ -66,9 +66,11 @@ export class Config {
     if (!Config.production()) return problems;
     for (const name of ['JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET']) {
       const value = Config.store.optional(name);
-      if (value === undefined || value.length < 32) problems.push(`${name} must be at least 32 characters`);
+      if (value === undefined || value.length < 32)
+        problems.push(`${name} must be at least 32 characters`);
     }
-    if (Config.store.optional('DATABASE_URL') === undefined) problems.push('DATABASE_URL is required');
+    if (Config.store.optional('DATABASE_URL') === undefined)
+      problems.push('DATABASE_URL is required');
     return problems;
   }
 }

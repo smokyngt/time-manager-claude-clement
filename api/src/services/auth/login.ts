@@ -6,8 +6,9 @@ import { AuthInvalidCredentialsError, AuthLoginError } from '@/lib/errors/domain
 import { logService } from '@/services/log/index.js';
 import { Password } from '@/utils/password.js';
 
-import type { LoginParams, LoginResponse } from './index.js';
 import { Session } from './session.js';
+
+import type { LoginParams, LoginResponse } from './index.js';
 
 /**
  * @route auth.service.login
@@ -18,7 +19,11 @@ import { Session } from './session.js';
 export const login = async (params: LoginParams): Promise<LoginResponse> => {
   try {
     const { email, password } = params;
-    const [row] = await db.select().from(users).where(eq(users.email, email.toLowerCase())).limit(1);
+    const [row] = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email.toLowerCase()))
+      .limit(1);
     const valid = await Password.verify(password, row?.password_hash ?? null);
     if (row === undefined || !valid || row.archived_at !== null) {
       throw AuthInvalidCredentialsError({ metadata: { route: 'auth.service.login' } });

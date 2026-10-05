@@ -15,7 +15,11 @@ if (email === undefined || password === undefined) {
   process.exit(1);
 }
 
-const existing = await db.select({ id: users.id }).from(users).where(eq(users.email, email)).limit(1);
+const existing = await db
+  .select({ id: users.id })
+  .from(users)
+  .where(eq(users.email, email))
+  .limit(1);
 
 if (existing.length > 0) {
   process.stdout.write('admin already exists\n');

@@ -1,12 +1,18 @@
-export interface ErrorOptions {
-  cause?: unknown;
-  metadata?: Record<string, unknown>;
-}
-
 export interface ErrorDefinition {
   code: string;
   defaultStatus: number;
   message: string;
+}
+
+export interface ErrorFactory {
+  (options?: ErrorOptions): AppError;
+  code: string;
+  defaultStatus: number;
+}
+
+export interface ErrorOptions {
+  cause?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 export class AppError extends Error {
@@ -30,12 +36,6 @@ export class AppError extends Error {
   public static is(value: unknown): value is AppError {
     return value instanceof AppError;
   }
-}
-
-export interface ErrorFactory {
-  (options?: ErrorOptions): AppError;
-  code: string;
-  defaultStatus: number;
 }
 
 /**

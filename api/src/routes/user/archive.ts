@@ -1,12 +1,11 @@
-import type { FastifyPluginAsync } from 'fastify';
-
 import { user } from '@/controllers/user/index.js';
 import { auth } from '@/plugins/auth.js';
 import { UserIdParamsSchema, UserResponses } from '@/schemas/user.js';
 
 import type { ArchiveParams } from '@/controllers/user/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { User } from '@/types/entities/user.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyPluginAsync } from 'fastify';
 
 export const archiveRoute: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Params: ArchiveParams; Reply: ReplyEnvelope<User> }>(

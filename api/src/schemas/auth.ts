@@ -1,4 +1,4 @@
-import { ReplyEnvelopeSchema, errorResponse } from './common.js';
+import { errorResponse, ReplyEnvelopeSchema } from './common.js';
 import { UserSchema } from './user.js';
 
 export const AuthLoginBodySchema = {
@@ -51,10 +51,28 @@ export const AuthLogoutDataSchema = {
 export const AuthCallbackQuerySchema = {
   additionalProperties: true,
   properties: {
-    code: { description: 'Authorization code issued by Microsoft.', maxLength: 4096, minLength: 1, type: 'string' },
-    error: { description: 'Error code sent by Microsoft when the user refused.', maxLength: 200, type: 'string' },
-    error_description: { description: 'Error details sent by Microsoft.', maxLength: 2000, type: 'string' },
-    state: { description: 'State echoed back by Microsoft.', maxLength: 200, minLength: 1, type: 'string' },
+    code: {
+      description: 'Authorization code issued by Microsoft.',
+      maxLength: 4096,
+      minLength: 1,
+      type: 'string',
+    },
+    error: {
+      description: 'Error code sent by Microsoft when the user refused.',
+      maxLength: 200,
+      type: 'string',
+    },
+    error_description: {
+      description: 'Error details sent by Microsoft.',
+      maxLength: 2000,
+      type: 'string',
+    },
+    state: {
+      description: 'State echoed back by Microsoft.',
+      maxLength: 200,
+      minLength: 1,
+      type: 'string',
+    },
   },
   type: 'object',
 } as const;

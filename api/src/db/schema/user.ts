@@ -28,5 +28,5 @@ export const users = pgTable(
   ],
 );
 
-export type UserRow = typeof users.$inferSelect;
 export type UserInsert = typeof users.$inferInsert;
+export type UserRow = typeof users.$inferSelect;

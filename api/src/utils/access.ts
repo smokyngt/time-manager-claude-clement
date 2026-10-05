@@ -1,19 +1,18 @@
-import type { FastifyRequest } from 'fastify';
-
 import { ForbiddenError, UnauthorizedError } from '@/lib/errors/index.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 import type { Role } from '@/types/entities/user.js';
+import type { FastifyRequest } from 'fastify';
+
+export interface AccessContext {
+  actor: Actor;
+}
 
 export type UserAction = 'archive' | 'create' | 'delete' | 'list' | 'read' | 'restore' | 'update';
 
 export interface UserTarget {
   id?: string;
   role: Role;
-}
-
-export interface AccessContext {
-  actor: Actor;
 }
 
 const SELF_FIELDS = ['first_name', 'last_name', 'password', 'phone_number'];
@@ -119,7 +118,7 @@ export class Access {
    * @throws {UnauthorizedError}
    */
   public static context(req: FastifyRequest): AccessContext {
-    if (req.actor === null || req.actor === undefined) {
+    if (req.actor === null) {
       throw UnauthorizedError({ metadata: { route: 'access.context' } });
     }
     return { actor: req.actor };

@@ -6,8 +6,9 @@ import { Tokens } from '@/lib/auth/tokens.js';
 import { AuthLogoutError } from '@/lib/errors/domains/auth.js';
 import { logService } from '@/services/log/index.js';
 
-import type { LogoutParams, LogoutResponse } from './index.js';
 import { Session } from './session.js';
+
+import type { LogoutParams, LogoutResponse } from './index.js';
 
 /**
  * @route auth.service.logout

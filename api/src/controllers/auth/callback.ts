@@ -1,5 +1,3 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { Config } from '@/config/index.js';
 import { Cookies } from '@/lib/auth/cookies.js';
 import {
@@ -7,11 +5,11 @@ import {
   AuthMicrosoftRejectedError,
   AuthMicrosoftUnavailableError,
 } from '@/lib/errors/domains/auth.js';
-import { AuthMicrosoftLinked } from '@/lib/events/domains/auth.js';
-import { AppError } from '@/lib/errors/index.js';
+import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
 import { authService } from '@/services/auth/index.js';
 
 import type { CallbackQuery } from './index.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.callback
@@ -37,10 +35,7 @@ export const callback = async (
       state_cookie: req.cookies[Cookies.oauth],
     });
     Cookies.set(reply, session.refresh_token, session.refresh_expires_in);
-    req.log.info(
-      { event: AuthMicrosoftLinked.code, user_id: session.user.id },
-      'request succeeded',
-    );
+    req.log.info({ event: AuthLoggedIn.code, user_id: session.user.id }, 'request succeeded');
     await reply.redirect(`${web}/auth/callback`);
   } catch (error) {
     const wrapped = AuthMicrosoftError({
@@ -49,7 +44,6 @@ export const callback = async (
     });
     if (wrapped.code === AuthMicrosoftUnavailableError.code) throw wrapped;
     req.log.warn({ code: wrapped.code }, 'microsoft sign-in rejected');
-    const code = AppError.is(wrapped) ? wrapped.code : AuthMicrosoftError.code;
-    await reply.redirect(`${web}/auth/callback?error=${encodeURIComponent(code)}`);
+    await reply.redirect(`${web}/auth/callback?error=${encodeURIComponent(wrapped.code)}`);
   }
 };

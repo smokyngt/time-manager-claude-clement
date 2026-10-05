@@ -1,12 +1,17 @@
 import { and, asc, count, desc, eq, gt, lt, or } from 'drizzle-orm';
-import type { AnyPgColumn, PgTable } from 'drizzle-orm/pg-core';
 
 import { db } from '@/db/client.js';
 import { ValidationError } from '@/lib/errors/index.js';
 
 import type { SQL } from 'drizzle-orm';
+import type { AnyPgColumn, PgTable } from 'drizzle-orm/pg-core';
 
-export type CursorTable = PgTable & { created_at: AnyPgColumn; id: AnyPgColumn };
+export interface CursorPage<Item> {
+  items: Item[];
+  more: boolean;
+  next: null | string;
+  total: number;
+}
 
 export interface CursorParams {
   cursor?: string;
@@ -16,12 +21,7 @@ export interface CursorParams {
   sort: 'created_at';
 }
 
-export interface CursorPage<Item> {
-  items: Item[];
-  more: boolean;
-  next: null | string;
-  total: number;
-}
+export type CursorTable = { created_at: AnyPgColumn; id: AnyPgColumn } & PgTable;
 
 interface Position {
   created_at: number;
@@ -80,14 +80,11 @@ export class Cursor {
           );
     const rows = (await db
       .select()
-      .from(table as PgTable)
+      .from(table)
       .where(and(filters, after))
       .orderBy(direction(table.created_at), direction(table.id))
       .limit(limit + 1)) as Table['$inferSelect'][];
-    const [totalRow] = await db
-      .select({ total: count() })
-      .from(table as PgTable)
-      .where(filters);
+    const [totalRow] = await db.select({ total: count() }).from(table).where(filters);
     const more = rows.length > limit;
     const items = more ? rows.slice(0, limit) : rows;
     const last = items.at(-1) as Position | undefined;

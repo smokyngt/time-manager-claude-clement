@@ -1,7 +1,3 @@
-import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
-
-import type { ErrorEnvelope } from '@/types/envelope.js';
-
 import {
   AppError,
   InternalError,
@@ -9,6 +5,9 @@ import {
   RateLimitError,
   ValidationError,
 } from './index.js';
+
+import type { ErrorEnvelope } from '@/types/envelope.js';
+import type { FastifyError, FastifyReply, FastifyRequest } from 'fastify';
 
 export class ErrorHandler {
   /**
@@ -27,7 +26,10 @@ export class ErrorHandler {
     if (app.status >= 500) {
       req.log.error({ code: app.code, err: error, metadata: app.metadata }, 'request failed');
     } else {
-      req.log.warn({ code: app.code, metadata: app.metadata, status: app.status }, 'request rejected');
+      req.log.warn(
+        { code: app.code, metadata: app.metadata, status: app.status },
+        'request rejected',
+      );
     }
     const body: ErrorEnvelope = {
       code: app.code,
@@ -55,7 +57,7 @@ export class ErrorHandler {
    */
   public static normalize(error: unknown): AppError {
     if (AppError.is(error)) return error;
-    const fastify = error as Partial<FastifyError> | null;
+    const fastify = error as null | Partial<FastifyError>;
     if (fastify?.validation !== undefined) {
       return ValidationError({
         cause: error,

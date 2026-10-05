@@ -6,7 +6,10 @@ import { Config } from '@/config/index.js';
 import * as schema from './schema/index.js';
 
 export const sql = postgres(
-  Config.store.text('DATABASE_URL', 'postgres://timemanager:timemanager@localhost:5432/timemanager'),
+  Config.store.text(
+    'DATABASE_URL',
+    'postgres://timemanager:timemanager@localhost:5432/timemanager',
+  ),
   { max: Config.store.number('DATABASE_POOL_MAX', 10) },
 );
 

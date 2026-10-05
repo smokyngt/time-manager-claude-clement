@@ -1,13 +1,12 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { AuthMeError } from '@/lib/errors/domains/auth.js';
 import { AuthRetrieved } from '@/lib/events/domains/auth.js';
 import { authService } from '@/services/auth/index.js';
 import { Access } from '@/utils/access.js';
 import { Reply } from '@/utils/reply.js';
 
-import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { User } from '@/types/entities/user.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.me

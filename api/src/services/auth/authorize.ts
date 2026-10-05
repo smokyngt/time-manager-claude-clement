@@ -4,17 +4,16 @@ import { Microsoft } from '@/lib/auth/microsoft.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { AuthMicrosoftError, AuthMicrosoftUnavailableError } from '@/lib/errors/domains/auth.js';
 
-import type { AuthorizeParams, AuthorizeResponse } from './index.js';
+import type { AuthorizeResponse } from './index.js';
 
 const STATE_TTL = 600;
 
 /**
  * @route auth.service.authorize
- * @param {AuthorizeParams} _params
  * @returns {Promise<AuthorizeResponse>}
  * @throws {AuthMicrosoftError}
  */
-export const authorize = async (_params: AuthorizeParams): Promise<AuthorizeResponse> => {
+export const authorize = async (): Promise<AuthorizeResponse> => {
   try {
     if (Microsoft.config() === undefined) {
       throw AuthMicrosoftUnavailableError({ metadata: { route: 'auth.service.authorize' } });

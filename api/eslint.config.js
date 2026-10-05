@@ -19,6 +19,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/explicit-member-accessibility': ['error', { accessibility: 'explicit' }],
       '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/no-extraneous-class': ['error', { allowStaticOnly: true }],
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
       'import-x/no-default-export': 'error',
       'import-x/no-duplicates': 'error',
@@ -43,6 +44,10 @@ export default tseslint.config(
         },
       ],
     },
+  },
+  {
+    files: ['src/routes/**/*.ts'],
+    rules: { '@typescript-eslint/require-await': 'off' },
   },
   {
     files: ['drizzle.config.ts', 'eslint.config.js'],

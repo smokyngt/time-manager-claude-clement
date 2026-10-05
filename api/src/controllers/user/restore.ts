@@ -1,5 +1,3 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { UserRestoreError } from '@/lib/errors/domains/user.js';
 import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserRestored } from '@/lib/events/domains/user.js';
@@ -7,10 +5,10 @@ import { userService } from '@/services/user/index.js';
 import { Access } from '@/utils/access.js';
 import { Reply } from '@/utils/reply.js';
 
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { User } from '@/types/entities/user.js';
-
 import type { RestoreParams } from './index.js';
+import type { User } from '@/types/entities/user.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.restore

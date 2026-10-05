@@ -31,7 +31,11 @@ export const DateBoundAnyOf = {
 export const ErrorResponseSchema = {
   additionalProperties: false,
   properties: {
-    code: { description: 'Stable machine readable error code.', example: 'USER_NOT_FOUND', type: 'string' },
+    code: {
+      description: 'Stable machine readable error code.',
+      example: 'USER_NOT_FOUND',
+      type: 'string',
+    },
     message: {
       description: 'Human readable message, safe to display.',
       example: 'The user does not exist.',
@@ -69,7 +73,11 @@ export const ReplyEnvelopeSchema = (dataSchema: JsonSchema, eventCode: string): 
   description: 'Successful response.',
   properties: {
     data: dataSchema,
-    event: { description: 'Event code describing what happened.', enum: [eventCode], type: 'string' },
+    event: {
+      description: 'Event code describing what happened.',
+      enum: [eventCode],
+      type: 'string',
+    },
   },
   required: ['data', 'event'],
   type: 'object',
@@ -78,7 +86,11 @@ export const ReplyEnvelopeSchema = (dataSchema: JsonSchema, eventCode: string): 
 export const BulkFailureSchema = {
   additionalProperties: false,
   properties: {
-    code: { description: 'Error code explaining the failure.', example: 'USER_NOT_FOUND', type: 'string' },
+    code: {
+      description: 'Error code explaining the failure.',
+      example: 'USER_NOT_FOUND',
+      type: 'string',
+    },
     id: {
       description: 'Identifier that failed.',
       example: '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10',

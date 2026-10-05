@@ -1,6 +1,3 @@
-import type { Actor } from '@/types/entities/actor.js';
-import type { Role, User } from '@/types/entities/user.js';
-
 import { archive } from './archive.js';
 import { create } from './create.js';
 import { remove } from './delete.js';
@@ -9,31 +6,8 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-export interface UserCreateData {
-  email: string;
-  first_name: string;
-  last_name: string;
-  password?: string;
-  phone_number?: null | string;
-  role?: Role;
-}
-
-export interface UserUpdateData {
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-  password?: string;
-  phone_number?: null | string;
-  role?: Role;
-}
-
-export interface UserFilters {
-  archived?: boolean;
-  created_after?: number;
-  created_before?: number;
-  ids?: string[];
-  role?: Role;
-}
+import type { Actor } from '@/types/entities/actor.js';
+import type { Role, User } from '@/types/entities/user.js';
 
 export interface ArchiveParams {
   actor: Actor;
@@ -103,6 +77,23 @@ export interface UpdateResponse {
   user: User;
 }
 
+export interface UserCreateData {
+  email: string;
+  first_name: string;
+  last_name: string;
+  password?: string;
+  phone_number?: null | string;
+  role?: Role;
+}
+
+export interface UserFilters {
+  archived?: boolean;
+  created_after?: number;
+  created_before?: number;
+  ids?: string[];
+  role?: Role;
+}
+
 export interface UserServiceType {
   archive: (params: ArchiveParams) => Promise<ArchiveResponse>;
   create: (params: CreateParams) => Promise<CreateResponse>;
@@ -111,6 +102,15 @@ export interface UserServiceType {
   restore: (params: RestoreParams) => Promise<RestoreResponse>;
   retrieve: (params: RetrieveParams) => Promise<RetrieveResponse>;
   update: (params: UpdateParams) => Promise<UpdateResponse>;
+}
+
+export interface UserUpdateData {
+  email?: string;
+  first_name?: string;
+  last_name?: string;
+  password?: string;
+  phone_number?: null | string;
+  role?: Role;
 }
 
 class UserService implements UserServiceType {

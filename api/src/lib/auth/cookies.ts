@@ -1,6 +1,6 @@
-import type { FastifyReply } from 'fastify';
-
 import { Config } from '@/config/index.js';
+
+import type { FastifyReply } from 'fastify';
 
 export class Cookies {
   public static readonly oauth = 'tm_oauth';

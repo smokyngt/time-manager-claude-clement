@@ -1,5 +1,3 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { Cookies } from '@/lib/auth/cookies.js';
 import { AuthLogoutError } from '@/lib/errors/domains/auth.js';
 import { AuthLoggedOut } from '@/lib/events/domains/auth.js';
@@ -7,9 +5,9 @@ import { authService } from '@/services/auth/index.js';
 import { Access } from '@/utils/access.js';
 import { Reply } from '@/utils/reply.js';
 
-import type { ReplyEnvelope } from '@/types/envelope.js';
-
 import type { LogoutResponse } from './index.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.logout

@@ -3,12 +3,12 @@ import { ROLES } from '@/types/entities/user.js';
 import {
   BulkFailureSchema,
   DateBoundAnyOf,
+  errorResponse,
   IdListSchema,
   NAME_PATTERN,
   PHONE_PATTERN,
-  RequestLimits,
   ReplyEnvelopeSchema,
-  errorResponse,
+  RequestLimits,
 } from './common.js';
 
 import type { JsonSchema } from './common.js';
@@ -66,7 +66,11 @@ export const UserSchema = {
       nullable: true,
       type: 'integer',
     },
-    created_at: { description: 'Creation time in epoch milliseconds.', example: 1767225600000, type: 'integer' },
+    created_at: {
+      description: 'Creation time in epoch milliseconds.',
+      example: 1767225600000,
+      type: 'integer',
+    },
     email: emailProperty,
     first_name: firstNameProperty,
     id: { description: 'Unique identifier.', example: ID_EXAMPLE, format: 'uuid', type: 'string' },
@@ -134,7 +138,11 @@ export const UserCreateBodySchema = {
 export const UserListBodySchema = {
   additionalProperties: false,
   properties: {
-    archived: { description: 'Only archived (true) or only active (false) users.', example: false, type: 'boolean' },
+    archived: {
+      description: 'Only archived (true) or only active (false) users.',
+      example: false,
+      type: 'boolean',
+    },
     created_after: DateBoundAnyOf,
     created_before: DateBoundAnyOf,
     cursor: {

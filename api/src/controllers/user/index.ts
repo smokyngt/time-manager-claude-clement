@@ -1,9 +1,3 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
-import type { UserCreateData, UserUpdateData } from '@/services/user/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { Role, User } from '@/types/entities/user.js';
-
 import { archive } from './archive.js';
 import { create } from './create.js';
 import { remove } from './delete.js';
@@ -12,12 +6,17 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-export interface BulkFailure {
-  code: string;
+import type { UserCreateData, UserUpdateData } from '@/services/user/index.js';
+import type { Role, User } from '@/types/entities/user.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
+
+export interface ArchiveParams {
   id: string;
 }
 
-export interface ArchiveParams {
+export interface BulkFailure {
+  code: string;
   id: string;
 }
 

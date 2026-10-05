@@ -1,7 +1,6 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import type { AppEvent } from '@/lib/events/index.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 export class Reply {
   /**

@@ -13,7 +13,11 @@ export class Microsoft {
    * @param {{ challenge: string; nonce: string; state: string }} params
    * @returns {string | undefined}
    */
-  public static authorizeUrl(params: { challenge: string; nonce: string; state: string }): string | undefined {
+  public static authorizeUrl(params: {
+    challenge: string;
+    nonce: string;
+    state: string;
+  }): string | undefined {
     const config = Microsoft.config();
     if (config === undefined) return undefined;
     const query = new URLSearchParams({

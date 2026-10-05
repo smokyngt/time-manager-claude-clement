@@ -1,13 +1,13 @@
-import type { Actor } from '@/types/entities/actor.js';
-import type { User } from '@/types/entities/user.js';
-
 import { authorize } from './authorize.js';
 import { callback } from './callback.js';
 import { login } from './login.js';
 import { logout } from './logout.js';
 import { me } from './me.js';
 import { refresh } from './refresh.js';
+
 import type { SessionResult } from './session.js';
+import type { Actor } from '@/types/entities/actor.js';
+import type { User } from '@/types/entities/user.js';
 
 export type { SessionResult } from './session.js';
 
@@ -17,6 +17,15 @@ export interface AuthorizeResponse {
   max_age: number;
   state_cookie: string;
   url: string;
+}
+
+export interface AuthServiceType {
+  authorize: (params: AuthorizeParams) => Promise<AuthorizeResponse>;
+  callback: (params: CallbackParams) => Promise<CallbackResponse>;
+  login: (params: LoginParams) => Promise<LoginResponse>;
+  logout: (params: LogoutParams) => Promise<LogoutResponse>;
+  me: (params: MeParams) => Promise<MeResponse>;
+  refresh: (params: RefreshParams) => Promise<RefreshResponse>;
 }
 
 export interface CallbackParams {
@@ -56,15 +65,6 @@ export interface RefreshParams {
 }
 
 export type RefreshResponse = SessionResult;
-
-export interface AuthServiceType {
-  authorize: (params: AuthorizeParams) => Promise<AuthorizeResponse>;
-  callback: (params: CallbackParams) => Promise<CallbackResponse>;
-  login: (params: LoginParams) => Promise<LoginResponse>;
-  logout: (params: LogoutParams) => Promise<LogoutResponse>;
-  me: (params: MeParams) => Promise<MeResponse>;
-  refresh: (params: RefreshParams) => Promise<RefreshResponse>;
-}
 
 class AuthService implements AuthServiceType {
   public authorize = authorize;

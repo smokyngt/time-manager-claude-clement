@@ -1,10 +1,9 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { Roles } from '@/config/auth/roles.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { ForbiddenError, UnauthorizedError } from '@/lib/errors/index.js';
 
 import type { Scope } from '@/config/auth/scopes.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 export interface AuthOptions {
   scopes: Scope[];

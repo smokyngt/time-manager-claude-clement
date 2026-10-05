@@ -1,14 +1,12 @@
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 import { Cookies } from '@/lib/auth/cookies.js';
 import { AuthRefreshError, AuthSessionInvalidError } from '@/lib/errors/domains/auth.js';
 import { AuthRefreshed } from '@/lib/events/domains/auth.js';
 import { authService } from '@/services/auth/index.js';
 import { Reply } from '@/utils/reply.js';
 
-import type { ReplyEnvelope } from '@/types/envelope.js';
-
 import type { SessionResponse } from './index.js';
+import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.refresh

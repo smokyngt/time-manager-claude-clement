@@ -2,15 +2,18 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/user.js';
-import { UserConflictError, UserNotFoundError, UserUpdateError } from '@/lib/errors/domains/user.js';
+import {
+  UserConflictError,
+  UserNotFoundError,
+  UserUpdateError,
+} from '@/lib/errors/domains/user.js';
 import { logService } from '@/services/log/index.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
 import { UserMapper } from '@/utils/user-mapper.js';
 
-import type { UserInsert } from '@/db/schema/user.js';
-
 import type { UpdateParams, UpdateResponse } from './index.js';
+import type { UserInsert } from '@/db/schema/user.js';
 
 /**
  * @route user.service.update

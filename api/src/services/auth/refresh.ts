@@ -7,8 +7,9 @@ import { Tokens } from '@/lib/auth/tokens.js';
 import { AuthRefreshError, AuthSessionInvalidError } from '@/lib/errors/domains/auth.js';
 import { logService } from '@/services/log/index.js';
 
-import type { RefreshParams, RefreshResponse } from './index.js';
 import { Session } from './session.js';
+
+import type { RefreshParams, RefreshResponse } from './index.js';
 
 /**
  * @route auth.service.refresh

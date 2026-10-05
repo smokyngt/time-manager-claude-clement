@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from 'jose';
+import { jwtVerify, SignJWT } from 'jose';
 
 import { Config } from '@/config/index.js';
 import { ROLES } from '@/types/entities/user.js';

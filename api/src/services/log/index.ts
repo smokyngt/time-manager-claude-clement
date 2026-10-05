@@ -1,6 +1,6 @@
-import type { Actor } from '@/types/entities/actor.js';
-
 import { create } from './create.js';
+
+import type { Actor } from '@/types/entities/actor.js';
 
 export interface CreateParams {
   actor: null | Pick<Actor, 'id' | 'role'>;
