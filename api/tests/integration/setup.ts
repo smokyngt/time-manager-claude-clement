@@ -61,14 +61,14 @@ const RATE_LIMIT_VARIABLES = [
 
 export class Harness {
   public static readonly password = DEFAULT_PASSWORD;
-  private static counter = 0;
-  private static migrated = false;
-  private static instance: FastifyInstance | undefined;
-
   public static get app(): FastifyInstance {
     if (Harness.instance === undefined) throw new Error('Harness.start() has not been called');
     return Harness.instance;
   }
+  private static counter = 0;
+  private static instance: FastifyInstance | undefined;
+
+  private static migrated = false;
 
   public static async call<Body = Record<string, unknown>>(
     method: 'DELETE' | 'GET' | 'PATCH' | 'POST',

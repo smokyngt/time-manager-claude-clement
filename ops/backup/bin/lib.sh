@@ -217,7 +217,7 @@ resolve_backup() {
     require_cmds aws
     TMP_DIR="$(mktemp -d)"
     if [[ "$what" == "latest" ]]; then
-      what="$(s3_list_dumps | head -n1)"
+      what="$(s3_list_dumps | sed -n 1p)"
       [[ -n "$what" ]] || die "no backup found at $(s3_base)/"
     fi
     what="$(basename "$what")"
@@ -227,7 +227,7 @@ resolve_backup() {
     FILE="$TMP_DIR/$what"
   else
     if [[ "$what" == "latest" ]]; then
-      what="$(list_local_dumps | head -n1)"
+      what="$(list_local_dumps | sed -n 1p)"
       [[ -n "$what" ]] || die "no backup found in $BACKUP_DIR"
     fi
     if [[ -f "$what" ]]; then FILE="$what"; else FILE="$BACKUP_DIR/$what"; fi
