@@ -1,6 +1,6 @@
 import type { Clock } from '@time-manager/sdk'
 
-import { act, fireEvent, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
@@ -108,9 +108,10 @@ describe('ClocksPage', () => {
     TestClock.install()
     fireEvent.click(screen.getByRole('button', { name: 'bulk.confirm' }))
 
-    await waitFor(() => {
-      expect(toasts.showUndo).toHaveBeenCalled()
+    await act(async () => {
+      await TestClock.advance(0)
     })
+    expect(toasts.showUndo).toHaveBeenCalled()
     expect(sdk.clocks.delete).not.toHaveBeenCalled()
     expect(screen.queryByRole('table')).toBeNull()
 

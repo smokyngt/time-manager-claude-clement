@@ -31,7 +31,7 @@ function renderPage(role: 'admin' | 'manager' = 'admin') {
     <Toast>
       <UsersPage />
     </Toast>,
-    { role, user: { id: 'me', role }, route: '/users' },
+    { role, route: '/users', user: { id: 'me', role } },
   )
 }
 

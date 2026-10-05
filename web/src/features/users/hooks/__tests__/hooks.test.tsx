@@ -10,8 +10,8 @@ import { useDeleteUsers } from '@/features/users/hooks/use-delete-users'
 import { useUpdateUsers } from '@/features/users/hooks/use-update-users'
 import { useUser } from '@/features/users/hooks/use-user'
 import { useUsers } from '@/features/users/hooks/use-users'
-import { TestAuth, TestQuery, TestToast } from '@/test-support'
 import { useUndoStore } from '@/stores/undo'
+import { TestAuth, TestQuery, TestToast } from '@/test-support'
 
 vi.mock('react-i18next', async () => (await import('@/test-support/test-i18n')).TestI18n.module())
 

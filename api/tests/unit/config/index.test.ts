@@ -1,18 +1,20 @@
 import { afterAll, afterEach, describe, expect, it } from 'bun:test';
 
 import { Config } from '@/config/index.js';
-import { Cookies } from '@/lib/auth/cookies.js';
-import { Redact } from '@/lib/auth/redact.js';
 
 const saved = { ...process.env };
 const SECRET_A = 'a'.repeat(40);
 const SECRET_B = 'b'.repeat(40);
 const SECRET_C = 'c'.repeat(40);
+const ENCRYPTION_KEY = Buffer.alloc(32, 7).toString('base64');
+const HASH_KEY = Buffer.alloc(32, 9).toString('base64');
 const TENANT = '11111111-2222-4333-8444-555555555555';
 
 const production = (extra: Record<string, string> = {}): void => {
   process.env = {
     DATABASE_URL: 'postgres://x',
+    ENCRYPTION_KEY,
+    HASH_KEY,
     JWT_ACCESS_SECRET: SECRET_A,
     JWT_REFRESH_SECRET: SECRET_B,
     NODE_ENV: 'production',
@@ -69,6 +71,44 @@ describe('Config.validate', () => {
     expect(Config.validate()).toHaveLength(1);
   });
 
+  it('rejects a tenant that is not a GUID', () => {
+    production({
+      MICROSOFT_CLIENT_ID: 'id',
+      MICROSOFT_CLIENT_SECRET: 'secret',
+      MICROSOFT_REDIRECT_URI: 'https://api.example.com/v1/auth/microsoft/callback',
+      MICROSOFT_TENANT_ID: 'contoso.onmicrosoft.com',
+      OAUTH_STATE_SECRET: SECRET_C,
+    });
+    expect(Config.validate()).toHaveLength(1);
+  });
+
+  it('rejects a placeholder Microsoft client secret', () => {
+    production({
+      MICROSOFT_CLIENT_ID: 'id',
+      MICROSOFT_CLIENT_SECRET: 'CHANGE_ME_secret',
+      MICROSOFT_REDIRECT_URI: 'https://api.example.com/v1/auth/microsoft/callback',
+      MICROSOFT_TENANT_ID: TENANT,
+      OAUTH_STATE_SECRET: SECRET_C,
+    });
+    expect(Config.validate()).toEqual(['MICROSOFT_CLIENT_SECRET must not be a placeholder value']);
+  });
+
+  it('includes the encryption and hash key problems from Keys.validate', () => {
+    production({ ENCRYPTION_KEY: '', HASH_KEY: '' });
+    expect(Config.validate()).toEqual(['ENCRYPTION_KEY is required', 'HASH_KEY is required']);
+    production({ ENCRYPTION_KEY: Buffer.alloc(16).toString('base64') });
+    expect(Config.validate()).toEqual(['ENCRYPTION_KEY must decode to exactly 32 bytes']);
+  });
+
+  it('rejects an unusable TRUST_PROXY', () => {
+    production({ TRUST_PROXY: 'banana' });
+    expect(Config.validate()).toHaveLength(1);
+    production({ TRUST_PROXY: '10.0.0.0/8,::1' });
+    expect(Config.validate()).toEqual([]);
+    production({ TRUST_PROXY: '10.0.0.0/40' });
+    expect(Config.validate()).toHaveLength(1);
+  });
+
   it('does not require the state secret when Microsoft is off', () => {
     production();
     expect(Config.validate()).toEqual([]);
@@ -113,27 +153,20 @@ describe('Config.proxy', () => {
   });
 });
 
-describe('Cookies.options', () => {
-  it('follows production by default and COOKIE_SECURE when set', () => {
-    process.env['NODE_ENV'] = 'production';
-    delete process.env['COOKIE_SECURE'];
-    expect(Cookies.options(1).secure).toBe(true);
-    process.env['COOKIE_SECURE'] = 'false';
-    expect(Cookies.options(1).secure).toBe(false);
-    process.env['NODE_ENV'] = 'development';
-    process.env['COOKIE_SECURE'] = 'true';
-    expect(Cookies.options(1).secure).toBe(true);
-    delete process.env['COOKIE_SECURE'];
-    expect(Cookies.options(1).secure).toBe(false);
+describe('Config accessors', () => {
+  it('trims the trailing slash of the web url and defaults the redirect uri', () => {
+    process.env['WEB_URL'] = 'https://app.example.com//';
+    expect(Config.web()).toBe('https://app.example.com');
+    delete process.env['MICROSOFT_REDIRECT_URI'];
+    expect(Config.redirect()).toBe('http://localhost:8000/v1/auth/microsoft/callback');
   });
-});
 
-describe('Redact.url', () => {
-  it('hides oauth code and state but keeps the rest', () => {
-    expect(Redact.url('/v1/auth/microsoft/callback?code=abc&state=xyz&other=1')).toBe(
-      '/v1/auth/microsoft/callback?code=redacted&state=redacted&other=1',
-    );
-    expect(Redact.url('/health')).toBe('/health');
-    expect(Redact.url(undefined)).toBeUndefined();
+  it('only accepts a GUID tenant', () => {
+    process.env['MICROSOFT_TENANT_ID'] = TENANT.toUpperCase();
+    expect(Config.tenant()).toBe(TENANT);
+    for (const alias of ['common', 'organizations', 'consumers', '']) {
+      process.env['MICROSOFT_TENANT_ID'] = alias;
+      expect(Config.tenant()).toBeUndefined();
+    }
   });
 });
