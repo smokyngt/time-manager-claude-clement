@@ -14,7 +14,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  */
 export const microsoft = async (req: FastifyRequest, reply: FastifyReply): Promise<void> => {
   try {
-    const result = await authService.authorize({});
+    const result = await authService.authorize();
     reply.setCookie(
       Cookies.oauth,
       result.state_cookie,

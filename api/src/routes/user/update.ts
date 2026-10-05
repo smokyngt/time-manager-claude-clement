@@ -8,7 +8,7 @@ import type { FastifyPluginAsync } from 'fastify';
 
 export const updateRoute: FastifyPluginAsync = async (fastify) => {
   fastify.patch<{ Body: UpdateBody; Reply: ReplyEnvelope<UpdateResponse> }>(
-    '/',
+    '',
     {
       preHandler: auth({ scopes: ['users:write'] }),
       schema: {

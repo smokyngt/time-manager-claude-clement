@@ -1,0 +1,4069 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "description": "Time Manager API. Employees clock in and out, managers manage teams.",
+    "title": "Time Manager API",
+    "version": "0.1.0"
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "bearerFormat": "JWT",
+        "scheme": "bearer",
+        "type": "http"
+      }
+    },
+    "schemas": {}
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Liveness probe",
+        "tags": [
+          "health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "status": {
+                      "enum": [
+                        "ok"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "status"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/new": {
+      "post": {
+        "summary": "Create a user",
+        "tags": [
+          "users"
+        ],
+        "description": "Registration is manager-only. A manager can only create employees, an admin can create any role.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "description": "Email address, stored lowercased. Unique.",
+                    "example": "jane.doe@example.com",
+                    "format": "email",
+                    "maxLength": 254,
+                    "type": "string"
+                  },
+                  "first_name": {
+                    "description": "First name.",
+                    "example": "Jane",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "description": "Last name.",
+                    "example": "Doe",
+                    "maxLength": 100,
+                    "minLength": 1,
+                    "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Password, 10 to 128 characters. Stored as an argon2id hash.",
+                    "example": "correct-horse-battery",
+                    "maxLength": 128,
+                    "minLength": 10,
+                    "type": "string"
+                  },
+                  "phone_number": {
+                    "description": "Phone number.",
+                    "example": "+33 6 12 34 56 78",
+                    "maxLength": 20,
+                    "minLength": 6,
+                    "pattern": "^\\+?[0-9 ().-]{6,20}$",
+                    "type": "string"
+                  },
+                  "role": {
+                    "description": "Role of the user.",
+                    "enum": [
+                      "admin",
+                      "employee",
+                      "manager"
+                    ],
+                    "example": "employee",
+                    "type": "string",
+                    "default": "employee"
+                  }
+                },
+                "required": [
+                  "email",
+                  "first_name",
+                  "last_name"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "description": "A user of the application.",
+                      "properties": {
+                        "archived_at": {
+                          "description": "Archival time in epoch milliseconds, null when active.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "description": "Creation time in epoch milliseconds.",
+                          "example": 1767225600000,
+                          "type": "integer"
+                        },
+                        "email": {
+                          "description": "Email address, stored lowercased. Unique.",
+                          "example": "jane.doe@example.com",
+                          "format": "email",
+                          "maxLength": 254,
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "description": "First name.",
+                          "example": "Jane",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Unique identifier.",
+                          "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "description": "Last name.",
+                          "example": "Doe",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "object": {
+                          "description": "Object type.",
+                          "enum": [
+                            "user"
+                          ],
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "Phone number, null when unknown.",
+                          "example": "+33 6 12 34 56 78",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "role": {
+                          "description": "Role of the user.",
+                          "enum": [
+                            "admin",
+                            "employee",
+                            "manager"
+                          ],
+                          "example": "employee",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "description": "Last update time in epoch milliseconds, null when never updated.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "archived_at",
+                        "created_at",
+                        "email",
+                        "first_name",
+                        "id",
+                        "last_name",
+                        "object",
+                        "phone_number",
+                        "role",
+                        "updated_at"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.created"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid request body."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not create this user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not create this user."
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A user with this email already exists.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "A user with this email already exists."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/list": {
+      "post": {
+        "summary": "List users",
+        "tags": [
+          "users"
+        ],
+        "description": "Cursor paginated list ordered by creation time. Managers only see employees.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "archived": {
+                    "description": "Only archived (true) or only active (false) users.",
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "created_after": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "format": "date-time",
+                        "type": "string"
+                      }
+                    ],
+                    "description": "Epoch milliseconds or an ISO 8601 date-time.",
+                    "example": 1767225600000
+                  },
+                  "created_before": {
+                    "anyOf": [
+                      {
+                        "minimum": 0,
+                        "type": "integer"
+                      },
+                      {
+                        "format": "date-time",
+                        "type": "string"
+                      }
+                    ],
+                    "description": "Epoch milliseconds or an ISO 8601 date-time.",
+                    "example": 1767225600000
+                  },
+                  "cursor": {
+                    "description": "Opaque cursor returned as next by a previous call.",
+                    "example": "MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA",
+                    "maxLength": 200,
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "ids": {
+                    "description": "List of user identifiers. Duplicates are ignored.",
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "type": "array"
+                  },
+                  "limit": {
+                    "default": 25,
+                    "description": "Page size.",
+                    "example": 25,
+                    "maximum": 100,
+                    "minimum": 1,
+                    "type": "integer"
+                  },
+                  "order": {
+                    "default": "desc",
+                    "description": "Sort direction on created_at.",
+                    "enum": [
+                      "asc",
+                      "desc"
+                    ],
+                    "example": "desc",
+                    "type": "string"
+                  },
+                  "role": {
+                    "description": "Role of the user.",
+                    "enum": [
+                      "admin",
+                      "employee",
+                      "manager"
+                    ],
+                    "example": "employee",
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "items": {
+                          "description": "Users of the page.",
+                          "items": {
+                            "additionalProperties": false,
+                            "description": "A user of the application.",
+                            "properties": {
+                              "archived_at": {
+                                "description": "Archival time in epoch milliseconds, null when active.",
+                                "example": null,
+                                "nullable": true,
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "description": "Creation time in epoch milliseconds.",
+                                "example": 1767225600000,
+                                "type": "integer"
+                              },
+                              "email": {
+                                "description": "Email address, stored lowercased. Unique.",
+                                "example": "jane.doe@example.com",
+                                "format": "email",
+                                "maxLength": 254,
+                                "type": "string"
+                              },
+                              "first_name": {
+                                "description": "First name.",
+                                "example": "Jane",
+                                "maxLength": 100,
+                                "minLength": 1,
+                                "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Unique identifier.",
+                                "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                                "format": "uuid",
+                                "type": "string"
+                              },
+                              "last_name": {
+                                "description": "Last name.",
+                                "example": "Doe",
+                                "maxLength": 100,
+                                "minLength": 1,
+                                "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                                "type": "string"
+                              },
+                              "object": {
+                                "description": "Object type.",
+                                "enum": [
+                                  "user"
+                                ],
+                                "example": "user",
+                                "type": "string"
+                              },
+                              "phone_number": {
+                                "description": "Phone number, null when unknown.",
+                                "example": "+33 6 12 34 56 78",
+                                "nullable": true,
+                                "type": "string"
+                              },
+                              "role": {
+                                "description": "Role of the user.",
+                                "enum": [
+                                  "admin",
+                                  "employee",
+                                  "manager"
+                                ],
+                                "example": "employee",
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "description": "Last update time in epoch milliseconds, null when never updated.",
+                                "example": null,
+                                "nullable": true,
+                                "type": "integer"
+                              }
+                            },
+                            "required": [
+                              "archived_at",
+                              "created_at",
+                              "email",
+                              "first_name",
+                              "id",
+                              "last_name",
+                              "object",
+                              "phone_number",
+                              "role",
+                              "updated_at"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "more": {
+                          "description": "Whether another page exists.",
+                          "example": false,
+                          "type": "boolean"
+                        },
+                        "next": {
+                          "description": "Cursor of the next page, null on the last page.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "total": {
+                          "description": "Total users matching the filters.",
+                          "example": 1,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "items",
+                        "more",
+                        "next",
+                        "total"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.listed"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filters or cursor.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid filters or cursor."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not list users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not list users."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users": {
+      "patch": {
+        "summary": "Update users in bulk",
+        "tags": [
+          "users"
+        ],
+        "description": "Applies the same data to every id. Authorization is checked for every item before any write. Employees can only change their own names, phone number and password.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "data": {
+                    "additionalProperties": false,
+                    "description": "Fields to change. Allowed fields depend on the actor.",
+                    "minProperties": 1,
+                    "properties": {
+                      "email": {
+                        "description": "Email address, stored lowercased. Unique.",
+                        "example": "jane.doe@example.com",
+                        "format": "email",
+                        "maxLength": 254,
+                        "type": "string"
+                      },
+                      "first_name": {
+                        "description": "First name.",
+                        "example": "Jane",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                        "type": "string"
+                      },
+                      "last_name": {
+                        "description": "Last name.",
+                        "example": "Doe",
+                        "maxLength": 100,
+                        "minLength": 1,
+                        "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                        "type": "string"
+                      },
+                      "password": {
+                        "description": "Password, 10 to 128 characters. Stored as an argon2id hash.",
+                        "example": "correct-horse-battery",
+                        "maxLength": 128,
+                        "minLength": 10,
+                        "type": "string"
+                      },
+                      "phone_number": {
+                        "description": "Phone number, null to clear it.",
+                        "example": "+33 6 12 34 56 78",
+                        "maxLength": 20,
+                        "minLength": 6,
+                        "nullable": true,
+                        "pattern": "^\\+?[0-9 ().-]{6,20}$",
+                        "type": "string"
+                      },
+                      "role": {
+                        "description": "Role of the user.",
+                        "enum": [
+                          "admin",
+                          "employee",
+                          "manager"
+                        ],
+                        "example": "employee",
+                        "type": "string"
+                      }
+                    },
+                    "type": "object"
+                  },
+                  "ids": {
+                    "description": "List of user identifiers. Duplicates are ignored.",
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "data",
+                  "ids"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "failed": {
+                          "description": "Identifiers that could not be processed, with the reason.",
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "code": {
+                                "description": "Error code explaining the failure.",
+                                "example": "USER_NOT_FOUND",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Identifier that failed.",
+                                "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "code",
+                              "id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "success": {
+                          "description": "True when every id was updated.",
+                          "example": true,
+                          "type": "boolean"
+                        },
+                        "updated": {
+                          "description": "Identifiers that were updated.",
+                          "items": {
+                            "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        }
+                      },
+                      "required": [
+                        "failed",
+                        "success",
+                        "updated"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.updated"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid request body."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not update one of these users or fields.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not update one of these users or fields."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete users in bulk",
+        "tags": [
+          "users"
+        ],
+        "description": "Permanently deletes users. Authorization is checked for every item before any deletion. Nobody can delete themselves.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "ids": {
+                    "description": "List of user identifiers. Duplicates are ignored.",
+                    "items": {
+                      "format": "uuid",
+                      "type": "string"
+                    },
+                    "maxItems": 100,
+                    "minItems": 1,
+                    "type": "array"
+                  }
+                },
+                "required": [
+                  "ids"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "deleted": {
+                          "description": "Identifiers that were deleted.",
+                          "items": {
+                            "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                            "format": "uuid",
+                            "type": "string"
+                          },
+                          "type": "array"
+                        },
+                        "failed": {
+                          "description": "Identifiers that could not be processed, with the reason.",
+                          "items": {
+                            "additionalProperties": false,
+                            "properties": {
+                              "code": {
+                                "description": "Error code explaining the failure.",
+                                "example": "USER_NOT_FOUND",
+                                "type": "string"
+                              },
+                              "id": {
+                                "description": "Identifier that failed.",
+                                "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                                "format": "uuid",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "code",
+                              "id"
+                            ],
+                            "type": "object"
+                          },
+                          "type": "array"
+                        },
+                        "success": {
+                          "description": "True when every id was deleted.",
+                          "example": true,
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "deleted",
+                        "failed",
+                        "success"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.deleted"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid request body."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not delete one of these users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not delete one of these users."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}": {
+      "get": {
+        "summary": "Retrieve a user",
+        "tags": [
+          "users"
+        ],
+        "description": "Employees can only retrieve themselves. Managers can retrieve employees.",
+        "parameters": [
+          {
+            "schema": {
+              "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User identifier."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "description": "A user of the application.",
+                      "properties": {
+                        "archived_at": {
+                          "description": "Archival time in epoch milliseconds, null when active.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "description": "Creation time in epoch milliseconds.",
+                          "example": 1767225600000,
+                          "type": "integer"
+                        },
+                        "email": {
+                          "description": "Email address, stored lowercased. Unique.",
+                          "example": "jane.doe@example.com",
+                          "format": "email",
+                          "maxLength": 254,
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "description": "First name.",
+                          "example": "Jane",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Unique identifier.",
+                          "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "description": "Last name.",
+                          "example": "Doe",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "object": {
+                          "description": "Object type.",
+                          "enum": [
+                            "user"
+                          ],
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "Phone number, null when unknown.",
+                          "example": "+33 6 12 34 56 78",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "role": {
+                          "description": "Role of the user.",
+                          "enum": [
+                            "admin",
+                            "employee",
+                            "manager"
+                          ],
+                          "example": "employee",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "description": "Last update time in epoch milliseconds, null when never updated.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "archived_at",
+                        "created_at",
+                        "email",
+                        "first_name",
+                        "id",
+                        "last_name",
+                        "object",
+                        "phone_number",
+                        "role",
+                        "updated_at"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.retrieved"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid identifier.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid identifier."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not read this user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not read this user."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The user does not exist."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}/archive": {
+      "post": {
+        "summary": "Archive a user",
+        "tags": [
+          "users"
+        ],
+        "description": "Archive a user. Archived users cannot sign in.",
+        "parameters": [
+          {
+            "schema": {
+              "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User identifier."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "description": "A user of the application.",
+                      "properties": {
+                        "archived_at": {
+                          "description": "Archival time in epoch milliseconds, null when active.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "description": "Creation time in epoch milliseconds.",
+                          "example": 1767225600000,
+                          "type": "integer"
+                        },
+                        "email": {
+                          "description": "Email address, stored lowercased. Unique.",
+                          "example": "jane.doe@example.com",
+                          "format": "email",
+                          "maxLength": 254,
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "description": "First name.",
+                          "example": "Jane",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Unique identifier.",
+                          "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "description": "Last name.",
+                          "example": "Doe",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "object": {
+                          "description": "Object type.",
+                          "enum": [
+                            "user"
+                          ],
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "Phone number, null when unknown.",
+                          "example": "+33 6 12 34 56 78",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "role": {
+                          "description": "Role of the user.",
+                          "enum": [
+                            "admin",
+                            "employee",
+                            "manager"
+                          ],
+                          "example": "employee",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "description": "Last update time in epoch milliseconds, null when never updated.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "archived_at",
+                        "created_at",
+                        "email",
+                        "first_name",
+                        "id",
+                        "last_name",
+                        "object",
+                        "phone_number",
+                        "role",
+                        "updated_at"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.archived"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not archive this user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not archive this user."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The user does not exist."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/users/{id}/restore": {
+      "post": {
+        "summary": "Restore a user",
+        "tags": [
+          "users"
+        ],
+        "description": "Restore a user. Archived users cannot sign in.",
+        "parameters": [
+          {
+            "schema": {
+              "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+              "format": "uuid",
+              "type": "string"
+            },
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "description": "User identifier."
+          }
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "description": "A user of the application.",
+                      "properties": {
+                        "archived_at": {
+                          "description": "Archival time in epoch milliseconds, null when active.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "description": "Creation time in epoch milliseconds.",
+                          "example": 1767225600000,
+                          "type": "integer"
+                        },
+                        "email": {
+                          "description": "Email address, stored lowercased. Unique.",
+                          "example": "jane.doe@example.com",
+                          "format": "email",
+                          "maxLength": 254,
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "description": "First name.",
+                          "example": "Jane",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Unique identifier.",
+                          "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "description": "Last name.",
+                          "example": "Doe",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "object": {
+                          "description": "Object type.",
+                          "enum": [
+                            "user"
+                          ],
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "Phone number, null when unknown.",
+                          "example": "+33 6 12 34 56 78",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "role": {
+                          "description": "Role of the user.",
+                          "enum": [
+                            "admin",
+                            "employee",
+                            "manager"
+                          ],
+                          "example": "employee",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "description": "Last update time in epoch milliseconds, null when never updated.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "archived_at",
+                        "created_at",
+                        "email",
+                        "first_name",
+                        "id",
+                        "last_name",
+                        "object",
+                        "phone_number",
+                        "role",
+                        "updated_at"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "user.restored"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The actor may not restore this user.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The actor may not restore this user."
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The user does not exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "The user does not exist."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/login": {
+      "post": {
+        "summary": "Sign in with email and password",
+        "tags": [
+          "auth"
+        ],
+        "description": "Returns an access token in the body and sets the httpOnly tm_refresh cookie scoped to /v1/auth.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "additionalProperties": false,
+                "properties": {
+                  "email": {
+                    "description": "Account email address.",
+                    "example": "jane.doe@example.com",
+                    "format": "email",
+                    "maxLength": 254,
+                    "type": "string"
+                  },
+                  "password": {
+                    "description": "Account password.",
+                    "example": "correct-horse-battery",
+                    "maxLength": 128,
+                    "minLength": 1,
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "password"
+                ],
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "access_token": {
+                          "description": "Short-lived JWT to send as a Bearer token. Keep it in memory.",
+                          "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.signature",
+                          "type": "string"
+                        },
+                        "expires_in": {
+                          "description": "Access token lifetime in seconds.",
+                          "example": 900,
+                          "type": "integer"
+                        },
+                        "token_type": {
+                          "description": "Token type.",
+                          "enum": [
+                            "Bearer"
+                          ],
+                          "example": "Bearer",
+                          "type": "string"
+                        },
+                        "user": {
+                          "additionalProperties": false,
+                          "description": "A user of the application.",
+                          "properties": {
+                            "archived_at": {
+                              "description": "Archival time in epoch milliseconds, null when active.",
+                              "example": null,
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "created_at": {
+                              "description": "Creation time in epoch milliseconds.",
+                              "example": 1767225600000,
+                              "type": "integer"
+                            },
+                            "email": {
+                              "description": "Email address, stored lowercased. Unique.",
+                              "example": "jane.doe@example.com",
+                              "format": "email",
+                              "maxLength": 254,
+                              "type": "string"
+                            },
+                            "first_name": {
+                              "description": "First name.",
+                              "example": "Jane",
+                              "maxLength": 100,
+                              "minLength": 1,
+                              "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                              "type": "string"
+                            },
+                            "id": {
+                              "description": "Unique identifier.",
+                              "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "last_name": {
+                              "description": "Last name.",
+                              "example": "Doe",
+                              "maxLength": 100,
+                              "minLength": 1,
+                              "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                              "type": "string"
+                            },
+                            "object": {
+                              "description": "Object type.",
+                              "enum": [
+                                "user"
+                              ],
+                              "example": "user",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "Phone number, null when unknown.",
+                              "example": "+33 6 12 34 56 78",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "role": {
+                              "description": "Role of the user.",
+                              "enum": [
+                                "admin",
+                                "employee",
+                                "manager"
+                              ],
+                              "example": "employee",
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "description": "Last update time in epoch milliseconds, null when never updated.",
+                              "example": null,
+                              "nullable": true,
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "archived_at",
+                            "created_at",
+                            "email",
+                            "first_name",
+                            "id",
+                            "last_name",
+                            "object",
+                            "phone_number",
+                            "role",
+                            "updated_at"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "access_token",
+                        "expires_in",
+                        "token_type",
+                        "user"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "auth.logged_in"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid request body."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Invalid credentials."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/refresh": {
+      "post": {
+        "summary": "Rotate the refresh token and get a new access token",
+        "tags": [
+          "auth"
+        ],
+        "description": "Reads the tm_refresh cookie, rotates it and returns a new access token. Reusing a rotated token revokes the whole session family.",
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "access_token": {
+                          "description": "Short-lived JWT to send as a Bearer token. Keep it in memory.",
+                          "example": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIn0.signature",
+                          "type": "string"
+                        },
+                        "expires_in": {
+                          "description": "Access token lifetime in seconds.",
+                          "example": 900,
+                          "type": "integer"
+                        },
+                        "token_type": {
+                          "description": "Token type.",
+                          "enum": [
+                            "Bearer"
+                          ],
+                          "example": "Bearer",
+                          "type": "string"
+                        },
+                        "user": {
+                          "additionalProperties": false,
+                          "description": "A user of the application.",
+                          "properties": {
+                            "archived_at": {
+                              "description": "Archival time in epoch milliseconds, null when active.",
+                              "example": null,
+                              "nullable": true,
+                              "type": "integer"
+                            },
+                            "created_at": {
+                              "description": "Creation time in epoch milliseconds.",
+                              "example": 1767225600000,
+                              "type": "integer"
+                            },
+                            "email": {
+                              "description": "Email address, stored lowercased. Unique.",
+                              "example": "jane.doe@example.com",
+                              "format": "email",
+                              "maxLength": 254,
+                              "type": "string"
+                            },
+                            "first_name": {
+                              "description": "First name.",
+                              "example": "Jane",
+                              "maxLength": 100,
+                              "minLength": 1,
+                              "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                              "type": "string"
+                            },
+                            "id": {
+                              "description": "Unique identifier.",
+                              "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                              "format": "uuid",
+                              "type": "string"
+                            },
+                            "last_name": {
+                              "description": "Last name.",
+                              "example": "Doe",
+                              "maxLength": 100,
+                              "minLength": 1,
+                              "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                              "type": "string"
+                            },
+                            "object": {
+                              "description": "Object type.",
+                              "enum": [
+                                "user"
+                              ],
+                              "example": "user",
+                              "type": "string"
+                            },
+                            "phone_number": {
+                              "description": "Phone number, null when unknown.",
+                              "example": "+33 6 12 34 56 78",
+                              "nullable": true,
+                              "type": "string"
+                            },
+                            "role": {
+                              "description": "Role of the user.",
+                              "enum": [
+                                "admin",
+                                "employee",
+                                "manager"
+                              ],
+                              "example": "employee",
+                              "type": "string"
+                            },
+                            "updated_at": {
+                              "description": "Last update time in epoch milliseconds, null when never updated.",
+                              "example": null,
+                              "nullable": true,
+                              "type": "integer"
+                            }
+                          },
+                          "required": [
+                            "archived_at",
+                            "created_at",
+                            "email",
+                            "first_name",
+                            "id",
+                            "last_name",
+                            "object",
+                            "phone_number",
+                            "role",
+                            "updated_at"
+                          ],
+                          "type": "object"
+                        }
+                      },
+                      "required": [
+                        "access_token",
+                        "expires_in",
+                        "token_type",
+                        "user"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "auth.refreshed"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, expired or reused refresh token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing, expired or reused refresh token."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "summary": "Sign out",
+        "tags": [
+          "auth"
+        ],
+        "description": "Revokes the refresh token family of the current cookie and clears it.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "success": {
+                          "description": "True when the session was closed.",
+                          "example": true,
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "success"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "auth.logged_out"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/me": {
+      "get": {
+        "summary": "Get the current user",
+        "tags": [
+          "auth"
+        ],
+        "description": "Returns the user owning the access token.",
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "description": "Successful response.",
+                  "properties": {
+                    "data": {
+                      "additionalProperties": false,
+                      "description": "A user of the application.",
+                      "properties": {
+                        "archived_at": {
+                          "description": "Archival time in epoch milliseconds, null when active.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        },
+                        "created_at": {
+                          "description": "Creation time in epoch milliseconds.",
+                          "example": 1767225600000,
+                          "type": "integer"
+                        },
+                        "email": {
+                          "description": "Email address, stored lowercased. Unique.",
+                          "example": "jane.doe@example.com",
+                          "format": "email",
+                          "maxLength": 254,
+                          "type": "string"
+                        },
+                        "first_name": {
+                          "description": "First name.",
+                          "example": "Jane",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "id": {
+                          "description": "Unique identifier.",
+                          "example": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+                          "format": "uuid",
+                          "type": "string"
+                        },
+                        "last_name": {
+                          "description": "Last name.",
+                          "example": "Doe",
+                          "maxLength": 100,
+                          "minLength": 1,
+                          "pattern": "^[\\p{L}\\p{M}][\\p{L}\\p{M}' .-]*$",
+                          "type": "string"
+                        },
+                        "object": {
+                          "description": "Object type.",
+                          "enum": [
+                            "user"
+                          ],
+                          "example": "user",
+                          "type": "string"
+                        },
+                        "phone_number": {
+                          "description": "Phone number, null when unknown.",
+                          "example": "+33 6 12 34 56 78",
+                          "nullable": true,
+                          "type": "string"
+                        },
+                        "role": {
+                          "description": "Role of the user.",
+                          "enum": [
+                            "admin",
+                            "employee",
+                            "manager"
+                          ],
+                          "example": "employee",
+                          "type": "string"
+                        },
+                        "updated_at": {
+                          "description": "Last update time in epoch milliseconds, null when never updated.",
+                          "example": null,
+                          "nullable": true,
+                          "type": "integer"
+                        }
+                      },
+                      "required": [
+                        "archived_at",
+                        "created_at",
+                        "email",
+                        "first_name",
+                        "id",
+                        "last_name",
+                        "object",
+                        "phone_number",
+                        "role",
+                        "updated_at"
+                      ],
+                      "type": "object"
+                    },
+                    "event": {
+                      "description": "Event code describing what happened.",
+                      "enum": [
+                        "auth.retrieved"
+                      ],
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "data",
+                    "event"
+                  ],
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Missing or invalid access token."
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/microsoft": {
+      "get": {
+        "summary": "Sign in with Microsoft",
+        "tags": [
+          "auth"
+        ],
+        "description": "Starts the OAuth2 authorization code flow with PKCE. Returns 503 when MICROSOFT_CLIENT_ID is not configured.",
+        "responses": {
+          "302": {
+            "description": "Redirect to the Microsoft sign-in page."
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Microsoft sign-in is not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Microsoft sign-in is not configured."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/auth/microsoft/callback": {
+      "get": {
+        "summary": "Microsoft OAuth2 callback",
+        "tags": [
+          "auth"
+        ],
+        "description": "Exchanges the code, links the Microsoft identity to an existing user, sets the tm_refresh cookie and redirects to WEB_URL/auth/callback. Unknown users are never created.",
+        "parameters": [
+          {
+            "schema": {
+              "maxLength": 4096,
+              "minLength": 1,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "code",
+            "required": false,
+            "description": "Authorization code issued by Microsoft."
+          },
+          {
+            "schema": {
+              "maxLength": 200,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "error",
+            "required": false,
+            "description": "Error code sent by Microsoft when the user refused."
+          },
+          {
+            "schema": {
+              "maxLength": 2000,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "error_description",
+            "required": false,
+            "description": "Error details sent by Microsoft."
+          },
+          {
+            "schema": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "in": "query",
+            "name": "state",
+            "required": false,
+            "description": "State echoed back by Microsoft."
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to the web application, which then calls the refresh endpoint."
+          },
+          "429": {
+            "description": "Rate limit exceeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Rate limit exceeded."
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Unexpected error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Unexpected error."
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Microsoft sign-in is not configured.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "code": {
+                      "description": "Stable machine readable error code.",
+                      "example": "USER_NOT_FOUND",
+                      "type": "string"
+                    },
+                    "message": {
+                      "description": "Human readable message, safe to display.",
+                      "example": "The user does not exist.",
+                      "type": "string"
+                    },
+                    "request_id": {
+                      "description": "Identifier to quote when reporting a problem.",
+                      "example": "req-1",
+                      "type": "string"
+                    },
+                    "status": {
+                      "description": "HTTP status code.",
+                      "example": 404,
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "code",
+                    "message",
+                    "request_id",
+                    "status"
+                  ],
+                  "type": "object",
+                  "description": "Microsoft sign-in is not configured."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "description": "Sign in, sessions and Microsoft SSO.",
+      "name": "auth"
+    },
+    {
+      "description": "User accounts.",
+      "name": "users"
+    }
+  ]
+}

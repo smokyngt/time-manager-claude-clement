@@ -68,6 +68,7 @@ export class Cursor {
     params: CursorParams,
   ): Promise<CursorPage<Table['$inferSelect']>> {
     const { cursor, filters, limit, order } = params;
+    const source: PgTable = table;
     const direction = order === 'asc' ? asc : desc;
     const compare = order === 'asc' ? gt : lt;
     const position = cursor === undefined ? undefined : Cursor.decode(cursor);
@@ -80,11 +81,11 @@ export class Cursor {
           );
     const rows = (await db
       .select()
-      .from(table)
+      .from(source)
       .where(and(filters, after))
       .orderBy(direction(table.created_at), direction(table.id))
       .limit(limit + 1)) as Table['$inferSelect'][];
-    const [totalRow] = await db.select({ total: count() }).from(table).where(filters);
+    const [totalRow] = await db.select({ total: count() }).from(source).where(filters);
     const more = rows.length > limit;
     const items = more ? rows.slice(0, limit) : rows;
     const last = items.at(-1) as Position | undefined;

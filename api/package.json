@@ -4,10 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "bun build src/server.ts --target=bun --outdir=dist",
+    "build": "bun build src/server.ts src/db/migrate.ts src/db/seed.ts --target=bun --outdir=dist",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "bun src/db/migrate.ts",
+    "db:migrate:prod": "bun dist/db/migrate.js",
     "db:seed": "bun src/db/seed.ts",
+    "db:seed:prod": "bun dist/db/seed.js",
     "dev": "bun --watch src/server.ts",
     "lint": "eslint . --max-warnings=0",
     "openapi:generate": "bun scripts/openapi.ts",

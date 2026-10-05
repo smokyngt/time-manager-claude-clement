@@ -11,8 +11,6 @@ import type { User } from '@/types/entities/user.js';
 
 export type { SessionResult } from './session.js';
 
-export type AuthorizeParams = Record<string, never>;
-
 export interface AuthorizeResponse {
   max_age: number;
   state_cookie: string;
@@ -20,7 +18,7 @@ export interface AuthorizeResponse {
 }
 
 export interface AuthServiceType {
-  authorize: (params: AuthorizeParams) => Promise<AuthorizeResponse>;
+  authorize: () => Promise<AuthorizeResponse>;
   callback: (params: CallbackParams) => Promise<CallbackResponse>;
   login: (params: LoginParams) => Promise<LoginResponse>;
   logout: (params: LogoutParams) => Promise<LogoutResponse>;

@@ -18,14 +18,14 @@ import type { FastifyInstance, FastifyServerOptions } from 'fastify';
  */
 export const build = async (options: FastifyServerOptions = {}): Promise<FastifyInstance> => {
   const app = Fastify({
-    ajv: { customOptions: { removeAdditional: false } },
+    ajv: { customOptions: { keywords: ['example'], removeAdditional: false } },
     bodyLimit: 1_048_576,
     trustProxy: Config.store.flag('TRUST_PROXY', true),
     ...options,
   });
   app.decorateRequest('actor', null);
-  app.setErrorHandler(ErrorHandler.handle);
-  app.setNotFoundHandler(ErrorHandler.missing);
+  app.setErrorHandler((error, req, reply) => ErrorHandler.handle(error, req, reply));
+  app.setNotFoundHandler((req, reply) => ErrorHandler.missing(req, reply));
   await app.register(helmet, {
     contentSecurityPolicy: false,
     crossOriginResourcePolicy: { policy: 'cross-origin' },

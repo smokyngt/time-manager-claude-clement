@@ -8,7 +8,7 @@ import type { FastifyPluginAsync } from 'fastify';
 
 export const deleteRoute: FastifyPluginAsync = async (fastify) => {
   fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
-    '/',
+    '',
     {
       preHandler: auth({ scopes: ['users:manage'] }),
       schema: {
