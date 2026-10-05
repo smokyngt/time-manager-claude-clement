@@ -7,16 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-
-const LABELS: Record<Role, string> = {
-  admin: 'Admin',
-  employee: 'Employee',
-  manager: 'Manager',
-}
-
-export function roleLabel(role: Role) {
-  return LABELS[role]
-}
+import { roleLabel } from '@/features/users/role-label'
 
 export function RoleSelect({
   id,
@@ -42,7 +33,7 @@ export function RoleSelect({
       <SelectContent>
         {roles.map((role) => (
           <SelectItem key={role} value={role}>
-            {LABELS[role]}
+            {roleLabel(role)}
           </SelectItem>
         ))}
       </SelectContent>

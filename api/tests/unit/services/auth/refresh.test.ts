@@ -69,6 +69,36 @@ describe('auth.service.refresh', () => {
     expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
   });
 
+  it('accepts a just-rotated token again inside the grace window without revoking', async () => {
+    fakeDb.enqueue([stored({ revoked_at: Date.now() - 2000 })], [{ id: 'successor' }], [makeRow()], []);
+    const session = await refresh({ token: 'opaque' });
+    expect(session.refresh_token).not.toBe('opaque');
+    const inserted = fakeDb.arg('insert', 'values') as Record<string, unknown>;
+    expect(inserted['family_id']).toBe('family-1');
+    expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
+    expect(logCreate).not.toHaveBeenCalled();
+  });
+
+  it('does not grant the grace window to a revoked family', async () => {
+    fakeDb.enqueue([stored({ revoked_at: Date.now() - 2000 })], [], []);
+    const error = await caught(refresh({ token: 'opaque' }));
+    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
+    expect(logCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'auth.refresh_reuse_detected' }),
+    );
+  });
+
+  it('keeps reuse detection once the grace window has passed', async () => {
+    fakeDb.enqueue([stored({ revoked_at: Date.now() - 60_000 })], []);
+    const error = await caught(refresh({ token: 'opaque' }));
+    expect(error.code).toBe('AUTH_SESSION_INVALID');
+    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
+    expect(logCreate).toHaveBeenCalledWith(
+      expect.objectContaining({ event: 'auth.refresh_reuse_detected' }),
+    );
+  });
+
   it('revokes the family when the token expired', async () => {
     fakeDb.enqueue([stored({ expires_at: 1 })], []);
     const error = await caught(refresh({ token: 'opaque' }));

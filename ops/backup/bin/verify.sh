@@ -14,7 +14,7 @@ umask 077
 
 SCRIPT_NAME="verify.sh"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=lib.sh
+# shellcheck source=lib.sh source-path=SCRIPTDIR
 . "$SCRIPT_DIR/lib.sh"
 
 WHAT="latest"

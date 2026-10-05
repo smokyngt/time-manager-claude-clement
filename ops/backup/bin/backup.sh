@@ -22,7 +22,7 @@ umask 077
 
 SCRIPT_NAME="backup.sh"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-# shellcheck source=lib.sh
+# shellcheck source=lib.sh source-path=SCRIPTDIR
 . "$SCRIPT_DIR/lib.sh"
 
 PRUNE_ONLY=false
@@ -50,6 +50,7 @@ on_exit() {
 }
 trap on_exit EXIT
 
+use_source_conn
 require_uint BACKUP_KEEP_DAILY "$BACKUP_KEEP_DAILY"
 require_uint BACKUP_KEEP_WEEKLY "$BACKUP_KEEP_WEEKLY"
 require_uint BACKUP_KEEP_MONTHLY "$BACKUP_KEEP_MONTHLY"
@@ -61,7 +62,6 @@ if [[ -n "$AGE_RECIPIENT" && -n "$GPG_RECIPIENT" ]]; then
   die "set only one of BACKUP_AGE_RECIPIENT and BACKUP_ENCRYPTION_RECIPIENT"
 fi
 
-use_source_conn
 mkdir -p "$BACKUP_DIR"
 
 if command -v flock >/dev/null 2>&1; then

@@ -10,6 +10,7 @@
     "format": "prettier --write .",
     "lint": "eslint . --max-warnings 0",
     "preview": "vite preview",
+    "test:e2e": "playwright test",
     "test:unit": "vitest run",
     "typecheck": "tsc -b --noEmit"
   },

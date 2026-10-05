@@ -1,0 +1,76 @@
+# Scheduled PostgreSQL backups. Layer it on the production stack:
+#   docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d
+# One-off restore (profile "tools"; see docs/BACKUPS.md):
+#   docker compose -f docker-compose.yml -f docker-compose.backup.yml run --rm restore latest --target <url>
+#
+# Variables come from .env (compose interpolation). Only the ones the backup needs are
+# passed on, so JWT secrets and the like never reach this container.
+
+x-backup-env: &backup-env
+  PGHOST: db
+  PGPORT: "5432"
+  PGUSER: ${POSTGRES_USER:?POSTGRES_USER is required}
+  PGPASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+  PGDATABASE: ${POSTGRES_DB:?POSTGRES_DB is required}
+  TZ: ${BACKUP_TZ:-UTC}
+  BACKUP_DIR: /backups
+  BACKUP_KEEP_DAILY: ${BACKUP_KEEP_DAILY:-7}
+  BACKUP_KEEP_WEEKLY: ${BACKUP_KEEP_WEEKLY:-4}
+  BACKUP_KEEP_MONTHLY: ${BACKUP_KEEP_MONTHLY:-6}
+  BACKUP_COMPRESSION: ${BACKUP_COMPRESSION:-6}
+  BACKUP_AGE_RECIPIENT: ${BACKUP_AGE_RECIPIENT:-}
+  BACKUP_ENCRYPTION_RECIPIENT: ${BACKUP_ENCRYPTION_RECIPIENT:-}
+  BACKUP_S3_URI: ${BACKUP_S3_URI:-}
+  BACKUP_S3_ENDPOINT_URL: ${BACKUP_S3_ENDPOINT_URL:-}
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID:-}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
+  AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+  BACKUP_ALERT_WEBHOOK: ${BACKUP_ALERT_WEBHOOK:-}
+  BACKUP_HEARTBEAT_URL: ${BACKUP_HEARTBEAT_URL:-}
+
+services:
+  backup:
+    build:
+      context: ./ops/backup
+    restart: unless-stopped
+    environment:
+      <<: *backup-env
+      BACKUP_SCHEDULE: ${BACKUP_SCHEDULE:-15 2 * * *}
+      BACKUP_RUN_ON_START: ${BACKUP_RUN_ON_START:-false}
+      BACKUP_MAX_AGE_HOURS: ${BACKUP_MAX_AGE_HOURS:-26}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - backups:/backups
+    # postgres:17-alpine declares a data volume; keep it off disk for this client-only container.
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "/usr/local/bin/healthcheck.sh"]
+      interval: 5m
+      timeout: 10s
+      retries: 1
+      start_period: 1m
+    networks: [backend]
+
+  restore:
+    profiles: [tools]
+    build:
+      context: ./ops/backup
+    # Arguments after the service name go to restore.sh, e.g.: run --rm restore latest --target <url>
+    entrypoint: ["/usr/local/bin/restore.sh"]
+    environment:
+      <<: *backup-env
+      BACKUP_AGE_IDENTITY_FILE: /run/age-identity
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - backups:/backups:ro
+    tmpfs:
+      - /var/lib/postgresql/data
+    networks: [backend]
+
+volumes:
+  backups:

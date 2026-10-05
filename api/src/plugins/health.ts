@@ -1,7 +1,7 @@
 import { Health } from '@/lib/lifecycle/health.js';
 
 import type { Probe } from '@/lib/lifecycle/health.js';
-import type { FastifyPluginAsync } from 'fastify';
+import type { FastifyPluginCallback } from 'fastify';
 
 export interface HealthOptions {
   probe: Probe;
@@ -27,9 +27,10 @@ const readyResponse = (status: 'ok' | 'unavailable'): object => ({
  * @route plugins.health
  * @param {FastifyInstance} app
  * @param {HealthOptions} options
- * @returns {Promise<void>}
+ * @param {() => void} done
+ * @returns {void}
  */
-export const health: FastifyPluginAsync<HealthOptions> = async (app, options): Promise<void> => {
+export const health: FastifyPluginCallback<HealthOptions> = (app, options, done): void => {
   app.get(
     '/health/ready',
     {
@@ -50,4 +51,5 @@ export const health: FastifyPluginAsync<HealthOptions> = async (app, options): P
         .send({ checks: { database: 'unavailable' }, status: 'unavailable' });
     },
   );
+  done();
 };

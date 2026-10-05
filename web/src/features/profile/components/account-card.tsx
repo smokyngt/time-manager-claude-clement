@@ -4,7 +4,7 @@ import type { UserRecord } from '@/features/users/types'
 
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { roleLabel } from '@/features/users/components/role-select'
+import { roleLabel } from '@/features/users/role-label'
 
 export function AccountCard({
   microsoftLinked,

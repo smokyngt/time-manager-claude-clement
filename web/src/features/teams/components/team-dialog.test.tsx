@@ -1,3 +1,5 @@
+import type * as TeamsApi from '@/features/teams/api/teams'
+
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -8,7 +10,7 @@ import { makeUser, renderTeamUi } from '@/features/teams/test-utils'
 const { createTeam } = vi.hoisted(() => ({ createTeam: vi.fn() }))
 
 vi.mock('@/features/teams/api/teams', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/features/teams/api/teams')>()),
+  ...(await importOriginal<TeamsApi>()),
   createTeam,
 }))
 vi.mock('@/features/teams/api/users', () => ({

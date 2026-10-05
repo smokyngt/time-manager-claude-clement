@@ -28,12 +28,14 @@ import { SignJWT } from 'jose';
 const { authorize } = await import('@/services/auth/authorize.js');
 const { callback } = await import('@/services/auth/callback.js');
 
+const TENANT = '11111111-2222-4333-8444-555555555555';
 const saved = { ...process.env };
 const realFetch = globalThis.fetch;
 
 const configure = (): void => {
   process.env['MICROSOFT_CLIENT_ID'] = 'client-id';
   process.env['MICROSOFT_CLIENT_SECRET'] = 'client-secret';
+  process.env['MICROSOFT_TENANT_ID'] = TENANT;
 };
 
 afterAll(() => {
@@ -44,11 +46,12 @@ afterAll(() => {
 afterEach(() => {
   delete process.env['MICROSOFT_CLIENT_ID'];
   delete process.env['MICROSOFT_CLIENT_SECRET'];
+  delete process.env['MICROSOFT_TENANT_ID'];
   globalThis.fetch = realFetch;
 });
 
 const idToken = async (claims: Record<string, unknown>): Promise<string> =>
-  new SignJWT({ iss: 'https://login.microsoftonline.com/tenant/v2.0', ...claims })
+  new SignJWT({ iss: `https://login.microsoftonline.com/${TENANT}/v2.0`, tid: TENANT, ...claims })
     .setProtectedHeader({ alg: 'HS256' })
     .setAudience('client-id')
     .setExpirationTime('5m')
@@ -77,12 +80,22 @@ describe('auth.service.authorize', () => {
     expect(error.status).toBe(503);
   });
 
+  it('returns 503 when the tenant is missing or a multi-tenant alias', async () => {
+    configure();
+    for (const tenant of [undefined, 'common', 'organizations', 'consumers']) {
+      if (tenant === undefined) delete process.env['MICROSOFT_TENANT_ID'];
+      else process.env['MICROSOFT_TENANT_ID'] = tenant;
+      const error = await caught(authorize());
+      expect(error.code).toBe('AUTH_MICROSOFT_UNAVAILABLE');
+    }
+  });
+
   it('builds an authorization code + PKCE url and a signed state cookie', async () => {
     configure();
     const result = await authorize();
     const url = new URL(result.url);
     expect(url.origin + url.pathname).toBe(
-      'https://login.microsoftonline.com/common/oauth2/v2.0/authorize',
+      `https://login.microsoftonline.com/${TENANT}/oauth2/v2.0/authorize`,
     );
     expect(url.searchParams.get('client_id')).toBe('client-id');
     expect(url.searchParams.get('response_type')).toBe('code');
@@ -137,10 +150,12 @@ describe('auth.service.callback', () => {
     configure();
     const flow = await start();
     respondWith(await idToken({ email: 'Jane.Doe@Example.com', nonce: flow.nonce, oid: 'oid-1' }));
-    fakeDb.enqueue([], [makeRow()], [makeRow({ microsoft_id: 'oid-1' })], []);
+    fakeDb.enqueue([], [makeRow()], [makeRow({ microsoft_id: `${TENANT}:oid-1` })], []);
     const session = await callback({ code: 'c', state: flow.state, state_cookie: flow.cookie });
     expect(session.user.id).toBe(OTHER_ID);
-    expect((fakeDb.arg('update', 'set') as Record<string, unknown>)['microsoft_id']).toBe('oid-1');
+    expect((fakeDb.arg('update', 'set') as Record<string, unknown>)['microsoft_id']).toBe(
+      `${TENANT}:oid-1`,
+    );
     const events = (logCreate.mock.calls as unknown as [{ event: string }][]).map(
       ([entry]) => entry.event,
     );
@@ -151,7 +166,7 @@ describe('auth.service.callback', () => {
     configure();
     const flow = await start();
     respondWith(await idToken({ nonce: flow.nonce, oid: 'oid-1' }));
-    fakeDb.enqueue([makeRow({ microsoft_id: 'oid-1' })], []);
+    fakeDb.enqueue([makeRow({ microsoft_id: `${TENANT}:oid-1` })], []);
     const session = await callback({ code: 'c', state: flow.state, state_cookie: flow.cookie });
     expect(session.user.id).toBe(OTHER_ID);
     expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
@@ -178,11 +193,101 @@ describe('auth.service.callback', () => {
     const other = await caught(
       callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
     );
-    fakeDb.enqueue([makeRow({ archived_at: 1, microsoft_id: 'oid-3' })]);
+    fakeDb.enqueue([makeRow({ archived_at: 1, microsoft_id: `${TENANT}:oid-3` })]);
     const archived = await caught(
       callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
     );
     expect(other.code).toBe('AUTH_MICROSOFT_REJECTED');
     expect(archived.code).toBe('AUTH_MICROSOFT_REJECTED');
+  });
+  it('rejects an id token issued by another tenant', async () => {
+    configure();
+    const flow = await start();
+    const other = '99999999-2222-4333-8444-555555555555';
+    respondWith(
+      await idToken({
+        email: 'jane.doe@example.com',
+        iss: `https://login.microsoftonline.com/${other}/v2.0`,
+        nonce: flow.nonce,
+        oid: 'oid-1',
+        tid: other,
+      }),
+    );
+    fakeDb.enqueue([makeRow()], []);
+    const error = await caught(
+      callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
+    );
+    expect(error.code).toBe('AUTH_MICROSOFT_REJECTED');
+    expect(fakeDb.calls).toHaveLength(0);
+  });
+
+  it('rejects a missing tid, a missing oid and a mismatching issuer', async () => {
+    configure();
+    const flow = await start();
+    const attempts = [
+      { tid: undefined },
+      { oid: undefined },
+      { iss: 'https://login.microsoftonline.com/other/v2.0' },
+    ];
+    for (const attempt of attempts) {
+      respondWith(
+        await idToken({
+          email: 'jane.doe@example.com',
+          nonce: flow.nonce,
+          oid: 'oid-1',
+          ...attempt,
+        }),
+      );
+      const error = await caught(
+        callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
+      );
+      expect(error.code).toBe('AUTH_MICROSOFT_REJECTED');
+    }
+    expect(fakeDb.calls).toHaveLength(0);
+  });
+
+  it('never links by preferred_username', async () => {
+    configure();
+    const flow = await start();
+    respondWith(
+      await idToken({
+        nonce: flow.nonce,
+        oid: 'oid-1',
+        preferred_username: 'jane.doe@example.com',
+      }),
+    );
+    fakeDb.enqueue([], []);
+    const error = await caught(
+      callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
+    );
+    expect(error.code).toBe('AUTH_MICROSOFT_UNKNOWN_USER');
+    expect(fakeDb.calls.filter((call) => call.op === 'select' && call.method === 'from')).toHaveLength(
+      1,
+    );
+    expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
+  });
+
+  it('does not take over a user already linked to another identity', async () => {
+    configure();
+    const flow = await start();
+    respondWith(await idToken({ email: 'jane.doe@example.com', nonce: flow.nonce, oid: 'oid-9' }));
+    fakeDb.enqueue([], [makeRow({ microsoft_id: `${TENANT}:oid-1` })]);
+    const error = await caught(
+      callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
+    );
+    expect(error.code).toBe('AUTH_MICROSOFT_REJECTED');
+    expect(fakeDb.calls.some((call) => call.op === 'update')).toBe(false);
+  });
+
+  it('rejects when the link was taken concurrently', async () => {
+    configure();
+    const flow = await start();
+    respondWith(await idToken({ email: 'jane.doe@example.com', nonce: flow.nonce, oid: 'oid-1' }));
+    fakeDb.enqueue([], [makeRow()], []);
+    const error = await caught(
+      callback({ code: 'c', state: flow.state, state_cookie: flow.cookie }),
+    );
+    expect(error.code).toBe('AUTH_MICROSOFT_REJECTED');
+    expect(logCreate).not.toHaveBeenCalled();
   });
 });

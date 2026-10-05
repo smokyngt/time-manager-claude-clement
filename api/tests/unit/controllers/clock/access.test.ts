@@ -1,21 +1,17 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { caught, makeActor, OTHER_ID } from '../../../helpers/fixtures.js';
-import { installClockService, installMembership } from './harness.js';
+import { installMembership } from './harness.js';
 
-const clocks = await installClockService();
 const membership = await installMembership();
-const { directory, svc } = clocks;
 const { managed } = membership;
 
 afterAll(() => {
-  clocks.restore();
   membership.restore();
 });
 
 afterEach(() => {
   mock.clearAllMocks();
-  directory.clear();
   managed.clear();
 });
 
@@ -60,6 +56,5 @@ describe('clock.access', () => {
     expect(await access.users(employee, [OTHER_ID])).toEqual([employee.id]);
     expect(await access.users(makeActor('admin'))).toBeUndefined();
     expect(await access.users(makeActor('admin'), [OTHER_ID])).toEqual([OTHER_ID]);
-    expect(svc.list).not.toHaveBeenCalled();
   });
 });

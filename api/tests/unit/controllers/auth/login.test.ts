@@ -1,5 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
+import { Limiter } from '@/lib/auth/limiter.js';
+
 import { caught, makeReply, makeReq } from '../../../helpers/fixtures.js';
 import { makeUser } from '../../../helpers/user-service.js';
 
@@ -28,6 +30,7 @@ afterAll(() => {
 
 afterEach(() => {
   mock.clearAllMocks();
+  Limiter.reset();
 });
 
 const { login: controller } = await import('@/controllers/auth/login.js');
@@ -69,5 +72,38 @@ describe('auth.controller.login', () => {
     expect(error.code).toBe('AUTH_LOGIN_ERROR');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('auth.controller.login');
+  });
+  it('blocks an account after repeated failures whatever the ip, and recovers on success', async () => {
+    const { AuthInvalidCredentialsError } = await import('@/lib/errors/domains/auth.js');
+    const attempt = async (email: string): Promise<string> => {
+      const { reply } = makeReply<Rep>();
+      const error = await caught(
+        controller(makeReq<Req>({ body: { email, password: 'bad' } }), reply),
+      );
+      return error.code;
+    };
+    for (let index = 0; index < 5; index += 1) {
+      login.mockImplementationOnce(() => Promise.reject(AuthInvalidCredentialsError()));
+      expect(await attempt(index % 2 === 0 ? 'Victim@B.co' : 'victim@b.co')).toBe(
+        'AUTH_INVALID_CREDENTIALS',
+      );
+    }
+    expect(await attempt('VICTIM@b.co')).toBe('RATE_LIMITED');
+    expect(login).toHaveBeenCalledTimes(5);
+    const { fake, reply } = makeReply<Rep>();
+    await controller(makeReq<Req>({ body: { email: 'other@b.co', password: 'pw' } }), reply);
+    expect(fake.cookies['tm_refresh']).toBe('refresh-secret');
+  });
+
+  it('clears the failure counter after a successful login', async () => {
+    const { AuthInvalidCredentialsError } = await import('@/lib/errors/domains/auth.js');
+    for (let index = 0; index < 4; index += 1) {
+      login.mockImplementationOnce(() => Promise.reject(AuthInvalidCredentialsError()));
+      const { reply } = makeReply<Rep>();
+      await caught(controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'x' } }), reply));
+    }
+    const { reply } = makeReply<Rep>();
+    await controller(makeReq<Req>({ body: { email: 'a@b.co', password: 'pw' } }), reply);
+    expect(Limiter.blocked('a@b.co')).toBe(false);
   });
 });

@@ -1,5 +1,5 @@
+import FastifyOtel from '@fastify/otel';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
-import { FastifyInstrumentation } from '@opentelemetry/instrumentation-fastify';
 import { HttpInstrumentation } from '@opentelemetry/instrumentation-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
@@ -24,7 +24,7 @@ export class Tracing {
   public static start(): boolean {
     if (!Tracing.enabled() || Tracing.sdk !== null) return false;
     const sdk = new NodeSDK({
-      instrumentations: [new HttpInstrumentation(), new FastifyInstrumentation()],
+      instrumentations: [new HttpInstrumentation(), new FastifyOtel.FastifyOtelInstrumentation({ ignorePaths: '/health', registerOnInitialization: true })],
       resource: resourceFromAttributes({
         'deployment.environment.name': Config.store.text('NODE_ENV', 'development'),
         'service.name': Config.store.text('OTEL_SERVICE_NAME', 'time-manager-api'),

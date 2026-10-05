@@ -1,7 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor } from '../../../helpers/fixtures.js';
+import { caught } from '../../../helpers/fixtures.js';
 import { makeTeamRow, MISSING_TEAM_ID, TEAM_ID } from './fixtures.js';
 
 const realDb = { ...(await import('@/db/client.js')) };

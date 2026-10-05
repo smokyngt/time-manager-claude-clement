@@ -79,10 +79,11 @@ export const installMembership = async () => {
     reaches: mock((actor: Actor, userId: string) =>
       Promise.resolve(actor.id === userId || managed.has(userId)),
     ),
+    teams: mock((_userId: string) => Promise.resolve([] as string[])),
   };
   await mock.module('@/utils/membership.js', () => ({
     ...real,
-    Membership: { ...real.Membership, ...stub },
+    Membership: stub,
   }));
   return {
     managed,

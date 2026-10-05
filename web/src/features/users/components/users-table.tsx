@@ -19,7 +19,6 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { describeBulk } from '@/features/users/bulk-message'
-import { roleLabel } from '@/features/users/components/role-select'
 import { Checkbox } from '@/features/users/components/ui/checkbox'
 import { UserRowActions } from '@/features/users/components/user-row-actions'
 import { UsersBulkToolbar } from '@/features/users/components/users-bulk-toolbar'
@@ -31,6 +30,7 @@ import {
   useUsers,
 } from '@/features/users/hooks/use-users'
 import { canArchive } from '@/features/users/permissions'
+import { roleLabel } from '@/features/users/role-label'
 import { getErrorMessage } from '@/lib/api/errors'
 import { useAuth } from '@/lib/auth/use-auth'
 

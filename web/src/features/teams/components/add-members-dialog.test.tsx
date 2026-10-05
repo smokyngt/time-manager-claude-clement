@@ -1,3 +1,5 @@
+import type * as TeamsApi from '@/features/teams/api/teams'
+
 import { screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { describe, expect, it, vi } from 'vitest'
@@ -11,7 +13,7 @@ const { addTeamMembers, listUserOptions } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/features/teams/api/teams', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/features/teams/api/teams')>()),
+  ...(await importOriginal<TeamsApi>()),
   addTeamMembers,
   listTeamMembers: () => Promise.resolve([makeUser('already', 'employee')]),
 }))

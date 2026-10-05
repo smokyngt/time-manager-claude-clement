@@ -15,11 +15,12 @@ export interface MetricsOptions {
  * @route plugins.metrics
  * @param {FastifyInstance} app
  * @param {MetricsOptions} options
- * @returns {Promise<void>}
+ * @param {() => void} done
+ * @returns {void}
  * @throws {NotFoundError | UnauthorizedError}
  */
 export const metrics = fp<MetricsOptions>(
-  async (app, options): Promise<void> => {
+  (app, options, done): void => {
     const register = new Registry();
     collectDefaultMetrics({ register });
     const duration = new Histogram({
@@ -37,12 +38,14 @@ export const metrics = fp<MetricsOptions>(
       });
       pool.set(options.poolMax);
     }
-    app.addHook('onResponse', async (req, reply) => {
+    app.addHook('onResponse', (req, reply, next) => {
       const route = Metrics.route(req.routeOptions.url);
-      if (route === '/metrics') return;
-      duration
-        .labels(req.method, route, String(reply.statusCode))
-        .observe(reply.elapsedTime / 1000);
+      if (route !== '/metrics') {
+        duration
+          .labels(req.method, route, String(reply.statusCode))
+          .observe(reply.elapsedTime / 1000);
+      }
+      next();
     });
     app.get(
       '/metrics',
@@ -67,6 +70,7 @@ export const metrics = fp<MetricsOptions>(
         return reply.type(register.contentType).send(await register.metrics());
       },
     );
+    done();
   },
   { name: 'metrics' },
 );
