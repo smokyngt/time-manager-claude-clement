@@ -25,7 +25,13 @@ export class Cookies {
     maxAge: number,
     path = '/v1/auth',
   ): { httpOnly: boolean; maxAge: number; path: string; sameSite: 'lax'; secure: boolean } {
-    return { httpOnly: true, maxAge, path, sameSite: 'lax', secure: Config.store.flag('COOKIE_SECURE', Config.production()) };
+    return {
+      httpOnly: true,
+      maxAge,
+      path,
+      sameSite: 'lax',
+      secure: Config.store.flag('COOKIE_SECURE', Config.production()),
+    };
   }
 
   /**

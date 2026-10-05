@@ -1,0 +1,231 @@
+# Observability stack (Grafana, Prometheus, Tempo, Loki, Alloy, Alertmanager, postgres-exporter).
+# Layer it on the production stack:
+#   docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+# Only Grafana is published (127.0.0.1:3000 by default). Everything else stays on the
+# internal "observability" network; alloy and postgres-exporter also join the app network
+# ("backend") to scrape the api and db. See docs/OBSERVABILITY.md.
+#
+# Required in .env: GRAFANA_ADMIN_USER, GRAFANA_ADMIN_PASSWORD, METRICS_TOKEN.
+
+x-obs-logging: &obs-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+services:
+  # --- App services: telemetry wiring only (merged into docker-compose.yml). ---
+  api:
+    environment:
+      METRICS_TOKEN: ${METRICS_TOKEN:?METRICS_TOKEN is required (Alloy scrapes /metrics with it)}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://alloy:4318}
+      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+      OTEL_SERVICE_NAME: time-manager-api
+      OTEL_METRICS_EXPORTER: none
+      OTEL_LOGS_EXPORTER: none
+    labels:
+      observability.logs: "true"
+  db:
+    labels:
+      observability.logs: "true"
+  web:
+    labels:
+      observability.logs: "true"
+
+  # --- One-shot: give the non-root Tempo user (10001) ownership of its volume. ---
+  observability-init:
+    image: busybox:1.37.0
+    restart: "no"
+    user: "0:0"
+    command: ["sh", "-c", "mkdir -p /var/tempo && chown -R 10001:10001 /var/tempo"]
+    volumes:
+      - tempo-data:/var/tempo
+    networks: [observability]
+
+  alloy:
+    image: grafana/alloy:v1.10.2
+    restart: unless-stopped
+    command:
+      - run
+      - --server.http.listen-addr=0.0.0.0:12345
+      - --storage.path=/var/lib/alloy/data
+      - /etc/alloy/config.alloy
+    environment:
+      METRICS_TOKEN: ${METRICS_TOKEN:?METRICS_TOKEN is required}
+    volumes:
+      - ./ops/observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      # Read-only socket mount: Alloy lists containers and tails their logs. The Docker socket
+      # is root-equivalent; see "Security" in docs/OBSERVABILITY.md for alternatives.
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - alloy-data:/var/lib/alloy/data
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          bash -c 'exec 3<>/dev/tcp/127.0.0.1/12345 &&
+          printf "GET /-/ready HTTP/1.0\r\n\r\n" >&3 && grep -q "Alloy is ready" <&3'
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    depends_on:
+      tempo:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+      prometheus:
+        condition: service_healthy
+    logging: *obs-logging
+    networks: [observability, backend]
+
+  prometheus:
+    image: prom/prometheus:v3.5.0
+    restart: unless-stopped
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=15d
+      - --storage.tsdb.retention.size=8GB
+      - --web.enable-remote-write-receiver
+      - --web.enable-lifecycle
+      - --enable-feature=exemplar-storage
+    volumes:
+      - ./ops/observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./ops/observability/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9090/-/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 15s
+    logging: *obs-logging
+    networks: [observability]
+
+  alertmanager:
+    image: prom/alertmanager:v0.28.1
+    restart: unless-stopped
+    environment:
+      ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
+    entrypoint: ["/bin/sh", "/etc/alertmanager/entrypoint.sh"]
+    volumes:
+      - ./ops/observability/alertmanager:/etc/alertmanager:ro
+      - alertmanager-data:/alertmanager
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9093/-/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 10s
+    logging: *obs-logging
+    networks: [observability]
+
+  tempo:
+    image: grafana/tempo:2.8.2
+    restart: unless-stopped
+    command: ["-config.file=/etc/tempo/tempo.yaml"]
+    volumes:
+      - ./ops/observability/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
+      - tempo-data:/var/tempo
+    depends_on:
+      observability-init:
+        condition: service_completed_successfully
+      prometheus:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3200/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: *obs-logging
+    networks: [observability]
+
+  loki:
+    image: grafana/loki:3.5.5
+    restart: unless-stopped
+    command: ["-config.file=/etc/loki/loki.yaml"]
+    volumes:
+      - ./ops/observability/loki/loki.yaml:/etc/loki/loki.yaml:ro
+      - loki-data:/loki
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3100/ready"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    logging: *obs-logging
+    networks: [observability]
+
+  postgres-exporter:
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
+    restart: unless-stopped
+    environment:
+      # Prefer the read-only monitoring role (ops/observability/postgres-exporter/monitoring-user.sql).
+      # The fallback reuses the application credentials so the stack works out of the box;
+      # URL-encode special characters in the password.
+      DATA_SOURCE_NAME: ${PG_EXPORTER_DATA_SOURCE_NAME:-postgresql://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}?sslmode=disable}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9187/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging: *obs-logging
+    networks: [observability, backend]
+
+  grafana:
+    image: grafana/grafana:12.2.0
+    restart: unless-stopped
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?GRAFANA_ADMIN_USER is required}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
+      GF_SERVER_ROOT_URL: ${GRAFANA_ROOT_URL:-http://localhost:3000}
+      GF_SECURITY_COOKIE_SECURE: ${GRAFANA_COOKIE_SECURE:-false}
+      GRAFANA_ALERT_WEBHOOK_URL: ${GRAFANA_ALERT_WEBHOOK_URL:-http://alertmanager:9093/-/healthy}
+    ports:
+      - "${GRAFANA_BIND:-127.0.0.1}:${GRAFANA_PORT:-3000}:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./ops/observability/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./ops/observability/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./ops/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      # Branding overlays (OSS has no white-label setting): see docs/OBSERVABILITY.md.
+      - ./ops/observability/grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg:ro
+      - ./ops/observability/grafana/branding/g8_login_dark.svg:/usr/share/grafana/public/img/g8_login_dark.svg:ro
+      - ./ops/observability/grafana/branding/g8_login_light.svg:/usr/share/grafana/public/img/g8_login_light.svg:ro
+      - ./ops/observability/grafana/branding/login_background_dark.svg:/usr/share/grafana/public/img/login_background_dark.svg:ro
+      - ./ops/observability/grafana/branding/login_background_light.svg:/usr/share/grafana/public/img/login_background_light.svg:ro
+      - ./ops/observability/grafana/branding/fav32.png:/usr/share/grafana/public/img/fav32.png:ro
+      - ./ops/observability/grafana/branding/apple-touch-icon.png:/usr/share/grafana/public/img/apple-touch-icon.png:ro
+    depends_on:
+      prometheus:
+        condition: service_healthy
+      loki:
+        condition: service_healthy
+      tempo:
+        condition: service_healthy
+      alertmanager:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:3000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 30s
+    logging: *obs-logging
+    networks: [observability]
+
+volumes:
+  alloy-data:
+  alertmanager-data:
+  grafana-data:
+  loki-data:
+  prometheus-data:
+  tempo-data:
+
+networks:
+  observability:

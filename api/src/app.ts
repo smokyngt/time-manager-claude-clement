@@ -7,7 +7,7 @@ import Fastify from 'fastify';
 
 import { Config } from '@/config/index.js';
 import { ErrorHandler } from '@/lib/errors/handler.js';
-import { authRouter, userRouter } from '@/routes/index.js';
+import { authRouter, reportRouter, teamMemberRouter, userRouter } from '@/routes/index.js';
 
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
@@ -49,6 +49,8 @@ export const build = async (options: FastifyServerOptions = {}): Promise<Fastify
       openapi: '3.0.3',
       tags: [
         { description: 'Sign in, sessions and Microsoft SSO.', name: 'auth' },
+        { description: 'Working time reports and KPIs.', name: 'reports' },
+        { description: 'Teams and their members.', name: 'teams' },
         { description: 'User accounts.', name: 'users' },
       ],
     },
@@ -74,5 +76,7 @@ export const build = async (options: FastifyServerOptions = {}): Promise<Fastify
   );
   await app.register(userRouter, { prefix: '/v1/users' });
   await app.register(authRouter, { prefix: '/v1/auth' });
+  await app.register(reportRouter, { prefix: '/v1/reports' });
+  await app.register(teamMemberRouter, { prefix: '/v1/teams' });
   return app;
 };

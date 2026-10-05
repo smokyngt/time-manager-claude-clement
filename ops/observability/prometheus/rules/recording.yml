@@ -1,0 +1,48 @@
+# RED recording rules for the API, built from http_request_duration_seconds{method,route,status_code}.
+# Naming: level:metric:operations. `route` is the Fastify route template (low cardinality).
+groups:
+  - name: tm-http-red-route
+    interval: 15s
+    rules:
+      - record: job_route_method:http_requests:rate5m
+        expr: sum by (job, route, method) (rate(http_request_duration_seconds_count{job="api"}[5m]))
+      - record: job_route:http_requests:rate5m
+        expr: sum by (job, route) (rate(http_request_duration_seconds_count{job="api"}[5m]))
+      - record: job_route:http_request_errors:rate5m
+        expr: sum by (job, route) (rate(http_request_duration_seconds_count{job="api",status_code=~"5.."}[5m]))
+      - record: job_route:http_request_errors:ratio_rate5m
+        expr: |
+          job_route:http_request_errors:rate5m
+            / on (job, route) job_route:http_requests:rate5m
+      - record: job_route:http_request_duration_seconds:p50_5m
+        expr: histogram_quantile(0.50, sum by (job, route, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+      - record: job_route:http_request_duration_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (job, route, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+      - record: job_route:http_request_duration_seconds:p99_5m
+        expr: histogram_quantile(0.99, sum by (job, route, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+
+  - name: tm-http-red-job
+    interval: 15s
+    rules:
+      - record: job:http_requests:rate5m
+        expr: sum by (job) (rate(http_request_duration_seconds_count{job="api"}[5m]))
+      - record: job:http_request_errors:rate5m
+        expr: sum by (job) (rate(http_request_duration_seconds_count{job="api",status_code=~"5.."}[5m]))
+      - record: job:http_request_errors:ratio_rate5m
+        expr: |
+          job:http_request_errors:rate5m
+            / on (job) job:http_requests:rate5m
+      - record: job:http_request_duration_seconds:p50_5m
+        expr: histogram_quantile(0.50, sum by (job, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+      - record: job:http_request_duration_seconds:p95_5m
+        expr: histogram_quantile(0.95, sum by (job, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+      - record: job:http_request_duration_seconds:p99_5m
+        expr: histogram_quantile(0.99, sum by (job, le) (rate(http_request_duration_seconds_bucket{job="api"}[5m])))
+
+  - name: tm-business
+    interval: 30s
+    rules:
+      - record: code:tm_events:rate5m
+        expr: sum by (code) (rate(tm_events_total[5m]))
+      - record: code_status:tm_errors:rate5m
+        expr: sum by (code, status) (rate(tm_errors_total[5m]))

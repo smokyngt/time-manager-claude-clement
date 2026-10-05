@@ -1,0 +1,149 @@
+# Alert rules. Every alert carries a runbook_url anchored in docs/OBSERVABILITY.md.
+# Backup freshness is intentionally absent: the backup container exposes no metric
+# (no backup_last_success_timestamp). Add it once the container exports one.
+groups:
+  - name: tm-api
+    rules:
+      - alert: ApiDown
+        expr: up{job="api"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "API scrape target is down"
+          description: "Alloy cannot scrape api:8000/metrics (instance {{ $labels.instance }}) for 1 minute. The api is down, restarting, or METRICS_TOKEN does not match."
+          runbook_url: "/docs/OBSERVABILITY.md#apidown"
+
+      - alert: ApiMetricsMissing
+        expr: absent(up{job="api"})
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No api metrics received"
+          description: "No up{job=\"api\"} series for 5 minutes: Alloy, remote-write or the stack itself is down."
+          runbook_url: "/docs/OBSERVABILITY.md#apimetricsmissing"
+
+      - alert: ApiHighErrorRatio
+        expr: job:http_request_errors:ratio_rate5m > 0.02 and job:http_requests:rate5m > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "More than 2% of API responses are 5xx"
+          description: "5xx ratio is {{ $value | humanizePercentage }} over the last 5 minutes."
+          runbook_url: "/docs/OBSERVABILITY.md#apihigherrorratio"
+
+      - alert: ApiHighLatencyP95
+        expr: job:http_request_duration_seconds:p95_5m > 1 and job:http_requests:rate5m > 0.05
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API p95 latency above 1s"
+          description: "p95 request latency is {{ $value | humanizeDuration }} over the last 5 minutes."
+          runbook_url: "/docs/OBSERVABILITY.md#apihighlatencyp95"
+
+      - alert: ApiRestartLoop
+        expr: changes(process_start_time_seconds{job="api"}[15m]) > 2
+        labels:
+          severity: warning
+        annotations:
+          summary: "API restarted more than twice in 15 minutes"
+          description: "process_start_time_seconds changed {{ $value }} times in 15 minutes (crash loop or deploy storm)."
+          runbook_url: "/docs/OBSERVABILITY.md#apirestartloop"
+
+      - alert: ApiEventLoopLag
+        expr: nodejs_eventloop_lag_p99_seconds{job="api"} > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "API event loop p99 lag above 500ms"
+          description: "The event loop is blocked ({{ $value | humanizeDuration }} p99). Look for CPU-bound work or GC pressure."
+          runbook_url: "/docs/OBSERVABILITY.md#apieventlooplag"
+
+      - alert: AuthFailureSpike
+        expr: sum(rate(tm_errors_total{code=~"auth.*"}[5m])) > 1
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Authentication errors above 1/s"
+          description: "{{ $value | printf \"%.2f\" }} auth errors per second: credential stuffing, a broken client, or an identity provider outage."
+          runbook_url: "/docs/OBSERVABILITY.md#authfailurespike"
+
+  - name: tm-availability
+    rules:
+      - alert: ReadinessFailing
+        expr: probe_success{job="probes",target="api-readiness"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "api /health/ready is failing"
+          description: "The readiness probe (database reachable within 2s) has failed for 2 minutes."
+          runbook_url: "/docs/OBSERVABILITY.md#readinessfailing"
+
+      - alert: WebDown
+        expr: probe_success{job="probes",target="web"} == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "nginx (web) /healthz is failing"
+          description: "The web container does not answer /healthz."
+          runbook_url: "/docs/OBSERVABILITY.md#webdown"
+
+  - name: tm-postgres
+    rules:
+      - alert: PostgresDown
+        expr: pg_up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "postgres-exporter cannot reach PostgreSQL"
+          description: "pg_up is 0: the database is down or the exporter credentials are wrong."
+          runbook_url: "/docs/OBSERVABILITY.md#postgresdown"
+
+      - alert: PostgresConnectionsSaturation
+        expr: sum(pg_stat_activity_count) / max(pg_settings_max_connections) > 0.8
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL connections above 80% of max_connections"
+          description: "{{ $value | humanizePercentage }} of max_connections in use."
+          runbook_url: "/docs/OBSERVABILITY.md#postgresconnectionssaturation"
+
+      - alert: PostgresDeadlocks
+        expr: increase(pg_stat_database_deadlocks[10m]) > 0
+        labels:
+          severity: warning
+        annotations:
+          summary: "PostgreSQL deadlocks detected"
+          description: "{{ $value }} deadlocks in the last 10 minutes on database {{ $labels.datname }}."
+          runbook_url: "/docs/OBSERVABILITY.md#postgresdeadlocks"
+
+  - name: tm-observability-stack
+    rules:
+      - alert: ObservabilityTargetDown
+        expr: up{job=~"alloy|tempo|loki|prometheus|alertmanager|grafana|postgres"} == 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Observability target {{ $labels.job }} is down"
+          description: "Alloy cannot scrape {{ $labels.job }} ({{ $labels.instance }}) for 5 minutes."
+          runbook_url: "/docs/OBSERVABILITY.md#observabilitytargetdown"
+
+      - alert: RemoteWriteFailing
+        expr: rate(prometheus_remote_storage_samples_failed_total[5m]) > 0
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Alloy fails to remote-write samples to Prometheus"
+          description: "Samples are being dropped; dashboards will have gaps."
+          runbook_url: "/docs/OBSERVABILITY.md#remotewritefailing"

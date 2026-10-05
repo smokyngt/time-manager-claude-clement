@@ -1,0 +1,21 @@
+# Prometheus is a pure storage/rules engine here: Alloy scrapes every target and pushes samples
+# (and exemplars) through the remote-write receiver; Tempo's metrics-generator pushes span
+# metrics and service graphs the same way. Hence no scrape_configs.
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    stack: time-manager
+
+storage:
+  exemplars:
+    max_exemplars: 100000
+
+rule_files:
+  - /etc/prometheus/rules/*.yml
+
+alerting:
+  alertmanagers:
+    - scheme: http
+      static_configs:
+        - targets: ["alertmanager:9093"]

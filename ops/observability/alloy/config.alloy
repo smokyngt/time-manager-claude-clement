@@ -1,0 +1,256 @@
+// Grafana Alloy: the single telemetry gateway of the Time Manager stack.
+//
+//   api --OTLP--> alloy --> tempo                     (traces)
+//   api, db, ... /metrics --> alloy --remote_write--> prometheus   (metrics)
+//   docker logs --> alloy --> loki                    (logs)
+//
+// Environment: METRICS_TOKEN (bearer token of the api /metrics endpoint).
+
+logging {
+	level  = "info"
+	format = "logfmt"
+}
+
+// ---------------------------------------------------------------------------
+// Traces: OTLP in, batch, Tempo out
+// ---------------------------------------------------------------------------
+
+otelcol.receiver.otlp "default" {
+	grpc {
+		endpoint = "0.0.0.0:4317"
+	}
+
+	http {
+		endpoint = "0.0.0.0:4318"
+	}
+
+	output {
+		traces = [otelcol.processor.memory_limiter.default.input]
+	}
+}
+
+otelcol.processor.memory_limiter "default" {
+	check_interval         = "1s"
+	limit_percentage       = 80
+	spike_limit_percentage = 25
+
+	output {
+		traces = [otelcol.processor.batch.default.input]
+	}
+}
+
+otelcol.processor.batch "default" {
+	timeout             = "5s"
+	send_batch_size     = 1024
+	send_batch_max_size = 2048
+
+	output {
+		traces = [otelcol.exporter.otlp.tempo.input]
+	}
+}
+
+otelcol.exporter.otlp "tempo" {
+	client {
+		endpoint = "tempo:4317"
+
+		tls {
+			insecure = true
+		}
+	}
+}
+
+// ---------------------------------------------------------------------------
+// Metrics: scrape everything, remote_write to Prometheus
+// ---------------------------------------------------------------------------
+
+prometheus.remote_write "prometheus" {
+	endpoint {
+		url = "http://prometheus:9090/api/v1/write"
+	}
+}
+
+// API: prom-client default metrics, http_request_duration_seconds, tm_* counters.
+prometheus.scrape "api" {
+	job_name        = "api"
+	targets         = [{"__address__" = "api:8000", "instance" = "api"}]
+	metrics_path    = "/metrics"
+	scrape_interval = "15s"
+	scrape_timeout  = "10s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+
+	authorization {
+		type        = "Bearer"
+		credentials = sys.env("METRICS_TOKEN")
+	}
+}
+
+// PostgreSQL (read-only monitoring role, see ops/observability/postgres-exporter).
+prometheus.scrape "postgres" {
+	job_name        = "postgres"
+	targets         = [{"__address__" = "postgres-exporter:9187", "instance" = "db"}]
+	scrape_interval = "15s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+// Black-box probes: api readiness (checks the database), api liveness, nginx (web).
+// nginx stub_status is not enabled in web/nginx.conf, so nginx internals are not scraped;
+// the probe below still tells whether nginx serves requests (see docs/OBSERVABILITY.md).
+prometheus.exporter.blackbox "probes" {
+	config = "{ modules: { http_2xx: { prober: http, timeout: 5s, http: { method: GET, valid_status_codes: [200], preferred_ip_protocol: ip4 } } } }"
+
+	target {
+		name    = "api-readiness"
+		address = "http://api:8000/health/ready"
+		module  = "http_2xx"
+	}
+
+	target {
+		name    = "api-liveness"
+		address = "http://api:8000/health"
+		module  = "http_2xx"
+	}
+
+	target {
+		name    = "web"
+		address = "http://web:80/healthz"
+		module  = "http_2xx"
+	}
+}
+
+prometheus.scrape "probes" {
+	job_name        = "probes"
+	targets         = prometheus.exporter.blackbox.probes.targets
+	scrape_interval = "15s"
+	scrape_timeout  = "10s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+// The observability stack itself.
+prometheus.exporter.self "alloy" { }
+
+prometheus.scrape "alloy" {
+	job_name        = "alloy"
+	targets         = prometheus.exporter.self.alloy.targets
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "tempo" {
+	job_name        = "tempo"
+	targets         = [{"__address__" = "tempo:3200", "instance" = "tempo"}]
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "loki" {
+	job_name        = "loki"
+	targets         = [{"__address__" = "loki:3100", "instance" = "loki"}]
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "prometheus" {
+	job_name        = "prometheus"
+	targets         = [{"__address__" = "prometheus:9090", "instance" = "prometheus"}]
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "alertmanager" {
+	job_name        = "alertmanager"
+	targets         = [{"__address__" = "alertmanager:9093", "instance" = "alertmanager"}]
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+prometheus.scrape "grafana" {
+	job_name        = "grafana"
+	targets         = [{"__address__" = "grafana:3000", "instance" = "grafana"}]
+	scrape_interval = "30s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
+// ---------------------------------------------------------------------------
+// Logs: Docker containers labelled observability.logs=true -> Loki
+// ---------------------------------------------------------------------------
+
+discovery.docker "containers" {
+	host             = "unix:///var/run/docker.sock"
+	refresh_interval = "10s"
+
+	filter {
+		name   = "label"
+		values = ["observability.logs=true"]
+	}
+}
+
+// Only `service` becomes a Loki label (plus `level` below): low cardinality by design.
+discovery.relabel "logs" {
+	targets = discovery.docker.containers.targets
+
+	rule {
+		source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+		target_label  = "service"
+	}
+}
+
+loki.source.docker "containers" {
+	host             = "unix:///var/run/docker.sock"
+	targets          = discovery.relabel.logs.output
+	refresh_interval = "10s"
+	forward_to       = [loki.process.pipeline.receiver]
+}
+
+loki.process "pipeline" {
+	forward_to = [loki.write.loki.receiver]
+
+	// api: pino JSON lines. level -> label; request_id and trace_id -> structured metadata
+	// (searchable with `| trace_id="..."` without exploding the index).
+	stage.match {
+		selector = "{service=\"api\"}"
+
+		stage.json {
+			expressions = {
+				level      = "level",
+				request_id = "request_id",
+				trace_id   = "trace_id",
+			}
+		}
+
+		// pino emits numeric levels (30) or string labels depending on formatters; normalise both.
+		stage.template {
+			source   = "level"
+			template = `{{ $v := printf "%v" .Value }}{{ if eq $v "10" }}trace{{ else if eq $v "20" }}debug{{ else if eq $v "30" }}info{{ else if eq $v "40" }}warn{{ else if eq $v "50" }}error{{ else if eq $v "60" }}fatal{{ else if or (eq $v "<nil>") (eq $v "") }}unknown{{ else if eq $v "warning" }}warn{{ else }}{{ ToLower $v }}{{ end }}`
+		}
+
+		stage.labels {
+			values = {
+				level = "",
+			}
+		}
+
+		stage.structured_metadata {
+			values = {
+				request_id = "",
+				trace_id   = "",
+			}
+		}
+	}
+
+	// Everything else (postgres, nginx, ...) has no JSON level.
+	stage.match {
+		selector = "{service!=\"api\"}"
+
+		stage.static_labels {
+			values = {
+				level = "unknown",
+			}
+		}
+	}
+}
+
+loki.write "loki" {
+	endpoint {
+		url = "http://loki:3100/loki/api/v1/push"
+	}
+}

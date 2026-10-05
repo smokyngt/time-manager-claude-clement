@@ -4,6 +4,8 @@ import { createRoot } from 'react-dom/client'
 import { RouterProvider } from 'react-router'
 
 import './index.css'
+import { OfflineBanner } from '@/components/pwa/offline-banner'
+import { UpdatePrompt } from '@/components/pwa/update-prompt'
 import { Toaster } from '@/components/ui/sonner'
 import { queryClient } from '@/lib/query-client'
 import { ThemeProvider } from '@/lib/theme/theme-provider'
@@ -18,6 +20,8 @@ createRoot(root).render(
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={router} />
         <Toaster />
+        <UpdatePrompt />
+        <OfflineBanner />
       </QueryClientProvider>
     </ThemeProvider>
   </StrictMode>,

@@ -1,18 +1,24 @@
+import { trace } from '@opentelemetry/api';
+
 import { Config } from '@/config/index.js';
 
 import type { IncomingMessage } from 'node:http';
 
-export interface LoggerOptions {
+export type LoggerOptions = {
   level: string;
+  mixin: () => TraceFields;
   redact: { censor: string; paths: string[] };
   transport?: { options: { colorize: boolean; translateTime: string }; target: string };
-}
+};
+
+export type TraceFields = { span_id?: string; trace_id?: string };
 
 const REQUEST_ID_PATTERN = /^[\w-]{1,128}$/;
 
 export class Telemetry {
   public static readonly redacted: readonly string[] = [
     '*.access_token',
+    '*.current_password',
     '*.password',
     '*.refresh_token',
     'req.headers.authorization',
@@ -28,6 +34,7 @@ export class Telemetry {
   public static id(req: Pick<IncomingMessage, 'headers'>): string {
     const incoming = req.headers['x-request-id'];
     if (typeof incoming === 'string' && Telemetry.valid(incoming)) return incoming;
+
     return crypto.randomUUID();
   }
 
@@ -38,6 +45,7 @@ export class Telemetry {
   public static logger(): LoggerOptions {
     const options: LoggerOptions = {
       level: Config.store.text('LOG_LEVEL', 'info'),
+      mixin: () => Telemetry.trace(),
       redact: { censor: '[redacted]', paths: [...Telemetry.redacted] },
     };
     if (Config.store.text('NODE_ENV', 'development') === 'development') {
@@ -46,7 +54,19 @@ export class Telemetry {
         target: 'pino-pretty',
       };
     }
+
     return options;
+  }
+
+  /**
+   * @route telemetry.trace
+   * @returns {TraceFields}
+   */
+  public static trace(): TraceFields {
+    const context = trace.getActiveSpan()?.spanContext();
+    if (context === undefined || !trace.isSpanContextValid(context)) return {};
+
+    return { span_id: context.spanId, trace_id: context.traceId };
   }
 
   /**

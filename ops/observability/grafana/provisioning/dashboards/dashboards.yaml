@@ -1,0 +1,23 @@
+apiVersion: 1
+
+providers:
+  - name: time-manager
+    orgId: 1
+    type: file
+    folder: Time Manager
+    folderUid: tm-time-manager
+    disableDeletion: true
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards/time-manager
+  - name: infrastructure
+    orgId: 1
+    type: file
+    folder: Infrastructure
+    folderUid: tm-infrastructure
+    disableDeletion: true
+    allowUiUpdates: false
+    updateIntervalSeconds: 30
+    options:
+      path: /var/lib/grafana/dashboards/infrastructure

@@ -12,10 +12,22 @@ const build = async (probe: Probe, timeout?: number) => {
   return app;
 };
 
+const body = (raw: string): unknown => JSON.parse(raw);
+
 const apps: Awaited<ReturnType<typeof build>>[] = [];
 
 afterEach(async () => {
   await Promise.all(apps.splice(0).map((app) => app.close()));
+});
+
+describe('GET /health', () => {
+  it('returns ok without probing dependencies', async () => {
+    const app = await build(() => Promise.reject(new Error('down')));
+    apps.push(app);
+    const response = await app.inject({ method: 'GET', url: '/health' });
+    expect(response.statusCode).toBe(200);
+    expect(body(response.body)).toEqual({ status: 'ok' });
+  });
 });
 
 describe('GET /health/ready', () => {
@@ -24,7 +36,7 @@ describe('GET /health/ready', () => {
     apps.push(app);
     const response = await app.inject({ method: 'GET', url: '/health/ready' });
     expect(response.statusCode).toBe(200);
-    expect(response.json()).toEqual({ checks: { database: 'ok' }, status: 'ok' });
+    expect(body(response.body)).toEqual({ checks: { database: 'ok' }, status: 'ok' });
   });
 
   it('returns 503 when the database errors', async () => {
@@ -32,7 +44,7 @@ describe('GET /health/ready', () => {
     apps.push(app);
     const response = await app.inject({ method: 'GET', url: '/health/ready' });
     expect(response.statusCode).toBe(503);
-    expect(response.json()).toEqual({
+    expect(body(response.body)).toEqual({
       checks: { database: 'unavailable' },
       status: 'unavailable',
     });

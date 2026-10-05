@@ -17,7 +17,8 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
       preHandler: auth({ scopes: ['teams:read'] }),
       schema: {
         body: TeamMemberListBodySchema,
-        description: 'Cursor paginated list of the members of a team ordered by creation time. Admins, the manager of the team and its members.',
+        description:
+          'Cursor paginated list of the members of a team ordered by creation time. Admins, the manager of the team and its members.',
         params: TeamMemberIdParamsSchema,
         response: TeamMemberResponses.list,
         security: [{ bearerAuth: [] }],

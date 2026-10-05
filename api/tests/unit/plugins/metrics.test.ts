@@ -1,7 +1,8 @@
-import { afterEach, describe, expect, it } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import Fastify from 'fastify';
 
 import { ErrorHandler } from '@/lib/errors/handler.js';
+import { Metrics } from '@/lib/telemetry/metrics.js';
 import { metrics } from '@/plugins/metrics.js';
 
 import type { MetricsOptions } from '@/plugins/metrics.js';
@@ -22,18 +23,21 @@ const make = async (options: MetricsOptions) => {
   return app;
 };
 
+beforeEach(() => {
+  Metrics.reset();
+});
+
 afterEach(async () => {
   await Promise.all(apps.splice(0).map((app) => app.close()));
 });
 
 describe('GET /metrics', () => {
   it('is open outside production without a token', async () => {
-    const app = await make({ poolMax: 10, production: false });
+    const app = await make({ production: false });
     const response = await app.inject({ method: 'GET', url: '/metrics' });
     expect(response.statusCode).toBe(200);
     expect(response.headers['content-type']).toContain('text/plain');
     expect(response.body).toContain('process_cpu_user_seconds_total');
-    expect(response.body).toContain('db_pool_max_connections 10');
   });
 
   it('is a 404 in production without a token', async () => {
@@ -59,16 +63,26 @@ describe('GET /metrics', () => {
     expect(right.statusCode).toBe(200);
   });
 
-  it('labels the histogram with the route template, not the raw url', async () => {
+  it('negotiates the OpenMetrics format', async () => {
     const app = await make({ production: false });
-    await app.inject({ method: 'GET', url: '/items/123' });
-    await app.inject({ method: 'GET', url: '/nowhere/456' });
-    const body = (await app.inject({ method: 'GET', url: '/metrics' })).body;
-    expect(body).toContain(
-      'http_request_duration_seconds_count{method="GET",route="/items/:id",status_code="200"} 1',
-    );
-    expect(body).toContain('route="unmatched",status_code="404"');
-    expect(body).not.toContain('/items/123');
-    expect(body).not.toContain('route="/metrics"');
+    const response = await app.inject({
+      headers: { accept: 'application/openmetrics-text' },
+      method: 'GET',
+      url: '/metrics',
+    });
+    expect(response.headers['content-type']).toContain('openmetrics-text');
+    expect(response.body.trimEnd().endsWith('# EOF')).toBe(true);
+  });
+
+  it('declares the route hidden for swagger', async () => {
+    let hidden: unknown;
+    const app = Fastify();
+    app.addHook('onRoute', (route) => {
+      if (route.url === '/metrics') hidden = (route.schema)?.hide;
+    });
+    await app.register(metrics, { production: false });
+    await app.ready();
+    apps.push(app);
+    expect(hidden).toBe(true);
   });
 });

@@ -1,0 +1,76 @@
+# Unit tests: promtool test rules ops/observability/prometheus/tests/alerts.test.yml
+# (run from ops/observability/prometheus so the rule_files paths resolve).
+rule_files:
+  - ../rules/recording.yml
+  - ../rules/alerts.yml
+
+evaluation_interval: 15s
+
+tests:
+  - name: api down fires after one minute
+    interval: 15s
+    input_series:
+      - series: 'up{job="api",instance="api"}'
+        values: "1+0x4 0+0x20"
+    alert_rule_test:
+      - eval_time: 30s
+        alertname: ApiDown
+        exp_alerts: []
+      - eval_time: 3m
+        alertname: ApiDown
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              job: api
+              instance: api
+            exp_annotations:
+              summary: "API scrape target is down"
+              description: "Alloy cannot scrape api:8000/metrics (instance api) for 1 minute. The api is down, restarting, or METRICS_TOKEN does not match."
+              runbook_url: "/docs/OBSERVABILITY.md#apidown"
+
+  - name: 5xx ratio above 2 percent fires
+    interval: 15s
+    input_series:
+      # 2 req/s total, 10% of them 5xx.
+      - series: 'http_request_duration_seconds_count{job="api",route="/v1/users",method="GET",status_code="200"}'
+        values: "0+27x60"
+      - series: 'http_request_duration_seconds_count{job="api",route="/v1/users",method="GET",status_code="500"}'
+        values: "0+3x60"
+    promql_expr_test:
+      - expr: job:http_request_errors:ratio_rate5m
+        eval_time: 10m
+        exp_samples:
+          - labels: 'job:http_request_errors:ratio_rate5m{job="api"}'
+            value: 0.1
+    alert_rule_test:
+      - eval_time: 3m
+        alertname: ApiHighErrorRatio
+        exp_alerts: []
+      - eval_time: 12m
+        alertname: ApiHighErrorRatio
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              job: api
+            exp_annotations:
+              summary: "More than 2% of API responses are 5xx"
+              description: "5xx ratio is 10% over the last 5 minutes."
+              runbook_url: "/docs/OBSERVABILITY.md#apihigherrorratio"
+
+  - name: readiness probe failing fires
+    interval: 15s
+    input_series:
+      - series: 'probe_success{job="probes",target="api-readiness"}'
+        values: "1+0x4 0+0x30"
+    alert_rule_test:
+      - eval_time: 5m
+        alertname: ReadinessFailing
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              job: probes
+              target: api-readiness
+            exp_annotations:
+              summary: "api /health/ready is failing"
+              description: "The readiness probe (database reachable within 2s) has failed for 2 minutes."
+              runbook_url: "/docs/OBSERVABILITY.md#readinessfailing"

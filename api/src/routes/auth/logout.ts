@@ -10,7 +10,8 @@ export const logoutRoute: FastifyPluginAsync = async (fastify) => {
     '/logout',
     {
       schema: {
-        description: 'Authenticated by the tm_refresh cookie only, no access token needed. Revokes the refresh token family of the cookie, clears it and always answers 200, even without a valid cookie.',
+        description:
+          'Authenticated by the tm_refresh cookie only, no access token needed. Revokes the refresh token family of the cookie, clears it and always answers 200, even without a valid cookie.',
         response: AuthResponses.logout,
         summary: 'Sign out',
         tags: ['auth'],

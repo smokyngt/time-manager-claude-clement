@@ -2,7 +2,10 @@ import { and, eq, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { teamMembers } from '@/db/schema/team.js';
-import { TeamMemberNotFoundError, TeamMemberRemoveError } from '@/lib/errors/domains/team-member.js';
+import {
+  TeamMemberNotFoundError,
+  TeamMemberRemoveError,
+} from '@/lib/errors/domains/team-member.js';
 import { logService } from '@/services/log/index.js';
 
 import { TeamMemberAccess } from './access.js';

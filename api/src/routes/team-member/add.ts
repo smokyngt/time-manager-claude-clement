@@ -17,7 +17,8 @@ export const addRoute: FastifyPluginAsync = async (fastify) => {
       preHandler: auth({ scopes: ['teams:manage'] }),
       schema: {
         body: TeamMemberAddBodySchema,
-        description: 'Add up to 100 employees to a team. Archived or unknown users are reported in failed. Admins, or the manager of the team.',
+        description:
+          'Add up to 100 employees to a team. Archived or unknown users are reported in failed. Admins, or the manager of the team.',
         params: TeamMemberIdParamsSchema,
         response: TeamMemberResponses.add,
         security: [{ bearerAuth: [] }],

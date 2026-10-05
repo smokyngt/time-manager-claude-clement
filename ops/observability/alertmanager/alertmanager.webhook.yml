@@ -1,0 +1,24 @@
+# Used instead of alertmanager.yml when ALERT_WEBHOOK_URL is set. The URL is read from a file
+# written by entrypoint.sh so the secret never lands in a committed config.
+# The receiver speaks the generic Alertmanager webhook JSON (https://prometheus.io/docs/alerting/latest/configuration/#webhook_config);
+# adapt it with a bridge (e.g. alertmanager-to-slack) or point it at an incident tool that accepts it.
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: webhook
+  group_by: ["alertname", "severity"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+inhibit_rules:
+  - source_matchers: ['severity="critical"']
+    target_matchers: ['severity="warning"']
+    equal: ["alertname"]
+
+receivers:
+  - name: webhook
+    webhook_configs:
+      - url_file: /tmp/alert-webhook-url
+        send_resolved: true

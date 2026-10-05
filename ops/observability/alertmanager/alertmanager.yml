@@ -1,0 +1,21 @@
+# Default: alerts are grouped and dropped into a null receiver (visible in the Alertmanager UI
+# and in Grafana > Alerting). Set ALERT_WEBHOOK_URL in .env to switch to alertmanager.webhook.yml
+# (see entrypoint.sh) and push notifications to Slack/Teams/ntfy/PagerDuty-compatible endpoints.
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: "null"
+  group_by: ["alertname", "severity"]
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 4h
+
+inhibit_rules:
+  # A firing critical alert silences the warning of the same name.
+  - source_matchers: ['severity="critical"']
+    target_matchers: ['severity="warning"']
+    equal: ["alertname"]
+
+receivers:
+  - name: "null"

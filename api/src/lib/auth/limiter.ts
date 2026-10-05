@@ -53,7 +53,10 @@ export class Limiter {
       return;
     }
     if (Limiter.entries.size >= CAPACITY) Limiter.prune(now);
-    const window = Duration.seconds(Config.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'), 900);
+    const window = Duration.seconds(
+      Config.store.text('AUTH_ACCOUNT_RATE_LIMIT_WINDOW', '15m'),
+      900,
+    );
     Limiter.entries.set(key, { count: 1, reset: now + window * 1000 });
   }
 

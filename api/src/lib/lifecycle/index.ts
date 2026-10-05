@@ -1,19 +1,25 @@
 import { Tracing } from '@/lib/telemetry/tracing.js';
 
-export interface Closable {
+export type Closable = {
   end: (options?: { timeout?: number }) => Promise<void>;
-}
+};
 
 export type Runtime = Pick<NodeJS.Process, 'exit' | 'on'>;
 
-export interface ServerLike {
+export type ServerLike = {
   close: () => Promise<unknown>;
   log: {
     error: (payload: object, message: string) => void;
     fatal: (payload: object, message: string) => void;
     info: (payload: object, message: string) => void;
   };
-}
+};
+
+export type ShutdownParams = {
+  app: ServerLike;
+  runtime?: Runtime;
+  sql: Closable;
+};
 
 export class Lifecycle {
   public static readonly drain = 10_000;
@@ -33,12 +39,12 @@ export class Lifecycle {
 
   /**
    * @route lifecycle.shutdown
-   * @param {ServerLike} app
-   * @param {Closable} sql
-   * @param {Runtime} runtime
+   * @param {ShutdownParams} params
    * @returns {void}
    */
-  public static shutdown(app: ServerLike, sql: Closable, runtime: Runtime = process): void {
+  public static shutdown(params: ShutdownParams): void {
+    const { app, sql } = params;
+    const runtime = params.runtime ?? process;
     let stopping = false;
     const handle = (signal: string): void => {
       if (stopping) return;

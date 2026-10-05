@@ -1,9 +1,9 @@
-import { afterEach, describe, expect, it } from 'bun:test';
+import { trace } from '@opentelemetry/api';
+import { afterEach, describe, expect, it, spyOn } from 'bun:test';
 import { Writable } from 'node:stream';
 import pino from 'pino';
 
 import { Telemetry } from '@/lib/telemetry/index.js';
-import { Metrics } from '@/lib/telemetry/metrics.js';
 
 const original = { level: process.env.LOG_LEVEL, node: process.env.NODE_ENV };
 
@@ -64,18 +64,19 @@ describe('Telemetry.logger', () => {
     });
     const logger = pino({ redact: Telemetry.logger().redact }, stream);
     logger.info({
-      body: { access_token: 'AT', password: 'PW', refresh_token: 'RT' },
+      body: { access_token: 'AT', current_password: 'CP', password: 'PW', refresh_token: 'RT' },
       req: { headers: { authorization: 'Bearer SECRET', cookie: 'sid=SECRET' } },
       res: { headers: { 'set-cookie': 'sid=SECRET' } },
     });
     const output = lines.join('');
-    for (const secret of ['AT"', 'PW', 'RT"', 'SECRET']) expect(output).not.toContain(secret);
+    for (const secret of ['AT"', 'CP', 'PW', 'RT"', 'SECRET']) expect(output).not.toContain(secret);
     expect(output).toContain('[redacted]');
   });
 
   it('lists every required redaction path', () => {
     expect([...Telemetry.redacted]).toEqual([
       '*.access_token',
+      '*.current_password',
       '*.password',
       '*.refresh_token',
       'req.headers.authorization',
@@ -85,19 +86,22 @@ describe('Telemetry.logger', () => {
   });
 });
 
-describe('Metrics.gate', () => {
-  it('allows outside production without a token', () => {
-    expect(Metrics.gate({ header: undefined, production: false, token: undefined })).toBe('allow');
+describe('Telemetry.trace', () => {
+  it('is empty without an active span', () => {
+    expect(Telemetry.trace()).toEqual({});
   });
 
-  it('hides the endpoint in production without a token', () => {
-    expect(Metrics.gate({ header: 'Bearer x', production: true, token: undefined })).toBe('hide');
+  it('adds trace_id and span_id from the active span', () => {
+    const traceId = '0af7651916cd43dd8448eb211c80319c';
+    const spanId = 'b7ad6b7169203331';
+    const span = trace.wrapSpanContext({ spanId, traceFlags: 1, traceId });
+    const active = spyOn(trace, 'getActiveSpan').mockReturnValue(span);
+    const fields = Telemetry.trace();
+    active.mockRestore();
+    expect(fields).toEqual({ span_id: spanId, trace_id: traceId });
   });
 
-  it('requires the exact bearer token when configured', () => {
-    expect(Metrics.gate({ header: undefined, production: true, token: 's' })).toBe('deny');
-    expect(Metrics.gate({ header: 'Bearer nope', production: false, token: 's' })).toBe('deny');
-    expect(Metrics.gate({ header: 'Basic s', production: false, token: 's' })).toBe('deny');
-    expect(Metrics.gate({ header: 'Bearer s', production: true, token: 's' })).toBe('allow');
+  it('is wired as the logger mixin', () => {
+    expect(Telemetry.logger().mixin()).toEqual({});
   });
 });

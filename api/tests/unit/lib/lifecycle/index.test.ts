@@ -87,7 +87,7 @@ describe('Lifecycle.shutdown', () => {
 
   it('registers the four process handlers', () => {
     const { handlers, runtime } = makeRuntime();
-    Lifecycle.shutdown(makeApp([], async () => undefined), makeSql([]), runtime);
+    Lifecycle.shutdown({ app: makeApp([], async () => undefined), runtime, sql: makeSql([]) });
     expect([...handlers.keys()].sort()).toEqual([
       'SIGINT',
       'SIGTERM',
@@ -99,7 +99,11 @@ describe('Lifecycle.shutdown', () => {
   it('exits with the stop code once, ignoring repeated signals', async () => {
     const { exit, handlers, runtime } = makeRuntime();
     const order: string[] = [];
-    Lifecycle.shutdown(makeApp(order, async () => undefined), makeSql(order), runtime);
+    Lifecycle.shutdown({
+      app: makeApp(order, async () => undefined),
+      runtime,
+      sql: makeSql(order),
+    });
     handlers.get('SIGTERM')?.();
     handlers.get('SIGINT')?.();
     await Bun.sleep(20);
@@ -110,7 +114,7 @@ describe('Lifecycle.shutdown', () => {
   it('logs and exits 1 on unhandled rejection and uncaught exception', () => {
     const { exit, handlers, runtime } = makeRuntime();
     const app = makeApp([], async () => undefined);
-    Lifecycle.shutdown(app, makeSql([]), runtime);
+    Lifecycle.shutdown({ app, runtime, sql: makeSql([]) });
     handlers.get('unhandledRejection')?.(new Error('a'));
     handlers.get('uncaughtException')?.(new Error('b'));
     expect(app.log.fatal).toHaveBeenCalledTimes(2);
