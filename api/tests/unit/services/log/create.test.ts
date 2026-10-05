@@ -1,7 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor } from '../../../helpers/fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+import { actorOf, caught } from '../user/support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const fakeDb = new FakeDb();
@@ -19,7 +19,7 @@ const { create } = await import('@/services/log/create.js');
 
 describe('log.service.create', () => {
   it('stores the audit entry', async () => {
-    const actor = makeActor('manager');
+    const actor = actorOf('manager');
     const result = await create({ actor, event: 'user.created', metadata: { user_id: 'x' } });
     expect(result).toEqual({ success: true });
     expect(fakeDb.arg('insert', 'values')).toEqual({
@@ -44,7 +44,8 @@ describe('log.service.create', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(create({ actor: null, event: 'x' }));
-    expect(error.code).toBe('LOG_CREATE_ERROR');
+    expect(error.code).toBe('log.create.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('log.service.create');
   });

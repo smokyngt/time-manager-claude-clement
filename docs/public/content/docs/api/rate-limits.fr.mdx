@@ -1,0 +1,29 @@
+---
+title: Limites de débit
+description: Combien de requêtes vous pouvez envoyer, comment l'API vous identifie, et comment réagir à une erreur 429.
+---
+
+L'API limite le nombre de requêtes par fenêtre de temps. Lorsque vous dépassez une limite, elle renvoie `429` avec `rate.limit.exceeded` et un en-tête `Retry-After` qui donne le nombre de secondes à attendre.
+
+## Qui est compté
+
+Les requêtes authentifiées sont comptées par utilisateur. Les autres requêtes sont comptées par adresse IP.
+
+## Limites par défaut
+
+| Groupe | Valeur par défaut | Réglage |
+| --- | --- | --- |
+| Utilisateurs | 100 par minute | `USER_RATE_LIMIT_MAX`, `USER_RATE_LIMIT_WINDOW` |
+| Authentification | 100 par minute | `AUTH_RATE_LIMIT_MAX`, `AUTH_RATE_LIMIT_WINDOW` |
+| Connexion | 10 par minute et par adresse IP | `AUTH_LOGIN_RATE_LIMIT_MAX`, `AUTH_LOGIN_RATE_LIMIT_WINDOW` |
+| Tentatives de connexion par compte | 5 échecs par 15 minutes | `AUTH_ACCOUNT_RATE_LIMIT_MAX`, `AUTH_ACCOUNT_RATE_LIMIT_WINDOW` |
+
+Les routes de santé et `/metrics` ne sont pas limitées. La personne qui exploite l'instance peut modifier les limites ; voir la [configuration](../platform/configuration). Chaque groupe de ressources applique ses propres `<GROUP>_RATE_LIMIT_MAX` et `<GROUP>_RATE_LIMIT_WINDOW`, avec 100 par minute par défaut.
+
+## Que faire face à une 429
+
+1. Arrêtez d'envoyer des requêtes pendant le nombre de secondes indiqué par `Retry-After`.
+2. Réessayez. Ne réessayez pas en boucle serrée.
+3. Si vous envoyez beaucoup de requêtes, regroupez-les avec les routes en masse jusqu'à 100 identifiants.
+
+Le SDK lève une `RateLimitError` avec une propriété `retryAfter`. Voir la [gestion des erreurs](../sdks/error-handling).

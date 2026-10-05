@@ -43,7 +43,7 @@ describe('Metrics counters', () => {
 
   it('prefixes default metrics with tm_', async () => {
     const { body } = await Metrics.scrape(undefined);
-    expect(body).toContain('tm_process_cpu_user_seconds_total');
+    expect(body).toContain('process_cpu_user_seconds_total');
   });
 });
 

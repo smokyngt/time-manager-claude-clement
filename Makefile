@@ -5,7 +5,7 @@ COMPOSE_BAK := $(COMPOSE) -f docker-compose.yml -f docker-compose.backup.yml
 
 .DEFAULT_GOAL := help
 .PHONY: help dev up down logs migrate seed demo rotate-keys purge-sessions \
-        obs-up obs-down backup-up load-smoke docs ci
+        obs-up obs-down backup-up load-smoke load load-stress load-spike load-soak docs ci
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -49,6 +49,18 @@ backup-up: ## Start the prod stack with scheduled PostgreSQL backups
 
 load-smoke: ## k6 smoke test (BASE_URL=http://localhost:8000 by default)
 	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/smoke.js
+
+load: ## k6 load test, 50 virtual users
+	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/load.js
+
+load-stress: ## k6 stress test
+	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/stress.js
+
+load-spike: ## k6 spike test
+	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/spike.js
+
+load-soak: ## k6 soak test, 30 minutes
+	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/soak.js
 
 docs: ## Build the three docs sites (openapi, typedocs, public)
 	cd docs/openapi && bun install --frozen-lockfile && bun run build

@@ -1,7 +1,8 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor, MISSING_ID, OTHER_ID } from '../../../helpers/fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+
+import { actorOf, caught, MISSING_ID, OTHER_ID, rowOf } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -25,15 +26,15 @@ afterEach(() => {
 
 const { remove } = await import('@/services/user/delete.js');
 
-const actor = makeActor('admin');
+const actor = actorOf('admin');
 
 describe('user.service.delete', () => {
-  it('deletes the user and writes an audit log', async () => {
+  it('revokes sessions, deletes the user and writes an audit log', async () => {
     fakeDb.enqueue([], [{ id: OTHER_ID }]);
     const result = await remove({ actor, id: OTHER_ID });
     expect(result).toEqual({ success: true });
-    const set = fakeDb.arg('update', 'set') as Record<string, unknown>;
-    expect(typeof set['revoked_at']).toBe('number');
+    expect(fakeDb.calls.filter((call) => call.op === 'update' && call.method === 'set')).toHaveLength(1);
+    expect(fakeDb.calls.some((call) => call.op === 'delete' && call.method === 'where')).toBe(true);
     expect(logCreate).toHaveBeenCalledWith({
       actor,
       event: 'user.deleted',
@@ -41,10 +42,10 @@ describe('user.service.delete', () => {
     });
   });
 
-  it('throws USER_NOT_FOUND when nothing was deleted', async () => {
+  it('throws user.not.found when nothing is deleted', async () => {
     fakeDb.enqueue([], []);
     const error = await caught(remove({ actor, id: MISSING_ID }));
-    expect(error.code).toBe('USER_NOT_FOUND');
+    expect(error.code).toBe('user.not.found');
     expect(error.status).toBe(404);
     expect(logCreate).not.toHaveBeenCalled();
   });
@@ -53,7 +54,7 @@ describe('user.service.delete', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(remove({ actor, id: OTHER_ID }));
-    expect(error.code).toBe('USER_DELETE_ERROR');
+    expect(error.code).toBe('user.delete.failed');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('user.service.delete');
   });

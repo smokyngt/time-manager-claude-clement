@@ -1,0 +1,46 @@
+---
+title: Scopes
+description: Les scopes requis par chaque route et les scopes détenus par chaque rôle.
+---
+
+Un scope est une permission large que l'API vérifie avant l'exécution d'une route. Chaque rôle détient un ensemble fixe de scopes, et le jeton d'accès ne les transporte pas : l'API les déduit du rôle.
+
+Les réponses de connexion, de rafraîchissement et de `GET /v1/auth/me` listent vos scopes dans `scopes`. Une route qui exige un scope que vous ne détenez pas renvoie `403`.
+
+## Scopes par rôle
+
+| Scope | `employee` | `manager` | `admin` |
+| --- | :-: | :-: | :-: |
+| `auth:self` | oui | oui | oui |
+| `users:read` | oui | oui | oui |
+| `users:write` | oui | oui | oui |
+| `users:manage` | non | oui | oui |
+| `teams:read` | oui | oui | oui |
+| `teams:manage` | non | oui | oui |
+| `clocks:read` | oui | oui | oui |
+| `clocks:write` | oui | oui | oui |
+| `clocks:manage` | non | oui | oui |
+| `reports:read` | oui | oui | oui |
+
+Les managers et les admins détiennent les mêmes scopes. Ils diffèrent par les enregistrements qu'ils peuvent atteindre, et par qui peut changer les rôles ou supprimer des équipes. Voir les [rôles](../getting-started/concepts/roles).
+
+## Scopes par route
+
+| Route | Scope |
+| --- | --- |
+| `POST /v1/auth/logout`, `GET /v1/auth/me` | `auth:self` |
+| `GET /v1/users/:id` | `users:read` |
+| `PATCH /v1/users` | `users:write` |
+| `POST /v1/users/new`, `/list`, `/:id/archive`, `/:id/restore`, `DELETE /v1/users` | `users:manage` |
+| `POST /v1/teams/list`, `GET /v1/teams/:id`, `POST /v1/teams/:id/members/list` | `teams:read` |
+| `POST /v1/teams/new`, `PATCH /v1/teams`, `DELETE /v1/teams`, archive, restore, `members/add`, `members/remove` | `teams:manage` |
+| `POST /v1/clocks/in`, `/out` | `clocks:write` |
+| `GET /v1/clocks/current`, `POST /v1/clocks/list`, `GET /v1/clocks/:id` | `clocks:read` |
+| `POST /v1/clocks/new`, `PATCH /v1/clocks`, `DELETE /v1/clocks` | `clocks:manage` |
+| `POST /v1/reports/user`, `POST /v1/reports/team` | `reports:read` |
+
+## Les scopes ne suffisent pas
+
+Un scope permet à une requête d'atteindre la route. Une seconde vérification décide ensuite si vous pouvez agir sur l'enregistrement visé : vous-même, un utilisateur géré ou une équipe que vous gérez. Un employé détient `users:write` et peut modifier son propre profil, mais pas celui d'un autre utilisateur.
+
+Pour les modifications de son propre profil, les employés ne peuvent changer que `first_name`, `last_name`, `phone_number` et `password`. Changer son propre `email` ou `role` est refusé.

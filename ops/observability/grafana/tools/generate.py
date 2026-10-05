@@ -967,7 +967,7 @@ def runtime() -> dict:
                  [target(f"nodejs_heap_space_size_used_bytes{j}", "{{space}}")], "bytes", stack=True, legend="table"), 12, 7)
 
     b.row("Database pool", collapsed=True)
-    b.add(stat("Pool max connections", "Configured DATABASE_POOL_MAX of the API (db_pool_max_connections).", f"max(db_pool_max_connections{j})", "short",
+    b.add(stat("Pool max connections", "Configured DATABASE_POOL_MAX of the API (tm_db_pool_max_connections).", f"max(tm_db_pool_max_connections{j})", "short",
                [(None, C_INFO)], spark=False), 6, 4)
     b.add(series("Readiness probe duration", "Duration of GET /health/ready, dominated by the database round trip.",
                  [target('probe_duration_seconds{job="probes",target="api-readiness"}', "readiness")], "s"), 18, 7)

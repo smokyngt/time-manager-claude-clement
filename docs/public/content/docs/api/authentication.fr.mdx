@@ -1,0 +1,70 @@
+---
+title: Authentification
+description: Les points d'accès d'authentification, la durée des jetons, le cookie de rafraîchissement et le déroulement de la connexion Microsoft.
+---
+
+Toutes les routes d'authentification se trouvent sous `/v1/auth`. Il n'y a pas d'inscription publique : un manager ou un admin crée chaque compte.
+
+| Méthode et chemin | Scope | Rôle |
+| --- | --- | --- |
+| `POST /login` | aucun | Se connecter avec e-mail et mot de passe. |
+| `POST /refresh` | aucun, utilise le cookie | Faire tourner le jeton de rafraîchissement et émettre un nouveau jeton d'accès. |
+| `POST /logout` | `auth:self` | Terminer la session courante. |
+| `GET /me` | `auth:self` | Renvoyer l'utilisateur connecté. |
+| `GET /microsoft` | aucun | Démarrer la connexion Microsoft (redirection `302`). |
+| `GET /microsoft/callback` | aucun | Terminer la connexion Microsoft (redirection `302` vers l'application web). |
+
+## Se connecter
+
+```bash
+curl -i -X POST http://localhost:8080/v1/auth/login \
+  -H 'Content-Type: application/json' \
+  -d '{ "email": "jane.doe@example.com", "password": "correct-horse-battery" }'
+```
+
+La réponse renvoie la session dans `data` :
+
+| Champ | Signification |
+| --- | --- |
+| `access_token` | Un JWT à envoyer comme jeton Bearer. |
+| `expires_in` | Durée de vie en secondes, `900` par défaut. |
+| `token_type` | Toujours `Bearer`. |
+| `scopes` | Les [scopes](./scopes) du rôle de l'utilisateur. |
+| `user` | L'utilisateur connecté. |
+
+La réponse définit aussi le cookie `tm_refresh`.
+
+## Jetons
+
+| Jeton | Durée de vie | Emplacement |
+| --- | --- | --- |
+| Jeton d'accès | 15 minutes (`JWT_ACCESS_TTL`) | En mémoire. Envoyé dans l'en-tête `Authorization`. |
+| Jeton de rafraîchissement | 7 jours (`JWT_REFRESH_TTL`) | Dans le cookie `tm_refresh` : `HttpOnly`, `SameSite=Lax`, `Secure` en production, chemin `/v1/auth`. |
+
+Le jeton d'accès contient l'identifiant et le rôle de l'utilisateur. L'API déduit les [scopes](./scopes) du rôle : un changement de rôle vous parvient donc au prochain rafraîchissement.
+
+## Rafraîchissement
+
+Appelez `POST /v1/auth/refresh` avec le cookie et sans corps. Vous recevez un nouveau jeton d'accès et un nouveau cookie, et le jeton de rafraîchissement précédent cesse de fonctionner. Présenter un jeton déjà remplacé révoque toute la session et renvoie `401`. L'utilisateur se reconnecte alors.
+
+Un rafraîchissement échoue avec `auth.session.invalid` (401) lorsque le jeton est inconnu, expiré ou réutilisé, ou lorsque l'utilisateur a été archivé. L'API efface alors le cookie.
+
+## Se connecter avec Microsoft
+
+La connexion Microsoft est facultative et ne fonctionne que pour les utilisateurs enregistrés. Naviguez le navigateur vers `GET /v1/auth/microsoft` ; ne l'appelez pas avec `fetch`. Microsoft demande à l'utilisateur de se connecter, puis redirige vers le callback. L'API redirige ensuite le navigateur vers l'application web, qui appelle `POST /v1/auth/refresh` pour obtenir un jeton d'accès.
+
+Échecs possibles :
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `auth.microsoft.unavailable` | 503 | Le serveur n'a pas de configuration Microsoft. |
+| `auth.microsoft.unknown.user` | 403 | Aucun compte ne correspond à cette identité Microsoft. Demandez à un manager de le créer. |
+| `auth.microsoft.rejected` | 401 | Microsoft a rejeté la connexion. |
+
+## Se déconnecter
+
+`POST /v1/auth/logout` termine la session et efface le cookie. Supprimez le jeton d'accès côté client ; il reste valide jusqu'à son expiration.
+
+## Limites
+
+`POST /login` est limité par défaut à 10 requêtes par minute et par adresse IP, ainsi qu'à un nombre de tentatives échouées par compte. Voir les [limites de débit](./rate-limits).

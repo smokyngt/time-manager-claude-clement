@@ -1,4 +1,5 @@
 import { TokenAuthenticationError, UnauthorizedError } from '@/lib/errors/base/core.js';
+import { TeamMemberAccess } from '@/utils/auth/access/team-member.js';
 import { UserAccess } from '@/utils/auth/access/user.js';
 
 import type { Scope } from '@/config/auth/scopes.js';
@@ -40,6 +41,7 @@ class RoleAccess {
 
 export class Access {
   public static readonly role = new RoleAccess();
+  public static readonly teamMember = new TeamMemberAccess();
   public static readonly user = new UserAccess();
 
   /**

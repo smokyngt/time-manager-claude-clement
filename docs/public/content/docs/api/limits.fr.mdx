@@ -1,0 +1,52 @@
+---
+title: Limites
+description: Longueurs de champs, formats et limites de requêtes appliqués par l'API.
+---
+
+L'API valide chaque requête selon ces limites. Une valeur hors limites renvoie `400` avec `validation.error` et le champ en cause dans `errors[]`.
+
+## Limites de requêtes
+
+| Limite | Valeur |
+| --- | --- |
+| Identifiants par requête en masse (`ids`, `user_ids`) | de 1 à 100 |
+| Taille de page (`limit`) | de 1 à 100, 25 par défaut |
+| Longueur du curseur | jusqu'à 200 caractères |
+| Profondeur d'imbrication JSON | 10 niveaux |
+| Plage d'un rapport | jusqu'à 366 jours |
+| Durée d'un pointage | jusqu'à 24 heures |
+
+## Utilisateurs
+
+| Champ | Limite |
+| --- | --- |
+| `email` | adresse valide, jusqu'à 254 caractères, unique, stockée en minuscules |
+| `first_name`, `last_name` | de 1 à 100 caractères : lettres, espaces, apostrophes, points et traits d'union |
+| `phone_number` | de 6 à 20 caractères : chiffres, espaces, `+`, `(`, `)`, `.` et `-` |
+| `password` | de 10 à 128 caractères |
+| `role` | `employee`, `manager` ou `admin` |
+
+## Équipes
+
+| Champ | Limite |
+| --- | --- |
+| `name` | de 1 à 100 caractères |
+| `description` | de 1 à 500 caractères, ou `null` |
+| `weekly_hours_target` | entier de 1 à 80, 35 par défaut |
+| `work_start`, `work_end` | `HH:MM`, format 24 heures ; `work_end` postérieur à `work_start` |
+
+## Pointages
+
+| Champ | Limite |
+| --- | --- |
+| `clocked_in_at` | millisecondes epoch, pas dans le futur |
+| `clocked_out_at` | postérieur à `clocked_in_at`, pas dans le futur, au plus 24 heures plus tard |
+| `note` | de 1 à 500 caractères, ou `null` |
+
+## Rapports
+
+| Champ | Limite |
+| --- | --- |
+| `from` | millisecondes epoch, inclus |
+| `to` | millisecondes epoch, exclu, au plus 366 jours après `from` |
+| `granularity` | `day`, `week` ou `month` |

@@ -1,7 +1,8 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { caught, makeActor, makeRow, MISSING_ID, OTHER_ID } from '../../../helpers/fixtures.js';
+import { FakeDb } from '../../../support/db.js';
+
+import { actorOf, caught, MISSING_ID, OTHER_ID, rowOf } from './support.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -25,14 +26,20 @@ afterEach(() => {
 
 const { restore } = await import('@/services/user/restore.js');
 
-const actor = makeActor('admin');
+const actor = actorOf('admin');
 
 describe('user.service.restore', () => {
-  it('clears archived_at and writes an audit log', async () => {
-    fakeDb.enqueue([makeRow()]);
+  it('restores the user and writes an audit log', async () => {
+    fakeDb.enqueue([rowOf({ archived_at: 1 })]);
     const { user } = await restore({ actor, id: OTHER_ID });
-    expect((fakeDb.arg('update', 'set') as Record<string, unknown>)['archived_at']).toBeNull();
-    expect(user.archived_at).toBeNull();
+    const values = fakeDb.arg('update', 'set') as Record<string, unknown>;
+    expect(values['archived_at']).toBeNull();
+    expect(typeof values['updated_at']).toBe('number');
+    expect(user.id).toBe(OTHER_ID);
+    expect(user.first_name).toBe('Jane');
+    expect(user).not.toHaveProperty('password_hash');
+    expect(user).not.toHaveProperty('email_hash');
+    expect(fakeDb.calls.filter((call) => call.op === 'update' && call.method === 'set')).toHaveLength(1);
     expect(logCreate).toHaveBeenCalledWith({
       actor,
       event: 'user.restored',
@@ -40,10 +47,11 @@ describe('user.service.restore', () => {
     });
   });
 
-  it('throws USER_NOT_FOUND when the user does not exist', async () => {
+  it('throws user.not.found when nothing matches', async () => {
     fakeDb.enqueue([]);
     const error = await caught(restore({ actor, id: MISSING_ID }));
-    expect(error.code).toBe('USER_NOT_FOUND');
+    expect(error.code).toBe('user.not.found');
+    expect(error.status).toBe(404);
     expect(logCreate).not.toHaveBeenCalled();
   });
 
@@ -51,7 +59,8 @@ describe('user.service.restore', () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
     const error = await caught(restore({ actor, id: OTHER_ID }));
-    expect(error.code).toBe('USER_RESTORE_ERROR');
+    expect(error.code).toBe('user.restore.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('user.service.restore');
   });

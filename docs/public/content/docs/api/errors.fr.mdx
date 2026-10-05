@@ -1,0 +1,122 @@
+---
+title: Erreurs
+description: Le corps d'erreur, la lecture des échecs de validation, et chaque code d'erreur regroupé par ressource.
+---
+
+Les requêtes en échec renvoient un statut non `2xx` et un corps de problème à la place de l'enveloppe de succès.
+
+```json
+{
+  "code": "team.not.found",
+  "correlation_id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+  "instance": "/v1/teams/5d1f2c88-3a41-4b7e-8f0a-6c2d9e7b4a31",
+  "status": 404,
+  "timestamp": 1767225600000
+}
+```
+
+| Champ | Signification |
+| --- | --- |
+| `code` | Un code stable, lisible par une machine. Raisonnez sur lui, jamais sur le texte. |
+| `correlation_id` | L'identifiant de la requête. Communiquez-le lorsque vous signalez un problème. |
+| `instance` | Le chemin de la requête. |
+| `status` | Le statut HTTP. |
+| `errors` | Les échecs par champ, présents uniquement sur `validation.error`. |
+| `metadata` | Détails de diagnostic, présents hors production uniquement. |
+
+Les codes sont en minuscules séparées par des points : `<resource>.<problem>`. La liste ci-dessous est l'ensemble que le SDK expose sous `ErrorCodes`.
+
+## Échecs de validation
+
+Un `400` avec `validation.error` porte `errors[]`. Chaque entrée contient le mot-clé en échec, l'emplacement et ses paramètres :
+
+```json
+{
+  "code": "validation.error",
+  "status": 400,
+  "errors": [
+    { "code": "maxLength", "path": "body.name", "params": { "limit": 100 } }
+  ]
+}
+```
+
+## Statuts
+
+| Statut | Signification |
+| --- | --- |
+| `400` | La requête est invalide. |
+| `401` | Le jeton est absent, invalide ou expiré. |
+| `403` | Vous voyez l'enregistrement mais n'avez pas le droit de faire cela. |
+| `404` | L'enregistrement n'existe pas, ou vous ne pouvez pas le voir. |
+| `409` | La requête est en conflit avec l'état courant. |
+| `429` | Vous avez envoyé trop de requêtes. Voir les [limites de débit](./rate-limits). |
+| `500` | Échec inattendu. Signalez le `correlation_id`. |
+| `503` | Une fonctionnalité n'est pas configurée, par exemple la connexion Microsoft. |
+
+## Codes généraux
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `validation.error` | 400 | Un champ est manquant ou hors de ses [limites](./limits). |
+| `json.invalid` | 400 | Le corps n'est pas du JSON valide. |
+| `token.authentication.failed` | 401 | Le jeton d'accès est absent, invalide ou expiré. Rafraîchissez-le. |
+| `unauthorized` | 403 | Vous n'avez pas le droit de faire cela. |
+| `route.not.found` | 404 | La route n'existe pas. |
+| `duplicate.key` | 409 | Une valeur unique existe déjà. |
+| `rate.limit.exceeded` | 429 | Trop de requêtes. |
+| `internal.unexpected` | 500 | Échec inattendu. |
+
+## Authentification
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `auth.invalid.credentials` | 401 | L'e-mail ou le mot de passe est incorrect. |
+| `auth.session.invalid` | 401 | Le jeton de rafraîchissement est invalide, expiré ou réutilisé. |
+| `auth.microsoft.rejected` | 401 | Microsoft a rejeté la connexion. |
+| `auth.microsoft.unknown.user` | 403 | Aucun compte ne correspond à l'identité Microsoft. |
+| `auth.microsoft.unavailable` | 503 | La connexion Microsoft n'est pas configurée. |
+
+## Utilisateurs
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `user.not.found` | 404 | L'utilisateur n'existe pas ou n'est pas visible. |
+| `user.conflict` | 409 | Un utilisateur avec cet e-mail existe déjà. |
+| `user.password.invalid` | 403 | Le mot de passe actuel est absent ou incorrect. |
+
+## Équipes et membres
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `team.not.found` | 404 | L'équipe n'existe pas ou n'est pas visible. |
+| `team.manager.invalid` | 400 | Le manager doit être un `manager` ou un `admin` actif. |
+| `team.schedule.invalid` | 400 | `work_end` doit être postérieur à `work_start`. |
+| `team.member.not.found` | 404 | L'utilisateur n'est pas membre de cette équipe. |
+| `team.member.team.not.found` | 404 | L'équipe n'existe pas. |
+| `team.member.user.not.found` | 404 | L'utilisateur n'existe pas. |
+| `team.member.team.archived` | 409 | L'équipe est archivée. |
+| `team.member.user.archived` | 409 | L'utilisateur est archivé. |
+
+## Pointages
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `clock.not.found` | 404 | Le pointage n'existe pas ou n'est pas visible. |
+| `clock.conflict` | 409 | L'état du pointage ne permet pas cette action : déjà pointé, ou pas pointé. |
+| `clock.overlap` | 409 | Le pointage chevauche un autre pointage du même utilisateur. |
+| `clock.invalid` | 400 | Les horodatages sont invalides : départ avant l'arrivée, dans le futur, ou durée supérieure à 24 heures. |
+
+## Rapports
+
+| Code | Statut | Signification |
+| --- | --- | --- |
+| `report.invalid` | 400 | La plage est invalide, par exemple supérieure à 366 jours. |
+| `report.team.not.found` | 404 | L'équipe n'existe pas ou n'est pas visible. |
+
+## Échecs d'opération
+
+Chaque opération a aussi un code `<resource>.<operation>.failed`, comme `team.create.failed` ou `clock.in.failed`, avec le statut `500`. Il signale un échec inattendu pendant cette opération. Signalez le `correlation_id`.
+
+## Codes par élément
+
+Les réponses en masse signalent les échecs par élément sous la forme `{ id, code }` avec les mêmes codes. Voir la [sémantique des opérations en masse](./overview#bulk-semantics).

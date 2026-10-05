@@ -1195,7 +1195,7 @@
       "panels": [
         {
           "title": "Pool max connections",
-          "description": "Configured DATABASE_POOL_MAX of the API (db_pool_max_connections).",
+          "description": "Configured DATABASE_POOL_MAX of the API (tm_db_pool_max_connections).",
           "type": "stat",
           "targets": [
             {
@@ -1204,7 +1204,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "max(db_pool_max_connections{job=\"api\"})",
+              "expr": "max(tm_db_pool_max_connections{job=\"api\"})",
               "legendFormat": "__auto",
               "range": false,
               "refId": "A",

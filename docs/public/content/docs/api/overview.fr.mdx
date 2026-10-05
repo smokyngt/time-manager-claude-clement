@@ -1,0 +1,101 @@
+---
+title: Vue d'ensemble
+description: URL de base, conventions de requête, enveloppe de réponse, pagination et sémantique des opérations en masse de l'API Time Manager.
+---
+
+L'API échange du JSON en HTTPS. Chaque route se trouve sous `/v1`, et chaque champ utilise `snake_case`.
+
+## URL de base
+
+| Environnement | URL de base |
+| --- | --- |
+| Stack de production (Docker Compose) | `http://localhost:8080/v1` |
+| Stack de développement | `http://localhost:8000/v1` |
+| Votre déploiement | `https://your-domain/v1` |
+
+Une référence interactive est servie sur `/docs` côté API, et le document OpenAPI sur `/docs/json`. `GET /health` indique que le processus tourne, et `GET /health/ready` indique que ses dépendances sont disponibles.
+
+## Requêtes
+
+- Envoyez `Content-Type: application/json` sur les requêtes avec un corps.
+- Envoyez `Authorization: Bearer <access_token>` sur chaque route sauf `login`, `refresh` et les routes Microsoft. Voir l'[authentification](./authentication).
+- Les horodatages sont des millisecondes epoch en UTC. Les filtres de liste acceptent aussi des date-heures ISO 8601.
+- Envoyez un en-tête `x-request-id` (jusqu'à 128 caractères : lettres, chiffres, `_` et `-`) pour choisir votre propre identifiant de corrélation. Sinon l'API en génère un.
+
+Les opérations suivent un même schéma pour chaque ressource :
+
+| Opération | Méthode et chemin |
+| --- | --- |
+| création | `POST /new` |
+| liste | `POST /list` |
+| lecture | `GET /:id` |
+| mise à jour | `PATCH /` avec `{ ids, data }` |
+| archivage, restauration | `POST /:id/archive`, `POST /:id/restore` |
+| suppression | `DELETE /` avec `{ ids }` |
+
+Les entrées sont validées strictement. Les champs inconnus sont retirés, les chaînes sont nettoyées des espaces en bordure et les caractères de contrôle sont supprimés. Un corps de requête peut comporter au plus 10 niveaux d'imbrication.
+
+## Enveloppe de réponse
+
+Chaque succès renvoie `200` avec cette enveloppe :
+
+```json
+{
+  "data": {
+    "team": { "id": "5d1f2c88-3a41-4b7e-8f0a-6c2d9e7b4a31", "object": "team" }
+  },
+  "event": {
+    "code": "team.created",
+    "correlation_id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10",
+    "metadata": {},
+    "payload": { "actor": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10" }
+  },
+  "timestamp": 1767225600000
+}
+```
+
+`data` est toujours un objet nommé, comme `{ team }`, `{ clock }`, `{ items, more, next, total }` ou `{ success, updated, failed }`. `event.code` indique ce qui s'est passé, et `event.correlation_id` est l'identifiant à communiquer lorsque vous signalez un problème. Les échecs utilisent une autre forme ; voir les [erreurs](./errors).
+
+## Pagination
+
+Les routes de liste utilisent une pagination par curseur. Elles acceptent ces champs dans le corps :
+
+| Champ | Signification | Limite |
+| --- | --- | --- |
+| `limit` | Taille de page. | De 1 à 100, 25 par défaut. |
+| `cursor` | La valeur `next` de la page précédente. | Jusqu'à 200 caractères. |
+| `order` | `asc` ou `desc` sur `created_at`. | `desc` par défaut. |
+
+La réponse est `{ items, more, next, total }`. `more` indique si une autre page existe, `next` est le curseur à envoyer pour l'obtenir (`null` sur la dernière page), et `total` compte tous les éléments qui correspondent à vos filtres.
+
+```json
+{ "limit": 50, "cursor": "MTc2NzIyNTYwMDAwMC4wYjNm..." }
+```
+
+Traitez le curseur comme opaque. Arrêtez-vous lorsque `more` vaut `false`.
+
+## Sémantique des opérations en masse [#bulk-semantics]
+
+`update` et `delete` acceptent jusqu'à 100 identifiants. Les doublons sont ignorés, et une liste vide ou de plus de 100 identifiants renvoie `400`.
+
+L'API traite une requête en masse dans cet ordre :
+
+1. Elle vérifie que vous pouvez agir sur chaque identifiant. Si un identifiant est visible pour vous mais non autorisé, toute la requête échoue avec `403` et rien ne change.
+2. Les identifiants qui n'existent pas, ou que vous ne pouvez pas voir, sont signalés dans `failed` avec un code `.not.found`. Les autres sont tout de même traités.
+3. Chaque identifiant restant est traité séparément. Un identifiant qui échoue, par exemple à cause d'un chevauchement, est signalé dans `failed` et n'arrête pas les autres.
+
+La réponse détaille le résultat :
+
+```json
+{
+  "success": false,
+  "updated": ["5d1c8f0e-2b7a-4c3e-9f41-8a6d3b2c9e77"],
+  "failed": [{ "id": "0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10", "code": "clock.overlap" }]
+}
+```
+
+`success` vaut `true` uniquement lorsque `failed` est vide. La liste des identifiants traités s'appelle `updated`, `deleted`, `added` ou `removed` selon l'opération. Lisez toujours `failed` : une réponse `200` ne signifie pas que tous les identifiants ont réussi.
+
+## Archiver et supprimer
+
+Archiver renseigne `archived_at` et conserve l'enregistrement. Les enregistrements archivés sont masqués des listes sauf si vous filtrez avec `archived: true`, et vous pouvez les restaurer. Supprimer est définitif.

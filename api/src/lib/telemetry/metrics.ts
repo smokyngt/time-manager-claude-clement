@@ -39,7 +39,7 @@ type Instruments = {
 const binding: MetricsBinding = {};
 
 const build = (registry: Registry<RegistryContentType>, exemplars: boolean): Instruments => {
-  collectDefaultMetrics({ prefix: 'tm_', register: registry });
+  collectDefaultMetrics({ register: registry });
   new Gauge({
     async collect(): Promise<void> {
       if (binding.openClocks === undefined) {

@@ -1,16 +1,14 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import {
-  ADMIN_ID,
-  caught,
-  makeActor,
-  makeReply,
-  makeReq,
-  MISSING_ID,
-  OTHER_ID,
-} from '../../../helpers/fixtures.js';
-import { installMembership } from '../../../helpers/membership.js';
-import { installUserService, makeUser } from '../../../helpers/user-service.js';
+import { Fake } from '../../../support/fake.js';
+import { actorOf, ADMIN_ID, caught, MISSING_ID, OTHER_ID, userOf } from '../../services/user/support.js';
+
+import { installMembership, installUserService } from './support.js';
+
+import type { ArchiveParams, UserResponse } from '@/controllers/user/index.js';
+import type { Actor } from '@/types/entities/actor.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
+import type { FastifyReply, FastifyRequest } from 'fastify';
 
 const harness = await installUserService();
 const membership = await installMembership();
@@ -29,72 +27,90 @@ afterEach(() => {
   teamed.clear();
 });
 
-import type { ArchiveParams } from '@/controllers/user/index.js';
-import type { Actor } from '@/types/entities/actor.js';
-import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
-
 const { archive } = await import('@/controllers/user/archive.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<User> }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
 type Req = FastifyRequest<{ Params: ArchiveParams }>;
 
-const run = async (actor: Actor | null, id: string) => {
-  const { fake, reply } = makeReply<Rep>();
-  await archive(makeReq<Req>({ actor, params: { id } }), reply);
-  return fake;
+const run = async (actor: Actor | undefined, id: string) => {
+  const reply = Fake.reply<Rep>();
+  await archive(Fake.request({ actor, params: { id } }) as Req, reply);
+
+  return reply;
 };
 
 describe('user.controller.archive', () => {
-  it('lets a manager archive an employee', async () => {
-    directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
-    const fake = await run(makeActor('manager'), OTHER_ID);
-    expect(fake.sent).toMatchObject({ data: { id: OTHER_ID }, event: 'user.archived' });
+  it('lets a manager archive an employee and replies with the named user', async () => {
+    directory.set(OTHER_ID, userOf('employee', OTHER_ID));
+    const reply = await run(actorOf('manager'), OTHER_ID);
+    expect(reply.payload).toMatchObject({
+      data: { user: { id: OTHER_ID } },
+      event: {
+        code: 'user.archived',
+        correlation_id: 'req-test',
+        payload: { actor: actorOf('manager').id, user_id: OTHER_ID },
+      },
+    });
     expect(svc.archive).toHaveBeenCalledTimes(1);
   });
 
-  it('forbids a manager from touching an admin', async () => {
-    directory.set(ADMIN_ID, makeUser('admin', ADMIN_ID));
-    const error = await caught(run(makeActor('manager'), ADMIN_ID));
-    expect(error.code).toBe('USER_NOT_FOUND');
+  it('reports an admin as not found to a manager', async () => {
+    directory.set(ADMIN_ID, userOf('admin', ADMIN_ID));
+    const error = await caught(run(actorOf('manager'), ADMIN_ID));
+    expect(error.code).toBe('user.not.found');
+    expect(error.status).toBe(404);
     expect(svc.archive).not.toHaveBeenCalled();
   });
 
   it('forbids employees without loading the target', async () => {
-    const error = await caught(run(makeActor('employee'), OTHER_ID));
-    expect(error.code).toBe('FORBIDDEN');
+    const error = await caught(run(actorOf('employee'), OTHER_ID));
+    expect(error.code).toBe('unauthorized');
+    expect(error.status).toBe(403);
     expect(svc.retrieve).not.toHaveBeenCalled();
   });
 
   it('applies the self-protection rule', async () => {
-    directory.set(ADMIN_ID, makeUser('admin', ADMIN_ID));
-    const outcome = await run(makeActor('admin'), ADMIN_ID).then(
-      () => 'ok',
-      (error: unknown) => (error as { code: string }).code,
-    );
-    expect(outcome).toBe('FORBIDDEN');
+    directory.set(ADMIN_ID, userOf('admin', ADMIN_ID));
+    const error = await caught(run(actorOf('admin'), ADMIN_ID));
+    expect(error.code).toBe('unauthorized');
+    expect(svc.archive).not.toHaveBeenCalled();
   });
 
   it('keeps the 404 raised by the service', async () => {
-    const error = await caught(run(makeActor('admin'), MISSING_ID));
-    expect(error.code).toBe('USER_NOT_FOUND');
+    const error = await caught(run(actorOf('admin'), MISSING_ID));
+    expect(error.code).toBe('user.not.found');
     expect(error.status).toBe(404);
   });
 
-  it('forbids a manager from an employee of another manager team', async () => {
-    directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
+  it('reports an employee of another manager team as not found', async () => {
+    directory.set(OTHER_ID, userOf('employee', OTHER_ID));
     teamed.add(OTHER_ID);
-    const error = await caught(run(makeActor('manager'), OTHER_ID));
-    expect(error.code).toBe('USER_NOT_FOUND');
+    const error = await caught(run(actorOf('manager'), OTHER_ID));
+    expect(error.code).toBe('user.not.found');
     expect(svc.archive).not.toHaveBeenCalled();
   });
 
   it('lets a manager act on a member of a team they manage', async () => {
-    directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
+    directory.set(OTHER_ID, userOf('employee', OTHER_ID));
     teamed.add(OTHER_ID);
     managed.add(OTHER_ID);
-    const fake = await run(makeActor('manager'), OTHER_ID);
-    expect(fake.sent).toMatchObject({ data: { id: OTHER_ID } });
+    const reply = await run(actorOf('manager'), OTHER_ID);
+    expect(reply.payload).toMatchObject({ data: { user: { id: OTHER_ID } } });
+  });
+
+  it('requires an authenticated caller', async () => {
+    const error = await caught(run(undefined, OTHER_ID));
+    expect(error.code).toBe('token.authentication.failed');
+    expect(error.status).toBe(401);
+  });
+
+  it('wraps unexpected failures with the controller route and keeps the cause', async () => {
+    directory.set(OTHER_ID, userOf('employee', OTHER_ID));
+    const failure = new Error('boom');
+    svc.archive.mockImplementationOnce(() => Promise.reject(failure));
+    const error = await caught(run(actorOf('admin'), OTHER_ID));
+    expect(error.code).toBe('user.archive.failed');
+    expect(error.cause).toBe(failure);
+    expect(error.metadata['route']).toBe('user.controller.archive');
   });
 });
