@@ -1,6 +1,6 @@
 name: Load test
 
-# k6 scenarios live in ops/load (documentation: docs/PERFORMANCE.md).
+# k6 scenarios live in ops/load (documentation: internal docs, Operations, Performance).
 # Manual: pick a scenario. Weekly: the `load` scenario against a freshly seeded API.
 
 on:
@@ -69,6 +69,11 @@ jobs:
         working-directory: api
         run: bun install --frozen-lockfile
 
+      - name: Generate throwaway encryption keys
+        run: |
+          echo "ENCRYPTION_KEY=$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+          echo "HASH_KEY=$(openssl rand -base64 32)" >> "$GITHUB_ENV"
+
       - name: Migrate and seed demo data
         working-directory: api
         env:
@@ -83,6 +88,8 @@ jobs:
         working-directory: api
         env:
           NODE_ENV: production
+          ALLOW_INSECURE_URLS: "true"
+          WEB_URL: http://localhost:8000
           PORT: "8000"
           LOG_LEVEL: warn
           DATABASE_URL: postgres://timemanager:timemanager@localhost:5432/timemanager_load
@@ -98,7 +105,7 @@ jobs:
           REPORT_RATE_LIMIT_MAX: "10000000"
         run: |
           nohup bun src/server.ts > "$RUNNER_TEMP/api.log" 2>&1 &
-          for attempt in $(seq 1 30); do
+          for _ in $(seq 1 30); do
             if curl -fsS http://localhost:8000/health > /dev/null; then
               echo "API is up"
               exit 0

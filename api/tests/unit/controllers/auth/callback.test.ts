@@ -23,9 +23,9 @@ const { callback } = await import('@/controllers/auth/callback.js');
 type Req = FastifyRequest<{ Querystring: CallbackQuery }>;
 
 const run = async (query: CallbackQuery) => {
-  const reply = cookieReply();
+  const { fake: reply, reply: target } = cookieReply();
   const req = Object.assign(Fake.request({ query }), { cookies: { tm_oauth: 'state-cookie' } });
-  await callback(req as Req, reply);
+  await callback(req as Req, target);
 
   return { reply, req };
 };
@@ -43,7 +43,7 @@ describe('auth.controller.callback', () => {
     );
     const { reply } = await run({ code: 'c', state: 's' });
     expect(svc.callback).toHaveBeenCalledWith({ code: 'c', state: 's', state_cookie: 'state-cookie' });
-    expect(reply.cookies['tm_refresh']?.value).toBe('refresh-ms');
+    expect(reply.jar['tm_refresh']?.value).toBe('refresh-ms');
     expect(reply.redirected).toBe('http://localhost:5173/auth/callback');
     expect(reply.cleared).toContain('tm_oauth');
   });
@@ -55,7 +55,7 @@ describe('auth.controller.callback', () => {
     expect(reply.redirected).toBe(
       'http://localhost:5173/auth/callback?error=auth.microsoft.unknown.user',
     );
-    expect(reply.cookies['tm_refresh']).toBeUndefined();
+    expect(reply.jar['tm_refresh']).toBeUndefined();
   });
 
   it('never logs the code or the state', async () => {

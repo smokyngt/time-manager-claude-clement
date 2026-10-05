@@ -94,7 +94,7 @@ describe('UsersPage permissions', () => {
     renderPage('manager')
     await screen.findByText('Jane Doe')
     expect(screen.queryByRole('combobox', { name: 'filters.role' })).not.toBeInTheDocument()
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
     expect(screen.queryByRole('button', { name: 'bulk.delete' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'bulk.archive' })).toBeInTheDocument()
   })
@@ -105,7 +105,9 @@ describe('UsersPage bulk actions', () => {
     sdk.users.delete.mockResolvedValue({ deleted: ['u1'], failed: [], success: true })
     renderPage()
     await screen.findByText('Jane Doe')
-    await userEvent.click(screen.getAllByRole('checkbox', { name: 'list.select' })[0]!)
+    await userEvent.click(
+      screen.getAllByRole('checkbox', { name: 'list.select' })[0] as HTMLElement,
+    )
     await userEvent.click(screen.getByRole('button', { name: 'bulk.delete' }))
     expect(sdk.users.delete).not.toHaveBeenCalled()
     const dialog = await screen.findByRole('dialog')
@@ -131,7 +133,7 @@ describe('UsersPage bulk actions', () => {
     sdk.users.archive.mockResolvedValue({ user: jane })
     renderPage()
     await screen.findByText('Jane Doe')
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(screen.getAllByRole('checkbox')[0] as HTMLElement)
     await userEvent.click(screen.getByRole('button', { name: 'bulk.archive' }))
     expect(sdk.users.archive).not.toHaveBeenCalled()
     await userEvent.click(

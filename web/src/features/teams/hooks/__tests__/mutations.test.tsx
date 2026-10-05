@@ -31,7 +31,7 @@ const navigate = vi.hoisted(() => vi.fn())
 vi.mock('@/config/sdk', () => ({ sdk }))
 vi.mock('react-i18next', async () => (await import('@/test-support/test-i18n')).TestI18n.module())
 vi.mock('react-router', async (original) => ({
-  ...(await original<typeof import('react-router')>()),
+  ...(await original<Record<string, unknown>>()),
   useNavigate: () => navigate,
 }))
 

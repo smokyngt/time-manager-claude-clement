@@ -1,9 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 
+import { Demo, Prng, Zone } from '@/db/demo.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { Digest } from '@/utils/crypto/digest.js';
-
-import { Demo, Prng, Zone } from '@/db/demo.js';
 
 import type { ClockSeed } from '@/db/demo.js';
 

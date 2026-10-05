@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it } from 'bun:test';
-
 import { jwtVerify } from 'jose';
 
 import { authorize } from '@/services/auth/authorize.js';

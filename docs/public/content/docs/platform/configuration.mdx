@@ -23,8 +23,9 @@ In production (`NODE_ENV=production`), the API refuses to start if a required se
 | `PORT` | `8000` | Port the API listens on. |
 | `LOG_LEVEL` | `info` | Log verbosity. |
 | `APP_TIMEZONE` | `Europe/Paris` | Company timezone used for `work_start`, `work_end` and report days. |
-| `TRUST_PROXY` | `true` | Read the client address from the reverse proxy. |
-| `COOKIE_SECURE` | `false` | Set `true` behind HTTPS so the refresh cookie is `Secure`. |
+| `TRUST_PROXY` | `true` | Read the client address from the reverse proxy: `true`, `false`, a number of proxy hops, or a list of IP addresses. |
+| `COOKIE_SECURE` | `false` in the Compose files | Set `true` behind HTTPS so the refresh cookie is `Secure`. The API defaults it to `true` in production. |
+| `ALLOW_INSECURE_URLS` | `true` in `.env.example` | Lets a production-mode API accept an `http` or local `WEB_URL`. Use it for the local stack only and remove it behind HTTPS. |
 | `CORS_ORIGIN` | `http://localhost:8080` | Origin allowed to call the API with credentials. |
 | `WEB_URL` | `http://localhost:8080` | Where the API redirects the browser after Microsoft sign-in. |
 | `JSON_BODY_MAX_DEPTH` | `10` | Maximum JSON nesting depth. |
@@ -55,13 +56,14 @@ Losing `ENCRYPTION_KEY` makes personal data unreadable. Store it with your backu
 
 ## Microsoft sign-in
 
-All optional. Without the first two, `GET /v1/auth/microsoft` answers `auth.microsoft.unavailable` (503).
+All optional. See [Microsoft sign-in](./microsoft-sign-in) to register the application. Without the first two, `GET /v1/auth/microsoft` answers `auth.microsoft.unavailable` (503).
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `MICROSOFT_CLIENT_ID` | empty | Application (client) id of your Microsoft Entra ID app registration. |
 | `MICROSOFT_CLIENT_SECRET` | empty | Client secret value. It expires, so schedule a rotation. |
-| `MICROSOFT_TENANT_ID` | `common` | Directory (tenant) id. Use your tenant id to restrict sign-in to your organisation. |
+| `MICROSOFT_TENANT_ID` | empty | Directory (tenant) id, as a GUID. Required when the client id is set. Aliases such as `common` are not accepted. |
+| `OAUTH_STATE_SECRET` | empty | Signs the sign-in state cookie. Required when the client id is set: at least 32 characters, different from the JWT secrets. |
 | `MICROSOFT_REDIRECT_URI` | `http://localhost:8080/v1/auth/microsoft/callback` | Must match the redirect URI of the app registration exactly. |
 
 ## Rate limits

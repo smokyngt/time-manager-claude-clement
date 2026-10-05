@@ -18,4 +18,4 @@ Include affected component (api/web/deployment), version or commit, reproduction
 We aim to acknowledge reports within 3 working days, provide an assessment within 7 days, and
 coordinate a fix and disclosure. Please allow us reasonable time to release a fix before public disclosure.
 
-Released images are signed with cosign (keyless) and carry SBOM and provenance attestations; see docs/CI_CD.md.
+Released images are signed with cosign (keyless) and carry SBOM and provenance attestations; see the release process in the internal documentation (`docs/internal`, Platform).

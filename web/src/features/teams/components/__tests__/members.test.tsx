@@ -68,18 +68,20 @@ describe('AddMembersDialog', () => {
     const { onSubmit } = renderDialog()
     const submit = screen.getByRole('button', { name: 'members.add.submit' })
     expect(submit).toBeDisabled()
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
-    await userEvent.click(screen.getAllByRole('checkbox')[1]!)
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 0))
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 1))
     await userEvent.click(submit)
     expect(onSubmit).toHaveBeenCalledWith(['ada', 'bob'])
   })
 
   it('unselects a user', async () => {
     const { onSubmit } = renderDialog()
-    const [first, second] = screen.getAllByRole('checkbox')
-    await userEvent.click(first!)
-    await userEvent.click(second!)
-    await userEvent.click(first!)
+    const boxes = screen.getAllByRole('checkbox')
+    const first = TeamFixtures.at(boxes, 0)
+    const second = TeamFixtures.at(boxes, 1)
+    await userEvent.click(first)
+    await userEvent.click(second)
+    await userEvent.click(first)
     await userEvent.click(screen.getByRole('button', { name: 'members.add.submit' }))
     expect(onSubmit).toHaveBeenCalledWith(['bob'])
   })
@@ -98,7 +100,7 @@ describe('AddMembersDialog', () => {
 
   it('disables submit while submitting', async () => {
     renderDialog({ submitting: true })
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 0))
     expect(screen.getByRole('button', { name: 'members.add.submit' })).toBeDisabled()
   })
 })
@@ -124,7 +126,7 @@ describe('MembersTable', () => {
   it('removes a member', async () => {
     const onRemove = vi.fn()
     render(<MembersTable members={[ada, bob]} onRemove={onRemove} />)
-    const row = screen.getByText('Bob Stone').closest('tr')!
+    const row = TeamFixtures.closest(screen.getByText('Bob Stone'), 'tr')
     await userEvent.click(within(row).getByRole('button'))
     expect(onRemove).toHaveBeenCalledWith(bob)
   })

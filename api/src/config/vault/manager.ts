@@ -102,14 +102,6 @@ export class VaultCache {
     return entry.data;
   }
 
-  private watch(path: string, entry: VaultCacheEntry, duration: number): void {
-    const delay = Math.min(Math.floor(duration * 1000 * this.config.threshold()), MAX_DELAY);
-    entry.timer = setTimeout(() => {
-      void this.renew(path, entry);
-    }, delay);
-    entry.timer.unref();
-  }
-
   private async renew(path: string, entry: VaultCacheEntry): Promise<void> {
     if (this.entries.get(path) !== entry || entry.lease === undefined) return;
     try {
@@ -124,5 +116,13 @@ export class VaultCache {
       );
       this.invalidate(path);
     }
+  }
+
+  private watch(path: string, entry: VaultCacheEntry, duration: number): void {
+    const delay = Math.min(Math.floor(duration * 1000 * this.config.threshold()), MAX_DELAY);
+    entry.timer = setTimeout(() => {
+      void this.renew(path, entry);
+    }, delay);
+    entry.timer.unref();
   }
 }

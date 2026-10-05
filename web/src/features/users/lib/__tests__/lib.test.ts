@@ -95,7 +95,7 @@ describe('UserSearch', () => {
     expect(UserSearch.filter(users, 'jane doe')).toHaveLength(1)
     expect(UserSearch.filter(users, 'Z@Y')).toHaveLength(1)
     expect(UserSearch.filter(users, '')).toHaveLength(2)
-    expect(UserSearch.initials(users[0]!)).toBe('JD')
+    expect(UserSearch.initials(TestAuth.user({ firstName: 'Jane', lastName: 'Doe' }))).toBe('JD')
   })
 })
 

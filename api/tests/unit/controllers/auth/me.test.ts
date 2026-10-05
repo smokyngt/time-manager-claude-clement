@@ -28,8 +28,8 @@ describe('auth.controller.me', () => {
   it('replies with the user and the scopes of the request context', async () => {
     svc.me.mockImplementationOnce(() => Promise.resolve({ user: userOf('manager', OTHER_ID) }));
     const actor = actorOf('manager', OTHER_ID);
-    const reply = cookieReply<Rep>();
-    await me(Fake.request({ actor, scopes: Roles.scopes('manager') }), reply);
+    const { fake: reply, reply: target } = cookieReply<Rep>();
+    await me(Fake.request({ actor, scopes: Roles.scopes('manager') }), target);
     expect(svc.me).toHaveBeenCalledWith({ actor });
     expect(reply.payload).toMatchObject({
       data: { user: { id: OTHER_ID } },
@@ -50,7 +50,7 @@ describe('auth.controller.me', () => {
     const failure = new Error('boom');
     svc.me.mockImplementationOnce(() => Promise.reject(failure));
     const error = await caught(
-      me(Fake.request({ actor: actorOf('employee', OTHER_ID), scopes: [] }), cookieReply<Rep>()),
+      me(Fake.request({ actor: actorOf('employee', OTHER_ID), scopes: [] }), cookieReply<Rep>().reply),
     );
     expect(error.code).toBe('auth.me.failed');
     expect(error.cause).toBe(failure);

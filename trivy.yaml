@@ -1,0 +1,12 @@
+format: table
+exit-code: 1
+severity:
+  - CRITICAL
+  - HIGH
+ignorefile: .trivyignore
+scan:
+  scanners:
+    - vuln
+    - secret
+vulnerability:
+  ignore-unfixed: true

@@ -145,7 +145,11 @@ describe('helpers', () => {
       { items: [2], more: false, next: null, total: 2 },
     ]
     let call = 0
-    const result = await Pages.all(() => Promise.resolve(pages[call++] ?? pages[1]!))
+    const result = await Pages.all(() =>
+      Promise.resolve(
+        pages[Math.min(call++, 1)] ?? { items: [], more: false, next: null, total: 0 },
+      ),
+    )
     expect(result).toEqual({ items: [1, 2], total: 2 })
   })
 })

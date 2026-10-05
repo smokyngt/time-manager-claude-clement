@@ -23,8 +23,9 @@ En production (`NODE_ENV=production`), l'API refuse de démarrer si un secret re
 | `PORT` | `8000` | Port d'écoute de l'API. |
 | `LOG_LEVEL` | `info` | Verbosité des journaux. |
 | `APP_TIMEZONE` | `Europe/Paris` | Fuseau horaire de l'entreprise utilisé pour `work_start`, `work_end` et les jours des rapports. |
-| `TRUST_PROXY` | `true` | Lire l'adresse du client depuis le reverse proxy. |
-| `COOKIE_SECURE` | `false` | Mettez `true` derrière HTTPS pour que le cookie de rafraîchissement soit `Secure`. |
+| `TRUST_PROXY` | `true` | Lire l'adresse du client depuis le reverse proxy : `true`, `false`, un nombre de proxys, ou une liste d'adresses IP. |
+| `COOKIE_SECURE` | `false` dans les fichiers Compose | Mettez `true` derrière HTTPS pour que le cookie de rafraîchissement soit `Secure`. L'API le met à `true` par défaut en production. |
+| `ALLOW_INSECURE_URLS` | `true` dans `.env.example` | Permet à une API en mode production d'accepter un `WEB_URL` en `http` ou local. Réservez-le à la pile locale et retirez-le derrière HTTPS. |
 | `CORS_ORIGIN` | `http://localhost:8080` | Origine autorisée à appeler l'API avec des identifiants. |
 | `WEB_URL` | `http://localhost:8080` | Où l'API redirige le navigateur après la connexion Microsoft. |
 | `JSON_BODY_MAX_DEPTH` | `10` | Profondeur maximale d'imbrication JSON. |
@@ -61,7 +62,8 @@ Toutes facultatives. Sans les deux premières, `GET /v1/auth/microsoft` répond 
 | --- | --- | --- |
 | `MICROSOFT_CLIENT_ID` | vide | Identifiant d'application (client) de votre inscription d'application Microsoft Entra ID. |
 | `MICROSOFT_CLIENT_SECRET` | vide | Valeur du secret client. Il expire : planifiez sa rotation. |
-| `MICROSOFT_TENANT_ID` | `common` | Identifiant de l'annuaire (tenant). Utilisez l'identifiant de votre tenant pour limiter la connexion à votre organisation. |
+| `MICROSOFT_TENANT_ID` | vide | Identifiant de l'annuaire (tenant), sous forme de GUID. Obligatoire si l'identifiant client est défini. Les alias comme `common` ne sont pas acceptés. |
+| `OAUTH_STATE_SECRET` | vide | Signe le cookie d'état de connexion. Obligatoire si l'identifiant client est défini : au moins 32 caractères, différent des secrets JWT. |
 | `MICROSOFT_REDIRECT_URI` | `http://localhost:8080/v1/auth/microsoft/callback` | Doit correspondre exactement à l'URI de redirection de l'inscription d'application. |
 
 ## Limites de débit

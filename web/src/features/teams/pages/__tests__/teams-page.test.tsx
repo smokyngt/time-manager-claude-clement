@@ -41,8 +41,10 @@ function renderPage(role: 'admin' | 'employee' | 'manager', route = '/teams') {
 }
 
 async function openMenu(name: string) {
-  const card = screen.getByRole('link', { name }).closest('li')!
-  const trigger = card.querySelector('button[aria-label="card.actions"]')!
+  const card = TeamFixtures.closest(screen.getByRole('link', { name }), 'li')
+  const trigger = TeamFixtures.closest(card, 'li').querySelector(
+    'button[aria-label="card.actions"]',
+  ) as HTMLElement
   await userEvent.click(trigger)
 }
 
@@ -154,7 +156,7 @@ describe('TeamsPage', () => {
     sdk.teams.archive.mockResolvedValue({ team: mine })
     renderPage('admin')
     await screen.findByRole('link', { name: 'Mine' })
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 0))
     await userEvent.click(screen.getByRole('button', { name: 'common:actions.archive' }))
     await waitFor(() => {
       expect(sdk.teams.archive).toHaveBeenCalledWith('mine')
@@ -164,13 +166,13 @@ describe('TeamsPage', () => {
   it('offers bulk delete to admins only', async () => {
     const { unmount } = renderPage('admin')
     await screen.findByRole('link', { name: 'Mine' })
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 0))
     expect(screen.getByRole('button', { name: 'common:actions.delete' })).toBeInTheDocument()
     unmount()
     TestQuery.reset()
     renderPage('manager')
     await screen.findByRole('link', { name: 'Mine' })
-    await userEvent.click(screen.getAllByRole('checkbox')[0]!)
+    await userEvent.click(TeamFixtures.at(screen.getAllByRole('checkbox'), 0))
     expect(screen.queryByRole('button', { name: 'common:actions.delete' })).not.toBeInTheDocument()
   })
 

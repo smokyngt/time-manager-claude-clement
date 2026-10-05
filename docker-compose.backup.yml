@@ -25,8 +25,35 @@ x-backup-env: &backup-env
   AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY:-}
   AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
 
+x-backup-hardened: &backup-hardened
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=64m
+    - /run:rw,noexec,nosuid,nodev,size=8m
+    - /root:rw,noexec,nosuid,nodev,size=32m
+    - /etc/crontabs:rw,noexec,nosuid,nodev,size=1m
+    - /srv/metrics:rw,noexec,nosuid,nodev,size=1m
+  mem_limit: 512m
+  cpus: 1.0
+  pids_limit: 100
+  deploy:
+    resources:
+      limits:
+        cpus: "1.0"
+        memory: 512m
+        pids: 100
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
+
 services:
   backup:
+    <<: *backup-hardened
     build:
       context: ./ops/backup
       args:
@@ -45,13 +72,14 @@ services:
       timeout: 10s
       retries: 1
       start_period: 1m
-    networks: [backend]
+    networks: [backend, egress]
 
   # One-off tools, never started by `up`:
   #   docker compose -f docker-compose.yml -f docker-compose.backup.yml --profile tools run --rm restore restore.sh --help
   #   docker compose -f docker-compose.yml -f docker-compose.backup.yml --profile tools run --rm restore verify.sh
   # Encrypted backups need BACKUP_AGE_IDENTITY_HOST_PATH, a host path to the age identity file.
   restore:
+    <<: *backup-hardened
     profiles: [tools]
     build:
       context: ./ops/backup
@@ -66,7 +94,10 @@ services:
       db:
         condition: service_healthy
     command: ["restore.sh", "--help"]
-    networks: [backend]
+    networks: [backend, egress]
 
 volumes:
   backups:
+
+networks:
+  egress:

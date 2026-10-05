@@ -91,7 +91,7 @@ describe('TeamForm', () => {
     expect(submit()).toBeDisabled()
   })
 
-  it('prefills the fields when editing', async () => {
+  it('prefills the fields when editing', () => {
     setup({ team: TeamFixtures.team({ workEnd: '18:00' }) })
     expect(screen.getByLabelText('form.name')).toHaveValue('Support')
     expect(screen.getByLabelText('form.description')).toHaveValue('Handles customer requests')
@@ -118,7 +118,7 @@ describe('TeamForm', () => {
     expect(onCancel).toHaveBeenCalled()
   })
 
-  it('disables submit while submitting', async () => {
+  it('disables submit while submitting', () => {
     setup({ submitting: true, team: TeamFixtures.team() })
     expect(screen.getByRole('button', { name: 'edit.submit' })).toBeDisabled()
   })

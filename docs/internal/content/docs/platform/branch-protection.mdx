@@ -1,0 +1,33 @@
+---
+title: Branch protection
+description: The protection rules and required status checks for the main branch.
+---
+
+`main` is always releasable. Protect it with these rules:
+
+- Require a pull request with 1 approval and code-owner review (`.github/CODEOWNERS`).
+- Require branches to be up to date before merging.
+- Require linear history and merge with squash. The pull request title becomes the commit message, so it must follow Conventional Commits.
+- Block force pushes and deletion.
+
+## Required status checks
+
+Use the job names exactly as they appear.
+
+| Check | Workflow |
+| --- | --- |
+| `API (typecheck, lint, test)` | `ci.yml` |
+| `SDK (typecheck, lint, test, build)` | `ci.yml` |
+| `Web (typecheck, lint, test, build)` | `ci.yml` |
+| `Web E2E (Playwright)` | `ci.yml` |
+| `Docker images (build only)` | `ci.yml` |
+| `CodeQL (javascript-typescript)` | `codeql.yml` |
+| `Dependency review` | `dependency-review.yml` |
+| `Gitleaks` | `secret-scan.yml` |
+| `Conventional commit title` | `pr-title.yml` |
+
+`Label PR by path` is informational and should not be required. `observability-lint.yml` and `docs.yml` run only when their paths change, so a required check would block unrelated pull requests. Review them when they run.
+
+## Commit conventions
+
+`<type>(<optional scope>): <lowercase subject>`. Types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`. Mark breaking changes with `!` or a `BREAKING CHANGE:` footer.

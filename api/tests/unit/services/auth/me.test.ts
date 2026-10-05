@@ -11,7 +11,7 @@ const real = { ...(await import('@/services/user/index.js')) };
 const retrieve = mock((_params: { id: string }): Promise<{ user: User }> => Promise.reject(new Error('unset')));
 await mock.module('@/services/user/index.js', () => ({
   ...real,
-  userService: { ...real.userService, retrieve },
+  userService: { retrieve },
 }));
 
 afterAll(() => {

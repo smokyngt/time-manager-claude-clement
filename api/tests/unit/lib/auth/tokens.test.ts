@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it } from 'bun:test';
-
 import { SignJWT } from 'jose';
 
 import { Tokens } from '@/lib/auth/tokens.js';

@@ -16,5 +16,5 @@
 - [ ] `make ci` passes locally (typecheck, lint, tests)
 - [ ] Tests added or updated
 - [ ] `api/openapi.json` and `web/src/lib/api/schema.d.ts` regenerated if the API changed
-- [ ] Docs updated (`docs/`, READMEs) if behaviour or conventions changed
+- [ ] Docs updated (the relevant `docs/` site, root README) if behaviour or conventions changed
 - [ ] No secrets or `.env` files committed

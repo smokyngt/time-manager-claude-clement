@@ -24,9 +24,9 @@ const { logout } = await import('@/controllers/auth/logout.js');
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<LogoutResponse> }>;
 
 const run = async (cookies: Record<string, string>) => {
-  const reply = cookieReply<Rep>();
+  const { fake: reply, reply: target } = cookieReply<Rep>();
   const req = Object.assign(Fake.request(), { cookies });
-  await logout(req, reply);
+  await logout(req, target);
 
   return { reply, req };
 };

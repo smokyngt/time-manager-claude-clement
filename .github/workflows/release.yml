@@ -36,7 +36,7 @@ jobs:
             file: ./api/Dockerfile.prod
             target: runtime
           - component: web
-            context: ./web
+            context: .
             file: ./web/Dockerfile.prod
             target: ""
     steps:
@@ -76,6 +76,26 @@ jobs:
             org.opencontainers.image.title=time-manager-${{ matrix.component }}
             org.opencontainers.image.description=Time Manager ${{ matrix.component }}
 
+      - name: Build image for pre-push scan
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          target: ${{ matrix.target }}
+          load: true
+          push: false
+          tags: scan-${{ matrix.component }}:candidate
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+            REVISION=${{ github.sha }}
+          cache-from: type=gha,scope=release-${{ matrix.component }}
+
+      - name: Trivy gate before push (fail on CRITICAL/HIGH)
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: scan-${{ matrix.component }}:candidate
+          trivy-config: trivy.yaml
+
       - name: Build and push
         id: build
         uses: docker/build-push-action@v6
@@ -87,6 +107,9 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            VERSION=${{ steps.meta.outputs.version }}
+            REVISION=${{ github.sha }}
           cache-from: type=gha,scope=release-${{ matrix.component }}
           cache-to: type=gha,scope=release-${{ matrix.component }},mode=max
           provenance: mode=max
@@ -100,7 +123,6 @@ jobs:
           push-to-registry: true
 
       - name: Trivy scan (SARIF for code scanning)
-        # Version tag, not a SHA: could not be resolved offline. Pin to a SHA when you can.
         uses: aquasecurity/trivy-action@0.28.0
         env:
           TRIVY_USERNAME: ${{ github.actor }}
@@ -120,17 +142,14 @@ jobs:
           sarif_file: trivy-${{ matrix.component }}.sarif
           category: trivy-${{ matrix.component }}
 
-      - name: Trivy gate (fail on CRITICAL)
+      - name: Trivy gate on published digest (fail on CRITICAL/HIGH)
         uses: aquasecurity/trivy-action@0.28.0
         env:
           TRIVY_USERNAME: ${{ github.actor }}
           TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
           image-ref: ${{ steps.image.outputs.name }}@${{ steps.build.outputs.digest }}
-          format: table
-          severity: CRITICAL
-          ignore-unfixed: true
-          exit-code: "1"
+          trivy-config: trivy.yaml
 
       - name: Install cosign
         uses: sigstore/cosign-installer@v3

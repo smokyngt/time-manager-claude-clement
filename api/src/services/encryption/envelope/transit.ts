@@ -2,7 +2,7 @@ import { Buffer } from 'node:buffer';
 
 export type TransitClient = {
   read: (path: string) => Promise<TransitReply | undefined>;
-  write: (path: string, data?: Record<string, unknown>) => Promise<TransitReply | undefined>;
+  write: (path: string, data: Record<string, unknown>) => Promise<TransitReply | undefined>;
 };
 
 export type TransitReply = { data?: Record<string, unknown> };
@@ -105,5 +105,5 @@ export const rewrapKey = async (
  * @returns {Promise<void>}
  */
 export const rotateTransitKey = async (client: TransitClient, name: string): Promise<void> => {
-  await client.write(`transit/keys/${name}/rotate`);
+  await client.write(`transit/keys/${name}/rotate`, {});
 };

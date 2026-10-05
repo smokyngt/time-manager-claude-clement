@@ -11,6 +11,34 @@ import { TestToast } from '@/test-support/test-toast'
 
 export class TeamFixtures {
   /**
+   * @route client.features.teams.teamFixtures.at
+   * @param {T[]} items
+   * @param {number} index
+   * @returns {T} Throws when the index is out of range.
+   */
+  static at<T>(items: readonly T[], index: number): T {
+    const item = items[index]
+    if (item === undefined) {
+      throw new Error(`No item at ${index}`)
+    }
+    return item
+  }
+
+  /**
+   * @route client.features.teams.teamFixtures.closest
+   * @param {Element} element
+   * @param {string} selector
+   * @returns {HTMLElement} Throws when no ancestor matches.
+   */
+  static closest(element: Element, selector: string): HTMLElement {
+    const match = element.closest<HTMLElement>(selector)
+    if (match === null) {
+      throw new Error(`No ancestor ${selector}`)
+    }
+    return match
+  }
+
+  /**
    * @route client.features.teams.teamFixtures.team
    * @param {Partial<Team>} overrides
    * @returns {Team}

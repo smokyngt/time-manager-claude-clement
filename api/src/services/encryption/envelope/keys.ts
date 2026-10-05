@@ -1,9 +1,8 @@
 import { registerError } from '@/lib/errors/base/registry.js';
 
+import type { TransitClient } from './transit.js';
 import type { Database } from '@/db/client.js';
 import type { encryptionDomain } from '@/db/schema/encryption-key.js';
-
-import type { TransitClient } from './transit.js';
 
 export type EnvelopeLog = {
   error: (message: string) => void;

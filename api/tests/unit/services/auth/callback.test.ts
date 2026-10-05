@@ -1,5 +1,4 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
-
 import { SignJWT } from 'jose';
 
 import { Digest } from '@/utils/crypto/digest.js';

@@ -1,0 +1,6 @@
+failure-threshold: warning
+trusted-registries:
+  - docker.io
+  - ghcr.io
+  - quay.io
+ignored: []

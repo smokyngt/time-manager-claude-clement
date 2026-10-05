@@ -51,7 +51,7 @@ describe('Demo.run', () => {
       expect(row['name']).toMatch(/^v1\./);
       expect(row['description']).toMatch(/^v1\./);
     }
-    const notes = (clocks as Record<string, string | null>[]).map((row) => row['note']);
-    expect(notes.every((note) => note === null || note.startsWith('v1.'))).toBe(true);
+    const notes = (clocks as Record<string, null | string>[]).map((row) => row['note']);
+    expect(notes.every((note) => note === null || note?.startsWith('v1.'))).toBe(true);
   });
 });

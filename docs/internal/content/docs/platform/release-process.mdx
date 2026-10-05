@@ -1,0 +1,62 @@
+---
+title: Release process
+description: Cutting a release, image tags, verifying signatures and deploying a released version.
+---
+
+## Cut a release
+
+1. Make sure `main` is green.
+2. Tag and push:
+
+   ```bash
+   git tag -a v1.2.3 -m "v1.2.3"
+   git push origin v1.2.3
+   ```
+
+   A tag with a suffix (`v1.2.3-rc.1`) becomes a pre-release.
+3. `release.yml` builds both images for `linux/amd64` and `linux/arm64`, pushes them to GHCR, attaches SBOM and provenance, attests the build, scans with Trivy and signs with cosign. SARIF results go to code scanning and a CRITICAL finding with an available fix fails the job. The `GitHub Release` job then creates the release with generated notes.
+
+Pushes to `main` also publish images (tagged with the short commit sha, `main` and `latest`) without creating a release.
+
+## Image tags
+
+Images are `ghcr.io/<owner>/<repo>/api` and `ghcr.io/<owner>/<repo>/web`.
+
+| Tag | When |
+| --- | --- |
+| `sha-<short>` | Every build |
+| branch name (`main`) | Pushes to a branch |
+| `1.2.3`, `1.2` | Version tags |
+| `1` | Version tags, except `0.x` |
+| `latest` | The default branch only |
+
+## Verify an image
+
+```bash
+cosign verify ghcr.io/OWNER/REPO/api:1.2.3 \
+  --certificate-identity-regexp 'https://github.com/OWNER/REPO/' \
+  --certificate-oidc-issuer https://token.actions.githubusercontent.com
+gh attestation verify oci://ghcr.io/OWNER/REPO/api:1.2.3 --repo OWNER/REPO
+```
+
+## Deploy a release
+
+The Compose files build images from source. To run released images, add an override file that sets `image:` for `api` and `web`:
+
+```yaml
+# docker-compose.release.yml
+services:
+  api:
+    image: ghcr.io/OWNER/REPO/api:${TAG}
+  web:
+    image: ghcr.io/OWNER/REPO/web:${TAG}
+```
+
+```bash
+docker login ghcr.io -u <user>           # not needed when the packages are public
+export TAG=1.2.3
+docker compose -f docker-compose.yml -f docker-compose.release.yml -f docker-compose.backup.yml pull api web
+docker compose -f docker-compose.yml -f docker-compose.release.yml -f docker-compose.backup.yml up -d --no-build
+```
+
+Pin an immutable version tag or digest in production rather than `latest`. Take a backup before upgrading because the API migrates on start, and run a single API replica. Roll back by redeploying the previous tag, and restore the pre-upgrade backup when a migration changed the schema. See [Deployment](/docs/operations/deployment).

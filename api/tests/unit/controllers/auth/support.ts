@@ -7,7 +7,7 @@ import type { FastifyReply } from 'fastify';
 
 export class CookieReply extends FakeReply {
   public readonly cleared: string[] = [];
-  public readonly cookies: Record<string, { options: unknown; value: string }> = {};
+  public readonly jar: Record<string, { options: unknown; value: string }> = {};
   public redirected: string | undefined;
 
   public clearCookie(name: string): this {
@@ -23,14 +23,20 @@ export class CookieReply extends FakeReply {
   }
 
   public setCookie(name: string, value: string, options: unknown): this {
-    this.cookies[name] = { options, value };
+    this.jar[name] = { options, value };
 
     return this;
   }
 }
 
-export const cookieReply = <Reply extends FastifyReply>(): CookieReply & Reply =>
-  Object.assign(new CookieReply(), {}) as CookieReply & Reply;
+export const cookieReply = <Reply extends FastifyReply = FastifyReply>(): {
+  fake: CookieReply;
+  reply: Reply;
+} => {
+  const fake = new CookieReply();
+
+  return { fake, reply: fake as unknown as Reply };
+};
 
 export const installAuthService = async () => {
   const real = { ...(await import('@/services/auth/index.js')) };

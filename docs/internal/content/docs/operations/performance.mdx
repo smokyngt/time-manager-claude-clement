@@ -1,0 +1,116 @@
+---
+title: Performance and load testing
+description: Service level objectives, k6 scenarios, rate-limit handling, running and reading tests, Prometheus output, the weekly workflow and a smoke baseline.
+---
+
+The k6 scripts in `ops/load/` exercise the real API with the demo accounts (`api/src/db/demo.ts`, password `Demo1234!` by default). Run them locally, against any environment, or weekly in GitHub Actions (`.github/workflows/load-test.yml`).
+
+## Service level objectives
+
+| Indicator | Target | Enforced by |
+| --- | --- | --- |
+| p95 latency, reads | under 300 ms | `http_req_duration{kind:read}` and one threshold per endpoint |
+| p95 latency, writes (`clocks.in`, `clocks.out`) | under 500 ms | `http_req_duration{kind:write}` |
+| p95 latency, login | under 800 ms | `http_req_duration{kind:auth}` (bound by password hashing) |
+| Error rate | under 1% | `http_req_failed` |
+| Checks passed | above 99% | `checks` |
+
+Every request is tagged `name` (the endpoint, never the URL) and `kind` (`read`, `write`, `auth`). Names: `health`, `auth.login`, `auth.me`, `users.list`, `users.retrieve`, `teams.list`, `teams.retrieve`, `teams.members.list`, `clocks.current`, `clocks.list`, `clocks.in`, `clocks.out`, `reports.user`, `reports.team`. The registry is `ops/load/lib/thresholds.js`, and a new endpoint must be added there.
+
+## Scenarios
+
+| Script | Model | Purpose |
+| --- | --- | --- |
+| `smoke.js` | 1 VU, 30 s | Every main endpoint once per iteration. Run first. |
+| `load.js` | `ramping-vus`, 5 min ramp to 50 VUs (40 employees, 10 managers), 2 min hold | Expected peak. Employees: current clock, clock in and out, own report, own clocks. Managers: list users and teams, team report, team members. |
+| `stress.js` | `ramping-arrival-rate`, +20 iterations/s every minute from 10, up to 1000 VUs | Find the knee: where p95 leaves its budget, errors start or `dropped_iterations` grows. Lenient latency, aborts above 10% errors. |
+| `spike.js` | 10 to 100 VUs in 10 s, 1 min at peak, back to 10, 2 min recovery | Burst absorption and recovery, with doubled latency budgets (600 and 1000 ms). |
+| `soak.js` | 20 VUs for 30 min | Leaks, pool exhaustion, drift, access token expiry. |
+
+Employees toggle their clock: `GET /v1/clocks/current`, then `POST /v1/clocks/in` or `/out`. Several VUs share the 12 demo employees, so a `409 clock.conflict` is a legitimate answer. It is declared an expected status, validated against the error envelope and counted in `clock_conflicts`.
+
+Parameters (`-e NAME=value`): see [Load tests](/docs/operations/configuration#load-tests).
+
+## Authentication and rate limits
+
+- `setup()` logs in each demo account once and hands the access tokens to every VU. When a token is within 30 to 150 seconds (jittered per VU) of its expiry, the VU logs in again itself, so a 30-minute soak costs about 2 logins per VU. Login retries on `429` honor `Retry-After`.
+- The API rate-limits login per IP (`AUTH_LOGIN_RATE_LIMIT_MAX`, 10 per minute) and each router per user. Those defaults are right for production and wrong for a load test, so raise the limits on the target or you measure the limiter. The smoke test is light enough for default limits.
+- `AUTH_ACCOUNT_RATE_LIMIT_MAX` locks an account after failed logins, so a wrong `DEMO_PASSWORD` locks the demo accounts after 5 attempts.
+
+## Run locally
+
+```bash
+cd api && bun run db:migrate && bun run db:seed:demo
+AUTH_LOGIN_RATE_LIMIT_MAX=100000 AUTH_RATE_LIMIT_MAX=100000 USER_RATE_LIMIT_MAX=10000000 \
+CLOCK_RATE_LIMIT_MAX=10000000 TEAM_RATE_LIMIT_MAX=10000000 REPORT_RATE_LIMIT_MAX=10000000 \
+bun src/server.ts
+
+# in another shell, with k6 installed
+make load-smoke
+make load
+k6 run -e RAMP=30s -e HOLD=30s ops/load/load.js
+```
+
+Against the Docker stack use `BASE_URL=http://localhost:8080`. Run k6 on a different machine from the API when you can, since they compete for CPU. Make targets: `load-smoke`, `load`, `load-stress`, `load-spike`, `load-soak`.
+
+## Reading the results
+
+`handleSummary` writes, in `SUMMARY_DIR`:
+
+- `<scenario>-summary.json`: the full k6 summary, for archiving and diffing.
+- `<scenario>-summary.md`: verdict, headline metrics, latency per endpoint and every threshold. The same text goes to stdout. A run that issued no request is reported `FAIL`.
+
+In GitHub Actions the markdown is appended to the job summary and both files are uploaded as the `k6-<scenario>-<run id>` artifact (30 days). Exit code 99 means a threshold failed.
+
+With `stress.js`, find the first minute where p95 of `kind:read` exceeds 300 ms, `http_req_failed` becomes non-zero or `dropped_iterations` appears. The step before it is the sustainable rate. The per-step timeline needs the Prometheus output below.
+
+## Prometheus remote write
+
+k6 can stream its metrics to the Prometheus of the observability stack, which starts with the remote-write receiver and native histograms enabled.
+
+```bash
+K6_PROMETHEUS_RW_SERVER_URL=http://localhost:9090/api/v1/write \
+K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true \
+k6 run -o experimental-prometheus-rw --tag testid=load-$(date +%s) ops/load/load.js
+```
+
+- `K6_PROMETHEUS_RW_SERVER_URL` is the only required variable. Without it nothing is pushed.
+- Native histograms let you compute any quantile per tag, for example `histogram_quantile(0.95, sum by (name) (rate(k6_http_req_duration_seconds{testid="..."}[1m])))`.
+- Prometheus is not published on the host. Reach it from the Compose network or publish port 9090 for the test.
+- `--tag testid=...` separates runs. Put API panels and k6 panels on one dashboard to correlate latency with CPU, event loop and pool saturation.
+- In the workflow, the optional repository secret `K6_PROMETHEUS_RW_SERVER_URL` enables the output. A GitHub-hosted runner can only reach a Prometheus that is reachable from the internet, or use a self-hosted runner.
+
+## GitHub Actions
+
+`.github/workflows/load-test.yml` runs manually (`workflow_dispatch`, input `scenario`) and weekly (Monday 03:43 UTC, `load`). It starts a `postgres:17-alpine` service, migrates, loads demo data, starts the API with raised rate limits, waits for `/health`, then runs the script with `grafana/setup-k6-action` and `grafana/run-k6-action`. The job fails when a threshold fails. The runner is shared with the API and PostgreSQL, so it detects regressions and is not a capacity benchmark: compare runs with each other, not with production.
+
+## Baseline: smoke run
+
+Measured with k6 v1.3.0 and the API on one 4 vCPU machine (Bun 1.3, PostgreSQL 16, demo data of 14 users, 3 teams and 724 clocks), default rate limits. Result: pass, 26 iterations, 320 requests, 0.00% errors, 694 of 694 checks.
+
+| Endpoint | Kind | Requests | avg | p95 | max |
+| --- | --- | ---: | ---: | ---: | ---: |
+| `health` | read | 26 | 2.2 ms | 5.0 ms | 8.8 ms |
+| `auth.login` | auth | 5 | 251.8 ms | 394.3 ms | 431.6 ms |
+| `auth.me` | read | 27 | 15.5 ms | 54.1 ms | 63.0 ms |
+| `users.list` | read | 26 | 16.8 ms | 44.9 ms | 71.9 ms |
+| `users.retrieve` | read | 26 | 11.4 ms | 21.2 ms | 21.3 ms |
+| `teams.list` | read | 28 | 18.1 ms | 48.9 ms | 53.7 ms |
+| `teams.retrieve` | read | 26 | 10.6 ms | 23.6 ms | 28.7 ms |
+| `teams.members.list` | read | 26 | 16.9 ms | 39.4 ms | 56.6 ms |
+| `clocks.current` | read | 26 | 15.0 ms | 38.4 ms | 62.5 ms |
+| `clocks.list` | read | 26 | 14.8 ms | 37.8 ms | 55.6 ms |
+| `clocks.in` | write | 13 | 21.9 ms | 59.8 ms | 101.4 ms |
+| `clocks.out` | write | 13 | 27.6 ms | 64.0 ms | 95.2 ms |
+| `reports.user` | read | 26 | 18.9 ms | 47.9 ms | 52.7 ms |
+| `reports.team` | read | 26 | 26.3 ms | 60.3 ms | 81.1 ms |
+
+Overall p50, p90 and p95: 12.0, 32.6 and 53.6 ms. Every endpoint sits far inside its budget at one VU.
+
+A shortened `load.js` run (50 VUs, raised limits) passed with 0% errors and a p95 of 44 ms. A short `stress.js` run saturated the single-process API on that machine at roughly 60 iterations per second (about 240 requests per second) while k6 competed for CPU, which shows the scenario detects the knee. Treat these as script checks, not baselines.
+
+## Maintaining the scripts
+
+- The scripts follow the HTTP contract in the [domain model](/docs/engineering/domain-model). When a path or body changes, update `ops/load/lib/workload.js` and `smoke.js`.
+- Demo data is deterministic but clocks are written relative to now. Reseed before comparing runs over weeks, because reports aggregate the last 30 days.
+- Load test writes accumulate clocks of the demo employees. Use a disposable database, never production data.

@@ -8,13 +8,21 @@ import { TestClock } from '@/test-support'
 
 vi.mock('react-i18next', async () => (await import('@/test-support/test-i18n')).TestI18n.module())
 
-const state = vi.hoisted(() => ({
-  clockIn: vi.fn(),
-  clockOut: vi.fn(),
-  current: {} as Record<string, unknown>,
-  inConflict: false,
-  outConflict: false,
-}))
+const state = vi.hoisted(
+  (): {
+    clockIn: ReturnType<typeof vi.fn>
+    clockOut: ReturnType<typeof vi.fn>
+    current: Record<string, unknown>
+    inConflict: boolean
+    outConflict: boolean
+  } => ({
+    clockIn: vi.fn(),
+    clockOut: vi.fn(),
+    current: {},
+    inConflict: false,
+    outConflict: false,
+  }),
+)
 
 vi.mock('@/features/clocks/hooks/use-current-clock', () => ({
   useCurrentClock: () => state.current,
@@ -72,7 +80,7 @@ describe('ClockCard', () => {
     expect(screen.getByText('card.loading')).toBeInTheDocument()
   })
 
-  it('shows an error with retry', async () => {
+  it('shows an error with retry', () => {
     const refetch = vi.fn()
     state.current = { clock: null, error: new Error('x'), isError: true, loading: false, refetch }
     render(<ClockCard />)
@@ -81,7 +89,7 @@ describe('ClockCard', () => {
     expect(refetch).toHaveBeenCalled()
   })
 
-  it('shows the clocked out state and clocks in with a trimmed note', async () => {
+  it('shows the clocked out state and clocks in with a trimmed note', () => {
     state.current = { clock: null, isError: false, loading: false }
     render(<ClockCard />)
     expect(screen.getByRole('timer')).toHaveTextContent('00:00:00')

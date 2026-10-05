@@ -33,10 +33,10 @@ const session = (role: 'admin' | 'employee' | 'manager' = 'employee') => ({
 });
 
 const run = async () => {
-  const reply = cookieReply<Rep>();
+  const { fake: reply, reply: target } = cookieReply<Rep>();
   await login(
     Fake.request({ body: { email: 'jane.doe@example.com', password: 'pw' } }) as Req,
-    reply,
+    target,
   );
 
   return reply;
@@ -47,8 +47,8 @@ describe('auth.controller.login', () => {
     svc.login.mockImplementationOnce(() => Promise.resolve(session('manager')));
     const reply = await run();
     expect(svc.login).toHaveBeenCalledWith({ email: 'jane.doe@example.com', password: 'pw' });
-    expect(reply.cookies['tm_refresh']?.value).toBe('refresh');
-    expect(reply.cookies['tm_refresh']?.options).toMatchObject({
+    expect(reply.jar['tm_refresh']?.value).toBe('refresh');
+    expect(reply.jar['tm_refresh']?.options).toMatchObject({
       httpOnly: true,
       maxAge: 604_800,
       path: '/v1/auth',

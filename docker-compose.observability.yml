@@ -13,6 +13,16 @@ x-obs-logging: &obs-logging
     max-size: "10m"
     max-file: "3"
 
+x-obs-hardened: &obs-hardened
+  restart: unless-stopped
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  tmpfs:
+    - /tmp:rw,noexec,nosuid,nodev,size=64m
+  logging: *obs-logging
+
 services:
   # --- App services: telemetry wiring only (merged into docker-compose.yml). ---
   api:
@@ -34,8 +44,16 @@ services:
 
   # --- One-shot: give the non-root Tempo user (10001) ownership of its volume. ---
   observability-init:
-    image: busybox:1.37.0
+    image: busybox:1.37.0@sha256:bdf57e528e45e4433820e045b29b4597825a1c9e38353532d90a01445013f82e
     restart: "no"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop: [ALL]
+    cap_add: [CHOWN, DAC_OVERRIDE]
+    mem_limit: 32m
+    pids_limit: 20
+    logging: *obs-logging
     user: "0:0"
     command: ["sh", "-c", "mkdir -p /var/tempo && chown -R 10001:10001 /var/tempo"]
     volumes:
@@ -43,8 +61,17 @@ services:
     networks: [observability]
 
   alloy:
-    image: grafana/alloy:v1.10.2
-    restart: unless-stopped
+    image: grafana/alloy:v1.10.2@sha256:bcf27f18c4402869af112fb39e35e1db3804a404686f4caa20bdf77814219223
+    <<: *obs-hardened
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512m
+          pids: 200
     command:
       - run
       - --server.http.listen-addr=0.0.0.0:12345
@@ -75,12 +102,20 @@ services:
         condition: service_healthy
       prometheus:
         condition: service_healthy
-    logging: *obs-logging
     networks: [observability, backend]
 
   prometheus:
-    image: prom/prometheus:v3.5.0
-    restart: unless-stopped
+    image: prom/prometheus:v3.5.0@sha256:63805ebb8d2b3920190daf1cb14a60871b16fd38bed42b857a3182bc621f4996
+    <<: *obs-hardened
+    mem_limit: 1g
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
+          pids: 200
     command:
       - --config.file=/etc/prometheus/prometheus.yml
       - --storage.tsdb.path=/prometheus
@@ -100,12 +135,20 @@ services:
       timeout: 5s
       retries: 6
       start_period: 15s
-    logging: *obs-logging
     networks: [observability]
 
   alertmanager:
-    image: prom/alertmanager:v0.28.1
-    restart: unless-stopped
+    image: prom/alertmanager:v0.28.1@sha256:27c475db5fb156cab31d5c18a4251ac7ed567746a2483ff264516437a39b15ba
+    <<: *obs-hardened
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128m
+          pids: 100
     environment:
       ALERT_WEBHOOK_URL: ${ALERT_WEBHOOK_URL:-}
     entrypoint: ["/bin/sh", "/etc/alertmanager/entrypoint.sh"]
@@ -118,12 +161,20 @@ services:
       timeout: 5s
       retries: 6
       start_period: 10s
-    logging: *obs-logging
-    networks: [observability]
+    networks: [observability, egress]
 
   tempo:
-    image: grafana/tempo:2.8.2
-    restart: unless-stopped
+    image: grafana/tempo:2.8.2@sha256:0ef775495967cd5d7a6b2e146b6ea695d624803c8db8349fb8ce4164f719f9b7
+    <<: *obs-hardened
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512m
+          pids: 200
     command: ["-config.file=/etc/tempo/tempo.yaml"]
     volumes:
       - ./ops/observability/tempo/tempo.yaml:/etc/tempo/tempo.yaml:ro
@@ -139,12 +190,20 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
-    logging: *obs-logging
     networks: [observability]
 
   loki:
-    image: grafana/loki:3.5.5
-    restart: unless-stopped
+    image: grafana/loki:3.5.5@sha256:31628519045e7f28692a7ae73b4a3fd293dccb425585ed5d16ceea3b5c9592e6
+    <<: *obs-hardened
+    mem_limit: 768m
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 768m
+          pids: 200
     command: ["-config.file=/etc/loki/loki.yaml"]
     volumes:
       - ./ops/observability/loki/loki.yaml:/etc/loki/loki.yaml:ro
@@ -155,12 +214,20 @@ services:
       timeout: 5s
       retries: 12
       start_period: 20s
-    logging: *obs-logging
     networks: [observability]
 
   postgres-exporter:
-    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1
-    restart: unless-stopped
+    image: quay.io/prometheuscommunity/postgres-exporter:v0.17.1@sha256:38606faa38c54787525fb0ff2fd6b41b4cfb75d455c1df294927c5f611699b17
+    <<: *obs-hardened
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128m
+          pids: 100
     environment:
       # Prefer the read-only monitoring role (ops/observability/postgres-exporter/monitoring-user.sql).
       # The fallback reuses the application credentials so the stack works out of the box;
@@ -175,12 +242,20 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    logging: *obs-logging
     networks: [observability, backend]
 
   grafana:
-    image: grafana/grafana:12.2.0
-    restart: unless-stopped
+    image: grafana/grafana:12.2.0@sha256:74144189b38447facf737dfd0f3906e42e0776212bf575dc3334c3609183adf7
+    <<: *obs-hardened
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512m
+          pids: 200
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:?GRAFANA_ADMIN_USER is required}
       GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:?GRAFANA_ADMIN_PASSWORD is required}
@@ -217,8 +292,7 @@ services:
       timeout: 5s
       retries: 12
       start_period: 30s
-    logging: *obs-logging
-    networks: [observability]
+    networks: [observability, grafana-edge]
 
 volumes:
   alloy-data:
@@ -230,3 +304,6 @@ volumes:
 
 networks:
   observability:
+    internal: true
+  grafana-edge:
+  egress:

@@ -2,7 +2,16 @@
 # Build: docker build -t time-manager-backup ops/backup
 # Offsite upload uses aws-cli (default) or rclone; build with --build-arg WITH_AWS_CLI=0
 # and/or --build-arg WITH_RCLONE=1 to choose.
-FROM postgres:17-alpine
+FROM postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+
+ARG VERSION=0.0.0
+ARG REVISION=unknown
+ARG SOURCE=https://github.com/smokyngt/time-manager-claude-clement
+LABEL org.opencontainers.image.title="time-manager-backup" \
+      org.opencontainers.image.description="PostgreSQL backup sidecar" \
+      org.opencontainers.image.source="${SOURCE}" \
+      org.opencontainers.image.revision="${REVISION}" \
+      org.opencontainers.image.version="${VERSION}"
 
 ARG WITH_AWS_CLI=1
 ARG WITH_RCLONE=0
@@ -13,8 +22,7 @@ RUN apk add --no-cache bash curl tzdata age gnupg \
     && if [ "$WITH_RCLONE" = "1" ]; then apk add --no-cache rclone; fi \
     && mkdir -p /backups
 
-COPY bin/ /usr/local/bin/
-RUN chmod 0755 /usr/local/bin/*.sh
+COPY --chown=0:0 --chmod=0755 bin/ /usr/local/bin/
 
 EXPOSE 9187
 

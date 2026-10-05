@@ -1,0 +1,94 @@
+# Vault platform: `docker compose -f docker-compose.yml -f docker-compose.vault.yml up -d --build`
+# (or `make vault-up`). Vault is the root of trust: KV v2 configuration, Transit KEKs, audit.
+#
+# Boot sequence: vault-tls generates a bootstrap CA and server certificate once, vault starts
+# (sealed), vault-init initializes it on first boot (keys and root token go to the vault-root
+# volume, never to the repo), unseals, configures it and issues the scoped app token into the
+# vault-init volume. api starts only after vault-init succeeded and reads the token read-only.
+#
+# After any Vault restart it is sealed again: `make vault-unseal`. The api keeps failing its
+# boot until Vault is unsealed. Back up the vault-root volume offline (it holds the unseal
+# keys and the root token) and take Raft snapshots (see the runbook).
+# Only 127.0.0.1:8200 is published, for the operator; the API reaches vault:8200 internally.
+
+x-vault-tools: &vault-tools
+  build:
+    context: ./ops/vault
+  image: time-manager-vault-tools:1.18.3
+
+x-vault-client: &vault-client
+  VAULT_ADDR: https://vault:8200
+  VAULT_CACERT: /vault/tls/ca.crt
+
+services:
+  vault-tls:
+    <<: *vault-tools
+    command: ["/vault/bin/tls.sh"]
+    restart: "no"
+    volumes:
+      - vault-tls:/vault/tls
+    networks: [backend]
+
+  vault:
+    image: hashicorp/vault:1.18.3
+    restart: unless-stopped
+    command: ["server", "-config=/vault/config/vault.hcl"]
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_ADDR: https://127.0.0.1:8200
+      VAULT_CACERT: /vault/tls/ca.crt
+    ports:
+      - "127.0.0.1:${VAULT_PORT:-8200}:8200"
+    volumes:
+      - vault-data:/vault/file
+      - vault-tls:/vault/tls:ro
+      - ./ops/vault/config:/vault/config:ro
+    healthcheck:
+      test: ["CMD-SHELL", "vault status >/dev/null 2>&1; [ $$? -ne 1 ]"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 5s
+    depends_on:
+      vault-tls:
+        condition: service_completed_successfully
+    networks: [backend]
+
+  vault-init:
+    <<: *vault-tools
+    command: ["/vault/bin/init.sh"]
+    restart: "no"
+    environment:
+      <<: *vault-client
+      VAULT_KEY_SHARES: ${VAULT_KEY_SHARES:-5}
+      VAULT_KEY_THRESHOLD: ${VAULT_KEY_THRESHOLD:-3}
+    volumes:
+      - vault-tls:/vault/tls:ro
+      - vault-root:/vault/root
+      - vault-init:/vault/init
+    depends_on:
+      vault:
+        condition: service_healthy
+    networks: [backend]
+
+  api:
+    entrypoint: ["/usr/local/bin/token-entrypoint.sh"]
+    environment:
+      NODE_EXTRA_CA_CERTS: /vault/tls/ca.crt
+      VAULT_SECRETS_PATH: ${VAULT_SECRETS_PATH:-secret/data/app/time-manager}
+      VAULT_TOKEN_FILE: /vault/init/app-token
+      VAULT_URL: https://vault:8200
+    volumes:
+      - vault-init:/vault/init:ro
+      - vault-tls:/vault/tls:ro
+      - ./ops/vault/bin/token-entrypoint.sh:/usr/local/bin/token-entrypoint.sh:ro
+    depends_on:
+      vault-init:
+        condition: service_completed_successfully
+
+volumes:
+  vault-data:
+  vault-init:
+  vault-root:
+  vault-tls:

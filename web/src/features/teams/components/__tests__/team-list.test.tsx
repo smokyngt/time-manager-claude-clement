@@ -52,7 +52,9 @@ describe('TeamList', () => {
 
   it('shows only the actions whose callbacks exist', async () => {
     renderList({ onArchive: vi.fn(), onEdit: vi.fn(), onRestore: vi.fn() })
-    await userEvent.click(screen.getAllByRole('button', { name: 'card.actions' })[0]!)
+    await userEvent.click(
+      TeamFixtures.at(screen.getAllByRole('button', { name: 'card.actions' }), 0),
+    )
     expect(await screen.findByRole('menuitem', { name: 'common:actions.edit' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: 'common:actions.archive' })).toBeInTheDocument()
     expect(
@@ -65,7 +67,7 @@ describe('TeamList', () => {
     renderList({ onArchive: vi.fn(), onRestore: vi.fn() })
     const buttons = screen.getAllByRole('button', { name: 'card.actions' })
     expect(buttons).toHaveLength(3)
-    await userEvent.click(buttons[2]!)
+    await userEvent.click(TeamFixtures.at(buttons, 2))
     expect(await screen.findByRole('menuitem', { name: 'common:actions.restore' })).toBeVisible()
     expect(screen.queryByRole('menuitem', { name: 'common:actions.archive' })).toBeNull()
   })
@@ -73,7 +75,9 @@ describe('TeamList', () => {
   it('calls the callback with the team', async () => {
     const onDelete = vi.fn()
     renderList({ onDelete })
-    await userEvent.click(screen.getAllByRole('button', { name: 'card.actions' })[0]!)
+    await userEvent.click(
+      TeamFixtures.at(screen.getAllByRole('button', { name: 'card.actions' }), 0),
+    )
     await userEvent.click(await screen.findByRole('menuitem', { name: 'common:actions.delete' }))
     expect(onDelete).toHaveBeenCalledWith(teams[0])
   })
@@ -93,7 +97,7 @@ describe('TeamList', () => {
     renderList({ onToggle, selectedIds: new Set(['b']) })
     const boxes = screen.getAllByRole('checkbox')
     expect(boxes[1]).toBeChecked()
-    await userEvent.click(boxes[0]!)
+    await userEvent.click(TeamFixtures.at(boxes, 0))
     expect(onToggle).toHaveBeenCalledWith('a')
   })
 
@@ -105,7 +109,9 @@ describe('TeamList', () => {
     items[0]?.focus()
     await userEvent.keyboard('{ArrowDown}')
     expect(items[1]).toHaveFocus()
-    expect(within(items[1]!).getByRole('link', { name: 'Beta' })).toBeInTheDocument()
+    expect(
+      within(TeamFixtures.at(items, 1)).getByRole('link', { name: 'Beta' }),
+    ).toBeInTheDocument()
   })
 
   it('shows the manager name', () => {
