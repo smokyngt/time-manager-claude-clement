@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 
 import type { TeamMemberReport } from '@/features/reports/api/types'
+import type { MemberSortKey } from '@/features/reports/lib/sort-members'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -14,24 +15,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { formatDuration, formatSignedDuration } from '@/features/reports/lib/format'
+import { sortMembers } from '@/features/reports/lib/sort-members'
 import { cn } from '@/lib/utils'
-
-export type MemberSortKey = 'late_days' | 'overtime_ms' | 'worked_ms'
 
 const COLUMNS: { key: MemberSortKey; label: string }[] = [
   { key: 'worked_ms', label: 'Worked' },
   { key: 'overtime_ms', label: 'Overtime' },
   { key: 'late_days', label: 'Late days' },
 ]
-
-export function sortMembers(
-  members: TeamMemberReport[],
-  key: MemberSortKey,
-  direction: 'asc' | 'desc',
-) {
-  const factor = direction === 'asc' ? 1 : -1
-  return [...members].sort((a, b) => (a[key] - b[key]) * factor)
-}
 
 export function TeamMembersTable({ members }: { members: TeamMemberReport[] }) {
   const [sort, setSort] = useState<{ direction: 'asc' | 'desc'; key: MemberSortKey }>({

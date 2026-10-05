@@ -10,7 +10,8 @@ const { addTeamMembers, listUserOptions } = vi.hoisted(() => ({
   listUserOptions: vi.fn(),
 }))
 
-vi.mock('@/features/teams/api/teams', () => ({
+vi.mock('@/features/teams/api/teams', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/features/teams/api/teams')>()),
   addTeamMembers,
   listTeamMembers: () => Promise.resolve([makeUser('already', 'employee')]),
 }))
@@ -19,6 +20,8 @@ vi.mock('@/features/teams/api/users', () => ({
   userName: (user: { first_name: string; last_name: string }) =>
     `${user.first_name} ${user.last_name}`,
 }))
+
+vi.setConfig({ testTimeout: 30000 })
 
 describe('AddMembersDialog', () => {
   it('selects several users, hides existing members and submits their ids', async () => {

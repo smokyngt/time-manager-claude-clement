@@ -68,7 +68,7 @@ describe('user.controller.retrieve', () => {
     const ok = await run(makeActor('manager'), OTHER_ID);
     const error = await caught(run(makeActor('manager'), ADMIN_ID));
     expect(ok.sent).toMatchObject({ data: { id: OTHER_ID } });
-    expect(error.code).toBe('FORBIDDEN');
+    expect(error.code).toBe('USER_NOT_FOUND');
   });
 
   it('lets an admin retrieve anyone', async () => {
@@ -98,6 +98,6 @@ describe('user.controller.retrieve', () => {
     directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
     teamed.add(OTHER_ID);
     const error = await caught(run(makeActor('manager'), OTHER_ID));
-    expect(error.code).toBe('FORBIDDEN');
+    expect(error.code).toBe('USER_NOT_FOUND');
   });
 });

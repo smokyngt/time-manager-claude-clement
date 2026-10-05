@@ -88,7 +88,7 @@ async function requestRefresh() {
   })
   const body = (await response.json().catch(() => null)) as unknown
   if (!response.ok) throw toApiError(body, response.status)
-  const data = (body as null | { data?: Partial<SessionData> })?.data
+  const data = (body as { data?: Partial<SessionData> } | null)?.data
   if (!data?.access_token) throw toApiError(null, response.status)
   if (typeof data.expires_in === 'number' && data.user) {
     applySession({ access_token: data.access_token, expires_in: data.expires_in, user: data.user })

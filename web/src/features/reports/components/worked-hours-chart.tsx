@@ -12,7 +12,8 @@ import {
 
 import type { Granularity } from '@/features/reports/api/types'
 
-import { AXIS_TICK, ChartCard, TOOLTIP_STYLE } from '@/features/reports/components/chart-card'
+import { ChartCard } from '@/features/reports/components/chart-card'
+import { AXIS_TICK, TOOLTIP_STYLE } from '@/features/reports/lib/chart-style'
 import { formatDuration } from '@/features/reports/lib/format'
 import { formatPeriodLabel, formatShortPeriodLabel } from '@/features/reports/lib/labels'
 import { buildChartPoints } from '@/features/reports/lib/series'

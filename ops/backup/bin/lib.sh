@@ -89,11 +89,12 @@ is_dump_name() {
 }
 
 list_local_dumps() { # newest first
-  local f
+  local f n
   [[ -d "$BACKUP_DIR" ]] || return 0
   for f in "$BACKUP_DIR"/*; do
     [[ -f "$f" ]] || continue
-    is_dump_name "$(basename "$f")" && [[ "$(basename "$f")" == "$(backup_prefix)_"* ]] && basename "$f"
+    n="$(basename "$f")"
+    if is_dump_name "$n" && [[ "$n" == "$(backup_prefix)_"* ]]; then printf '%s\n' "$n"; fi
   done | sort -r
 }
 
@@ -160,7 +161,7 @@ s3_base() { printf '%s' "${BACKUP_S3_URI%/}"; }
 s3_list_dumps() { # newest first
   local name
   s3 ls "$(s3_base)/" | awk '{print $NF}' | while IFS= read -r name; do
-    is_dump_name "$name" && [[ "$name" == "$(backup_prefix)_"* ]] && printf '%s\n' "$name"
+    if is_dump_name "$name" && [[ "$name" == "$(backup_prefix)_"* ]]; then printf '%s\n' "$name"; fi
   done | sort -r
 }
 

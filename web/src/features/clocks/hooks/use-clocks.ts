@@ -11,7 +11,7 @@ const PAGE_SIZE = 25
 export function useClocks(filters: ClockFilters, enabled = true) {
   return useInfiniteQuery({
     enabled,
-    getNextPageParam: (last_page) => (last_page.more ? (last_page.next ?? undefined) : undefined),
+    getNextPageParam: (last_page: ClockPage) => (last_page.more ? (last_page.next ?? undefined) : undefined),
     initialPageParam: undefined as string | undefined,
     queryFn: ({ pageParam }): Promise<ClockPage> =>
       listClocks({ ...filters, cursor: pageParam, limit: PAGE_SIZE, order: 'desc' }),

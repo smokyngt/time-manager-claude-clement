@@ -29,9 +29,11 @@ const actor = makeActor('admin');
 
 describe('user.service.delete', () => {
   it('deletes the user and writes an audit log', async () => {
-    fakeDb.enqueue([{ id: OTHER_ID }]);
+    fakeDb.enqueue([], [{ id: OTHER_ID }]);
     const result = await remove({ actor, id: OTHER_ID });
     expect(result).toEqual({ success: true });
+    const set = fakeDb.arg('update', 'set') as Record<string, unknown>;
+    expect(typeof set['revoked_at']).toBe('number');
     expect(logCreate).toHaveBeenCalledWith({
       actor,
       event: 'user.deleted',
@@ -40,7 +42,7 @@ describe('user.service.delete', () => {
   });
 
   it('throws USER_NOT_FOUND when nothing was deleted', async () => {
-    fakeDb.enqueue([]);
+    fakeDb.enqueue([], []);
     const error = await caught(remove({ actor, id: MISSING_ID }));
     expect(error.code).toBe('USER_NOT_FOUND');
     expect(error.status).toBe(404);

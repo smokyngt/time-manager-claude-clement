@@ -1,17 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import {
-  ADMIN_ID,
-  caught,
-  EMPLOYEE_ID,
-  makeActor,
-  makeReply,
-  makeReq,
-  MANAGER_ID,
-  MISSING_ID,
-  OTHER_ID,
-} from '../../../helpers/fixtures.js';
-import { installClockService, installMembership, makeClock } from './harness.js';
+import { caught, makeActor, makeReply, makeReq } from '../../../helpers/fixtures.js';
+import { installClockService, installMembership } from './harness.js';
 
 const clocks = await installClockService();
 const membership = await installMembership();
@@ -30,7 +20,6 @@ afterEach(() => {
 });
 
 import type { InBody } from '@/controllers/clock/index.js';
-import type { Actor } from '@/types/entities/actor.js';
 import type { Clock } from '@/types/entities/clock.js';
 import type { ReplyEnvelope } from '@/types/envelope.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -55,7 +44,10 @@ describe('clock.controller.in', () => {
   it('lets managers and admins clock in too', async () => {
     for (const role of ['manager', 'admin'] as const) {
       const { reply } = makeReply<Rep>();
-      await clockIn(makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor(role), body: {} }), reply);
+      await clockIn(
+        makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor(role), body: {} }),
+        reply,
+      );
     }
     expect(svc.in).toHaveBeenCalledTimes(2);
   });
@@ -74,7 +66,10 @@ describe('clock.controller.in', () => {
     svc.in.mockImplementationOnce(() => Promise.reject(ClockConflictError()));
     const { reply } = makeReply<Rep>();
     const error = await caught(
-      clockIn(makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }), reply),
+      clockIn(
+        makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }),
+        reply,
+      ),
     );
     expect(error.code).toBe('CLOCK_CONFLICT');
     expect(error.status).toBe(409);
@@ -85,7 +80,10 @@ describe('clock.controller.in', () => {
     svc.in.mockImplementationOnce(() => Promise.reject(failure));
     const { reply } = makeReply<Rep>();
     const error = await caught(
-      clockIn(makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }), reply),
+      clockIn(
+        makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }),
+        reply,
+      ),
     );
     expect(error.code).toBe('CLOCK_IN_ERROR');
     expect(error.cause).toBe(failure);
@@ -118,7 +116,10 @@ describe('clock.controller.out', () => {
     svc.out.mockImplementationOnce(() => Promise.reject(ClockConflictError()));
     const { reply } = makeReply<Rep>();
     const error = await caught(
-      clockOut(makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }), reply),
+      clockOut(
+        makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }),
+        reply,
+      ),
     );
     expect(error.code).toBe('CLOCK_CONFLICT');
     expect(error.status).toBe(409);
@@ -129,12 +130,13 @@ describe('clock.controller.out', () => {
     svc.out.mockImplementationOnce(() => Promise.reject(failure));
     const { reply } = makeReply<Rep>();
     const error = await caught(
-      clockOut(makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }), reply),
+      clockOut(
+        makeReq<FastifyRequest<{ Body: InBody }>>({ actor: makeActor('employee'), body: {} }),
+        reply,
+      ),
     );
     expect(error.code).toBe('CLOCK_OUT_ERROR');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('clock.controller.out');
   });
 });
-
-void [ADMIN_ID, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_ID, makeClock];

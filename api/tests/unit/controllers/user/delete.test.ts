@@ -76,11 +76,13 @@ describe('user.controller.delete', () => {
     expect(svc.delete).not.toHaveBeenCalled();
   });
 
-  it('forbids a manager from deleting an admin and blocks the whole batch', async () => {
+  it('reports an admin as not found to a manager and deletes the rest', async () => {
     seed();
-    const error = await caught(run(makeActor('manager'), { ids: [OTHER_ID, ADMIN_ID] }));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(svc.delete).not.toHaveBeenCalled();
+    const fake = await run(makeActor('manager'), { ids: [OTHER_ID, ADMIN_ID] });
+    expect(svc.delete).toHaveBeenCalledTimes(1);
+    expect(fake.sent).toMatchObject({
+      data: { deleted: [OTHER_ID], failed: [{ code: 'USER_NOT_FOUND', id: ADMIN_ID }] },
+    });
   });
 
   it('forbids employees before loading anything', async () => {
@@ -120,11 +122,13 @@ describe('user.controller.delete', () => {
     expect(error.code).toBe('VALIDATION_ERROR');
   });
 
-  it('forbids a manager from deleting an employee of another manager team', async () => {
+  it('reports as not found to a manager an employee of another manager team', async () => {
     seed();
     teamed.add(OTHER_ID);
-    const error = await caught(run(makeActor('manager'), { ids: [OTHER_ID] }));
-    expect(error.code).toBe('FORBIDDEN');
+    const fake = await run(makeActor('manager'), { ids: [OTHER_ID] });
+    expect(fake.sent).toMatchObject({
+      data: { failed: [{ code: 'USER_NOT_FOUND', id: OTHER_ID }] },
+    });
     expect(svc.delete).not.toHaveBeenCalled();
   });
 });

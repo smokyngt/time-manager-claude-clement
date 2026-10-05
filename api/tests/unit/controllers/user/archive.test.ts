@@ -57,7 +57,7 @@ describe('user.controller.archive', () => {
   it('forbids a manager from touching an admin', async () => {
     directory.set(ADMIN_ID, makeUser('admin', ADMIN_ID));
     const error = await caught(run(makeActor('manager'), ADMIN_ID));
-    expect(error.code).toBe('FORBIDDEN');
+    expect(error.code).toBe('USER_NOT_FOUND');
     expect(svc.archive).not.toHaveBeenCalled();
   });
 
@@ -86,7 +86,7 @@ describe('user.controller.archive', () => {
     directory.set(OTHER_ID, makeUser('employee', OTHER_ID));
     teamed.add(OTHER_ID);
     const error = await caught(run(makeActor('manager'), OTHER_ID));
-    expect(error.code).toBe('FORBIDDEN');
+    expect(error.code).toBe('USER_NOT_FOUND');
     expect(svc.archive).not.toHaveBeenCalled();
   });
 

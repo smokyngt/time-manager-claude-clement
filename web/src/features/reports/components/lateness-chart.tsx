@@ -2,7 +2,8 @@ import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxi
 
 import type { Granularity, UserSeriesPoint } from '@/features/reports/api/types'
 
-import { AXIS_TICK, ChartCard, TOOLTIP_STYLE } from '@/features/reports/components/chart-card'
+import { ChartCard } from '@/features/reports/components/chart-card'
+import { AXIS_TICK, TOOLTIP_STYLE } from '@/features/reports/lib/chart-style'
 import { formatPeriodLabel, formatShortPeriodLabel } from '@/features/reports/lib/labels'
 
 export function LatenessChart({

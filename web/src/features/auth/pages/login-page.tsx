@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoginForm } from '@/features/auth/components/login-form'
 import { MICROSOFT_LOGIN_URL } from '@/lib/api/config'
-import { consumeFrom, peekFrom, saveFrom, sanitizeFrom } from '@/lib/auth/redirect'
+import { consumeFrom, peekFrom, sanitizeFrom, saveFrom } from '@/lib/auth/redirect'
 import { useAuth } from '@/lib/auth/use-auth'
 
 function MicrosoftIcon() {

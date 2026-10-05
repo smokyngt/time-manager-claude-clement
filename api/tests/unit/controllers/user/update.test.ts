@@ -102,13 +102,16 @@ describe('user.controller.update', () => {
     expect(svc.update).not.toHaveBeenCalled();
   });
 
-  it('checks every item before any write: one forbidden item blocks the whole request', async () => {
+  it('reports an admin as not found to a manager and updates the rest', async () => {
     seed();
-    const error = await caught(
-      run(makeActor('manager'), { data: { first_name: 'X' }, ids: [OTHER_ID, ADMIN_ID] }),
-    );
-    expect(error.code).toBe('FORBIDDEN');
-    expect(svc.update).not.toHaveBeenCalled();
+    const fake = await run(makeActor('manager'), {
+      data: { first_name: 'X' },
+      ids: [OTHER_ID, ADMIN_ID],
+    });
+    expect(svc.update).toHaveBeenCalledTimes(1);
+    expect(fake.sent).toMatchObject({
+      data: { failed: [{ code: 'USER_NOT_FOUND', id: ADMIN_ID }], updated: [OTHER_ID] },
+    });
   });
 
   it('forbids a manager from promoting an employee', async () => {
@@ -162,13 +165,13 @@ describe('user.controller.update', () => {
     expect(error.code).toBe('UNAUTHORIZED');
   });
 
-  it('forbids a manager from updating an employee of another manager team', async () => {
+  it('reports as not found to a manager an employee of another manager team', async () => {
     seed();
     teamed.add(OTHER_ID);
-    const error = await caught(
-      run(makeActor('manager'), { data: { first_name: 'X' }, ids: [OTHER_ID] }),
-    );
-    expect(error.code).toBe('FORBIDDEN');
+    const fake = await run(makeActor('manager'), { data: { first_name: 'X' }, ids: [OTHER_ID] });
+    expect(fake.sent).toMatchObject({
+      data: { failed: [{ code: 'USER_NOT_FOUND', id: OTHER_ID }] },
+    });
     expect(svc.update).not.toHaveBeenCalled();
   });
 
@@ -181,5 +184,25 @@ describe('user.controller.update', () => {
       ids: [OTHER_ID, EMPLOYEE_ID],
     });
     expect(fake.sent).toMatchObject({ data: { success: true } });
+  });
+
+  it('lets an employee send current_password when changing their own password', async () => {
+    seed();
+    const fake = await run(makeActor('employee'), {
+      data: { current_password: 'old-long-password', password: 'new-long-password' },
+      ids: [EMPLOYEE_ID],
+    });
+    expect(fake.sent).toMatchObject({ data: { success: true } });
+  });
+
+  it('forbids a manager from sending current_password for another user', async () => {
+    seed();
+    const error = await caught(
+      run(makeActor('manager'), {
+        data: { current_password: 'old-long-password', password: 'new-long-password' },
+        ids: [OTHER_ID],
+      }),
+    );
+    expect(error.code).toBe('FORBIDDEN');
   });
 });

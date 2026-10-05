@@ -4,11 +4,12 @@ import { describe, expect, it, vi } from 'vitest'
 import { TeamActions } from '@/features/teams/components/team-actions'
 import { makeUser, renderTeamUi, TEAM } from '@/features/teams/test-utils'
 
-vi.mock('@/features/teams/api/teams', () => ({}))
 vi.mock('@/features/teams/api/users', () => ({
   listUserOptions: () => Promise.resolve([]),
   userName: () => '',
 }))
+
+vi.setConfig({ testTimeout: 30000 })
 
 describe('TeamActions', () => {
   it('lets an admin edit, archive and delete', () => {

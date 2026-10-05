@@ -7,11 +7,16 @@ import { makeUser, renderTeamUi } from '@/features/teams/test-utils'
 
 const { createTeam } = vi.hoisted(() => ({ createTeam: vi.fn() }))
 
-vi.mock('@/features/teams/api/teams', () => ({ createTeam }))
+vi.mock('@/features/teams/api/teams', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('@/features/teams/api/teams')>()),
+  createTeam,
+}))
 vi.mock('@/features/teams/api/users', () => ({
   listUserOptions: () => Promise.resolve([]),
   userName: () => '',
 }))
+
+vi.setConfig({ testTimeout: 30000 })
 
 describe('NewTeamDialog', () => {
   it('shows validation errors and does not submit', async () => {

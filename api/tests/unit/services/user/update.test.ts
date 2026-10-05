@@ -27,6 +27,11 @@ const { update } = await import('@/services/user/update.js');
 
 const actor = makeActor('admin');
 
+const setCalls = (): Record<string, unknown>[] =>
+  fakeDb.calls
+    .filter((call) => call.op === 'update' && call.method === 'set')
+    .map((call) => call.args[0] as Record<string, unknown>);
+
 describe('user.service.update', () => {
   it('updates fields, lowercases the email and writes an audit log with field names only', async () => {
     fakeDb.enqueue([makeRow({ first_name: 'Janet' })]);
@@ -76,5 +81,53 @@ describe('user.service.update', () => {
     expect(error.code).toBe('USER_UPDATE_ERROR');
     expect(error.cause).toBe(failure);
     expect(error.metadata['route']).toBe('user.service.update');
+  });
+
+  it('revokes sessions when the password, email or role changes', async () => {
+    fakeDb.enqueue([makeRow()], []);
+    await update({ actor, data: { role: 'manager' }, id: OTHER_ID });
+    expect(setCalls()).toHaveLength(2);
+    expect(typeof setCalls()[1]?.['revoked_at']).toBe('number');
+  });
+
+  it('does not revoke sessions for other fields', async () => {
+    fakeDb.enqueue([makeRow()]);
+    await update({ actor, data: { first_name: 'A' }, id: OTHER_ID });
+    expect(setCalls()).toHaveLength(1);
+  });
+
+  it('requires the current password when changing your own', async () => {
+    const hash = await Bun.password.hash('old-long-password', { algorithm: 'argon2id' });
+    const self = makeActor('employee', OTHER_ID);
+    fakeDb.enqueue([{ password_hash: hash }]);
+    const missing = await caught(
+      update({ actor: self, data: { password: 'new-long-password' }, id: OTHER_ID }),
+    );
+    fakeDb.enqueue([{ password_hash: hash }]);
+    const wrong = await caught(
+      update({
+        actor: self,
+        data: { current_password: 'wrong-long-password', password: 'new-long-password' },
+        id: OTHER_ID,
+      }),
+    );
+    expect(missing.code).toBe('USER_PASSWORD_INVALID');
+    expect(missing.status).toBe(403);
+    expect(wrong.code).toBe('USER_PASSWORD_INVALID');
+    expect(setCalls()).toHaveLength(0);
+  });
+
+  it('accepts the right current password and never stores it', async () => {
+    const hash = await Bun.password.hash('old-long-password', { algorithm: 'argon2id' });
+    const self = makeActor('employee', OTHER_ID);
+    fakeDb.enqueue([{ password_hash: hash }], [makeRow()], []);
+    await update({
+      actor: self,
+      data: { current_password: 'old-long-password', password: 'new-long-password' },
+      id: OTHER_ID,
+    });
+    expect(setCalls()[0]).not.toHaveProperty('current_password');
+    expect(String(setCalls()[0]?.['password_hash'])).toStartWith('$argon2id');
+    expect(typeof setCalls()[1]?.['revoked_at']).toBe('number');
   });
 });
