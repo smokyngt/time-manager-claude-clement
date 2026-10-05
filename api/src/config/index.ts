@@ -46,7 +46,7 @@ class ConfigStore {
   }
 }
 
-const PLACEHOLDER = /change-me|dev-only/i;
+const PLACEHOLDER = /change[-_]?me|dev[-_]?only/i;
 const TENANT_ALIASES = ['common', 'consumers', 'organizations'];
 const LOCAL_HOSTS = ['127.0.0.1', '::1', '[::1]', 'localhost'];
 

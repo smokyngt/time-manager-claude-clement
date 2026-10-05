@@ -1,0 +1,51 @@
+---
+title: Observability
+description: Logs, metrics, traces and alerts with the optional Grafana stack, and the health endpoints.
+---
+
+The API is observable out of the box: structured logs, Prometheus metrics, optional OpenTelemetry traces and health endpoints. An optional add-on runs the full stack with Grafana.
+
+## Health endpoints
+
+| Endpoint | Meaning |
+| --- | --- |
+| `GET /health` | The process is running. It does not check dependencies. |
+| `GET /health/ready` | `200` when dependencies are available, `503` when one is not. |
+
+Use `/health` for liveness and `/health/ready` for readiness.
+
+## Logs and correlation
+
+The API writes structured JSON logs. Every request carries a request id, returned in the `x-request-id` header and as `correlation_id` in every response and error. To investigate a problem, ask for the `correlation_id` and search the logs for it. Logs contain ids and counts, not names, emails or tokens.
+
+## Metrics
+
+`GET /metrics` serves Prometheus metrics. When `METRICS_TOKEN` is set, requests must send `Authorization: Bearer <METRICS_TOKEN>`. Without a token, the endpoint is open outside production and answers `404` in production.
+
+## Traces
+
+Set `OTEL_EXPORTER_OTLP_ENDPOINT` to send OpenTelemetry traces. `OTEL_SERVICE_NAME` sets the service name, `time-manager-api` in the stack.
+
+## The Grafana stack
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
+```
+
+The add-on starts Grafana, Prometheus, Tempo, Loki, Alloy, Alertmanager and a PostgreSQL exporter. Only Grafana is published, on `127.0.0.1:3000` by default.
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD` | none, required | Grafana admin credentials. |
+| `METRICS_TOKEN` | none, required | Token that Alloy uses to scrape `/metrics`. |
+| `GRAFANA_BIND`, `GRAFANA_PORT` | `127.0.0.1`, `3000` | Where Grafana listens. |
+| `GRAFANA_ROOT_URL` | `http://localhost:3000` | Public URL of Grafana. |
+| `GRAFANA_COOKIE_SECURE` | `false` | Set `true` behind HTTPS. |
+| `ALERT_WEBHOOK_URL` | empty | Where Alertmanager sends alerts. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | `http://alloy:4318` | Trace destination. |
+
+Prometheus keeps 15 days of metrics.
+
+<Callout type="warn">
+Alloy reads container logs through the Docker socket, which gives root-equivalent access to the host. Restrict who can change the Compose files, or use another log shipper.
+</Callout>

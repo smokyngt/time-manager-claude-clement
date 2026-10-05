@@ -14,7 +14,7 @@ A clock is one period of work of one user. The `clocks` resource wraps `/v1/cloc
 - `list` accepts `userIds`, `from` and `to` (bounds on `clockedInAt`, as numbers, `Date` objects or ISO strings), `open`, `cursor`, `limit` and `order`. Employees always get their own clocks. Managers get their own and those of managed users. Admins get everyone.
 - `retrieve` works for the owner, the owner's manager and admins. A clock you cannot see returns `clock.not.found` (404).
 - `update` and `delete` are bulk (1 to 100 ids), need `clocks:manage` and return a result with `failed`. A correction that overlaps another clock appears in `failed` with `clock.overlap`. `delete` is permanent.
-- Notes are encrypted at rest and visible to the owner, their manager and admins.
+- A note is visible to the owner, their manager and admins.
 
 <Tabs items={['TypeScript']}>
 <Tab value="TypeScript">

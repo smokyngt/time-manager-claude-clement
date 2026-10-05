@@ -1,0 +1,64 @@
+---
+title: Backups
+description: Schedule PostgreSQL backups with retention, optional encryption and offsite copies, and restore one.
+---
+
+The backup add-on runs a container that dumps the database on a schedule, verifies the dump with a checksum, keeps a rotating history and can copy each dump offsite.
+
+## Enable backups
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d
+```
+
+By default a backup runs every day at 02:15 and is stored in the `backups` volume. The container only receives the database credentials, never the JWT secrets.
+
+## Configure
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `BACKUP_SCHEDULE` | `15 2 * * *` | Cron expression of the schedule. |
+| `BACKUP_TZ` | `UTC` | Timezone of the schedule. |
+| `BACKUP_RUN_ON_START` | `false` | Run one backup when the container starts. |
+| `BACKUP_KEEP_DAILY` | `7` | Daily backups to keep. |
+| `BACKUP_KEEP_WEEKLY` | `4` | Weekly backups to keep. |
+| `BACKUP_KEEP_MONTHLY` | `6` | Monthly backups to keep. |
+| `BACKUP_COMPRESSION` | `6` | Compression level. |
+| `BACKUP_AGE_RECIPIENT` | empty | `age` recipient. Encrypts dumps to `*.dump.age`. |
+| `BACKUP_ENCRYPTION_RECIPIENT` | empty | GnuPG recipient, as an alternative. |
+| `BACKUP_S3_URI` | empty | `s3://bucket/prefix` for offsite copies. |
+| `BACKUP_S3_ENDPOINT_URL` | empty | Endpoint of an S3-compatible service. |
+| `BACKUP_ALERT_WEBHOOK` | empty | URL called with a JSON message when a run fails. |
+| `BACKUP_HEARTBEAT_URL` | empty | URL pinged after each successful run. |
+| `BACKUP_MAX_AGE_HOURS` | `26` | The container reports unhealthy when the latest backup is older. |
+
+Set `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY` and `AWS_DEFAULT_REGION` for offsite copies.
+
+## Restore
+
+Restore into a scratch database first, to check the backup:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.backup.yml \
+  run --rm restore latest --target postgres://user:password@host:5432/scratch --create
+```
+
+The restore script verifies the checksum, then restores in a single transaction. Useful options:
+
+| Option | Meaning |
+| --- | --- |
+| `latest` or a file name | Which backup to restore. |
+| `--target URL` | The database to restore into. Without it, the production database is the target. |
+| `--remote` | Fetch the backup from `BACKUP_S3_URI` first. |
+| `--create` | Create the target database if it does not exist. |
+| `--force` | Allow restoring over the production database. |
+
+Encrypted backups need the matching private key. Mount the `age` identity file for the `restore` service.
+
+## Keep the keys
+
+A restored database contains personal data in encrypted form. Keep a copy of `ENCRYPTION_KEY`, `ENCRYPTION_KEYS_PREVIOUS` and `HASH_KEY` with your backup process, or the restored data cannot be read. See [configuration](./configuration).
+
+## Test your backups
+
+Restore a recent backup to a scratch database regularly, and confirm the application starts against it.

@@ -1,0 +1,49 @@
+---
+title: Timezones
+description: How Time Manager stores instants, interprets working hours and cuts report days, and how to display times correctly.
+---
+
+## Instants are UTC
+
+Every timestamp in the API, such as `clocked_in_at`, `created_at`, `from` and `to`, is an epoch millisecond value in UTC. It identifies one instant, independent of any timezone. Store and send it as is, and convert only when you display it.
+
+```ts
+const clock = (await client.clocks.current()).clock;
+if (clock !== null) {
+  const local = new Intl.DateTimeFormat('fr-FR', {
+    dateStyle: 'short',
+    timeStyle: 'short',
+    timeZone: 'Europe/Paris',
+  }).format(clock.clockedInAt);
+}
+```
+
+## The company timezone
+
+Times of day are different. `work_start` and `work_end` are `HH:MM` strings with no date, so they need a timezone. The API reads them in the company timezone, `APP_TIMEZONE`, which defaults to `Europe/Paris`. The same timezone decides:
+
+- Which calendar day a clock belongs to, for `days_worked`.
+- When a clock-in counts as late: more than 5 minutes after `work_start`.
+- Where `day`, `week` and `month` buckets of a report begin.
+
+Choose `APP_TIMEZONE` once, before you collect data, and keep it. Changing it later moves day boundaries for existing clocks and changes past reports.
+
+## Report ranges
+
+Build `from` and `to` from local midnights in the company timezone, not from UTC midnights. Otherwise a day bucket can start at 01:00 or 02:00 local time.
+
+$$
+\text{to} - \text{from} \le 366 \times 86\,400\,000 \text{ ms}
+$$
+
+## Daylight saving time
+
+On the days the clocks change, a calendar day lasts 23 or 25 hours. Compute ranges with a date library that knows the timezone, rather than by adding `86_400_000` to a timestamp. A single clock is still limited to 24 hours of duration.
+
+## Clocks across midnight
+
+A clock that starts before midnight and ends after it is allowed, as long as it lasts at most 24 hours.
+
+## Teams in other timezones
+
+There is one company timezone per instance. If your teams work in different timezones, set each team's `work_start` and `work_end` in the company timezone, converting from local time.

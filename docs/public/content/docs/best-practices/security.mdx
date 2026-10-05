@@ -1,0 +1,45 @@
+---
+title: Security
+description: How to store tokens, protect secrets, apply least privilege and run a safe deployment.
+---
+
+## Tokens in clients
+
+- Keep the access token in memory. Do not put it in `localStorage`, `sessionStorage` or a cookie that scripts can read.
+- Never touch the refresh token. It lives in an `httpOnly` cookie, which JavaScript cannot read.
+- Let the SDK refresh the session. Do not write your own retry loop for `401`.
+- On sign-out, discard the access token and call `auth.logout`.
+- Do not log tokens, passwords or full request bodies.
+
+## Least privilege
+
+- Give people the lowest role they need. Only admins can create managers or admins.
+- Create a team before adding people to it, and put employees under the manager who follows them. A manager sees only the clocks and reports of the people they manage.
+- Archive instead of delete when you need to keep history. Archived users cannot sign in.
+
+## Handling errors
+
+- Show friendly messages. Do not display `code`, `status` or the raw API message to end users.
+- Treat `404` and `403` as normal answers about access. Do not try to discover which record exists.
+- Keep `correlationId` in your logs so you can match an incident with a request.
+
+## Secrets on your server
+
+- Keep secrets in `.env` or your platform's secret store. Never commit them.
+- Use different values for `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET`. Generate each with a random generator, at least 32 characters.
+- Rotating `JWT_REFRESH_SECRET` signs everyone out. Rotating `JWT_ACCESS_SECRET` invalidates access tokens within their lifetime.
+- If a secret leaks, rotate it first, then clean up history.
+- Keep `ENCRYPTION_KEY` safe and backed up. Without it, stored personal data cannot be read.
+
+## Deployment
+
+- Serve the application over HTTPS and set `COOKIE_SECURE=true`.
+- Restrict `CORS_ORIGIN` to your real web origin.
+- Do not publish the database. In the default stack, only the web container is exposed.
+- Protect `/metrics` with `METRICS_TOKEN`, and keep Grafana on the loopback interface or behind your own authentication.
+- Keep the login rate limits. They slow password guessing. See [rate limits](../api/rate-limits).
+- Test your [backups](../platform/backups) by restoring them.
+
+## Microsoft sign-in
+
+Use a single-tenant app registration to accept only people from your organisation. Create the user in Time Manager before they sign in with Microsoft, because the API does not create accounts on first sign-in.
