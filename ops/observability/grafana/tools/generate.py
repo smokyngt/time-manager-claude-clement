@@ -455,9 +455,12 @@ NAV = [
 ]
 
 
-def nav_text(current: str) -> dict:
+NAV_K8S = NAV + [("tm-postgres-cnpg", "PostgreSQL (CNPG)")]
+
+
+def nav_text(current: str, nav: list[tuple[str, str]] = NAV) -> dict:
     links = " | ".join(
-        f"**{name}**" if uid == current else f"[{name}](/d/{uid})" for uid, name in NAV
+        f"**{name}**" if uid == current else f"[{name}](/d/{uid})" for uid, name in nav
     )
     return text(
         "Navigation",
@@ -929,6 +932,122 @@ def postgres() -> dict:
                      ["time-manager", "postgres", "database"], b, vars_)
 
 
+def postgres_cnpg() -> dict:
+    """CloudNativePG (Kubernetes) counterpart of postgres(): same layout, cnpg_* metrics.
+
+    Only provisioned on Kubernetes: it lives in dashboards/kubernetes, a folder the compose
+    provisioning does not read. Instances are the pods named <cluster>-<n>.
+    """
+    b = Board()
+    sel = 'namespace=~"$namespace",pod=~"$cluster-[0-9]+"'
+    dbsel = f'{sel},datname!~"template.*"'
+    b.add(nav_text("tm-postgres-cnpg", NAV_K8S), 24, 2)
+    b.row("Health", collapsed=False)
+    b.add(stat("Instances up", "Instances of the cluster whose CloudNativePG metrics collector answers (cnpg_collector_up). Should equal the number of instances in the Cluster spec.",
+               f"sum(cnpg_collector_up{{{sel}}})", "none", [(None, C_BAD), (1, C_WARN), (2, C_OK)], spark=False, decimals=0, color_mode="background"), 4, 4)
+    b.add(stat("Primary", "Instances that are not in recovery. Exactly one is expected; 0 means no writable primary (failover in progress), 2 or more means split brain.",
+               f"sum(1 - cnpg_pg_replication_in_recovery{{{sel}}})", "none", [(None, C_BAD), (1, C_OK), (2, C_BAD)], spark=False, decimals=0, color_mode="background"), 3, 4)
+    b.add(stat("Replicas", "Instances in recovery (streaming standbys).",
+               f"sum(cnpg_pg_replication_in_recovery{{{sel}}})", "none", [(None, C_WARN), (1, C_OK)], spark=False, decimals=0), 3, 4)
+    b.add(stat("Connections used", "Busiest instance: open backends as a share of its max_connections. Alert above 80%.",
+               f'max(sum by (pod) (cnpg_backends_total{{{sel}}}) / max by (pod) (cnpg_pg_settings_setting{{name="max_connections",{sel}}}))',
+               "percentunit", [(None, C_OK), (0.6, C_WARN), (0.8, C_BAD)], decimals=1, min_=0, max_=1), 4, 4)
+    b.add(stat("Cache hit ratio", "Share of block reads served from shared buffers. Healthy OLTP stays above 99%.",
+               f"sum(rate(cnpg_pg_stat_database_blks_hit{{{sel}}}[$__rate_interval])) / (sum(rate(cnpg_pg_stat_database_blks_hit{{{sel}}}[$__rate_interval])) + sum(rate(cnpg_pg_stat_database_blks_read{{{sel}}}[$__rate_interval])))",
+               "percentunit", [(None, C_BAD), (0.9, C_WARN), (0.99, C_OK)], decimals=2, min_=0, max_=1), 4, 4)
+    b.add(stat("Last backup age", "Time since the last successful base backup (cnpg_collector_last_available_backup_timestamp). Shows the epoch distance when no backup exists yet.",
+               f"time() - max(cnpg_collector_last_available_backup_timestamp{{{sel}}})", "s",
+               [(None, C_OK), (93600, C_WARN), (180000, C_BAD)], spark=False), 3, 4)
+    b.add(stat("Deadlocks (range)", "Deadlocks detected in the selected range.",
+               f"sum(increase(cnpg_pg_stat_database_deadlocks{{{sel}}}[$__range]))", "short", [(None, C_OK), (1, C_BAD)], spark=False, decimals=0), 3, 4)
+
+    b.row("Instances, connections and transactions", collapsed=False)
+    b.add(series("Instance role", "1 = primary (not in recovery), 0 = replica. A change of the series that sits at 1 is a switchover or failover.",
+                 [target(f"1 - cnpg_pg_replication_in_recovery{{{sel}}}", "{{pod}}")], "none", legend="table", min_=0, max_=1), 12, 7)
+    b.add(series("Connections vs max_connections", "Open backends per instance against its max_connections setting.",
+                 [target(f"sum by (pod) (cnpg_backends_total{{{sel}}})", "{{pod}}", 0),
+                  target(f'max(cnpg_pg_settings_setting{{name="max_connections",{sel}}})', "max_connections", 1)],
+                 "short", legend="table", overrides=[color_override("max_connections", "red")]), 12, 7)
+    b.add(series("Transactions per second", "Commits and rollbacks per second on the whole cluster.",
+                 [target(f"sum(rate(cnpg_pg_stat_database_xact_commit{{{sel}}}[$__rate_interval]))", "commit", 0),
+                  target(f"sum(rate(cnpg_pg_stat_database_xact_rollback{{{sel}}}[$__rate_interval]))", "rollback", 1)],
+                 "ops", overrides=[color_override("commit", "green"), color_override("rollback", "red")]), 12, 8)
+    b.add(series("Connections by state", "Backends by state (active, idle, idle in transaction) summed over the cluster.",
+                 [target(f"sum by (state) (cnpg_backends_total{{{sel}}})", "{{state}}")], "short", stack=True, legend="table"), 12, 8)
+    b.add(series("Longest open transaction", "Age of the oldest transaction per instance: values that keep growing indicate leaked connections.",
+                 [target(f"max by (pod) (cnpg_backends_max_tx_duration_seconds{{{sel}}})", "{{pod}}")], "s", legend="table"), 12, 7)
+    b.add(series("Waiting backends", "Backends waiting on a lock, per instance.",
+                 [target(f"sum by (pod) (cnpg_backends_waiting_total{{{sel}}})", "{{pod}}")], "short", legend="table"), 12, 7)
+
+    b.row("Replication", collapsed=False)
+    b.add(series("Replication lag per replica", "Seconds each replica is behind the primary (cnpg_pg_replication_lag, reported by the standbys).",
+                 [target(f"cnpg_pg_replication_lag{{{sel}}} and on (pod) cnpg_pg_replication_in_recovery{{{sel}}} == 1", "{{pod}}")],
+                 "s", legend="table", steps=[(None, C_OK), (5, C_WARN), (30, C_BAD)]), 12, 8)
+    b.add(series("Lag seen from the primary", "Write, flush and replay lag per streaming standby, measured by the primary (pg_stat_replication).",
+                 [target(f"max by (application_name) (cnpg_pg_stat_replication_{k}_lag_seconds{{{sel}}})", f"{k} {{{{application_name}}}}", i)
+                  for i, k in enumerate(["write", "flush", "replay"])], "s", legend="table"), 12, 8)
+    b.add(series("Streaming replicas", "Standbys connected to the primary, against the replicas whose WAL receiver is up.",
+                 [target(f"max(cnpg_pg_replication_streaming_replicas{{{sel}}})", "streaming from primary", 0),
+                  target(f"sum(cnpg_pg_replication_is_wal_receiver_up{{{sel}}})", "wal receivers up", 1)], "short", legend="table"), 24, 6)
+
+    b.row("WAL archiving and backups", collapsed=False)
+    b.add(series("WAL archive backlog", "WAL segments waiting to be archived (ready) and already archived (done) per instance. A growing ready count means archiving is failing and the volume will fill up.",
+                 [target(f'cnpg_collector_pg_wal_archive_status{{value="ready",{sel}}}', "ready {{pod}}", 0),
+                  target(f'cnpg_collector_pg_wal_archive_status{{value="done",{sel}}}', "done {{pod}}", 1)],
+                 "short", legend="table"), 12, 8)
+    b.add(series("WAL archiver activity", "Segments archived and archive failures per second.",
+                 [target(f"sum(rate(cnpg_pg_stat_archiver_archived_count{{{sel}}}[$__rate_interval]))", "archived", 0),
+                  target(f"sum(rate(cnpg_pg_stat_archiver_failed_count{{{sel}}}[$__rate_interval]))", "failed", 1)],
+                 "ops", overrides=[color_override("archived", "green"), color_override("failed", "red")]), 12, 8)
+    b.add(series("Last backup age over time", "Time since the last available base backup; the line should saw-tooth back to zero after each scheduled backup.",
+                 [target(f"time() - max(cnpg_collector_last_available_backup_timestamp{{{sel}}})", "last backup")],
+                 "s", steps=[(None, C_OK), (93600, C_WARN), (180000, C_BAD)]), 12, 7)
+    b.add(series("Time since last archival", "Seconds since the last WAL segment was archived, on the primary. Idle clusters switch WAL every archive_timeout.",
+                 [target(f"max((1 - cnpg_pg_replication_in_recovery{{{sel}}}) * cnpg_pg_stat_archiver_seconds_since_last_archival{{{sel}}})", "since last archival")],
+                 "s"), 12, 7)
+
+    b.row("Cache, locks and I/O", collapsed=True)
+    b.add(series("Cache hit ratio over time", "Buffer cache hit ratio per database.",
+                 [target(f"sum by (datname) (rate(cnpg_pg_stat_database_blks_hit{{{dbsel}}}[$__rate_interval])) / (sum by (datname) (rate(cnpg_pg_stat_database_blks_hit{{{dbsel}}}[$__rate_interval])) + sum by (datname) (rate(cnpg_pg_stat_database_blks_read{{{dbsel}}}[$__rate_interval])))", "{{datname}}")],
+                 "percentunit", min_=0, max_=1, steps=[(None, C_BAD), (0.9, C_WARN), (0.99, C_OK)]), 12, 8)
+    b.add(series("Locks by mode", "Locks currently held per lock mode, summed over the cluster.",
+                 [target(f"sum by (mode) (cnpg_pg_locks_count{{{sel}}})", "{{mode}}")], "short", stack=True, legend="table"), 12, 8)
+    b.add(series("Deadlocks and conflicts", "Deadlocks and recovery conflicts per second.",
+                 [target(f"sum(rate(cnpg_pg_stat_database_deadlocks{{{sel}}}[$__rate_interval]))", "deadlocks", 0),
+                  target(f"sum(rate(cnpg_pg_stat_database_conflicts{{{sel}}}[$__rate_interval]))", "conflicts", 1)], "ops"), 12, 7)
+    b.add(series("Rows per second", "Tuples returned, fetched, inserted, updated and deleted per second.",
+                 [target(f"sum(rate(cnpg_pg_stat_database_tup_{k}{{{sel}}}[$__rate_interval]))", k, i)
+                  for i, k in enumerate(["returned", "fetched", "inserted", "updated", "deleted"])], "ops", legend="table"), 12, 7)
+    b.add(series("Temp bytes", "Temporary files spilled to disk (work_mem too small) per second.",
+                 [target(f"sum(rate(cnpg_pg_stat_database_temp_bytes{{{sel}}}[$__rate_interval]))", "temp bytes")], "Bps"), 24, 6)
+
+    b.row("Background writer and checkpoints", collapsed=True)
+    ck = lambda kinds: f'{{__name__=~"cnpg_pg_stat_(bgwriter|checkpointer)_{kinds}",{sel}}}'
+    b.add(series("Checkpoints per second", "Timed checkpoints versus requested ones: many requested checkpoints mean max_wal_size is too small for the write load. Works for PostgreSQL 16 (bgwriter) and 17+ (checkpointer).",
+                 [target(f"sum(rate({ck('checkpoints_timed')}[$__rate_interval]))", "timed", 0),
+                  target(f"sum(rate({ck('checkpoints_req')}[$__rate_interval]))", "requested", 1)],
+                 "ops", overrides=[color_override("requested", "orange")]), 12, 8)
+    b.add(series("Checkpoint write and sync time", "Milliseconds per second spent writing and syncing files during checkpoints.",
+                 [target(f'sum(rate({{__name__=~"cnpg_pg_stat_(bgwriter_checkpoint|checkpointer)_write_time",{sel}}}[$__rate_interval]))', "write", 0),
+                  target(f'sum(rate({{__name__=~"cnpg_pg_stat_(bgwriter_checkpoint|checkpointer)_sync_time",{sel}}}[$__rate_interval]))', "sync", 1)],
+                 "ms"), 12, 8)
+    b.add(series("Buffers written", "Buffers written per second by the background writer, by checkpoints and directly by backends (backends only on PostgreSQL 16).",
+                 [target(f"sum(rate(cnpg_pg_stat_bgwriter_buffers_{k}{{{sel}}}[$__rate_interval]))", k, i)
+                  for i, k in enumerate(["clean", "checkpoint", "backend"])], "ops", legend="table"), 24, 7)
+
+    b.row("Storage", collapsed=True)
+    b.add(series("Database size over time", "Growth of each database on disk (the primary and replicas report the same size).",
+                 [target(f"max by (datname) (cnpg_pg_database_size_bytes{{{dbsel}}})", "{{datname}}")], "bytes", legend="table"), 24, 8)
+
+    vars_ = [PROM_VAR,
+             query_var("namespace", "Namespace", "label_values(cnpg_collector_up, namespace)", multi=False, include_all=False),
+             query_var("cluster", "Cluster", 'label_values(cnpg_collector_up{namespace=~"$namespace"}, pod)',
+                       multi=False, include_all=False, regex="/^(.*)-[0-9]+$/")]
+    return dashboard("tm-postgres-cnpg", "Time Manager - PostgreSQL (CloudNativePG)",
+                     "Kubernetes only. CloudNativePG cluster health: instances, roles, connections, replication lag, WAL archiving, backups, locks and checkpoints from the cnpg_* metrics.",
+                     ["time-manager", "postgres", "database", "kubernetes", "cloudnativepg"], b, vars_)
+
+
 def runtime() -> dict:
     b = Board()
     j = f"{{{API}}}"
@@ -1232,9 +1351,11 @@ def emit(path: Path, content: str | bytes) -> None:
 def main() -> int:
     check = "--check" in sys.argv
     for folder, items in {"time-manager": [overview(), api_red(), business(), traces(), logs()],
-                          "infrastructure": [postgres(), runtime()]}.items():
+                          "infrastructure": [postgres(), runtime()],
+                          "kubernetes": [postgres_cnpg()]}.items():
         names = {"tm-overview": "overview", "tm-api-red": "api-red", "tm-business": "business",
-                 "tm-traces": "traces", "tm-logs": "logs", "tm-postgres": "postgres", "tm-runtime": "runtime"}
+                 "tm-traces": "traces", "tm-logs": "logs", "tm-postgres": "postgres", "tm-runtime": "runtime",
+                 "tm-postgres-cnpg": "postgres-cnpg"}
         for d in items:
             emit(DASH / folder / f"{names[d['uid']]}.json", json.dumps(d, indent=2, ensure_ascii=False) + "\n")
     emit(ALERTING / "rules.yaml", alert_rules())

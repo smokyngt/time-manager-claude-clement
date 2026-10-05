@@ -27,7 +27,7 @@ locals {
     datasources = [for ds in local.compose_datasources.datasources : merge(ds, { url = local.datasource_urls[ds.uid] })]
   })
 
-  grafana_folders = { for p in local.compose_dashboards.providers : basename(p.options.path) => p.folder }
+  grafana_folders = merge({ for p in local.compose_dashboards.providers : basename(p.options.path) => p.folder }, { kubernetes = "Infrastructure" })
 
   grafana_dashboard_files = flatten([
     for dir, folder in local.grafana_folders : [

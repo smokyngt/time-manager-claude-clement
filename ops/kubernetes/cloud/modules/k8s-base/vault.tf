@@ -212,6 +212,10 @@ locals {
     "platform/cloudflare" = {
       api_token = "CHANGE_ME"
     }
+    "monitoring/loki-s3" = {
+      access_key_id     = "CHANGE_ME"
+      secret_access_key = "CHANGE_ME"
+    }
   }
 
   kv_document_names = [
@@ -221,6 +225,7 @@ locals {
     "monitoring/alertmanager",
     "monitoring/api-metrics",
     "platform/cloudflare",
+    "monitoring/loki-s3",
   ]
 
   vault_policies = {
@@ -477,7 +482,7 @@ resource "vault_pki_secret_backend_role" "internal_services" {
   backend            = vault_mount.pki_internal.path
   name               = "internal-services"
   issuer_ref         = "default"
-  allowed_domains    = ["svc.cluster.local", "cluster.local", "internal", "streaming_replica", local.app_domain]
+  allowed_domains    = ["svc.cluster.local", "cluster.local", "internal", "streaming_replica", "alloy.monitoring.svc.cluster.local", local.app_domain]
   allow_subdomains   = true
   allow_bare_domains = true
   allow_localhost    = false
@@ -541,6 +546,36 @@ resource "vault_policy" "platform" {
   policy = each.value
 
   depends_on = [helm_release.vault]
+}
+
+resource "vault_policy" "vault_metrics" {
+  name   = "time-manager-vault-metrics"
+  policy = <<-EOT
+    path "sys/metrics" {
+      capabilities = ["read"]
+    }
+  EOT
+
+  depends_on = [helm_release.vault]
+}
+
+resource "vault_token" "vault_metrics" {
+  role_name         = null
+  policies          = [vault_policy.vault_metrics.name]
+  period            = "768h"
+  renewable         = true
+  no_parent         = true
+  no_default_policy = true
+  display_name      = "vault-metrics"
+  metadata          = { purpose = "prometheus scrape of sys/metrics" }
+}
+
+resource "vault_kv_secret_v2" "vault_metrics" {
+  mount     = vault_mount.kv.path
+  name      = "monitoring/vault-metrics"
+  data_json = jsonencode({ token = vault_token.vault_metrics.client_token })
+
+  depends_on = [vault_kv_secret_backend_v2.kv]
 }
 
 resource "vault_kubernetes_auth_backend_role" "cert_manager" {
@@ -698,6 +733,7 @@ resource "terraform_data" "vault_ready" {
 
   depends_on = [
     vault_kv_secret_v2.documents,
+    vault_kv_secret_v2.vault_metrics,
     vault_transit_secret_backend_key.kek,
     vault_pki_secret_backend_role.api_server,
     vault_pki_secret_backend_role.internal_services,
