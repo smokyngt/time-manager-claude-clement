@@ -1533,7 +1533,7 @@
       "panels": [
         {
           "title": "Slowest statements (mean time)",
-          "description": "Top statements by mean execution time. Needs pg_stat_statements loaded on the db service and postgres-exporter started with --collector.stat_statements; see docs/OBSERVABILITY.md. Empty otherwise.",
+          "description": "Top statements by mean execution time. Needs pg_stat_statements loaded on the db service and postgres-exporter started with --collector.stat_statements; see the internal docs (Operations, Observability). Empty otherwise.",
           "type": "table",
           "targets": [
             {

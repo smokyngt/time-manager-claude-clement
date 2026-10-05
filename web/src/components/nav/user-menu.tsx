@@ -2,8 +2,8 @@ import { LogOutIcon, UserIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router'
 
+import { RoleBadge } from '@/components/shared/role-badge'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -38,8 +38,8 @@ export function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        aria-label={t('nav:user_menu.open')}
-        className="flex items-center gap-2.5 rounded-full p-0.5 outline-none focus-visible:ring-[3px] focus-visible:ring-ring/50 sm:rounded-md sm:py-1 sm:pr-2 sm:pl-1 sm:hover:bg-accent"
+        aria-label={`${t('nav:user_menu.open')} (${fullName})`}
+        className="flex items-center gap-2.5 rounded-full p-0.5 outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:rounded-md sm:py-1 sm:pr-2 sm:pl-1 sm:hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11 pointer-coarse:justify-center"
       >
         <Avatar>
           <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
@@ -55,7 +55,7 @@ export function UserMenu() {
           <span className="block truncate text-xs font-normal text-muted-foreground">
             {user.email}
           </span>
-          <Badge>{role}</Badge>
+          <RoleBadge role={user.role} />
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem

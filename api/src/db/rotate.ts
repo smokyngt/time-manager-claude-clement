@@ -8,6 +8,7 @@ type Row = { id: string } & Record<string, unknown>;
 type Target = { columns: string[]; table: string };
 
 const BATCH_SIZE = 500;
+const HASHED = new Set(['email_hash']);
 
 const TARGETS: Target[] = [
   { columns: ['description', 'name'], table: 'teams' },
@@ -40,7 +41,7 @@ class Rotation {
       for (const row of rows) {
         const changes = target.columns.flatMap((name) => {
           const value = row[name];
-          if (typeof value !== 'string' || Cipher.current(value)) return [];
+          if (HASHED.has(name) || typeof value !== 'string' || Cipher.current(value)) return [];
           return [query`${query.identifier(name)} = ${Cipher.rotate(value)}`];
         });
         if (changes.length === 0) continue;

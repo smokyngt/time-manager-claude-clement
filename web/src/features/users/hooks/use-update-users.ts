@@ -28,7 +28,7 @@ export function useUpdateUsers() {
     onError: (error) => {
       showError(t('edit.title'), Errors.translate(error))
     },
-    onSuccess: async (result, { data, ids, revert }) => {
+    onSuccess: async (result, { data, revert }) => {
       report({
         count: result.updated.length,
         failed: result.failed,
@@ -53,7 +53,6 @@ export function useUpdateUsers() {
         UsersCache.invalidate(queryClient),
         queryClient.invalidateQueries({ queryKey: QueryKeys.me() }),
       ])
-      return ids
     },
   })
 }

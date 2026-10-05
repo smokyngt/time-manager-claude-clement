@@ -23,7 +23,6 @@ function useNow(active: boolean) {
     if (!active) {
       return
     }
-    setNow(Date.now())
     const interval = setInterval(() => {
       setNow(Date.now())
     }, 1000)

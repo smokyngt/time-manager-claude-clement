@@ -2,7 +2,14 @@ import type { ReactNode } from 'react'
 
 import { Fragment } from 'react'
 
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 import { useMediaQuery } from '@/hooks/use-media-query'
 import { cn } from '@/lib/cn'
 

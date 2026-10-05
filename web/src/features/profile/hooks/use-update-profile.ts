@@ -8,7 +8,7 @@ import { QueryKeys } from '@/config/query-keys'
 import { sdk } from '@/config/sdk'
 import { useAuthStore } from '@/stores/auth'
 
-export type ProfileUpdate = { currentPassword?: string } & UserUpdateData
+export type ProfileUpdate = UserUpdateData
 
 export async function updateSelf(id: string, data: ProfileUpdate) {
   const result = await sdk.users.update([id], data)

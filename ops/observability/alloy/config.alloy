@@ -92,9 +92,18 @@ prometheus.scrape "postgres" {
 	forward_to      = [prometheus.remote_write.prometheus.receiver]
 }
 
+// Backup sidecar (docker-compose.backup.yml); no targets answer when the overlay is not started.
+prometheus.scrape "backup" {
+	job_name        = "backup"
+	targets         = [{"__address__" = "backup:9187", "instance" = "backup"}]
+	metrics_path    = "/metrics"
+	scrape_interval = "60s"
+	forward_to      = [prometheus.remote_write.prometheus.receiver]
+}
+
 // Black-box probes: api readiness (checks the database), api liveness, nginx (web).
 // nginx stub_status is not enabled in web/nginx.conf, so nginx internals are not scraped;
-// the probe below still tells whether nginx serves requests (see docs/OBSERVABILITY.md).
+// the probe below still tells whether nginx serves requests (see the internal docs, Operations, Observability).
 prometheus.exporter.blackbox "probes" {
 	config = "{ modules: { http_2xx: { prober: http, timeout: 5s, http: { method: GET, valid_status_codes: [200], preferred_ip_protocol: ip4 } } } }"
 

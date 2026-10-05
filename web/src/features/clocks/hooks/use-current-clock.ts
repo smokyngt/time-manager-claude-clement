@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { sdk } from '@/config/sdk'
 import { QueryKeys } from '@/config/query-keys'
+import { sdk } from '@/config/sdk'
 
 export function useCurrentClock() {
   const query = useQuery({

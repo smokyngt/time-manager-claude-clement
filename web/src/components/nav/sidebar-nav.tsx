@@ -32,7 +32,7 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
               <Link
                 aria-current={active ? 'page' : undefined}
                 className={cn(
-                  'flex h-9 items-center gap-3 rounded-md px-2.5 text-sm font-medium text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring/50',
+                  'flex h-9 items-center gap-3 rounded-md px-2.5 text-sm font-medium text-muted-foreground transition-colors outline-none hover:bg-accent hover:text-accent-foreground focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background pointer-coarse:h-11',
                   active && 'bg-accent text-accent-foreground',
                 )}
                 onClick={onNavigate}

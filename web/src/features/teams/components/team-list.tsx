@@ -1,5 +1,5 @@
 import type { Team } from '@time-manager/sdk'
-import type { KeyboardEvent } from 'react'
+import type { KeyboardEvent, ReactNode } from 'react'
 
 import { UsersRoundIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,7 @@ import { useRovingTabindex } from '@/hooks/use-roving-tabindex'
 import { cn } from '@/lib/cn'
 
 export type TeamListProps = {
-  emptyAction?: React.ReactNode
+  emptyAction?: ReactNode
   emptyDescription?: string
   emptyTitle?: string
   isManageable?: (team: Team) => boolean
@@ -93,6 +93,7 @@ export function TeamList({
     <ul aria-label={t('list.label')} className={layoutClass}>
       {teams.map((team, index) => {
         const manageable = isManageable(team)
+        const archived = team.archivedAt !== null
         const itemProps = getItemProps(index)
         return (
           <li
@@ -107,11 +108,11 @@ export function TeamList({
             <TeamCard
               layout={viewMode}
               managerName={managerNames[team.managerId]}
-              onArchive={manageable ? onArchive : undefined}
+              onArchive={manageable && !archived ? onArchive : undefined}
               onDelete={manageable ? onDelete : undefined}
               onEdit={manageable ? onEdit : undefined}
               onPreview={onPreview}
-              onRestore={manageable ? onRestore : undefined}
+              onRestore={manageable && archived ? onRestore : undefined}
               onToggle={manageable ? onToggle : undefined}
               selected={selectedIds.has(team.id)}
               team={team}

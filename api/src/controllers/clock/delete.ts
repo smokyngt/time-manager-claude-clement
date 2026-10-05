@@ -1,6 +1,6 @@
 import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
 import { AppError } from '@/lib/errors/base/registry.js';
-import { ClockNotFoundError, ClockDeleteError } from '@/lib/errors/domains/clock.js';
+import { ClockDeleteError, ClockNotFoundError } from '@/lib/errors/domains/clock.js';
 import { ClockDeleted } from '@/lib/events/domains/clock.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { clockService } from '@/services/clock/index.js';
@@ -68,12 +68,12 @@ export const remove = async (
         }
       }),
     );
-    const result: DeleteResponse = { failed, success: failed.length === 0, deleted };
+    const result: DeleteResponse = { deleted, failed, success: failed.length === 0 };
     await Reply.send(
       req,
       reply,
       ClockDeleted({
-        payload: { actor: actor.id, failed: failed.length, deleted: deleted.length },
+        payload: { actor: actor.id, deleted: deleted.length, failed: failed.length },
       }),
       result,
     );

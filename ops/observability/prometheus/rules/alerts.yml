@@ -1,6 +1,4 @@
-# Alert rules. Every alert carries a `runbook` anchored in docs/OBSERVABILITY.md.
-# Backup freshness is intentionally absent: the backup container exposes no metric
-# (no backup_last_success_timestamp). Add it once the container exports one.
+# Alert rules. Every alert carries a `runbook` anchored in the internal docs (/internal/docs/operations/observability).
 groups:
   - name: tm-api
     rules:
@@ -12,7 +10,7 @@ groups:
         annotations:
           summary: "API scrape target is down"
           description: "Alloy cannot scrape api:8000/metrics (instance {{ $labels.instance }}) for 1 minute. The api is down, restarting, or METRICS_TOKEN does not match."
-          runbook: "docs/OBSERVABILITY.md#apidown"
+          runbook: "/internal/docs/operations/observability#apidown"
 
       - alert: ApiMetricsMissing
         expr: absent(up{job="api"})
@@ -22,7 +20,7 @@ groups:
         annotations:
           summary: "No api metrics received"
           description: "No up{job=\"api\"} series for 5 minutes: Alloy, remote-write or the stack itself is down."
-          runbook: "docs/OBSERVABILITY.md#apimetricsmissing"
+          runbook: "/internal/docs/operations/observability#apimetricsmissing"
 
       - alert: ApiHighErrorRatio
         expr: job:http_request_errors:ratio_rate5m > 0.02 and job:http_requests:rate5m > 0.05
@@ -32,7 +30,7 @@ groups:
         annotations:
           summary: "More than 2% of API responses are 5xx"
           description: "5xx ratio is {{ $value | humanizePercentage }} over the last 5 minutes."
-          runbook: "docs/OBSERVABILITY.md#apihigherrorratio"
+          runbook: "/internal/docs/operations/observability#apihigherrorratio"
 
       - alert: ApiHighLatencyP95
         expr: job:http_request_duration_seconds:p95_5m > 1 and job:http_requests:rate5m > 0.05
@@ -42,7 +40,7 @@ groups:
         annotations:
           summary: "API p95 latency above 1s"
           description: "p95 request latency is {{ $value | humanizeDuration }} over the last 5 minutes."
-          runbook: "docs/OBSERVABILITY.md#apihighlatencyp95"
+          runbook: "/internal/docs/operations/observability#apihighlatencyp95"
 
       - alert: ApiRestartLoop
         expr: changes(process_start_time_seconds{job="api"}[15m]) > 2
@@ -51,7 +49,7 @@ groups:
         annotations:
           summary: "API restarted more than twice in 15 minutes"
           description: "process_start_time_seconds changed {{ $value }} times in 15 minutes (crash loop or deploy storm)."
-          runbook: "docs/OBSERVABILITY.md#apirestartloop"
+          runbook: "/internal/docs/operations/observability#apirestartloop"
 
       - alert: ApiEventLoopLag
         expr: nodejs_eventloop_lag_p99_seconds{job="api"} > 0.5
@@ -61,7 +59,7 @@ groups:
         annotations:
           summary: "API event loop p99 lag above 500ms"
           description: "The event loop is blocked ({{ $value | humanizeDuration }} p99). Look for CPU-bound work or GC pressure."
-          runbook: "docs/OBSERVABILITY.md#apieventlooplag"
+          runbook: "/internal/docs/operations/observability#apieventlooplag"
 
       - alert: AuthFailureSpike
         expr: sum(rate(tm_errors_total{code=~"(?i)auth[._].*"}[5m])) > 1
@@ -71,7 +69,7 @@ groups:
         annotations:
           summary: "Authentication errors above 1/s"
           description: "{{ $value | printf \"%.2f\" }} auth errors per second: credential stuffing, a broken client, or an identity provider outage."
-          runbook: "docs/OBSERVABILITY.md#authfailurespike"
+          runbook: "/internal/docs/operations/observability#authfailurespike"
 
   - name: tm-availability
     rules:
@@ -83,7 +81,7 @@ groups:
         annotations:
           summary: "api /health/ready is failing"
           description: "The readiness probe (database reachable within 2s) has failed for 2 minutes."
-          runbook: "docs/OBSERVABILITY.md#readinessfailing"
+          runbook: "/internal/docs/operations/observability#readinessfailing"
 
       - alert: WebDown
         expr: probe_success{job="probes",target="web"} == 0
@@ -93,7 +91,7 @@ groups:
         annotations:
           summary: "nginx (web) /healthz is failing"
           description: "The web container does not answer /healthz."
-          runbook: "docs/OBSERVABILITY.md#webdown"
+          runbook: "/internal/docs/operations/observability#webdown"
 
   - name: tm-postgres
     rules:
@@ -105,7 +103,7 @@ groups:
         annotations:
           summary: "postgres-exporter cannot reach PostgreSQL"
           description: "pg_up is 0: the database is down or the exporter credentials are wrong."
-          runbook: "docs/OBSERVABILITY.md#postgresdown"
+          runbook: "/internal/docs/operations/observability#postgresdown"
 
       - alert: PostgresConnectionsSaturation
         expr: sum(pg_stat_activity_count) / max(pg_settings_max_connections) > 0.8
@@ -115,7 +113,7 @@ groups:
         annotations:
           summary: "PostgreSQL connections above 80% of max_connections"
           description: "{{ $value | humanizePercentage }} of max_connections in use."
-          runbook: "docs/OBSERVABILITY.md#postgresconnectionssaturation"
+          runbook: "/internal/docs/operations/observability#postgresconnectionssaturation"
 
       - alert: PostgresDeadlocks
         expr: increase(pg_stat_database_deadlocks[10m]) > 0
@@ -124,7 +122,7 @@ groups:
         annotations:
           summary: "PostgreSQL deadlocks detected"
           description: "{{ $value }} deadlocks in the last 10 minutes on database {{ $labels.datname }}."
-          runbook: "docs/OBSERVABILITY.md#postgresdeadlocks"
+          runbook: "/internal/docs/operations/observability#postgresdeadlocks"
 
   - name: tm-observability-stack
     rules:
@@ -136,7 +134,7 @@ groups:
         annotations:
           summary: "Observability target {{ $labels.job }} is down"
           description: "Alloy cannot scrape {{ $labels.job }} ({{ $labels.instance }}) for 5 minutes."
-          runbook: "docs/OBSERVABILITY.md#observabilitytargetdown"
+          runbook: "/internal/docs/operations/observability#observabilitytargetdown"
 
       - alert: RemoteWriteFailing
         expr: rate(prometheus_remote_storage_samples_failed_total[5m]) > 0
@@ -146,4 +144,26 @@ groups:
         annotations:
           summary: "Alloy fails to remote-write samples to Prometheus"
           description: "Samples are being dropped; dashboards will have gaps."
-          runbook: "docs/OBSERVABILITY.md#remotewritefailing"
+          runbook: "/internal/docs/operations/observability#remotewritefailing"
+
+  - name: tm-backup
+    rules:
+      - alert: BackupStale
+        expr: time() - tm_backup_last_success_timestamp_seconds > 93600
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "No successful PostgreSQL backup for over 26 hours"
+          description: "The last successful backup finished {{ $value | humanizeDuration }} ago."
+          runbook: "/internal/docs/operations/backups#backupstale"
+
+      - alert: BackupMetricsMissing
+        expr: absent(tm_backup_last_success_timestamp_seconds)
+        for: 30m
+        labels:
+          severity: warning
+        annotations:
+          summary: "No backup metrics received"
+          description: "The backup container is not scraped or has not recorded a successful backup."
+          runbook: "/internal/docs/operations/backups#backupmetricsmissing"

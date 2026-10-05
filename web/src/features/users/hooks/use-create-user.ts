@@ -1,4 +1,4 @@
-import type { UserCreateParams } from '@time-manager/sdk'
+import type { CreateUserResponse, UserCreateParams } from '@time-manager/sdk'
 
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useTranslation } from 'react-i18next'
@@ -17,7 +17,7 @@ export function useCreateUser() {
 
   return useMutation({
     meta: {
-      successMessage: (data: { user: Parameters<typeof UserSearch.name>[0] }) =>
+      successMessage: (data: CreateUserResponse) =>
         t('toast.created', { name: UserSearch.name(data.user) }),
     },
     mutationFn: (params: UserCreateParams) => sdk.users.create(params),

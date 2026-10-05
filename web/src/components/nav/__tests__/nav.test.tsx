@@ -42,3 +42,17 @@ describe('SidebarNav', () => {
     expect(screen.getByRole('link', { name: 'users' })).toBeInTheDocument()
   })
 })
+
+describe('SidebarNav scopes', () => {
+  it('hides links the scopes cannot use', () => {
+    TestAuth.render(
+      <TooltipProvider>
+        <SidebarNav />
+      </TooltipProvider>,
+      { role: 'employee', route: '/', scopes: ['auth:self'] },
+    )
+    expect(screen.queryByRole('link', { name: 'clocks' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: 'teams' })).not.toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'dashboard' })).toBeInTheDocument()
+  })
+})

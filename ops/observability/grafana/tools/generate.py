@@ -920,7 +920,7 @@ def postgres() -> dict:
 
     b.row("Slow queries (requires pg_stat_statements)", collapsed=True)
     tr = [{"id": "organize", "options": {"excludeByName": {"Time": True}, "renameByName": {"queryid": "Query id", "datname": "Database", "Value": "Mean time"}}}]
-    b.add(table("Slowest statements (mean time)", "Top statements by mean execution time. Needs pg_stat_statements loaded on the db service and postgres-exporter started with --collector.stat_statements; see docs/OBSERVABILITY.md. Empty otherwise.",
+    b.add(table("Slowest statements (mean time)", "Top statements by mean execution time. Needs pg_stat_statements loaded on the db service and postgres-exporter started with --collector.stat_statements; see the internal docs (Operations, Observability). Empty otherwise.",
                 [instant("topk(10, sum by (datname, queryid) (rate(pg_stat_statements_seconds_total[$__range])) / sum by (datname, queryid) (rate(pg_stat_statements_calls_total[$__range])))", "", format="table")],
                 tr, overrides=[column("Mean time", "s", steps=LAT_STEPS, cell="color-text", decimals=4)], sort="Mean time"), 24, 8)
     vars_ = [PROM_VAR, query_var("database", "Database", "label_values(pg_stat_database_xact_commit, datname)", regex="/^(?!template).*/")]
@@ -1026,7 +1026,7 @@ def to_yaml(v, indent: int = 0) -> str:
     return yaml_scalar(v)
 
 
-def rule(uid, title, expr, op, threshold, for_, severity, summary, runbook, no_data="OK", window=600) -> dict:
+def rule(uid, title, expr, op, threshold, for_, severity, summary, runbook, no_data="OK", window=600, page="observability") -> dict:
     return {
         "uid": uid,
         "title": title,
@@ -1045,7 +1045,7 @@ def rule(uid, title, expr, op, threshold, for_, severity, summary, runbook, no_d
         "noDataState": no_data,
         "execErrState": "Error",
         "for": for_,
-        "annotations": {"summary": summary, "runbook": f"docs/OBSERVABILITY.md#{runbook}"},
+        "annotations": {"summary": summary, "runbook": f"/internal/docs/operations/{page}#{runbook}"},
         "labels": {"severity": severity, "source": "grafana"},
         "isPaused": False,
     }
@@ -1066,6 +1066,8 @@ def alert_rules() -> str:
         rule("tm-db-connections", "PostgresConnectionsSaturation",
              "sum(pg_stat_activity_count) / max(pg_settings_max_connections)", "gt", 0.8, "5m", "warning",
              "PostgreSQL connections above 80% of max_connections", "postgresconnectionssaturation"),
+        rule("tm-backup-stale", "BackupStale", "time() - max(tm_backup_last_success_timestamp_seconds)", "gt", 93600,
+             "5m", "critical", "No successful PostgreSQL backup for over 26 hours", "backupstale", page="backups"),
     ]
     doc = {"apiVersion": 1,
            "groups": [{"orgId": 1, "name": "tm-critical", "folder": "Time Manager", "interval": "1m", "rules": rules}]}

@@ -15,8 +15,8 @@ export type NavItem = {
 
 export const NAV_ITEMS: NavItem[] = [
   { end: true, icon: LayoutDashboardIcon, labelKey: 'dashboard', to: '/' },
-  { icon: ClockIcon, labelKey: 'clocks', to: '/clocks' },
-  { icon: UsersRoundIcon, labelKey: 'teams', to: '/teams' },
+  { icon: ClockIcon, labelKey: 'clocks', scopes: [RESOURCE_SCOPES.clocks.read], to: '/clocks' },
+  { icon: UsersRoundIcon, labelKey: 'teams', scopes: [RESOURCE_SCOPES.teams.read], to: '/teams' },
   { icon: UsersIcon, labelKey: 'users', scopes: [RESOURCE_SCOPES.users.manage], to: '/users' },
   { icon: UserIcon, labelKey: 'profile', to: '/me' },
 ]

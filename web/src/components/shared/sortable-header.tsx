@@ -1,7 +1,7 @@
 import { ArrowDownIcon, ArrowUpIcon, ChevronsUpDownIcon } from 'lucide-react'
 
-import { TableHead } from '@/components/ui/table'
 import { FOCUS_RING } from '@/components/ui/focus'
+import { TableHead } from '@/components/ui/table'
 import { cn } from '@/lib/cn'
 
 export type SortDirection = 'asc' | 'desc'

@@ -1,6 +1,8 @@
 import { eq } from 'drizzle-orm';
 
 import { Config } from '@/config/index.js';
+import { Cipher } from '@/utils/crypto/cipher.js';
+import { Digest } from '@/utils/crypto/digest.js';
 import { Password } from '@/utils/password.js';
 
 import { db, sql } from './client.js';
@@ -349,7 +351,7 @@ export class Demo {
       const existing = await tx
         .select({ id: users.id })
         .from(users)
-        .where(eq(users.email, Demo.MARKER))
+        .where(eq(users.email_hash, Digest.email(Demo.MARKER)))
         .limit(1);
 
       if (existing.length > 0) {
@@ -420,12 +422,20 @@ export class Demo {
     });
   }
 
-  private static person(
+  /**
+   * @route demo.person
+   * @param {string} name
+   * @param {'employee' | 'manager'} role
+   * @param {string} passwordHash
+   * @returns {{ email: string; email_hash: string; first_name: string; last_name: string; password_hash: string; role: "employee" | "manager" }}
+   */
+  public static person(
     name: string,
     role: 'employee' | 'manager',
     passwordHash: string,
   ): {
     email: string;
+    email_hash: string;
     first_name: string;
     last_name: string;
     password_hash: string;
@@ -434,9 +444,10 @@ export class Demo {
     const [first = '', last = ''] = name.split(' ');
 
     return {
-      email: Demo.email(name),
-      first_name: first,
-      last_name: last,
+      email: Cipher.seal(Demo.email(name)),
+      email_hash: Digest.email(Demo.email(name)),
+      first_name: Cipher.seal(first),
+      last_name: Cipher.seal(last),
       password_hash: passwordHash,
       role,
     };

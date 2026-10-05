@@ -14,7 +14,7 @@ type Request = { body?: object; method: 'GET' | 'POST'; path: string; token?: st
 
 type Session = { client_token: string; lease_duration: number; renewable: boolean };
 
-type Transport = (url: string, init: RequestInit & { tls?: { ca: string } }) => Promise<Response>;
+type Transport = (url: string, init: { tls?: { ca: string } } & RequestInit) => Promise<Response>;
 
 const DEFAULT_PATHS = 'time-manager/api,time-manager/shared';
 const DEFAULT_TIMEOUT = 5000;
@@ -23,12 +23,10 @@ const RETRY_DELAY = 30_000;
 const RENEW_RATIO = 2 / 3;
 
 export class Vault {
-  public static transport: Transport = (url, init) => fetch(url, init);
   private static ca: Promise<string | undefined> | undefined;
   private static log: undefined | VaultLog;
   private static timer: ReturnType<typeof setTimeout> | undefined;
   private static token: string | undefined;
-
   /**
    * @route vault.enabled
    * @returns {boolean}
@@ -131,7 +129,7 @@ export class Vault {
 
       return reply.auth.lease_duration;
     } catch (error) {
-      Vault.log?.warn({ route: 'vault.renew', error: Vault.reason(error) }, 'vault token renewal failed');
+      Vault.log?.warn({ error: Vault.reason(error), route: 'vault.renew' }, 'vault token renewal failed');
 
       return Vault.login();
     }
@@ -148,6 +146,8 @@ export class Vault {
     Vault.log = undefined;
     Vault.ca = undefined;
   }
+
+  public static transport: Transport = (url, init) => fetch(url, init);
 
   /**
    * @route vault.watch
@@ -169,7 +169,7 @@ export class Vault {
     try {
       Vault.watch(await Vault.renew(), Vault.log);
     } catch (error) {
-      Vault.log?.warn({ route: 'vault.cycle', error: Vault.reason(error) }, 'vault login failed, retrying');
+      Vault.log?.warn({ error: Vault.reason(error), route: 'vault.cycle' }, 'vault login failed, retrying');
       if (Vault.timer !== undefined) clearTimeout(Vault.timer);
       Vault.timer = setTimeout(() => void Vault.cycle(), RETRY_DELAY);
       Vault.timer.unref();
@@ -187,7 +187,7 @@ export class Vault {
     const namespace = Vault.setting('VAULT_NAMESPACE');
     if (namespace !== undefined) headers['X-Vault-Namespace'] = namespace;
     if (request.body !== undefined) headers['Content-Type'] = 'application/json';
-    const init: RequestInit & { tls?: { ca: string } } = {
+    const init: { tls?: { ca: string } } & RequestInit = {
       headers,
       method: request.method,
       signal: AbortSignal.timeout(Number(Vault.setting('VAULT_TIMEOUT_MS') ?? DEFAULT_TIMEOUT)),

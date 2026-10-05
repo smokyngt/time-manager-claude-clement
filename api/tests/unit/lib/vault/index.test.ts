@@ -74,7 +74,7 @@ describe('Vault.login', () => {
 
     expect(await Vault.login()).toBe(3600);
     expect(calls[0]?.url).toBe('http://vault.test:8200/v1/auth/approle/login');
-    expect(JSON.parse(String(calls[0]?.init.body))).toEqual({
+    expect(JSON.parse(calls[0]?.init.body as string)).toEqual({
       role_id: 'role-1',
       secret_id: 'secret-1',
     });

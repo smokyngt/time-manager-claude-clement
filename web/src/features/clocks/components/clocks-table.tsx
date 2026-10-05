@@ -2,7 +2,6 @@ import type { Clock } from '@time-manager/sdk'
 
 import { useTranslation } from 'react-i18next'
 
-import { ClockRow } from '@/features/clocks/components/clock-row'
 import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -13,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table'
+import { ClockRow } from '@/features/clocks/components/clock-row'
 import { Duration } from '@/lib/duration'
 
 export type ClocksTableProps = {

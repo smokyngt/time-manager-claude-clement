@@ -89,7 +89,7 @@
   },
   "access_denied": {
     "title": "Access denied",
-    "description": "You do not have permission to view this page.",
+    "description": "Your role does not include access to this page. If you think this is a mistake, ask an administrator to update your permissions.",
     "back": "Back to dashboard"
   },
   "not_found": {

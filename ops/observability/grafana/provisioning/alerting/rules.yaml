@@ -65,7 +65,7 @@ groups:
         for: "1m"
         annotations:
           summary: "API scrape target is down"
-          runbook: "docs/OBSERVABILITY.md#apidown"
+          runbook: "/internal/docs/operations/observability#apidown"
         labels:
           severity: "critical"
           source: "grafana"
@@ -127,7 +127,7 @@ groups:
         for: "5m"
         annotations:
           summary: "More than 2% of API responses are 5xx"
-          runbook: "docs/OBSERVABILITY.md#apihigherrorratio"
+          runbook: "/internal/docs/operations/observability#apihigherrorratio"
         labels:
           severity: "critical"
           source: "grafana"
@@ -189,7 +189,7 @@ groups:
         for: "5m"
         annotations:
           summary: "API p95 latency above 1s"
-          runbook: "docs/OBSERVABILITY.md#apihighlatencyp95"
+          runbook: "/internal/docs/operations/observability#apihighlatencyp95"
         labels:
           severity: "warning"
           source: "grafana"
@@ -251,7 +251,7 @@ groups:
         for: "2m"
         annotations:
           summary: "api /health/ready is failing"
-          runbook: "docs/OBSERVABILITY.md#readinessfailing"
+          runbook: "/internal/docs/operations/observability#readinessfailing"
         labels:
           severity: "critical"
           source: "grafana"
@@ -313,8 +313,70 @@ groups:
         for: "5m"
         annotations:
           summary: "PostgreSQL connections above 80% of max_connections"
-          runbook: "docs/OBSERVABILITY.md#postgresconnectionssaturation"
+          runbook: "/internal/docs/operations/observability#postgresconnectionssaturation"
         labels:
           severity: "warning"
+          source: "grafana"
+        isPaused: false
+      - uid: "tm-backup-stale"
+        title: "BackupStale"
+        condition: "C"
+        data:
+          - refId: "A"
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: "prometheus"
+            model:
+              datasource:
+                type: "prometheus"
+                uid: "prometheus"
+              editorMode: "code"
+              expr: "time() - max(tm_backup_last_success_timestamp_seconds)"
+              instant: true
+              range: false
+              intervalMs: 1000
+              maxDataPoints: 43200
+              refId: "A"
+          - refId: "B"
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: "reduce"
+              datasource:
+                type: "__expr__"
+                uid: "__expr__"
+              expression: "A"
+              reducer: "last"
+              settings:
+                mode: "dropNN"
+              refId: "B"
+          - refId: "C"
+            relativeTimeRange:
+              from: 600
+              to: 0
+            datasourceUid: "__expr__"
+            model:
+              type: "threshold"
+              datasource:
+                type: "__expr__"
+                uid: "__expr__"
+              expression: "B"
+              conditions:
+                - evaluator:
+                    type: "gt"
+                    params:
+                      - 93600
+              refId: "C"
+        noDataState: "OK"
+        execErrState: "Error"
+        for: "5m"
+        annotations:
+          summary: "No successful PostgreSQL backup for over 26 hours"
+          runbook: "/internal/docs/operations/backups#backupstale"
+        labels:
+          severity: "critical"
           source: "grafana"
         isPaused: false

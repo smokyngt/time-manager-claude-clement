@@ -2,9 +2,9 @@ import type { Clock } from '@time-manager/sdk'
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
+import { LIMITS } from '@/config/limits'
 import { QueryKeys } from '@/config/query-keys'
 import { sdk } from '@/config/sdk'
-import { LIMITS } from '@/config/limits'
 
 export type ClocksFilters = {
   cursor?: string

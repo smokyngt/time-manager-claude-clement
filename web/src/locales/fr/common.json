@@ -89,7 +89,7 @@
   },
   "access_denied": {
     "title": "Accès refusé",
-    "description": "Vous n'avez pas l'autorisation de consulter cette page.",
+    "description": "Votre rôle ne donne pas accès à cette page. Si vous pensez qu'il s'agit d'une erreur, demandez à un administrateur de modifier vos autorisations.",
     "back": "Retour au tableau de bord"
   },
   "not_found": {

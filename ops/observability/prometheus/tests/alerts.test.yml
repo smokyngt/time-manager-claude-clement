@@ -26,7 +26,7 @@ tests:
             exp_annotations:
               summary: "API scrape target is down"
               description: "Alloy cannot scrape api:8000/metrics (instance api) for 1 minute. The api is down, restarting, or METRICS_TOKEN does not match."
-              runbook: "docs/OBSERVABILITY.md#apidown"
+              runbook: "/internal/docs/operations/observability#apidown"
 
   - name: 5xx ratio above 2 percent fires
     interval: 15s
@@ -55,7 +55,7 @@ tests:
             exp_annotations:
               summary: "More than 2% of API responses are 5xx"
               description: "5xx ratio is 10% over the last 5 minutes."
-              runbook: "docs/OBSERVABILITY.md#apihigherrorratio"
+              runbook: "/internal/docs/operations/observability#apihigherrorratio"
 
   - name: readiness probe failing fires
     interval: 15s
@@ -73,4 +73,44 @@ tests:
             exp_annotations:
               summary: "api /health/ready is failing"
               description: "The readiness probe (database reachable within 2s) has failed for 2 minutes."
-              runbook: "docs/OBSERVABILITY.md#readinessfailing"
+              runbook: "/internal/docs/operations/observability#readinessfailing"
+
+  - name: backup stale fires after 26 hours
+    interval: 5m
+    input_series:
+      - series: 'tm_backup_last_success_timestamp_seconds{job="backup",instance="backup"}'
+        values: "0+0x420"
+    alert_rule_test:
+      - eval_time: 20h
+        alertname: BackupStale
+        exp_alerts: []
+      - eval_time: 30h
+        alertname: BackupStale
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              job: backup
+              instance: backup
+            exp_annotations:
+              summary: "No successful PostgreSQL backup for over 26 hours"
+              description: "The last successful backup finished 1d 6h 0m 0s ago."
+              runbook: "/internal/docs/operations/backups#backupstale"
+
+  - name: backup metrics missing fires after 30 minutes
+    interval: 5m
+    input_series:
+      - series: 'up{job="api",instance="api"}'
+        values: "1+0x20"
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: BackupMetricsMissing
+        exp_alerts: []
+      - eval_time: 40m
+        alertname: BackupMetricsMissing
+        exp_alerts:
+          - exp_labels:
+              severity: warning
+            exp_annotations:
+              summary: "No backup metrics received"
+              description: "The backup container is not scraped or has not recorded a successful backup."
+              runbook: "/internal/docs/operations/backups#backupmetricsmissing"

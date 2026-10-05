@@ -5,7 +5,7 @@ COMPOSE_BAK := $(COMPOSE) -f docker-compose.yml -f docker-compose.backup.yml
 
 .DEFAULT_GOAL := help
 .PHONY: help dev up down logs migrate seed demo rotate-keys purge-sessions \
-        obs-up obs-down backup-up load-smoke load load-stress load-spike load-soak docs ci
+        obs-up obs-down backup-up backup-now backup-verify load-smoke load load-stress load-spike load-soak docs ci
 
 help: ## List targets
 	@grep -E '^[a-z-]+:.*##' $(MAKEFILE_LIST) | awk -F':.*## ' '{printf "  %-15s %s\n", $$1, $$2}'
@@ -32,7 +32,7 @@ seed: ## Seed the admin user (prod stack; also automatic on api start)
 demo: ## Load demo data (dev stack must be running: make dev)
 	$(COMPOSE_DEV) exec api bun run db:seed:demo
 
-rotate-keys: ## Re-encrypt data with the current ENCRYPTION_KEY (see docs/ENCRYPTION.md)
+rotate-keys: ## Re-encrypt data with the current ENCRYPTION_KEY (see Operations, Key rotation in the internal docs)
 	$(COMPOSE) run --rm --no-deps api bun run db:rotate:prod
 
 purge-sessions: ## Delete expired/revoked refresh tokens (prod stack)
@@ -46,6 +46,12 @@ obs-down: ## Stop the prod stack and the observability services
 
 backup-up: ## Start the prod stack with scheduled PostgreSQL backups
 	$(COMPOSE_BAK) up --build -d
+
+backup-now: ## Run one backup immediately (backup overlay must be running)
+	$(COMPOSE_BAK) exec backup backup.sh
+
+backup-verify: ## Restore the latest backup into a scratch database and check it
+	$(COMPOSE_BAK) --profile tools run --rm restore verify.sh
 
 load-smoke: ## k6 smoke test (BASE_URL=http://localhost:8000 by default)
 	k6 run -e BASE_URL=$${BASE_URL:-http://localhost:8000} ops/load/smoke.js

@@ -4,6 +4,8 @@ import { ClockIcon, PlusIcon, Trash2Icon } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
+import type { ClockEntry } from '@/features/clocks/lib/clock-values'
+
 import { Announcer } from '@/components/shared/announcer'
 import { BulkActionBar } from '@/components/shared/bulk-action-bar'
 import { ConfirmDialog } from '@/components/shared/confirm-dialog'
@@ -25,7 +27,6 @@ import { useDeleteClocks } from '@/features/clocks/hooks/use-delete-clocks'
 import { useUpdateClock } from '@/features/clocks/hooks/use-update-clock'
 import { ClockRange } from '@/features/clocks/lib/clock-range'
 import { ClockValues } from '@/features/clocks/lib/clock-values'
-import type { ClockEntry } from '@/features/clocks/lib/clock-values'
 import { useCursorPagination } from '@/hooks/use-cursor-pagination'
 import { useDocumentTitle } from '@/hooks/use-document-title'
 import { useMultiParams } from '@/hooks/use-multi-params'
@@ -67,11 +68,12 @@ export function ClocksPage() {
   const [form, setForm] = useState<FormState>(null)
   const [confirmOpen, setConfirmOpen] = useState(false)
 
+  const [now, setNow] = useState(() => Date.now())
   const preset = ClockRange.parse(values.preset)
   const targetId = canManage && values.user !== '' ? values.user : ownId
   const range = useMemo(
-    () => ClockRange.resolve(preset, values.from, values.to, Date.now()),
-    [preset, values.from, values.to],
+    () => ClockRange.resolve(preset, values.from, values.to, now),
+    [now, preset, values.from, values.to],
   )
   const invalidRange = range === null
 
@@ -114,6 +116,7 @@ export function ClocksPage() {
   const changeFilters = useCallback(
     (patch: Partial<typeof DEFAULTS>) => {
       set(patch)
+      setNow(Date.now())
       pagination.reset()
       clear()
     },

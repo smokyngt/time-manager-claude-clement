@@ -25,7 +25,7 @@ export function AppLayout() {
   return (
     <TooltipProvider delayDuration={200}>
       <a
-        className="sr-only z-50 rounded-md bg-primary px-3 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        className="sr-only z-50 rounded-md bg-primary px-3 py-2 text-primary-foreground outline-none focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:py-3 focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         href="#main"
       >
         {t('common:skip_to_content')}

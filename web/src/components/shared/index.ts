@@ -10,10 +10,13 @@ export { ListToolbar } from '@/components/shared/list-toolbar'
 export { PageHeader } from '@/components/shared/page-header'
 export { Pagination } from '@/components/shared/pagination'
 export { ResponsiveDetail } from '@/components/shared/responsive-detail'
-export { SearchInput } from '@/components/shared/search-input'
 export { ResponsiveTable } from '@/components/shared/responsive-table'
-export type { ResponsiveTableColumn, ResponsiveTableProps } from '@/components/shared/responsive-table'
+export type {
+  ResponsiveTableColumn,
+  ResponsiveTableProps,
+} from '@/components/shared/responsive-table'
 export { RoleBadge } from '@/components/shared/role-badge'
 export type { RoleBadgeProps } from '@/components/shared/role-badge'
+export { SearchInput } from '@/components/shared/search-input'
 export { SortableHeader } from '@/components/shared/sortable-header'
 export type { SortableHeaderProps, SortDirection } from '@/components/shared/sortable-header'
