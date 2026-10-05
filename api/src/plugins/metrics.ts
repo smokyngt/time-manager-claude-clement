@@ -19,7 +19,7 @@ export interface MetricsOptions {
  * @returns {Promise<void>}
  * @throws {NotFoundError | UnauthorizedError}
  */
-export const metrics: FastifyPluginAsync<MetricsOptions> = fp(
+export const metrics: FastifyPluginAsync<MetricsOptions> = fp<MetricsOptions>(
   async (app, options): Promise<void> => {
     const register = new Registry();
     collectDefaultMetrics({ register });

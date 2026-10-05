@@ -4,10 +4,7 @@ export interface Closable {
   end: (options?: { timeout?: number }) => Promise<void>;
 }
 
-export interface Runtime {
-  exit: (code?: number) => unknown;
-  on: (event: string, listener: (...args: never[]) => void) => unknown;
-}
+export type Runtime = Pick<NodeJS.Process, 'exit' | 'on'>;
 
 export interface ServerLike {
   close: () => Promise<unknown>;
