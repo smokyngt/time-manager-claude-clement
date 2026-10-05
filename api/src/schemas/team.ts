@@ -1,5 +1,5 @@
-import { InternalError } from '@/lib/errors/base/core.js';
-import { TeamManagerInvalidError, TeamNotFoundError, TeamScheduleInvalidError } from '@/lib/errors/domains/team.js';
+import { InternalError } from '@/lib/errors/index.js';
+import { TeamManagerInvalidError, TeamNotFoundError, TeamScheduleInvalidError } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,

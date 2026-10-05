@@ -1,21 +1,21 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teams } from '@/db/schema/team.js';
-import { TeamNotFoundError, TeamRetrieveError } from '@/lib/errors/domains/team.js';
+import { teams } from '@/db/schema/index.js';
+import { TeamNotFoundError, TeamRetrieveError } from '@/lib/errors/index.js';
 import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 
-import type { RetrieveParams, RetrieveResponse } from './index.js';
+import type { RetrieveTeamParams, RetrieveTeamResponse } from './index.js';
 
 /**
  * @route team.service.retrieve
- * @param {RetrieveParams} params
- * @returns {Promise<RetrieveResponse>}
+ * @param {RetrieveTeamParams} params
+ * @returns {Promise<RetrieveTeamResponse>}
  * @throws {TeamNotFoundError | TeamRetrieveError}
  */
-export const retrieve = async (params: RetrieveParams): Promise<RetrieveResponse> => {
+export const retrieve = async (params: RetrieveTeamParams): Promise<RetrieveTeamResponse> => {
   try {
     const { id } = params;
     const [row] = await db.select().from(teams).where(eq(teams.id, id)).limit(1);

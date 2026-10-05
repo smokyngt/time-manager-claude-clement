@@ -1,13 +1,13 @@
-import { user } from '@/controllers/user/index.js';
+import { user } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { UserIdParamsSchema, UserResponses } from '@/schemas/user.js';
+import { UserIdParamsSchema, UserResponses } from '@/schemas/index.js';
 
-import type { RestoreParams, UserResponse } from '@/controllers/user/index.js';
+import type { RestoreUserParams, UserResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const restore: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Params: RestoreParams; Reply: ReplyEnvelope<UserResponse> }>(
+  fastify.post<{ Params: RestoreUserParams; Reply: ReplyEnvelope<UserResponse> }>(
     '/:id/restore',
     {
       preHandler: auth({ scopes: ['users:manage'] }),

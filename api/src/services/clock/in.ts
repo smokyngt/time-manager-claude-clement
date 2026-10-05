@@ -1,10 +1,10 @@
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { DuplicateKeyError } from '@/lib/errors/base/core.js';
-import { ClockConflictError, ClockInError } from '@/lib/errors/domains/clock.js';
-import { ClockStarted } from '@/lib/events/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { DuplicateKeyError } from '@/lib/errors/index.js';
+import { ClockConflictError, ClockInError } from '@/lib/errors/index.js';
+import { ClockStarted } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
-import { logService } from '@/services/log/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 import { Postgres } from '@/utils/postgres.js';
@@ -34,7 +34,7 @@ export const clockIn = async (params: ClockInParams): Promise<ClockInResponse> =
         .returning(),
     );
     if (row === undefined) throw ClockInError({ metadata: { route: 'clock.service.in' } });
-    await logService.create({
+    await Audit.record({
       actor,
       event: ClockStarted.code,
       metadata: { clock_id: row.id, user_id: actor.id },

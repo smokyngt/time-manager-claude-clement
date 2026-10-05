@@ -5,7 +5,7 @@ import { actorOf, ADMIN_ID, caught, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_I
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { DeleteBody, DeleteResponse } from '@/controllers/clock/index.js';
+import type { DeleteClocksBody, DeleteClocksResponse } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -28,14 +28,14 @@ afterEach(() => {
 
 const { remove } = await import('@/controllers/clock/delete.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>;
-type Req = FastifyRequest<{ Body: DeleteBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteClocksResponse> }>;
+type Req = FastifyRequest<{ Body: DeleteClocksBody }>;
 
 const A = '00000000-0000-4000-8000-0000000000f1';
 const B = '00000000-0000-4000-8000-0000000000f2';
 const C = '00000000-0000-4000-8000-0000000000f3';
 
-const run = async (actor: Actor | undefined, body: DeleteBody) => {
+const run = async (actor: Actor | undefined, body: DeleteClocksBody) => {
   const reply: FakeReply = Fake.reply();
   await remove(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
@@ -57,7 +57,7 @@ describe('clock.controller.delete', () => {
       data: { failed: [], success: true },
       event: { code: 'clock.deleted', payload: { actor: ADMIN_ID, deleted: 2, failed: 0 } },
     });
-    const data = (reply.payload as ReplyEnvelope<DeleteResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<DeleteClocksResponse>).data;
     expect([...data.deleted].sort()).toEqual([A, B].sort());
   });
 
@@ -91,7 +91,7 @@ describe('clock.controller.delete', () => {
     const { ClockOverlapError } = await import('@/lib/errors/domains/clock.js');
     svc.delete.mockImplementationOnce(() => Promise.reject(ClockOverlapError()));
     const reply = await run(actorOf('admin'), { ids: [MISSING_ID, A, B] });
-    const data = (reply.payload as ReplyEnvelope<DeleteResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<DeleteClocksResponse>).data;
     expect(data.success).toBe(false);
     expect(data.deleted).toHaveLength(1);
     expect(data.failed.map((item) => item.code).sort()).toEqual(['clock.not.found', 'clock.overlap']);
@@ -119,7 +119,7 @@ describe('clock.controller.delete', () => {
     const failure = new Error('boom');
     svc.retrieve.mockImplementationOnce(() => Promise.reject(failure));
     const reply = await run(actorOf('admin'), { ids: [A] });
-    expect((reply.payload as ReplyEnvelope<DeleteResponse>).data.failed).toEqual([
+    expect((reply.payload as ReplyEnvelope<DeleteClocksResponse>).data.failed).toEqual([
       { code: 'internal.unexpected', id: A },
     ]);
   });

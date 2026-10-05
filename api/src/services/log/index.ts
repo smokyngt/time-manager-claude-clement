@@ -1,18 +1,18 @@
 import { create } from './create.js';
 
-import type { Actor } from '@/types/entities/actor.js';
+import type { Actor } from '@/types/entities/index.js';
 
-export type CreateParams = {
+export type CreateLogParams = {
   actor: null | Pick<Actor, 'id' | 'role'>;
   event: string;
   metadata?: Record<string, unknown>;
 };
 
-export type CreateResponse = {
+export type CreateLogResponse = {
   success: boolean;
 };
 
-class LogService {
+export class LogService {
   public create = create;
 }
 

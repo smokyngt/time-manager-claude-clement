@@ -1,27 +1,27 @@
-import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { ClockNotFoundError, ClockUpdateError } from '@/lib/errors/domains/clock.js';
-import { ClockUpdated } from '@/lib/events/domains/clock.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { clockService } from '@/services/clock/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { ClockNotFoundError, ClockUpdateError } from '@/lib/errors/index.js';
+import { ClockUpdated } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, UpdateBody, UpdateResponse } from './index.js';
-import type { Clock } from '@/types/entities/clock.js';
+import type { BulkFailure, UpdateClocksBody, UpdateClocksResponse } from './index.js';
+import type { Clock } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route clock.controller.update
- * @param {FastifyRequest<{ Body: UpdateBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>} reply
+ * @param {FastifyRequest<{ Body: UpdateClocksBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateClocksResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ClockUpdateError | UnauthorizedError | ValidationError}
  */
 export const update = async (
-  req: FastifyRequest<{ Body: UpdateBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
+  req: FastifyRequest<{ Body: UpdateClocksBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateClocksResponse> }>,
 ): Promise<void> => {
   try {
     const actor = Access.role.require(req, ['admin', 'manager']);
@@ -69,7 +69,7 @@ export const update = async (
         }
       }),
     );
-    const result: UpdateResponse = { failed, success: failed.length === 0, updated };
+    const result: UpdateClocksResponse = { failed, success: failed.length === 0, updated };
     await Reply.send(
       req,
       reply,

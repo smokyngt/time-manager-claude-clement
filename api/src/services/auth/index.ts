@@ -6,56 +6,56 @@ import { me } from './me.js';
 import { refresh } from './refresh.js';
 
 import type { SessionResult } from './session.js';
-import type { Actor } from '@/types/entities/actor.js';
-import type { User } from '@/types/entities/user.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { User } from '@/types/entities/index.js';
 
 export type { SessionResult } from './session.js';
 
-export type AuthorizeResponse = {
+export type AuthAuthorizeResponse = {
   max_age: number;
   state_cookie: string;
   url: string;
 };
 
-export type CallbackParams = {
+export type AuthCallbackParams = {
   code: string;
   state: string;
   state_cookie: string | undefined;
 };
 
-export type CallbackResponse = SessionResult;
+export type AuthCallbackResponse = SessionResult;
 
-export type LoginParams = {
+export type AuthLoginParams = {
   email: string;
   password: string;
 };
 
-export type LoginResponse = SessionResult;
+export type AuthLoginResponse = SessionResult;
 
-export type LogoutParams = {
+export type AuthLogoutParams = {
   token: string | undefined;
 };
 
-export type LogoutResponse = {
+export type AuthLogoutResponse = {
   success: boolean;
   user_id: string | undefined;
 };
 
-export type MeParams = {
+export type AuthMeParams = {
   actor: Actor;
 };
 
-export type MeResponse = {
+export type AuthMeResponse = {
   user: User;
 };
 
-export type RefreshParams = {
+export type AuthRefreshParams = {
   token: string;
 };
 
-export type RefreshResponse = SessionResult;
+export type AuthRefreshResponse = SessionResult;
 
-class AuthService {
+export class AuthService {
   public authorize = authorize;
   public callback = callback;
   public login = login;

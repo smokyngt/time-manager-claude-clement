@@ -1,27 +1,27 @@
-import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { TeamDeleteError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
-import { TeamDeleted } from '@/lib/events/domains/team.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { teamService } from '@/services/team/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { TeamDeleteError, TeamNotFoundError } from '@/lib/errors/index.js';
+import { TeamDeleted } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { teamService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
-import type { Team } from '@/types/entities/team.js';
+import type { BulkFailure, DeleteTeamsBody, DeleteTeamsResponse } from './index.js';
+import type { Team } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route team.controller.delete
- * @param {FastifyRequest<{ Body: DeleteBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
+ * @param {FastifyRequest<{ Body: DeleteTeamsBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteTeamsResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {TeamDeleteError | UnauthorizedError | ValidationError}
  */
 export const remove = async (
-  req: FastifyRequest<{ Body: DeleteBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
+  req: FastifyRequest<{ Body: DeleteTeamsBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteTeamsResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
@@ -68,7 +68,7 @@ export const remove = async (
         }
       }),
     );
-    const result: DeleteResponse = { deleted, failed, success: failed.length === 0 };
+    const result: DeleteTeamsResponse = { deleted, failed, success: failed.length === 0 };
     await Reply.send(
       req,
       reply,

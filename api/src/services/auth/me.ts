@@ -1,18 +1,18 @@
-import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { AuthMeError } from '@/lib/errors/domains/auth.js';
-import { UserNotFoundError } from '@/lib/errors/domains/user.js';
+import { TokenAuthenticationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { AuthMeError } from '@/lib/errors/index.js';
+import { UserNotFoundError } from '@/lib/errors/index.js';
 import { userService } from '@/services/user/index.js';
 
-import type { MeParams, MeResponse } from './index.js';
+import type { AuthMeParams, AuthMeResponse } from './index.js';
 
 /**
  * @route auth.service.me
- * @param {MeParams} params
- * @returns {Promise<MeResponse>}
+ * @param {AuthMeParams} params
+ * @returns {Promise<AuthMeResponse>}
  * @throws {AuthMeError | TokenAuthenticationError}
  */
-export const me = async (params: MeParams): Promise<MeResponse> => {
+export const me = async (params: AuthMeParams): Promise<AuthMeResponse> => {
   try {
     const { user } = await userService.retrieve({ id: params.actor.id }).catch((error: unknown) => {
       if (AppError.is(error) && error.code === UserNotFoundError.code) {

@@ -1,11 +1,11 @@
-import { authController } from '@/controllers/auth/index.js';
-import { AuthCallbackQuerySchema, AuthResponses } from '@/schemas/auth.js';
+import { authController } from '@/controllers/index.js';
+import { AuthCallbackQuerySchema, AuthResponses } from '@/schemas/index.js';
 
-import type { CallbackQuery } from '@/controllers/auth/index.js';
+import type { AuthCallbackQuery } from '@/controllers/index.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const callback: FastifyPluginAsync = async (fastify) => {
-  fastify.get<{ Querystring: CallbackQuery }>(
+  fastify.get<{ Querystring: AuthCallbackQuery }>(
     '/microsoft/callback',
     {
       schema: {

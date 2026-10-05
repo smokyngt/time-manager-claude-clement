@@ -14,7 +14,7 @@ import {
 import { installMembership, installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { UpdateBody, UpdateResponse } from '@/controllers/user/index.js';
+import type { UpdateUsersBody, UpdateUsersResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -38,10 +38,10 @@ afterEach(() => {
 
 const { update } = await import('@/controllers/user/update.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>;
-type Req = FastifyRequest<{ Body: UpdateBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateUsersResponse> }>;
+type Req = FastifyRequest<{ Body: UpdateUsersBody }>;
 
-const run = async (actor: Actor | undefined, body: UpdateBody) => {
+const run = async (actor: Actor | undefined, body: UpdateUsersBody) => {
   const reply: FakeReply = Fake.reply();
   await update(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
@@ -70,7 +70,7 @@ describe('user.controller.update', () => {
         payload: { actor: actorOf('admin').id, failed: 0, updated: 2 },
       },
     });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateUsersResponse>).data;
     expect([...data.updated].sort()).toEqual([EMPLOYEE_ID, OTHER_ID].sort());
   });
 
@@ -151,7 +151,7 @@ describe('user.controller.update', () => {
       data: { first_name: 'X' },
       ids: [MISSING_ID, OTHER_ID, EMPLOYEE_ID],
     });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateUsersResponse>).data;
     expect(data.success).toBe(false);
     expect(data.updated).toHaveLength(1);
     expect(data.failed.map((item) => item.code).sort()).toEqual([

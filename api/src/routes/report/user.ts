@@ -1,14 +1,14 @@
-import { report } from '@/controllers/report/index.js';
+import { report } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ReportResponses, ReportUserBodySchema } from '@/schemas/report.js';
+import { ReportResponses, ReportUserBodySchema } from '@/schemas/index.js';
 
-import type { UserBody } from '@/controllers/report/index.js';
-import type { UserReport } from '@/types/entities/report.js';
+import type { ReportUserBody } from '@/controllers/index.js';
+import type { UserReport } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const user: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: UserBody; Reply: ReplyEnvelope<{ report: UserReport }> }>(
+  fastify.post<{ Body: ReportUserBody; Reply: ReplyEnvelope<{ report: UserReport }> }>(
     '/user',
     {
       preHandler: auth({ scopes: ['reports:read'] }),

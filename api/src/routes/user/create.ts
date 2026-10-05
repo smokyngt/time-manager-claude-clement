@@ -1,13 +1,13 @@
-import { user } from '@/controllers/user/index.js';
+import { user } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { UserCreateBodySchema, UserResponses } from '@/schemas/user.js';
+import { UserCreateBodySchema, UserResponses } from '@/schemas/index.js';
 
-import type { CreateBody, UserResponse } from '@/controllers/user/index.js';
+import type { CreateUserBody, UserResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const create: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: CreateBody; Reply: ReplyEnvelope<UserResponse> }>(
+  fastify.post<{ Body: CreateUserBody; Reply: ReplyEnvelope<UserResponse> }>(
     '/new',
     {
       preHandler: auth({ scopes: ['users:manage'] }),

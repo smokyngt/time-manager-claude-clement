@@ -1,23 +1,23 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/refresh-token.js';
+import { refreshTokens } from '@/db/schema/index.js';
 import { Tokens } from '@/lib/auth/tokens.js';
-import { AuthLogoutError } from '@/lib/errors/domains/auth.js';
-import { AuthLoggedOut } from '@/lib/events/domains/auth.js';
-import { logService } from '@/services/log/index.js';
+import { AuthLogoutError } from '@/lib/errors/index.js';
+import { AuthLoggedOut } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 
 import { Session } from './session.js';
 
-import type { LogoutParams, LogoutResponse } from './index.js';
+import type { AuthLogoutParams, AuthLogoutResponse } from './index.js';
 
 /**
  * @route auth.service.logout
- * @param {LogoutParams} params
- * @returns {Promise<LogoutResponse>}
+ * @param {AuthLogoutParams} params
+ * @returns {Promise<AuthLogoutResponse>}
  * @throws {AuthLogoutError}
  */
-export const logout = async (params: LogoutParams): Promise<LogoutResponse> => {
+export const logout = async (params: AuthLogoutParams): Promise<AuthLogoutResponse> => {
   try {
     const { token } = params;
     if (token === undefined || token === '') return { success: true, user_id: undefined };
@@ -28,7 +28,7 @@ export const logout = async (params: LogoutParams): Promise<LogoutResponse> => {
       .limit(1);
     if (stored === undefined) return { success: true, user_id: undefined };
     await Session.revoke(stored.family_id);
-    await logService.create({
+    await Audit.record({
       actor: null,
       event: AuthLoggedOut.code,
       metadata: { family_id: stored.family_id, user_id: stored.user_id },

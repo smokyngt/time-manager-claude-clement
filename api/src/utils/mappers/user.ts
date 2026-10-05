@@ -1,7 +1,7 @@
 import { Cipher } from '@/utils/crypto/cipher.js';
 
-import type { UserRow } from '@/db/schema/user.js';
-import type { User } from '@/types/entities/user.js';
+import type { UserRow } from '@/db/schema/index.js';
+import type { User } from '@/types/entities/index.js';
 
 export class UserMapper {
   /**

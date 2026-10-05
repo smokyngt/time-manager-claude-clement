@@ -1,7 +1,7 @@
 import { Cipher } from '@/utils/crypto/cipher.js';
 
-import type { TeamRow } from '@/db/schema/team.js';
-import type { Team } from '@/types/entities/team.js';
+import type { TeamRow } from '@/db/schema/index.js';
+import type { Team } from '@/types/entities/index.js';
 
 export class TeamMapper {
   /**

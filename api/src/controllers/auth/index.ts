@@ -6,30 +6,30 @@ import { microsoft } from './microsoft.js';
 import { refresh } from './refresh.js';
 
 import type { Scope } from '@/config/auth/scopes.js';
-import type { User } from '@/types/entities/user.js';
+import type { User } from '@/types/entities/index.js';
 
-export type CallbackQuery = {
+export type AuthCallbackQuery = {
   code?: string;
   error?: string;
   session_state?: string;
   state?: string;
 };
 
-export type LoginBody = {
+export type AuthLoginBody = {
   email: string;
   password: string;
 };
 
-export type LogoutResponse = {
+export type AuthLogoutResponse = {
   success: boolean;
 };
 
-export type MeResponse = {
+export type AuthMeResponse = {
   scopes: Scope[];
   user: User;
 };
 
-export type SessionResponse = {
+export type AuthSessionResponse = {
   access_token: string;
   expires_in: number;
   scopes: Scope[];
@@ -37,7 +37,7 @@ export type SessionResponse = {
   user: User;
 };
 
-class AuthController {
+export class AuthController {
   public callback = callback;
   public login = login;
   public logout = logout;

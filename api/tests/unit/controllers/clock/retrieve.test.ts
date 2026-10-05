@@ -5,7 +5,7 @@ import { actorOf, caught, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_ID } from '
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { ClockResponse, RetrieveParams } from '@/controllers/clock/index.js';
+import type { ClockResponse, RetrieveClockParams } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -29,7 +29,7 @@ afterEach(() => {
 const { retrieve } = await import('@/controllers/clock/retrieve.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>;
-type Req = FastifyRequest<{ Params: RetrieveParams }>;
+type Req = FastifyRequest<{ Params: RetrieveClockParams }>;
 
 const CLOCK = '00000000-0000-4000-8000-0000000000f9';
 

@@ -1,21 +1,21 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockDeleteError, ClockNotFoundError } from '@/lib/errors/domains/clock.js';
-import { ClockDeleted } from '@/lib/events/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockDeleteError, ClockNotFoundError } from '@/lib/errors/index.js';
+import { ClockDeleted } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
-import { logService } from '@/services/log/index.js';
+import { Audit } from '@/services/log/audit.js';
 
-import type { DeleteParams, DeleteResponse } from './index.js';
+import type { DeleteClockParams, DeleteClockResponse } from './index.js';
 
 /**
  * @route clock.service.delete
- * @param {DeleteParams} params
- * @returns {Promise<DeleteResponse>}
+ * @param {DeleteClockParams} params
+ * @returns {Promise<DeleteClockResponse>}
  * @throws {ClockDeleteError | ClockNotFoundError}
  */
-export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
+export const remove = async (params: DeleteClockParams): Promise<DeleteClockResponse> => {
   try {
     const { actor, id } = params;
     const [row] = await Tracing.span('db.clock.delete', () =>
@@ -24,7 +24,7 @@ export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
     if (row === undefined) {
       throw ClockNotFoundError({ metadata: { clock_id: id, route: 'clock.service.delete' } });
     }
-    await logService.create({
+    await Audit.record({
       actor,
       event: ClockDeleted.code,
       metadata: { clock_id: id, user_id: row.user_id },

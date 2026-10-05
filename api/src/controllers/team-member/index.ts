@@ -2,62 +2,58 @@ import { add } from './add.js';
 import { list } from './list.js';
 import { remove } from './remove.js';
 
-import type { User } from '@/types/entities/user.js';
+import type { BulkFailure } from '@/types/entities/index.js';
+import type { User } from '@/types/entities/index.js';
 
-export type AddBody = {
+export type AddTeamMembersBody = {
   user_ids: string[];
 };
 
-export type AddParams = {
+export type AddTeamMembersParams = {
   id: string;
 };
 
-export type AddResponse = {
+export type AddTeamMembersResponse = {
   added: string[];
   failed: BulkFailure[];
   success: boolean;
 };
 
-export type BulkFailure = {
-  code: string;
-  id: string;
-};
-
-export type ListBody = {
+export type ListTeamMembersBody = {
   cursor?: string;
   limit?: number;
   order?: 'asc' | 'desc';
 };
 
-export type ListParams = {
+export type ListTeamMembersParams = {
   id: string;
 };
 
-export type ListResponse = {
+export type ListTeamMembersResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RemoveBody = {
+export type RemoveTeamMembersBody = {
   user_ids: string[];
 };
 
-export type RemoveParams = {
+export type RemoveTeamMembersParams = {
   id: string;
 };
 
-export type RemoveResponse = {
+export type RemoveTeamMembersResponse = {
   failed: BulkFailure[];
   removed: string[];
   success: boolean;
 };
 
-class TeamMemberController {
+export class TeamMemberController {
   public add = add;
   public list = list;
   public remove = remove;
 }
 
-export const teamMember = new TeamMemberController();
+export const teamMemberController = new TeamMemberController();

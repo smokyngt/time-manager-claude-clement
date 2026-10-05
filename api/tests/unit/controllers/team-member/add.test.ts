@@ -5,7 +5,7 @@ import { teamMemberService } from '@/services/team-member/index.js';
 
 import { Fake } from '../../../support/fake.js';
 
-import type { AddBody, AddParams, AddResponse } from '@/controllers/team-member/index.js';
+import type { AddTeamMembersBody, AddTeamMembersParams, AddTeamMembersResponse } from '@/controllers/team-member/index.js';
 import type { TeamRow } from '@/db/schema/team.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -52,10 +52,10 @@ afterEach(() => {
 
 const actorOf = (role: Actor['role'], id = MANAGER_ID): Actor => ({ id, role, team_ids: [] });
 
-const run = async (actor: Actor | undefined, body: AddBody) => {
-  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<AddResponse> }>>();
+const run = async (actor: Actor | undefined, body: AddTeamMembersBody) => {
+  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<AddTeamMembersResponse> }>>();
   const req = Fake.request({ actor, body, params: { id: TEAM_ID } });
-  await add(req as FastifyRequest<{ Body: AddBody; Params: AddParams }>, reply);
+  await add(req as FastifyRequest<{ Body: AddTeamMembersBody; Params: AddTeamMembersParams }>, reply);
 
   return reply;
 };

@@ -5,7 +5,7 @@ import { actorOf, caught, MANAGER_ID, TEAM_ID } from '../../services/user/suppor
 import { installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { ListBody, ListResponse } from '@/controllers/user/index.js';
+import type { ListUsersBody, ListUsersResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -24,10 +24,10 @@ afterEach(() => {
 
 const { list } = await import('@/controllers/user/list.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>;
-type Req = FastifyRequest<{ Body: ListBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<ListUsersResponse> }>;
+type Req = FastifyRequest<{ Body: ListUsersBody }>;
 
-const run = async (actor: Actor | undefined, body: ListBody) => {
+const run = async (actor: Actor | undefined, body: ListUsersBody) => {
   const reply: FakeReply = Fake.reply();
   await list(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 

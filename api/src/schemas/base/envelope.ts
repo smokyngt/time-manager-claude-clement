@@ -3,9 +3,9 @@ import {
   TokenAuthenticationError,
   UnauthorizedError,
   ValidationError,
-} from '@/lib/errors/base/core.js';
+} from '@/lib/errors/index.js';
 
-import type { ErrorFactory } from '@/lib/errors/base/registry.js';
+import type { ErrorFactory } from '@/lib/errors/index.js';
 
 export type JsonSchema = Record<string, unknown>;
 

@@ -1,20 +1,21 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { UserNotFoundError, UserRestoreError } from '@/lib/errors/domains/user.js';
-import { logService } from '@/services/log/index.js';
+import { users } from '@/db/schema/index.js';
+import { UserNotFoundError, UserRestoreError } from '@/lib/errors/index.js';
+import { UserRestored } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 
-import type { RestoreParams, RestoreResponse } from './index.js';
+import type { RestoreUserParams, RestoreUserResponse } from './index.js';
 
 /**
  * @route user.service.restore
- * @param {RestoreParams} params
- * @returns {Promise<RestoreResponse>}
+ * @param {RestoreUserParams} params
+ * @returns {Promise<RestoreUserResponse>}
  * @throws {UserNotFoundError | UserRestoreError}
  */
-export const restore = async (params: RestoreParams): Promise<RestoreResponse> => {
+export const restore = async (params: RestoreUserParams): Promise<RestoreUserResponse> => {
   try {
     const { actor, id } = params;
     const [row] = await db
@@ -25,7 +26,7 @@ export const restore = async (params: RestoreParams): Promise<RestoreResponse> =
     if (row === undefined) {
       throw UserNotFoundError({ metadata: { route: 'user.service.restore', user_id: id } });
     }
-    await logService.create({ actor, event: 'user.restored', metadata: { user_id: id } });
+    await Audit.record({ actor, event: UserRestored.code, metadata: { user_id: id } });
 
     return { user: UserMapper.entity(row) };
   } catch (error) {

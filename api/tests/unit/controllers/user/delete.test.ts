@@ -13,7 +13,7 @@ import {
 import { installMembership, installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { DeleteBody, DeleteResponse } from '@/controllers/user/index.js';
+import type { DeleteUsersBody, DeleteUsersResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -37,10 +37,10 @@ afterEach(() => {
 
 const { remove } = await import('@/controllers/user/delete.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>;
-type Req = FastifyRequest<{ Body: DeleteBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteUsersResponse> }>;
+type Req = FastifyRequest<{ Body: DeleteUsersBody }>;
 
-const run = async (actor: Actor | undefined, body: DeleteBody) => {
+const run = async (actor: Actor | undefined, body: DeleteUsersBody) => {
   const reply: FakeReply = Fake.reply();
   await remove(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 

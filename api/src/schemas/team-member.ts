@@ -5,7 +5,7 @@ import {
   TeamMemberTeamArchivedError,
   TeamMemberTeamNotFoundError,
   TeamMemberUserNotFoundError,
-} from '@/lib/errors/domains/team-member.js';
+} from '@/lib/errors/index.js';
 
 import {
   ErrorSchema,

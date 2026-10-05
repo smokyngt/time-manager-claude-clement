@@ -1,24 +1,24 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/refresh-token.js';
-import { users } from '@/db/schema/user.js';
+import { refreshTokens } from '@/db/schema/index.js';
+import { users } from '@/db/schema/index.js';
 import { Tokens } from '@/lib/auth/tokens.js';
-import { AuthRefreshError, AuthRefreshInvalidError } from '@/lib/errors/domains/auth.js';
-import { AuthRefreshReused } from '@/lib/events/domains/auth.js';
-import { logService } from '@/services/log/index.js';
+import { AuthRefreshError, AuthRefreshInvalidError } from '@/lib/errors/index.js';
+import { AuthRefreshReused } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 
 import { Session } from './session.js';
 
-import type { RefreshParams, RefreshResponse } from './index.js';
+import type { AuthRefreshParams, AuthRefreshResponse } from './index.js';
 
 /**
  * @route auth.service.refresh
- * @param {RefreshParams} params
- * @returns {Promise<RefreshResponse>}
+ * @param {AuthRefreshParams} params
+ * @returns {Promise<AuthRefreshResponse>}
  * @throws {AuthRefreshError | AuthRefreshInvalidError}
  */
-export const refresh = async (params: RefreshParams): Promise<RefreshResponse> => {
+export const refresh = async (params: AuthRefreshParams): Promise<AuthRefreshResponse> => {
   try {
     const now = Date.now();
     const [stored] = await db
@@ -42,7 +42,7 @@ export const refresh = async (params: RefreshParams): Promise<RefreshResponse> =
         await Session.revoke(stored.family_id);
       }
       if (stored.revoked_at !== null) {
-        await logService.create({
+        await Audit.record({
           actor: null,
           event: AuthRefreshReused.code,
           metadata: { family_id: stored.family_id, user_id: stored.user_id },

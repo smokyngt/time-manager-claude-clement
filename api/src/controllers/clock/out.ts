@@ -1,6 +1,6 @@
-import { ClockOutError } from '@/lib/errors/domains/clock.js';
-import { ClockStopped } from '@/lib/events/domains/clock.js';
-import { clockService } from '@/services/clock/index.js';
+import { ClockOutError } from '@/lib/errors/index.js';
+import { ClockStopped } from '@/lib/events/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 

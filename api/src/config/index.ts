@@ -2,6 +2,8 @@ import { isIP } from 'node:net';
 
 import { Keys } from '@/utils/crypto/keys.js';
 
+export type TrustProxy = (address: string, hop: number) => boolean;
+
 class ConfigStore {
   /**
    * @route config.store.flag
@@ -81,13 +83,17 @@ export class Config {
 
   /**
    * @route config.proxy
-   * @returns {boolean | number | string[]}
+   * @returns {boolean | string[] | TrustProxy}
    */
-  public static proxy(): boolean | number | string[] {
+  public static proxy(): boolean | string[] | TrustProxy {
     const raw = Config.store.optional('TRUST_PROXY')?.trim();
     if (raw === undefined || raw === '' || raw === 'false') return false;
     if (raw === 'true') return true;
-    if (/^\d+$/.test(raw)) return Number(raw);
+    if (/^\d+$/.test(raw)) {
+      const hops = Number(raw);
+
+      return (_address, hop) => hop < hops;
+    }
     return raw
       .split(',')
       .map((entry) => entry.trim())

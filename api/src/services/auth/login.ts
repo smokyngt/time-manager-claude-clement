@@ -1,29 +1,29 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
+import { users } from '@/db/schema/index.js';
 import { Limiter } from '@/lib/auth/limiter.js';
 import {
   AuthCredentialsInvalidError,
   AuthLoginError,
   AuthRateLimitedError,
-} from '@/lib/errors/domains/auth.js';
-import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
-import { logService } from '@/services/log/index.js';
+} from '@/lib/errors/index.js';
+import { AuthLoggedIn } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Digest } from '@/utils/crypto/digest.js';
 import { Password } from '@/utils/password.js';
 
 import { Session } from './session.js';
 
-import type { LoginParams, LoginResponse } from './index.js';
+import type { AuthLoginParams, AuthLoginResponse } from './index.js';
 
 /**
  * @route auth.service.login
- * @param {LoginParams} params
- * @returns {Promise<LoginResponse>}
+ * @param {AuthLoginParams} params
+ * @returns {Promise<AuthLoginResponse>}
  * @throws {AuthCredentialsInvalidError | AuthLoginError | AuthRateLimitedError}
  */
-export const login = async (params: LoginParams): Promise<LoginResponse> => {
+export const login = async (params: AuthLoginParams): Promise<AuthLoginResponse> => {
   try {
     const { email, password } = params;
     if (Limiter.blocked(email)) {
@@ -44,7 +44,7 @@ export const login = async (params: LoginParams): Promise<LoginResponse> => {
     }
     Limiter.clear(email);
     const session = await Session.issue({ user: row });
-    await logService.create({
+    await Audit.record({
       actor: row,
       event: AuthLoggedIn.code,
       metadata: { method: 'password', user_id: row.id },

@@ -15,7 +15,7 @@ import {
 import { installMembers, installTeamService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { DeleteBody, DeleteResponse } from '@/controllers/team/index.js';
+import type { DeleteTeamsBody, DeleteTeamsResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -37,10 +37,10 @@ afterEach(() => {
 
 const { remove } = await import('@/controllers/team/delete.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>;
-type Req = FastifyRequest<{ Body: DeleteBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<DeleteTeamsResponse> }>;
+type Req = FastifyRequest<{ Body: DeleteTeamsBody }>;
 
-const run = async (actor: Actor | undefined, body: DeleteBody) => {
+const run = async (actor: Actor | undefined, body: DeleteTeamsBody) => {
   const reply: FakeReply = Fake.reply();
   await remove(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
@@ -61,7 +61,7 @@ describe('team.controller.delete', () => {
       data: { failed: [], success: true },
       event: { code: 'team.deleted', payload: { actor: ADMIN_ID, deleted: 2, failed: 0 } },
     });
-    const data = (reply.payload as ReplyEnvelope<DeleteResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<DeleteTeamsResponse>).data;
     expect([...data.deleted].sort()).toEqual([OTHER_TEAM_ID, TEAM_ID].sort());
   });
 

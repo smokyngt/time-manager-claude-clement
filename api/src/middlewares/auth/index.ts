@@ -1,6 +1,6 @@
 import { Roles } from '@/config/auth/roles.js';
 import { Tokens } from '@/lib/auth/tokens.js';
-import { TokenAuthenticationError, UnauthorizedError } from '@/lib/errors/base/core.js';
+import { TokenAuthenticationError, UnauthorizedError } from '@/lib/errors/index.js';
 
 import { Identity } from './identity.js';
 

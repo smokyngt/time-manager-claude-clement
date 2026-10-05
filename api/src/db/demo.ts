@@ -8,7 +8,7 @@ import { Password } from '@/utils/password.js';
 import { db, sql } from './client.js';
 import { clocks, teamMembers, teams, users } from './schema/index.js';
 
-import type { ClockSource } from '@/types/entities/clock.js';
+import type { ClockSource } from '@/types/entities/index.js';
 
 export interface ClockSeed {
   clocked_in_at: number;

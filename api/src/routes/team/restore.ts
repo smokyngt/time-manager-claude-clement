@@ -1,13 +1,13 @@
-import { team } from '@/controllers/team/index.js';
+import { team } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { TeamIdParamsSchema, TeamResponses } from '@/schemas/team.js';
+import { TeamIdParamsSchema, TeamResponses } from '@/schemas/index.js';
 
-import type { RestoreParams, TeamResponse } from '@/controllers/team/index.js';
+import type { RestoreTeamParams, TeamResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const restore: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Params: RestoreParams; Reply: ReplyEnvelope<TeamResponse> }>(
+  fastify.post<{ Params: RestoreTeamParams; Reply: ReplyEnvelope<TeamResponse> }>(
     '/:id/restore',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),

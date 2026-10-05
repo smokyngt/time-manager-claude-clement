@@ -1,8 +1,8 @@
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
 import { Membership } from '@/utils/membership.js';
 
-import type { Actor } from '@/types/entities/actor.js';
-import type { Role } from '@/types/entities/user.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Role } from '@/types/entities/index.js';
 
 export type UserAction = 'archive' | 'create' | 'delete' | 'list' | 'read' | 'restore' | 'update';
 

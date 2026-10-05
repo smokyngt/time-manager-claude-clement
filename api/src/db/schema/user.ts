@@ -1,6 +1,6 @@
 import { bigint, index, pgEnum, pgTable, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
-import { ROLES } from '@/types/entities/user.js';
+import { ROLES } from '@/types/entities/index.js';
 
 export const userRole = pgEnum('user_role', ROLES);
 

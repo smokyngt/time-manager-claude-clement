@@ -241,6 +241,14 @@ resource "helm_release" "tempo" {
     fullnameOverride = "tempo"
     tempo = {
       tag = var.image_tags.tempo
+      receivers = {
+        otlp = {
+          protocols = {
+            grpc = { endpoint = "0.0.0.0:4317" }
+            http = { endpoint = "0.0.0.0:4318" }
+          }
+        }
+      }
     }
     config = file("${local.obs_dir}/tempo/tempo.yaml")
     persistence = merge(

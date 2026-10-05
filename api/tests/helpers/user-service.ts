@@ -5,7 +5,7 @@ import { UserMapper } from '@/utils/user-mapper.js';
 
 import { makeRow } from './fixtures.js';
 
-import type { ListParams, UserCreateData, UserUpdateData } from '@/services/user/index.js';
+import type { ListUsersParams, UserCreateData, UserUpdateData } from '@/services/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { Role, User } from '@/types/entities/user.js';
 
@@ -35,7 +35,7 @@ export const installUserService = async () => {
       find(params.id);
       return Promise.resolve({ success: true });
     }),
-    list: mock((_params: ListParams) =>
+    list: mock((_params: ListUsersParams) =>
       Promise.resolve({ items: [] as User[], more: false, next: null, total: 0 }),
     ),
     restore: mock((params: { actor: Actor; id: string }) =>

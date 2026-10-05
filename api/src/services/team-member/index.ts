@@ -3,63 +3,59 @@ import { list } from './list.js';
 import { remove } from './remove.js';
 import { team } from './team.js';
 
-import type { TeamRow } from '@/db/schema/team.js';
-import type { Actor } from '@/types/entities/actor.js';
-import type { Role, User } from '@/types/entities/user.js';
+import type { BulkFailure } from '@/types/entities/index.js';
+import type { TeamRow } from '@/db/schema/index.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Role, User } from '@/types/entities/index.js';
 
-export type AddParams = {
+export type AddTeamMembersParams = {
   actor: Actor;
   roles: Role[];
   team: TeamRow;
   user_ids: string[];
 };
 
-export type AddResponse = {
+export type AddTeamMembersResponse = {
   added: string[];
   failed: BulkFailure[];
   success: boolean;
 };
 
-export type BulkFailure = {
-  code: string;
-  id: string;
-};
-
-export type ListParams = {
+export type ListTeamMembersParams = {
   cursor?: string;
   id: string;
   limit: number;
   order: 'asc' | 'desc';
 };
 
-export type ListResponse = {
+export type ListTeamMembersResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RemoveParams = {
+export type RemoveTeamMembersParams = {
   actor: Actor;
   id: string;
   user_ids: string[];
 };
 
-export type RemoveResponse = {
+export type RemoveTeamMembersResponse = {
   failed: BulkFailure[];
   removed: string[];
   success: boolean;
 };
 
-export type TeamParams = {
+export type TeamMemberTeamParams = {
   id: string;
 };
 
-export type TeamResponse = {
+export type TeamMemberTeamResponse = {
   team: TeamRow;
 };
 
-class TeamMemberService {
+export class TeamMemberService {
   public add = add;
   public list = list;
   public remove = remove;

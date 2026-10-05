@@ -5,7 +5,7 @@ import { actorOf, ADMIN_ID, caught, EMPLOYEE_ID, MISSING_ID, OTHER_ID, userOf } 
 import { installMembership, installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { RetrieveParams, UserResponse } from '@/controllers/user/index.js';
+import type { RetrieveUserParams, UserResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -30,7 +30,7 @@ afterEach(() => {
 const { retrieve } = await import('@/controllers/user/retrieve.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
-type Req = FastifyRequest<{ Params: RetrieveParams }>;
+type Req = FastifyRequest<{ Params: RetrieveUserParams }>;
 
 const run = async (actor: Actor | undefined, id: string) => {
   const reply: FakeReply = Fake.reply();

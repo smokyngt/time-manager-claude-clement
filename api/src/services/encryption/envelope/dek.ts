@@ -1,13 +1,13 @@
 import { and, desc, eq } from 'drizzle-orm';
 
-import { encryptionKeys } from '@/db/schema/encryption-key.js';
-import { AppError } from '@/lib/errors/base/registry.js';
+import { encryptionKeys } from '@/db/schema/index.js';
+import { AppError } from '@/lib/errors/index.js';
 
 import { EncryptionKeyUnavailableError, transitKeyName } from './keys.js';
 import { unwrapKey } from './transit.js';
 
 import type { KeyDomain, Runtime } from './keys.js';
-import type { EncryptionKeyRow } from '@/db/schema/encryption-key.js';
+import type { EncryptionKeyRow } from '@/db/schema/index.js';
 
 export type DekEntry = { key: Buffer; version: number };
 

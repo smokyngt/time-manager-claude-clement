@@ -1,19 +1,19 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { UserNotFoundError, UserRetrieveError } from '@/lib/errors/domains/user.js';
+import { users } from '@/db/schema/index.js';
+import { UserNotFoundError, UserRetrieveError } from '@/lib/errors/index.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 
-import type { RetrieveParams, RetrieveResponse } from './index.js';
+import type { RetrieveUserParams, RetrieveUserResponse } from './index.js';
 
 /**
  * @route user.service.retrieve
- * @param {RetrieveParams} params
- * @returns {Promise<RetrieveResponse>}
+ * @param {RetrieveUserParams} params
+ * @returns {Promise<RetrieveUserResponse>}
  * @throws {UserNotFoundError | UserRetrieveError}
  */
-export const retrieve = async (params: RetrieveParams): Promise<RetrieveResponse> => {
+export const retrieve = async (params: RetrieveUserParams): Promise<RetrieveUserResponse> => {
   try {
     const { id } = params;
     const [row] = await db.select().from(users).where(eq(users.id, id)).limit(1);

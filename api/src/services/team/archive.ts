@@ -1,23 +1,23 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teams } from '@/db/schema/team.js';
-import { TeamArchiveError, TeamNotFoundError } from '@/lib/errors/domains/team.js';
-import { TeamArchived } from '@/lib/events/domains/team.js';
-import { logService } from '@/services/log/index.js';
+import { teams } from '@/db/schema/index.js';
+import { TeamArchiveError, TeamNotFoundError } from '@/lib/errors/index.js';
+import { TeamArchived } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 
-import type { ArchiveParams, ArchiveResponse } from './index.js';
+import type { ArchiveTeamParams, ArchiveTeamResponse } from './index.js';
 
 /**
  * @route team.service.archive
- * @param {ArchiveParams} params
- * @returns {Promise<ArchiveResponse>}
+ * @param {ArchiveTeamParams} params
+ * @returns {Promise<ArchiveTeamResponse>}
  * @throws {TeamArchiveError | TeamNotFoundError}
  */
-export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> => {
+export const archive = async (params: ArchiveTeamParams): Promise<ArchiveTeamResponse> => {
   try {
     const { actor, id } = params;
     const now = Date.now();
@@ -29,7 +29,7 @@ export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> =
     if (row === undefined) {
       throw TeamNotFoundError({ metadata: { route: 'team.service.archive', team_id: id } });
     }
-    await logService.create({ actor, event: TeamArchived.code, metadata: { team_id: id } });
+    await Audit.record({ actor, event: TeamArchived.code, metadata: { team_id: id } });
 
     return { team: TeamMapper.entity(row, await TeamQuery.count(id)) };
   } catch (error) {

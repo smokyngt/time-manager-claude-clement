@@ -1,17 +1,17 @@
-import { teamMember } from '@/controllers/team-member/index.js';
+import { teamMember } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberAddBodySchema,
   TeamMemberIdParamsSchema,
   TeamMemberResponses,
-} from '@/schemas/team-member.js';
+} from '@/schemas/index.js';
 
-import type { AddBody, AddParams, AddResponse } from '@/controllers/team-member/index.js';
+import type { AddTeamMembersBody, AddTeamMembersParams, AddTeamMembersResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const add: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: AddBody; Params: AddParams; Reply: ReplyEnvelope<AddResponse> }>(
+  fastify.post<{ Body: AddTeamMembersBody; Params: AddTeamMembersParams; Reply: ReplyEnvelope<AddTeamMembersResponse> }>(
     '/:id/members/add',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),

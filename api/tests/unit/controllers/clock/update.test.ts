@@ -5,7 +5,7 @@ import { actorOf, ADMIN_ID, caught, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_I
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { UpdateBody, UpdateResponse } from '@/controllers/clock/index.js';
+import type { UpdateClocksBody, UpdateClocksResponse } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -28,14 +28,14 @@ afterEach(() => {
 
 const { update } = await import('@/controllers/clock/update.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>;
-type Req = FastifyRequest<{ Body: UpdateBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateClocksResponse> }>;
+type Req = FastifyRequest<{ Body: UpdateClocksBody }>;
 
 const A = '00000000-0000-4000-8000-0000000000f1';
 const B = '00000000-0000-4000-8000-0000000000f2';
 const C = '00000000-0000-4000-8000-0000000000f3';
 
-const run = async (actor: Actor | undefined, body: UpdateBody) => {
+const run = async (actor: Actor | undefined, body: UpdateClocksBody) => {
   const reply: FakeReply = Fake.reply();
   await update(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
@@ -57,7 +57,7 @@ describe('clock.controller.update', () => {
       data: { failed: [], success: true },
       event: { code: 'clock.updated', payload: { actor: ADMIN_ID, failed: 0, updated: 2 } },
     });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateClocksResponse>).data;
     expect([...data.updated].sort()).toEqual([A, B].sort());
   });
 
@@ -91,7 +91,7 @@ describe('clock.controller.update', () => {
     const { ClockOverlapError } = await import('@/lib/errors/domains/clock.js');
     svc.update.mockImplementationOnce(() => Promise.reject(ClockOverlapError()));
     const reply = await run(actorOf('admin'), { data: { note: null }, ids: [MISSING_ID, A, B] });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateClocksResponse>).data;
     expect(data.success).toBe(false);
     expect(data.updated).toHaveLength(1);
     expect(data.failed.map((item) => item.code).sort()).toEqual(['clock.not.found', 'clock.overlap']);
@@ -119,7 +119,7 @@ describe('clock.controller.update', () => {
     const failure = new Error('boom');
     svc.retrieve.mockImplementationOnce(() => Promise.reject(failure));
     const reply = await run(actorOf('admin'), { data: { note: null }, ids: [A] });
-    expect((reply.payload as ReplyEnvelope<UpdateResponse>).data.failed).toEqual([
+    expect((reply.payload as ReplyEnvelope<UpdateClocksResponse>).data.failed).toEqual([
       { code: 'internal.unexpected', id: A },
     ]);
   });

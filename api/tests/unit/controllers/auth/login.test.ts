@@ -4,7 +4,7 @@ import { Fake } from '../../../support/fake.js';
 import { caught, OTHER_ID, userOf } from '../../services/user/support.js';
 import { cookieReply, installAuthService } from './support.js';
 
-import type { LoginBody, SessionResponse } from '@/controllers/auth/index.js';
+import type { AuthLoginBody, AuthSessionResponse } from '@/controllers/auth/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
@@ -21,8 +21,8 @@ afterEach(() => {
 
 const { login } = await import('@/controllers/auth/login.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<SessionResponse> }>;
-type Req = FastifyRequest<{ Body: LoginBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<AuthSessionResponse> }>;
+type Req = FastifyRequest<{ Body: AuthLoginBody }>;
 
 const session = (role: 'admin' | 'employee' | 'manager' = 'employee') => ({
   access_token: 'access',
@@ -63,7 +63,7 @@ describe('auth.controller.login', () => {
       },
       event: { code: 'auth.logged_in', correlation_id: 'req-test', payload: { actor: OTHER_ID } },
     });
-    const { data } = reply.payload as ReplyEnvelope<SessionResponse>;
+    const { data } = reply.payload as ReplyEnvelope<AuthSessionResponse>;
     expect(data.scopes).toContain('teams:manage');
     expect(data).not.toHaveProperty('refresh_token');
   });
@@ -71,7 +71,7 @@ describe('auth.controller.login', () => {
   it('gives an employee only employee scopes', async () => {
     svc.login.mockImplementationOnce(() => Promise.resolve(session()));
     const reply = await run();
-    const { data } = reply.payload as ReplyEnvelope<SessionResponse>;
+    const { data } = reply.payload as ReplyEnvelope<AuthSessionResponse>;
     expect(data.scopes).toContain('auth:self');
     expect(data.scopes).not.toContain('users:manage');
   });

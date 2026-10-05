@@ -1,13 +1,13 @@
 import { and, eq, gt, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/refresh-token.js';
+import { refreshTokens } from '@/db/schema/index.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 
-import type { RefreshTokenRow } from '@/db/schema/refresh-token.js';
-import type { UserRow } from '@/db/schema/user.js';
-import type { User } from '@/types/entities/user.js';
+import type { RefreshTokenRow } from '@/db/schema/index.js';
+import type { UserRow } from '@/db/schema/index.js';
+import type { User } from '@/types/entities/index.js';
 
 export type SessionResult = {
   access_token: string;

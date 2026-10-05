@@ -1,5 +1,5 @@
 import { Tokens } from '@/lib/auth/tokens.js';
-import { RateLimitError } from '@/lib/errors/base/core.js';
+import { RateLimitError } from '@/lib/errors/index.js';
 
 import type { ErrorEnvelope } from '@/types/misc/reply.js';
 import type { FastifyRequest } from 'fastify';

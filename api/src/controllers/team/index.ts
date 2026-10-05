@@ -6,33 +6,29 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { TeamCreateData, TeamUpdateData } from '@/services/team/index.js';
-import type { Team } from '@/types/entities/team.js';
+import type { BulkFailure } from '@/types/entities/index.js';
+import type { TeamCreateData, TeamUpdateData } from '@/services/index.js';
+import type { Team } from '@/types/entities/index.js';
 
-export type ArchiveParams = {
+export type ArchiveTeamParams = {
   id: string;
 };
 
-export type BulkFailure = {
-  code: string;
-  id: string;
-};
-
-export type CreateBody = {
+export type CreateTeamBody = {
   manager_id?: string;
 } & Omit<TeamCreateData, 'manager_id'>;
 
-export type DeleteBody = {
+export type DeleteTeamsBody = {
   ids: string[];
 };
 
-export type DeleteResponse = {
+export type DeleteTeamsResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
 };
 
-export type ListBody = {
+export type ListTeamsBody = {
   archived?: boolean;
   created_after?: number | string;
   created_before?: number | string;
@@ -44,18 +40,18 @@ export type ListBody = {
   order?: 'asc' | 'desc';
 };
 
-export type ListResponse = {
+export type ListTeamsResponse = {
   items: Team[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RestoreParams = {
+export type RestoreTeamParams = {
   id: string;
 };
 
-export type RetrieveParams = {
+export type RetrieveTeamParams = {
   id: string;
 };
 
@@ -63,18 +59,18 @@ export type TeamResponse = {
   team: Team;
 };
 
-export type UpdateBody = {
+export type UpdateTeamsBody = {
   data: TeamUpdateData;
   ids: string[];
 };
 
-export type UpdateResponse = {
+export type UpdateTeamsResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
 };
 
-class TeamController {
+export class TeamController {
   public archive = archive;
   public create = create;
   public delete = remove;
@@ -84,4 +80,4 @@ class TeamController {
   public update = update;
 }
 
-export const team = new TeamController();
+export const teamController = new TeamController();

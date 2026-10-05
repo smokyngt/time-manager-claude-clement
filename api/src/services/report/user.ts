@@ -1,26 +1,26 @@
 import { eq, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
+import { users } from '@/db/schema/index.js';
 import {
   ReportInvalidError,
   ReportUserError,
   ReportUserNotFoundError,
-} from '@/lib/errors/domains/report.js';
+} from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
 
 import { ReportQuery } from './query.js';
 
-import type { UserParams, UserResponse } from './index.js';
+import type { ReportUserParams, ReportUserResponse } from './index.js';
 
 /**
  * @route report.service.user
- * @param {UserParams} params
- * @returns {Promise<UserResponse>}
+ * @param {ReportUserParams} params
+ * @returns {Promise<ReportUserResponse>}
  * @throws {ReportInvalidError | ReportUserError | ReportUserNotFoundError}
  */
-export const user = async (params: UserParams): Promise<UserResponse> => {
+export const user = async (params: ReportUserParams): Promise<ReportUserResponse> => {
   try {
     const { from, granularity, to, user_id: userId } = params;
     if (!Kpi.valid(from, to)) {

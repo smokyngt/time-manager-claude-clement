@@ -1,5 +1,5 @@
-import { DuplicateKeyError, InternalError } from '@/lib/errors/base/core.js';
-import { UserNotFoundError } from '@/lib/errors/domains/user.js';
+import { DuplicateKeyError, InternalError } from '@/lib/errors/index.js';
+import { UserNotFoundError } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -8,7 +8,7 @@ import {
   UnauthorizedErrorSchema,
   ValidationErrorSchema,
 } from '@/schemas/base/envelope.js';
-import { ROLES } from '@/types/entities/user.js';
+import { ROLES } from '@/types/entities/index.js';
 
 import { DateBoundAnyOf, NAME_PATTERN, PHONE_PATTERN, RequestLimits } from './common.js';
 

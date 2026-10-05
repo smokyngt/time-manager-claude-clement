@@ -1,22 +1,23 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { UserArchiveError, UserNotFoundError } from '@/lib/errors/domains/user.js';
-import { logService } from '@/services/log/index.js';
+import { users } from '@/db/schema/index.js';
+import { UserArchiveError, UserNotFoundError } from '@/lib/errors/index.js';
+import { Sessions } from '@/lib/auth/sessions.js';
+import { UserArchived } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 
-import { revoke } from './revoke.js';
 
-import type { ArchiveParams, ArchiveResponse } from './index.js';
+import type { ArchiveUserParams, ArchiveUserResponse } from './index.js';
 
 /**
  * @route user.service.archive
- * @param {ArchiveParams} params
- * @returns {Promise<ArchiveResponse>}
+ * @param {ArchiveUserParams} params
+ * @returns {Promise<ArchiveUserResponse>}
  * @throws {UserArchiveError | UserNotFoundError}
  */
-export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> => {
+export const archive = async (params: ArchiveUserParams): Promise<ArchiveUserResponse> => {
   try {
     const { actor, id } = params;
     const now = Date.now();
@@ -28,8 +29,8 @@ export const archive = async (params: ArchiveParams): Promise<ArchiveResponse> =
     if (row === undefined) {
       throw UserNotFoundError({ metadata: { route: 'user.service.archive', user_id: id } });
     }
-    await revoke(id);
-    await logService.create({ actor, event: 'user.archived', metadata: { user_id: id } });
+    await Sessions.revoke({ user_id: id });
+    await Audit.record({ actor, event: UserArchived.code, metadata: { user_id: id } });
 
     return { user: UserMapper.entity(row) };
   } catch (error) {

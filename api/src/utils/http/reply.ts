@@ -1,6 +1,6 @@
 import { Metrics } from '@/lib/telemetry/metrics.js';
 
-import type { AppEvent } from '@/lib/events/base/registry.js';
+import type { AppEvent } from '@/lib/events/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

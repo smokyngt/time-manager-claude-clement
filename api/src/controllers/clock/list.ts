@@ -1,25 +1,25 @@
-import { ClockListError } from '@/lib/errors/domains/clock.js';
-import { ClockListed } from '@/lib/events/domains/clock.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { clockService } from '@/services/clock/index.js';
+import { ClockListError } from '@/lib/errors/index.js';
+import { ClockListed } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
-import type { ListBody, ListResponse } from './index.js';
+import type { ListClocksBody, ListClocksResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route clock.controller.list
- * @param {FastifyRequest<{ Body: ListBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>} reply
+ * @param {FastifyRequest<{ Body: ListClocksBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<ListClocksResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ClockListError}
  */
 export const list = async (
-  req: FastifyRequest<{ Body: ListBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
+  req: FastifyRequest<{ Body: ListClocksBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<ListClocksResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);

@@ -1,13 +1,13 @@
-import { clock } from '@/controllers/clock/index.js';
+import { clock } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ClockDeleteBodySchema, ClockResponses } from '@/schemas/clock.js';
+import { ClockDeleteBodySchema, ClockResponses } from '@/schemas/index.js';
 
-import type { DeleteBody, DeleteResponse } from '@/controllers/clock/index.js';
+import type { DeleteClocksBody, DeleteClocksResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const deleteRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
+  fastify.delete<{ Body: DeleteClocksBody; Reply: ReplyEnvelope<DeleteClocksResponse> }>(
     '',
     {
       preHandler: auth({ scopes: ['clocks:manage'] }),

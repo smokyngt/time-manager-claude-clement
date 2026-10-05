@@ -1,6 +1,6 @@
-import { ClockInError } from '@/lib/errors/domains/clock.js';
-import { ClockStarted } from '@/lib/events/domains/clock.js';
-import { clockService } from '@/services/clock/index.js';
+import { ClockInError } from '@/lib/errors/index.js';
+import { ClockStarted } from '@/lib/events/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 

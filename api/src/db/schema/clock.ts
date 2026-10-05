@@ -1,7 +1,7 @@
 import { sql } from 'drizzle-orm';
 import { bigint, index, pgEnum, pgTable, text, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
 
-import { CLOCK_SOURCES } from '@/types/entities/clock.js';
+import { CLOCK_SOURCES } from '@/types/entities/index.js';
 
 import { users } from './user.js';
 

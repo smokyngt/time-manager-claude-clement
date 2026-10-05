@@ -1,16 +1,16 @@
 import { db } from '@/db/client.js';
-import { auditLogs } from '@/db/schema/audit-log.js';
-import { LogCreateError } from '@/lib/errors/domains/log.js';
+import { auditLogs } from '@/db/schema/index.js';
+import { LogCreateError } from '@/lib/errors/index.js';
 
-import type { CreateParams, CreateResponse } from './index.js';
+import type { CreateLogParams, CreateLogResponse } from './index.js';
 
 /**
  * @route log.service.create
- * @param {CreateParams} params
- * @returns {Promise<CreateResponse>}
+ * @param {CreateLogParams} params
+ * @returns {Promise<CreateLogResponse>}
  * @throws {LogCreateError}
  */
-export const create = async (params: CreateParams): Promise<CreateResponse> => {
+export const create = async (params: CreateLogParams): Promise<CreateLogResponse> => {
   try {
     const { actor, event, metadata } = params;
     await db.insert(auditLogs).values({

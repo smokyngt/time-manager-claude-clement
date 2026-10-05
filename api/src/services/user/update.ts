@@ -1,32 +1,33 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { DuplicateKeyError } from '@/lib/errors/base/core.js';
+import { users } from '@/db/schema/index.js';
+import { DuplicateKeyError } from '@/lib/errors/index.js';
 import {
   UserNotFoundError,
   UserPasswordInvalidError,
   UserUpdateError,
-} from '@/lib/errors/domains/user.js';
-import { logService } from '@/services/log/index.js';
+} from '@/lib/errors/index.js';
+import { Sessions } from '@/lib/auth/sessions.js';
+import { UserUpdated } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { Digest } from '@/utils/crypto/digest.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
 
-import { revoke } from './revoke.js';
 
-import type { UpdateParams, UpdateResponse } from './index.js';
-import type { UserInsert } from '@/db/schema/user.js';
+import type { UpdateUserParams, UpdateUserResponse } from './index.js';
+import type { UserInsert } from '@/db/schema/index.js';
 
 /**
  * @route user.service.update
- * @param {UpdateParams} params
- * @returns {Promise<UpdateResponse>}
+ * @param {UpdateUserParams} params
+ * @returns {Promise<UpdateUserResponse>}
  * @throws {DuplicateKeyError | UserNotFoundError | UserPasswordInvalidError | UserUpdateError}
  */
-export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
+export const update = async (params: UpdateUserParams): Promise<UpdateUserResponse> => {
   try {
     const { actor, data, id } = params;
     const {
@@ -67,11 +68,11 @@ export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
       throw UserNotFoundError({ metadata: { route: 'user.service.update', user_id: id } });
     }
     if (password !== undefined || email !== undefined || data.role !== undefined) {
-      await revoke(id);
+      await Sessions.revoke({ user_id: id });
     }
-    await logService.create({
+    await Audit.record({
       actor,
-      event: 'user.updated',
+      event: UserUpdated.code,
       metadata: { fields: Object.keys(data), user_id: id },
     });
 

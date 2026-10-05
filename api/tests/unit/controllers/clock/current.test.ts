@@ -5,7 +5,7 @@ import { actorOf, caught, EMPLOYEE_ID } from '../../services/clock/support.js';
 import { installClockService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { CurrentResponse } from '@/controllers/clock/index.js';
+import type { CurrentClockResponse } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply } from 'fastify';
@@ -23,7 +23,7 @@ afterEach(() => {
 
 const { current } = await import('@/controllers/clock/current.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<CurrentResponse> }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<CurrentClockResponse> }>;
 
 const run = async (actor: Actor | undefined) => {
   const reply: FakeReply = Fake.reply();

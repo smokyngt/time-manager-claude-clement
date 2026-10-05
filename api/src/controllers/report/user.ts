@@ -1,24 +1,24 @@
-import { ReportUserError, ReportUserNotFoundError } from '@/lib/errors/domains/report.js';
-import { ReportUserGenerated } from '@/lib/events/domains/report.js';
-import { reportService } from '@/services/report/index.js';
+import { ReportUserError, ReportUserNotFoundError } from '@/lib/errors/index.js';
+import { ReportUserGenerated } from '@/lib/events/index.js';
+import { reportService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 import { Membership } from '@/utils/membership.js';
 
-import type { UserBody } from './index.js';
-import type { UserReport } from '@/types/entities/report.js';
+import type { ReportUserBody } from './index.js';
+import type { UserReport } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route report.controller.user
- * @param {FastifyRequest<{ Body: UserBody }>} req
+ * @param {FastifyRequest<{ Body: ReportUserBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<{ report: UserReport }> }>} reply
  * @returns {Promise<void>}
  * @throws {ReportUserError | ReportUserNotFoundError}
  */
 export const user = async (
-  req: FastifyRequest<{ Body: UserBody }>,
+  req: FastifyRequest<{ Body: ReportUserBody }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<{ report: UserReport }> }>,
 ): Promise<void> => {
   try {

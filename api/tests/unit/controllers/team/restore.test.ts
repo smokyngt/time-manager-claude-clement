@@ -14,7 +14,7 @@ import {
 import { installMembers, installTeamService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { RestoreParams, TeamResponse } from '@/controllers/team/index.js';
+import type { RestoreTeamParams, TeamResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -37,7 +37,7 @@ afterEach(() => {
 const { restore } = await import('@/controllers/team/restore.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<TeamResponse> }>;
-type Req = FastifyRequest<{ Params: RestoreParams }>;
+type Req = FastifyRequest<{ Params: RestoreTeamParams }>;
 
 const run = async (actor: Actor | undefined, id: string) => {
   const reply: FakeReply = Fake.reply();

@@ -5,7 +5,7 @@ import { AppError } from '@/lib/errors/base/registry.js';
 import { Fake } from '../../../support/fake.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { UserBody } from '@/controllers/report/index.js';
+import type { ReportUserBody } from '@/controllers/report/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { UserReport } from '@/types/entities/report.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -59,7 +59,7 @@ afterEach(() => {
 const { user } = await import('@/controllers/report/user.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<{ report: UserReport }> }>;
-type Req = FastifyRequest<{ Body: UserBody }>;
+type Req = FastifyRequest<{ Body: ReportUserBody }>;
 
 const actor = (role: Actor['role'], id: string): Actor => ({ id, role, team_ids: [] });
 
@@ -75,7 +75,7 @@ const caught = async (promise: Promise<unknown>): Promise<AppError> => {
 
 const run = async (caller: Actor | undefined, userId: string) => {
   const reply = Fake.reply();
-  const body: UserBody = { from: 1, granularity: 'day', to: 2, user_id: userId };
+  const body: ReportUserBody = { from: 1, granularity: 'day', to: 2, user_id: userId };
   await user(Fake.request({ actor: caller, body }) as Req, reply as unknown as Rep);
 
   return reply as unknown as FakeReply;

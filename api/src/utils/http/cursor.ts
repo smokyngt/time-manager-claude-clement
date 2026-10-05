@@ -1,7 +1,7 @@
 import { and, asc, count, desc, eq, gt, lt, or } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { ValidationError } from '@/lib/errors/base/core.js';
+import { ValidationError } from '@/lib/errors/index.js';
 
 import type { SQL } from 'drizzle-orm';
 import type { AnyPgColumn, PgTable } from 'drizzle-orm/pg-core';

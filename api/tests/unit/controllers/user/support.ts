@@ -4,7 +4,7 @@ import { UserNotFoundError } from '@/lib/errors/domains/user.js';
 
 import { userOf } from '../../services/user/support.js';
 
-import type { ListParams, UserCreateData, UserUpdateData } from '@/services/user/index.js';
+import type { ListUsersParams, UserCreateData, UserUpdateData } from '@/services/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { User } from '@/types/entities/user.js';
 
@@ -31,7 +31,7 @@ export const installUserService = async () => {
 
       return Promise.resolve({ success: true });
     }),
-    list: mock((_params: ListParams) =>
+    list: mock((_params: ListUsersParams) =>
       Promise.resolve({ items: [] as User[], more: false, next: null, total: 0 }),
     ),
     restore: mock((params: { actor: Actor; id: string }) =>

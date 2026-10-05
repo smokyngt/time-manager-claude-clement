@@ -1,13 +1,13 @@
-import { team } from '@/controllers/team/index.js';
+import { team } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { TeamDeleteBodySchema, TeamResponses } from '@/schemas/team.js';
+import { TeamDeleteBodySchema, TeamResponses } from '@/schemas/index.js';
 
-import type { DeleteBody, DeleteResponse } from '@/controllers/team/index.js';
+import type { DeleteTeamsBody, DeleteTeamsResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const deleteRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
+  fastify.delete<{ Body: DeleteTeamsBody; Reply: ReplyEnvelope<DeleteTeamsResponse> }>(
     '',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),

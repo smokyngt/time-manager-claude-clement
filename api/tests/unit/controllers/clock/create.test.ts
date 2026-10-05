@@ -5,7 +5,7 @@ import { actorOf, ADMIN_ID, caught, OTHER_ID } from '../../services/clock/suppor
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { ClockResponse, CreateBody } from '@/controllers/clock/index.js';
+import type { ClockResponse, CreateClockBody } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -29,9 +29,9 @@ afterEach(() => {
 const { create } = await import('@/controllers/clock/create.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>;
-type Req = FastifyRequest<{ Body: CreateBody }>;
+type Req = FastifyRequest<{ Body: CreateClockBody }>;
 
-const body: CreateBody = {
+const body: CreateClockBody = {
   clocked_in_at: 1_700_000_000_000,
   clocked_out_at: 1_700_028_800_000,
   user_id: OTHER_ID,

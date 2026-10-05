@@ -1,22 +1,22 @@
-import { ClockCreateError } from '@/lib/errors/domains/clock.js';
-import { ClockCreated } from '@/lib/events/domains/clock.js';
-import { clockService } from '@/services/clock/index.js';
+import { ClockCreateError } from '@/lib/errors/index.js';
+import { ClockCreated } from '@/lib/events/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { ClockResponse, CreateBody } from './index.js';
+import type { ClockResponse, CreateClockBody } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route clock.controller.create
- * @param {FastifyRequest<{ Body: CreateBody }>} req
+ * @param {FastifyRequest<{ Body: CreateClockBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ClockCreateError | UnauthorizedError}
  */
 export const create = async (
-  req: FastifyRequest<{ Body: CreateBody }>,
+  req: FastifyRequest<{ Body: CreateClockBody }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>,
 ): Promise<void> => {
   try {

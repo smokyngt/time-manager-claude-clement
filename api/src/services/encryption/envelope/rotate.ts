@@ -1,7 +1,7 @@
 import { and, desc, eq, ne } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
-import { encryptionKeys } from '@/db/schema/encryption-key.js';
+import { encryptionKeys } from '@/db/schema/index.js';
 import { Postgres } from '@/utils/postgres.js';
 
 import { Dek } from './dek.js';

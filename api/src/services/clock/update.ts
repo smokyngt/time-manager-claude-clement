@@ -1,26 +1,26 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockNotFoundError, ClockUpdateError } from '@/lib/errors/domains/clock.js';
-import { ClockUpdated } from '@/lib/events/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockNotFoundError, ClockUpdateError } from '@/lib/errors/index.js';
+import { ClockUpdated } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
-import { logService } from '@/services/log/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
 import { ClockRules } from './helpers/rules.js';
 
-import type { UpdateParams, UpdateResponse } from './index.js';
-import type { ClockInsert } from '@/db/schema/clock.js';
+import type { UpdateClockParams, UpdateClockResponse } from './index.js';
+import type { ClockInsert } from '@/db/schema/index.js';
 
 /**
  * @route clock.service.update
- * @param {UpdateParams} params
- * @returns {Promise<UpdateResponse>}
+ * @param {UpdateClockParams} params
+ * @returns {Promise<UpdateClockResponse>}
  * @throws {ClockInvalidError | ClockNotFoundError | ClockOverlapError | ClockUpdateError}
  */
-export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
+export const update = async (params: UpdateClockParams): Promise<UpdateClockResponse> => {
   try {
     const { actor, data, id } = params;
     const now = Date.now();
@@ -46,7 +46,7 @@ export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
     if (row === undefined) {
       throw ClockNotFoundError({ metadata: { clock_id: id, route: 'clock.service.update' } });
     }
-    await logService.create({
+    await Audit.record({
       actor,
       event: ClockUpdated.code,
       metadata: { clock_id: id, fields: Object.keys(data), user_id: row.user_id },

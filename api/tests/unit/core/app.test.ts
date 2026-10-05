@@ -1,6 +1,6 @@
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test';
 
-import { build } from '@/app.v2.js';
+import { build } from '@/app.js';
 import { ValidationError } from '@/lib/errors/base/core.js';
 
 import type { FastifyInstance } from 'fastify';
@@ -36,7 +36,7 @@ afterAll(async () => {
   await app.close();
 });
 
-describe('app.v2', () => {
+describe('app', () => {
   it('echoes a valid x-request-id and replaces an invalid one', async () => {
     const ok = await app.inject({ headers: { 'x-request-id': 'abc_123-X' }, url: '/health' });
     expect(ok.headers['x-request-id']).toBe('abc_123-X');

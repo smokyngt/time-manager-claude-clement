@@ -1,11 +1,11 @@
-import { InternalError } from '@/lib/errors/base/core.js';
+import { InternalError } from '@/lib/errors/index.js';
 import {
   ClockConflictError,
   ClockInvalidError,
   ClockNotFoundError,
   ClockOverlapError,
-} from '@/lib/errors/domains/clock.js';
-import { UserNotFoundError } from '@/lib/errors/domains/user.js';
+} from '@/lib/errors/index.js';
+import { UserNotFoundError } from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,
@@ -14,7 +14,7 @@ import {
   UnauthorizedErrorSchema,
   ValidationErrorSchema,
 } from '@/schemas/base/envelope.js';
-import { CLOCK_SOURCES } from '@/types/entities/clock.js';
+import { CLOCK_SOURCES } from '@/types/entities/index.js';
 
 import { DateBoundAnyOf, RequestLimits } from './common.js';
 

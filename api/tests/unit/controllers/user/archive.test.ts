@@ -5,7 +5,7 @@ import { actorOf, ADMIN_ID, caught, MISSING_ID, OTHER_ID, userOf } from '../../s
 import { installMembership, installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { ArchiveParams, UserResponse } from '@/controllers/user/index.js';
+import type { ArchiveUserParams, UserResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -30,7 +30,7 @@ afterEach(() => {
 const { archive } = await import('@/controllers/user/archive.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
-type Req = FastifyRequest<{ Params: ArchiveParams }>;
+type Req = FastifyRequest<{ Params: ArchiveUserParams }>;
 
 const run = async (actor: Actor | undefined, id: string) => {
   const reply: FakeReply = Fake.reply();

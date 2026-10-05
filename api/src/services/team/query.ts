@@ -1,7 +1,7 @@
 import { count, eq, inArray, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers, teams } from '@/db/schema/team.js';
+import { teamMembers, teams } from '@/db/schema/index.js';
 
 import type { SQL } from 'drizzle-orm';
 

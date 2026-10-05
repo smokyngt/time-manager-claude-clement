@@ -4,8 +4,8 @@ import {
   ReportTeamNotFoundError,
   ReportUserError,
   ReportUserNotFoundError,
-} from '@/lib/errors/domains/report.js';
-import { GRANULARITIES } from '@/types/entities/report.js';
+} from '@/lib/errors/index.js';
+import { GRANULARITIES } from '@/types/entities/index.js';
 
 import {
   ErrorSchema,

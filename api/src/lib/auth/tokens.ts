@@ -1,12 +1,12 @@
 import { jwtVerify, SignJWT } from 'jose';
 
 import { Config } from '@/config/index.js';
-import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
-import { ROLES } from '@/types/entities/user.js';
+import { TokenAuthenticationError } from '@/lib/errors/index.js';
+import { ROLES } from '@/types/entities/index.js';
 import { Duration } from '@/utils/duration.js';
 
-import type { Actor } from '@/types/entities/actor.js';
-import type { Role } from '@/types/entities/user.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Role } from '@/types/entities/index.js';
 
 const ISSUER = 'time-manager';
 const AUDIENCE = 'time-manager-web';

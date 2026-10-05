@@ -1,14 +1,9 @@
 import { team } from './team.js';
 import { user } from './user.js';
 
-import type { Granularity, TeamReport, UserReport } from '@/types/entities/report.js';
+import type { Granularity, TeamReport, UserReport } from '@/types/entities/index.js';
 
-export type ReportServiceType = {
-  team: (params: TeamParams) => Promise<TeamResponse>;
-  user: (params: UserParams) => Promise<UserResponse>;
-};
-
-export type TeamParams = {
+export type ReportTeamParams = {
   from: number;
   granularity: Granularity;
   manager_id?: string;
@@ -16,22 +11,22 @@ export type TeamParams = {
   to: number;
 };
 
-export type TeamResponse = {
+export type ReportTeamResponse = {
   report: TeamReport;
 };
 
-export type UserParams = {
+export type ReportUserParams = {
   from: number;
   granularity: Granularity;
   to: number;
   user_id: string;
 };
 
-export type UserResponse = {
+export type ReportUserResponse = {
   report: UserReport;
 };
 
-class ReportService implements ReportServiceType {
+export class ReportService {
   public team = team;
   public user = user;
 }

@@ -1,27 +1,27 @@
-import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { UserDeleteError, UserNotFoundError } from '@/lib/errors/domains/user.js';
-import { UserDeleted } from '@/lib/events/domains/user.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { userService } from '@/services/user/index.js';
+import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { UserDeleteError, UserNotFoundError } from '@/lib/errors/index.js';
+import { UserDeleted } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
-import type { User } from '@/types/entities/user.js';
+import type { BulkFailure, DeleteUsersBody, DeleteUsersResponse } from './index.js';
+import type { User } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.delete
- * @param {FastifyRequest<{ Body: DeleteBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
+ * @param {FastifyRequest<{ Body: DeleteUsersBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteUsersResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {UnauthorizedError | UserDeleteError | ValidationError}
  */
 export const remove = async (
-  req: FastifyRequest<{ Body: DeleteBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
+  req: FastifyRequest<{ Body: DeleteUsersBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteUsersResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
@@ -72,7 +72,7 @@ export const remove = async (
         }
       }),
     );
-    const result: DeleteResponse = { deleted, failed, success: failed.length === 0 };
+    const result: DeleteUsersResponse = { deleted, failed, success: failed.length === 0 };
     await Reply.send(
       req,
       reply,

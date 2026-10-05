@@ -15,7 +15,7 @@ import {
 import { installMembers, installTeamService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { UpdateBody, UpdateResponse } from '@/controllers/team/index.js';
+import type { UpdateTeamsBody, UpdateTeamsResponse } from '@/controllers/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -37,10 +37,10 @@ afterEach(() => {
 
 const { update } = await import('@/controllers/team/update.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>;
-type Req = FastifyRequest<{ Body: UpdateBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<UpdateTeamsResponse> }>;
+type Req = FastifyRequest<{ Body: UpdateTeamsBody }>;
 
-const run = async (actor: Actor | undefined, body: UpdateBody) => {
+const run = async (actor: Actor | undefined, body: UpdateTeamsBody) => {
   const reply: FakeReply = Fake.reply();
   await update(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
@@ -64,7 +64,7 @@ describe('team.controller.update', () => {
       data: { failed: [], success: true },
       event: { code: 'team.updated', payload: { actor: ADMIN_ID, failed: 0, updated: 2 } },
     });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateTeamsResponse>).data;
     expect([...data.updated].sort()).toEqual([OTHER_TEAM_ID, TEAM_ID].sort());
   });
 
@@ -134,7 +134,7 @@ describe('team.controller.update', () => {
       data: { name: 'Care' },
       ids: [MISSING_ID, TEAM_ID, OTHER_TEAM_ID],
     });
-    const data = (reply.payload as ReplyEnvelope<UpdateResponse>).data;
+    const data = (reply.payload as ReplyEnvelope<UpdateTeamsResponse>).data;
     expect(data.success).toBe(false);
     expect(data.updated).toHaveLength(1);
     expect(data.failed.map((item) => item.code).sort()).toEqual([

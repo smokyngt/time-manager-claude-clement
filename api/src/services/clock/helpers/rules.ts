@@ -1,8 +1,8 @@
 import { and, eq, gt, isNull, lt, ne, or } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockInvalidError, ClockOverlapError } from '@/lib/errors/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockInvalidError, ClockOverlapError } from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 
 export type OverlapParams = {

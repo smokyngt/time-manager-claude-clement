@@ -5,7 +5,7 @@ import { db } from '@/db/client.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
 
-import type { Granularity } from '@/types/entities/report.js';
+import type { Granularity } from '@/types/entities/index.js';
 import type { SQL } from 'drizzle-orm';
 
 export type ReportRange = {

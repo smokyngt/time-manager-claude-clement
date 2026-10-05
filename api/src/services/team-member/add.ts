@@ -1,26 +1,27 @@
 import { inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers } from '@/db/schema/team.js';
-import { users } from '@/db/schema/user.js';
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
+import { teamMembers } from '@/db/schema/index.js';
+import { users } from '@/db/schema/index.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
 import {
   TeamMemberAddError,
   TeamMemberTeamArchivedError,
   TeamMemberUserArchivedError,
   TeamMemberUserNotFoundError,
-} from '@/lib/errors/domains/team-member.js';
-import { logService } from '@/services/log/index.js';
+} from '@/lib/errors/index.js';
+import { TeamMembersAdded } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 
-import type { AddParams, AddResponse, BulkFailure } from './index.js';
+import type { AddTeamMembersParams, AddTeamMembersResponse, BulkFailure } from './index.js';
 
 /**
  * @route team.member.service.add
- * @param {AddParams} params
- * @returns {Promise<AddResponse>}
+ * @param {AddTeamMembersParams} params
+ * @returns {Promise<AddTeamMembersResponse>}
  * @throws {TeamMemberTeamArchivedError | UnauthorizedError | TeamMemberAddError}
  */
-export const add = async (params: AddParams): Promise<AddResponse> => {
+export const add = async (params: AddTeamMembersParams): Promise<AddTeamMembersResponse> => {
   try {
     const { actor, roles, team } = params;
     const userIds = [...new Set(params.user_ids)];
@@ -59,9 +60,9 @@ export const add = async (params: AddParams): Promise<AddResponse> => {
             .onConflictDoNothing()
             .returning({ user_id: teamMembers.user_id });
     const added = inserted.map((row) => row.user_id);
-    await logService.create({
+    await Audit.record({
       actor,
-      event: 'team.members.added',
+      event: TeamMembersAdded.code,
       metadata: { added: added.length, failed: failed.length, team_id: team.id },
     });
 

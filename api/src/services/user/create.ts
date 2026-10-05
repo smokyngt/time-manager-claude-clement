@@ -1,23 +1,24 @@
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { DuplicateKeyError } from '@/lib/errors/base/core.js';
-import { UserCreateError } from '@/lib/errors/domains/user.js';
-import { logService } from '@/services/log/index.js';
+import { users } from '@/db/schema/index.js';
+import { DuplicateKeyError } from '@/lib/errors/index.js';
+import { UserCreateError } from '@/lib/errors/index.js';
+import { UserCreated } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { Digest } from '@/utils/crypto/digest.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
 
-import type { CreateParams, CreateResponse } from './index.js';
+import type { CreateUserParams, CreateUserResponse } from './index.js';
 
 /**
  * @route user.service.create
- * @param {CreateParams} params
- * @returns {Promise<CreateResponse>}
+ * @param {CreateUserParams} params
+ * @returns {Promise<CreateUserResponse>}
  * @throws {DuplicateKeyError | UserCreateError}
  */
-export const create = async (params: CreateParams): Promise<CreateResponse> => {
+export const create = async (params: CreateUserParams): Promise<CreateUserResponse> => {
   try {
     const { actor, data } = params;
     const { first_name: firstName, last_name: lastName, password } = data;
@@ -36,9 +37,9 @@ export const create = async (params: CreateParams): Promise<CreateResponse> => {
       })
       .returning();
     if (row === undefined) throw UserCreateError({ metadata: { route: 'user.service.create' } });
-    await logService.create({
+    await Audit.record({
       actor,
-      event: 'user.created',
+      event: UserCreated.code,
       metadata: { role: row.role, user_id: row.id },
     });
 

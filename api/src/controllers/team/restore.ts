@@ -1,22 +1,22 @@
-import { TeamNotFoundError, TeamRestoreError } from '@/lib/errors/domains/team.js';
-import { TeamRestored } from '@/lib/events/domains/team.js';
-import { teamService } from '@/services/team/index.js';
+import { TeamNotFoundError, TeamRestoreError } from '@/lib/errors/index.js';
+import { TeamRestored } from '@/lib/events/index.js';
+import { teamService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { RestoreParams, TeamResponse } from './index.js';
+import type { RestoreTeamParams, TeamResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route team.controller.restore
- * @param {FastifyRequest<{ Params: RestoreParams }>} req
+ * @param {FastifyRequest<{ Params: RestoreTeamParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<TeamResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {TeamRestoreError | TeamNotFoundError | UnauthorizedError}
  */
 export const restore = async (
-  req: FastifyRequest<{ Params: RestoreParams }>,
+  req: FastifyRequest<{ Params: RestoreTeamParams }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<TeamResponse> }>,
 ): Promise<void> => {
   try {

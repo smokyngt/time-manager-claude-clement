@@ -1,27 +1,27 @@
-import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { TeamNotFoundError, TeamUpdateError } from '@/lib/errors/domains/team.js';
-import { TeamUpdated } from '@/lib/events/domains/team.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { teamService } from '@/services/team/index.js';
+import { InternalError, UnauthorizedError, ValidationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { TeamNotFoundError, TeamUpdateError } from '@/lib/errors/index.js';
+import { TeamUpdated } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { teamService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, UpdateBody, UpdateResponse } from './index.js';
-import type { Team } from '@/types/entities/team.js';
+import type { BulkFailure, UpdateTeamsBody, UpdateTeamsResponse } from './index.js';
+import type { Team } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route team.controller.update
- * @param {FastifyRequest<{ Body: UpdateBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>} reply
+ * @param {FastifyRequest<{ Body: UpdateTeamsBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<UpdateTeamsResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {TeamUpdateError | UnauthorizedError | ValidationError}
  */
 export const update = async (
-  req: FastifyRequest<{ Body: UpdateBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
+  req: FastifyRequest<{ Body: UpdateTeamsBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateTeamsResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
@@ -76,7 +76,7 @@ export const update = async (
         }
       }),
     );
-    const result: UpdateResponse = { failed, success: failed.length === 0, updated };
+    const result: UpdateTeamsResponse = { failed, success: failed.length === 0, updated };
     await Reply.send(
       req,
       reply,

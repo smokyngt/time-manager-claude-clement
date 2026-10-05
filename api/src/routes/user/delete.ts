@@ -1,13 +1,13 @@
-import { user } from '@/controllers/user/index.js';
+import { user } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { UserDeleteBodySchema, UserResponses } from '@/schemas/user.js';
+import { UserDeleteBodySchema, UserResponses } from '@/schemas/index.js';
 
-import type { DeleteBody, DeleteResponse } from '@/controllers/user/index.js';
+import type { DeleteUsersBody, DeleteUsersResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const deleteRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.delete<{ Body: DeleteBody; Reply: ReplyEnvelope<DeleteResponse> }>(
+  fastify.delete<{ Body: DeleteUsersBody; Reply: ReplyEnvelope<DeleteUsersResponse> }>(
     '',
     {
       preHandler: auth({ scopes: ['users:manage'] }),

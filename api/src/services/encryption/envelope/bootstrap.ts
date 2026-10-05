@@ -1,14 +1,14 @@
 import { and, desc, eq } from 'drizzle-orm';
 import { randomBytes } from 'node:crypto';
 
-import { encryptionKeys } from '@/db/schema/encryption-key.js';
+import { encryptionKeys } from '@/db/schema/index.js';
 import { Postgres } from '@/utils/postgres.js';
 
 import { EncryptionKeyUnavailableError, KEY_DOMAINS, logInfo, transitKeyName } from './keys.js';
 import { ensureTransitKey, wrapKey } from './transit.js';
 
 import type { KeyDomain, Runtime } from './keys.js';
-import type { EncryptionKeyRow } from '@/db/schema/encryption-key.js';
+import type { EncryptionKeyRow } from '@/db/schema/index.js';
 
 const DEK_BYTES = 32;
 const locks = new Map<KeyDomain, Promise<EncryptionKeyRow>>();

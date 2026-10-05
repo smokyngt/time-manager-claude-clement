@@ -1,5 +1,5 @@
-import { authController } from '@/controllers/auth/index.js';
-import { AuthResponses } from '@/schemas/auth.js';
+import { authController } from '@/controllers/index.js';
+import { AuthResponses } from '@/schemas/index.js';
 
 import type { FastifyPluginAsync } from 'fastify';
 

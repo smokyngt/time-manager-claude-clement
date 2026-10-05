@@ -5,7 +5,7 @@ import { actorOf, caught, EMPLOYEE_ID, MANAGER_ID, OTHER_ID } from '../../servic
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { ListBody, ListResponse } from '@/controllers/clock/index.js';
+import type { ListClocksBody, ListClocksResponse } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -28,10 +28,10 @@ afterEach(() => {
 
 const { list } = await import('@/controllers/clock/list.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>;
-type Req = FastifyRequest<{ Body: ListBody }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<ListClocksResponse> }>;
+type Req = FastifyRequest<{ Body: ListClocksBody }>;
 
-const run = async (actor: Actor | undefined, body: ListBody = {}) => {
+const run = async (actor: Actor | undefined, body: ListClocksBody = {}) => {
   const reply: FakeReply = Fake.reply();
   await list(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 

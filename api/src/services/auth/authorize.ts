@@ -5,18 +5,18 @@ import { Tokens } from '@/lib/auth/tokens.js';
 import {
   AuthMicrosoftError,
   AuthMicrosoftUnavailableError,
-} from '@/lib/errors/domains/auth.js';
+} from '@/lib/errors/index.js';
 
-import type { AuthorizeResponse } from './index.js';
+import type { AuthAuthorizeResponse } from './index.js';
 
 const STATE_TTL = 600;
 
 /**
  * @route auth.service.authorize
- * @returns {Promise<AuthorizeResponse>}
+ * @returns {Promise<AuthAuthorizeResponse>}
  * @throws {AuthMicrosoftError | AuthMicrosoftUnavailableError}
  */
-export const authorize = async (): Promise<AuthorizeResponse> => {
+export const authorize = async (): Promise<AuthAuthorizeResponse> => {
   try {
     const state = Microsoft.random(24);
     const nonce = Microsoft.random(24);

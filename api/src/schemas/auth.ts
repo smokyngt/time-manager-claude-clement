@@ -1,11 +1,11 @@
 import { SCOPES } from '@/config/auth/scopes.js';
-import { InternalError } from '@/lib/errors/base/core.js';
+import { InternalError } from '@/lib/errors/index.js';
 import {
   AuthCredentialsInvalidError,
   AuthMicrosoftUnavailableError,
   AuthRateLimitedError,
   AuthRefreshInvalidError,
-} from '@/lib/errors/domains/auth.js';
+} from '@/lib/errors/index.js';
 import {
   ErrorSchema,
   RateLimitErrorSchema,

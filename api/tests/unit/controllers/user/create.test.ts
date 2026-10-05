@@ -5,7 +5,7 @@ import { actorOf, caught } from '../../services/user/support.js';
 import { installUserService } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
-import type { CreateBody, UserResponse } from '@/controllers/user/index.js';
+import type { CreateUserBody, UserResponse } from '@/controllers/user/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -25,16 +25,16 @@ afterEach(() => {
 const { create } = await import('@/controllers/user/create.js');
 
 type Rep = FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>;
-type Req = FastifyRequest<{ Body: CreateBody }>;
+type Req = FastifyRequest<{ Body: CreateUserBody }>;
 
-const run = async (actor: Actor | undefined, body: CreateBody) => {
+const run = async (actor: Actor | undefined, body: CreateUserBody) => {
   const reply: FakeReply = Fake.reply();
   await create(Fake.request({ actor, body }) as Req, reply as unknown as Rep);
 
   return reply;
 };
 
-const body: CreateBody = { email: 'new@example.com', first_name: 'New', last_name: 'Hire' };
+const body: CreateUserBody = { email: 'new@example.com', first_name: 'New', last_name: 'Hire' };
 
 describe('user.controller.create', () => {
   it('lets an admin create a manager and replies with the event envelope', async () => {

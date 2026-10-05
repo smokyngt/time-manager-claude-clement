@@ -1,26 +1,26 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teams } from '@/db/schema/team.js';
-import { TeamNotFoundError, TeamUpdateError } from '@/lib/errors/domains/team.js';
-import { TeamUpdated } from '@/lib/events/domains/team.js';
-import { logService } from '@/services/log/index.js';
+import { teams } from '@/db/schema/index.js';
+import { TeamNotFoundError, TeamUpdateError } from '@/lib/errors/index.js';
+import { TeamUpdated } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 import { TeamValidate } from './validate.js';
 
-import type { UpdateParams, UpdateResponse } from './index.js';
-import type { TeamInsert } from '@/db/schema/team.js';
+import type { UpdateTeamParams, UpdateTeamResponse } from './index.js';
+import type { TeamInsert } from '@/db/schema/index.js';
 
 /**
  * @route team.service.update
- * @param {UpdateParams} params
- * @returns {Promise<UpdateResponse>}
+ * @param {UpdateTeamParams} params
+ * @returns {Promise<UpdateTeamResponse>}
  * @throws {TeamManagerInvalidError | TeamNotFoundError | TeamScheduleInvalidError | TeamUpdateError}
  */
-export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
+export const update = async (params: UpdateTeamParams): Promise<UpdateTeamResponse> => {
   try {
     const { actor, data, id } = params;
     if (data.manager_id !== undefined) await TeamValidate.manager(data.manager_id);
@@ -46,7 +46,7 @@ export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
     if (row === undefined) {
       throw TeamNotFoundError({ metadata: { route: 'team.service.update', team_id: id } });
     }
-    await logService.create({
+    await Audit.record({
       actor,
       event: TeamUpdated.code,
       metadata: { fields: Object.keys(data), team_id: id },

@@ -1,22 +1,22 @@
-import { UserCreateError } from '@/lib/errors/domains/user.js';
-import { UserCreated } from '@/lib/events/domains/user.js';
-import { userService } from '@/services/user/index.js';
+import { UserCreateError } from '@/lib/errors/index.js';
+import { UserCreated } from '@/lib/events/index.js';
+import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { CreateBody, UserResponse } from './index.js';
+import type { CreateUserBody, UserResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.create
- * @param {FastifyRequest<{ Body: CreateBody }>} req
+ * @param {FastifyRequest<{ Body: CreateUserBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {UnauthorizedError | UserCreateError}
  */
 export const create = async (
-  req: FastifyRequest<{ Body: CreateBody }>,
+  req: FastifyRequest<{ Body: CreateUserBody }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>,
 ): Promise<void> => {
   try {

@@ -1,13 +1,13 @@
 import { Config } from '@/config/index.js';
-import { authController } from '@/controllers/auth/index.js';
-import { AuthLoginBodySchema, AuthResponses } from '@/schemas/auth.js';
+import { authController } from '@/controllers/index.js';
+import { AuthLoginBodySchema, AuthResponses } from '@/schemas/index.js';
 
-import type { LoginBody, SessionResponse } from '@/controllers/auth/index.js';
+import type { AuthLoginBody, AuthSessionResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const login: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: LoginBody; Reply: ReplyEnvelope<SessionResponse> }>(
+  fastify.post<{ Body: AuthLoginBody; Reply: ReplyEnvelope<AuthSessionResponse> }>(
     '/login',
     {
       config: {

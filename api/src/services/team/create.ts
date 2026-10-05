@@ -1,22 +1,22 @@
 import { db } from '@/db/client.js';
-import { teams } from '@/db/schema/team.js';
-import { TeamCreateError } from '@/lib/errors/domains/team.js';
-import { TeamCreated } from '@/lib/events/domains/team.js';
-import { logService } from '@/services/log/index.js';
+import { teams } from '@/db/schema/index.js';
+import { TeamCreateError } from '@/lib/errors/index.js';
+import { TeamCreated } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamValidate } from './validate.js';
 
-import type { CreateParams, CreateResponse } from './index.js';
+import type { CreateTeamParams, CreateTeamResponse } from './index.js';
 
 /**
  * @route team.service.create
- * @param {CreateParams} params
- * @returns {Promise<CreateResponse>}
+ * @param {CreateTeamParams} params
+ * @returns {Promise<CreateTeamResponse>}
  * @throws {TeamCreateError | TeamManagerInvalidError | TeamScheduleInvalidError}
  */
-export const create = async (params: CreateParams): Promise<CreateResponse> => {
+export const create = async (params: CreateTeamParams): Promise<CreateTeamResponse> => {
   try {
     const { actor, data } = params;
     const start = data.work_start ?? '09:00';
@@ -35,7 +35,7 @@ export const create = async (params: CreateParams): Promise<CreateResponse> => {
       })
       .returning();
     if (row === undefined) throw TeamCreateError({ metadata: { route: 'team.service.create' } });
-    await logService.create({
+    await Audit.record({
       actor,
       event: TeamCreated.code,
       metadata: { manager_id: row.manager_id, team_id: row.id },

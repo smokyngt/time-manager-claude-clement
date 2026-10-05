@@ -1,13 +1,13 @@
-import { clock } from '@/controllers/clock/index.js';
+import { clock } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ClockCreateBodySchema, ClockResponses } from '@/schemas/clock.js';
+import { ClockCreateBodySchema, ClockResponses } from '@/schemas/index.js';
 
-import type { ClockResponse, CreateBody } from '@/controllers/clock/index.js';
+import type { ClockResponse, CreateClockBody } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const create: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: CreateBody; Reply: ReplyEnvelope<ClockResponse> }>(
+  fastify.post<{ Body: CreateClockBody; Reply: ReplyEnvelope<ClockResponse> }>(
     '/new',
     {
       preHandler: auth({ scopes: ['clocks:manage'] }),

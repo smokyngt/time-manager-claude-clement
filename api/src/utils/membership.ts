@@ -1,9 +1,9 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers, teams } from '@/db/schema/team.js';
+import { teamMembers, teams } from '@/db/schema/index.js';
 
-import type { Actor } from '@/types/entities/actor.js';
+import type { Actor } from '@/types/entities/index.js';
 
 export class Membership {
   /**

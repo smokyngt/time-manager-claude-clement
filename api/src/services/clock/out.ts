@@ -1,11 +1,11 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockConflictError, ClockOutError } from '@/lib/errors/domains/clock.js';
-import { ClockStopped } from '@/lib/events/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockConflictError, ClockOutError } from '@/lib/errors/index.js';
+import { ClockStopped } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
-import { logService } from '@/services/log/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
@@ -48,7 +48,7 @@ export const clockOut = async (params: ClockOutParams): Promise<ClockOutResponse
     if (row === undefined) {
       throw ClockConflictError({ metadata: { route: 'clock.service.out', user_id: actor.id } });
     }
-    await logService.create({
+    await Audit.record({
       actor,
       event: ClockStopped.code,
       metadata: { clock_id: row.id, user_id: actor.id },

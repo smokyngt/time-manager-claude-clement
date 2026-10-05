@@ -6,64 +6,64 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { Actor } from '@/types/entities/actor.js';
-import type { Team } from '@/types/entities/team.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Team } from '@/types/entities/index.js';
 
-export type ArchiveParams = {
+export type ArchiveTeamParams = {
   actor: Actor;
   id: string;
 };
 
-export type ArchiveResponse = {
+export type ArchiveTeamResponse = {
   team: Team;
 };
 
-export type CreateParams = {
+export type CreateTeamParams = {
   actor: Actor;
   data: TeamCreateData;
 };
 
-export type CreateResponse = {
+export type CreateTeamResponse = {
   team: Team;
 };
 
-export type DeleteParams = {
+export type DeleteTeamParams = {
   actor: Actor;
   id: string;
 };
 
-export type DeleteResponse = {
+export type DeleteTeamResponse = {
   success: boolean;
 };
 
-export type ListParams = {
+export type ListTeamsParams = {
   cursor?: string;
   filters: TeamFilters;
   limit: number;
   order: 'asc' | 'desc';
 };
 
-export type ListResponse = {
+export type ListTeamsResponse = {
   items: Team[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RestoreParams = {
+export type RestoreTeamParams = {
   actor: Actor;
   id: string;
 };
 
-export type RestoreResponse = {
+export type RestoreTeamResponse = {
   team: Team;
 };
 
-export type RetrieveParams = {
+export type RetrieveTeamParams = {
   id: string;
 };
 
-export type RetrieveResponse = {
+export type RetrieveTeamResponse = {
   team: Team;
 };
 
@@ -100,17 +100,17 @@ export type TeamVisibility = {
   managed: boolean;
 };
 
-export type UpdateParams = {
+export type UpdateTeamParams = {
   actor: Actor;
   data: TeamUpdateData;
   id: string;
 };
 
-export type UpdateResponse = {
+export type UpdateTeamResponse = {
   team: Team;
 };
 
-class TeamService {
+export class TeamService {
   public archive = archive;
   public create = create;
   public delete = remove;

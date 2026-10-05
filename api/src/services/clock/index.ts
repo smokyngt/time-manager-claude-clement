@@ -7,8 +7,8 @@ import { clockOut } from './out.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { Actor } from '@/types/entities/actor.js';
-import type { Clock } from '@/types/entities/clock.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Clock } from '@/types/entities/index.js';
 
 export type ClockCreateData = {
   clocked_in_at: number;
@@ -48,65 +48,65 @@ export type ClockUpdateData = {
   note?: null | string;
 };
 
-export type CreateParams = {
+export type CreateClockParams = {
   actor: Actor;
   data: ClockCreateData;
 };
 
-export type CreateResponse = {
+export type CreateClockResponse = {
   clock: Clock;
 };
 
-export type CurrentParams = {
+export type CurrentClockParams = {
   actor: Actor;
 };
 
-export type CurrentResponse = {
+export type CurrentClockResponse = {
   clock: Clock | null;
 };
 
-export type DeleteParams = {
+export type DeleteClockParams = {
   actor: Actor;
   id: string;
 };
 
-export type DeleteResponse = {
+export type DeleteClockResponse = {
   success: boolean;
 };
 
-export type ListParams = {
+export type ListClocksParams = {
   cursor?: string;
   filters: ClockFilters;
   limit: number;
   order: 'asc' | 'desc';
 };
 
-export type ListResponse = {
+export type ListClocksResponse = {
   items: Clock[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RetrieveParams = {
+export type RetrieveClockParams = {
   id: string;
 };
 
-export type RetrieveResponse = {
+export type RetrieveClockResponse = {
   clock: Clock;
 };
 
-export type UpdateParams = {
+export type UpdateClockParams = {
   actor: Actor;
   data: ClockUpdateData;
   id: string;
 };
 
-export type UpdateResponse = {
+export type UpdateClockResponse = {
   clock: Clock;
 };
 
-class ClockService {
+export class ClockService {
   public clockIn = clockIn;
   public clockOut = clockOut;
   public create = create;

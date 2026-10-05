@@ -1,26 +1,26 @@
 import { and, eq, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teams } from '@/db/schema/team.js';
+import { teams } from '@/db/schema/index.js';
 import {
   ReportInvalidError,
   ReportTeamError,
   ReportTeamNotFoundError,
-} from '@/lib/errors/domains/report.js';
+} from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
 
 import { ReportQuery } from './query.js';
 
-import type { TeamParams, TeamResponse } from './index.js';
+import type { ReportTeamParams, ReportTeamResponse } from './index.js';
 
 /**
  * @route report.service.team
- * @param {TeamParams} params
- * @returns {Promise<TeamResponse>}
+ * @param {ReportTeamParams} params
+ * @returns {Promise<ReportTeamResponse>}
  * @throws {ReportInvalidError | ReportTeamError | ReportTeamNotFoundError}
  */
-export const team = async (params: TeamParams): Promise<TeamResponse> => {
+export const team = async (params: ReportTeamParams): Promise<ReportTeamResponse> => {
   try {
     const { from, granularity, manager_id: managerId, team_id: teamId, to } = params;
     if (!Kpi.valid(from, to)) {

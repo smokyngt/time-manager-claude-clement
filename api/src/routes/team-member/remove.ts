@@ -1,17 +1,17 @@
-import { teamMember } from '@/controllers/team-member/index.js';
+import { teamMember } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberIdParamsSchema,
   TeamMemberRemoveBodySchema,
   TeamMemberResponses,
-} from '@/schemas/team-member.js';
+} from '@/schemas/index.js';
 
-import type { RemoveBody, RemoveParams, RemoveResponse } from '@/controllers/team-member/index.js';
+import type { RemoveTeamMembersBody, RemoveTeamMembersParams, RemoveTeamMembersResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const remove: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: RemoveBody; Params: RemoveParams; Reply: ReplyEnvelope<RemoveResponse> }>(
+  fastify.post<{ Body: RemoveTeamMembersBody; Params: RemoveTeamMembersParams; Reply: ReplyEnvelope<RemoveTeamMembersResponse> }>(
     '/:id/members/remove',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),

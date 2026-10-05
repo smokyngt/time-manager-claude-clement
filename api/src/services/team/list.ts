@@ -1,21 +1,21 @@
 import { and, eq, gte, inArray, isNotNull, isNull, lte, or } from 'drizzle-orm';
 
-import { teams } from '@/db/schema/team.js';
-import { TeamListError } from '@/lib/errors/domains/team.js';
+import { teams } from '@/db/schema/index.js';
+import { TeamListError } from '@/lib/errors/index.js';
 import { Cursor } from '@/utils/http/cursor.js';
 import { TeamMapper } from '@/utils/mappers/team.js';
 
 import { TeamQuery } from './query.js';
 
-import type { ListParams, ListResponse } from './index.js';
+import type { ListTeamsParams, ListTeamsResponse } from './index.js';
 
 /**
  * @route team.service.list
- * @param {ListParams} params
- * @returns {Promise<ListResponse>}
+ * @param {ListTeamsParams} params
+ * @returns {Promise<ListTeamsResponse>}
  * @throws {TeamListError | ValidationError}
  */
-export const list = async (params: ListParams): Promise<ListResponse> => {
+export const list = async (params: ListTeamsParams): Promise<ListTeamsResponse> => {
   try {
     const { cursor, filters, limit, order } = params;
     const {

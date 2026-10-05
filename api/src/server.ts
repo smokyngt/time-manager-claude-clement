@@ -1,5 +1,13 @@
+import '@/lib/telemetry/instrument.js';
+
+import { count, isNull } from 'drizzle-orm';
+
 import { build } from '@/app.js';
 import { Config } from '@/config/index.js';
+import { db, sql } from '@/db/client.js';
+import { clocks } from '@/db/schema/index.js';
+import { Lifecycle } from '@/lib/lifecycle/index.js';
+import { Metrics } from '@/lib/telemetry/metrics.js';
 
 const problems = Config.validate();
 if (problems.length > 0) {
@@ -7,15 +15,19 @@ if (problems.length > 0) {
   process.exit(1);
 }
 
-const app = await build({
-  logger: { level: Config.store.text('LOG_LEVEL', 'info') },
+Metrics.bind({
+  openClocks: async () => {
+    const [row] = await db
+      .select({ total: count() })
+      .from(clocks)
+      .where(isNull(clocks.clocked_out_at));
+
+    return row?.total ?? 0;
+  },
+  poolMax: Config.store.number('DATABASE_POOL_MAX', 10),
 });
 
-const stop = async (): Promise<void> => {
-  await app.close();
-  process.exit(0);
-};
-process.on('SIGINT', () => void stop());
-process.on('SIGTERM', () => void stop());
+const app = await build();
+Lifecycle.shutdown({ app, sql });
 
 await app.listen({ host: '0.0.0.0', port: Config.store.number('PORT', 8000) });

@@ -1,25 +1,25 @@
-import { ValidationError } from '@/lib/errors/base/core.js';
-import { TeamMemberAddError } from '@/lib/errors/domains/team-member.js';
-import { TeamMembersAdded } from '@/lib/events/domains/team-member.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { teamMemberService } from '@/services/team-member/index.js';
+import { ValidationError } from '@/lib/errors/index.js';
+import { TeamMemberAddError } from '@/lib/errors/index.js';
+import { TeamMembersAdded } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { teamMemberService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { AddBody, AddParams, AddResponse } from './index.js';
+import type { AddTeamMembersBody, AddTeamMembersParams, AddTeamMembersResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route team.member.controller.add
- * @param {FastifyRequest<{ Body: AddBody; Params: AddParams }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<AddResponse> }>} reply
+ * @param {FastifyRequest<{ Body: AddTeamMembersBody; Params: AddTeamMembersParams }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<AddTeamMembersResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ValidationError | UnauthorizedError | TeamMemberAddError}
  */
 export const add = async (
-  req: FastifyRequest<{ Body: AddBody; Params: AddParams }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<AddResponse> }>,
+  req: FastifyRequest<{ Body: AddTeamMembersBody; Params: AddTeamMembersParams }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<AddTeamMembersResponse> }>,
 ): Promise<void> => {
   try {
     const actor = Access.role.require(req, ['admin', 'manager']);

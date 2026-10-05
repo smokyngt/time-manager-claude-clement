@@ -4,7 +4,7 @@ import { Fake } from '../../../support/fake.js';
 import { actorOf, caught, OTHER_ID, userOf } from '../../services/user/support.js';
 import { cookieReply, installAuthService } from './support.js';
 
-import type { MeResponse } from '@/controllers/auth/index.js';
+import type { AuthMeResponse } from '@/controllers/auth/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply } from 'fastify';
 
@@ -22,7 +22,7 @@ afterEach(() => {
 const { me } = await import('@/controllers/auth/me.js');
 const { Roles } = await import('@/config/auth/roles.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<MeResponse> }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<AuthMeResponse> }>;
 
 describe('auth.controller.me', () => {
   it('replies with the user and the scopes of the request context', async () => {
@@ -35,7 +35,7 @@ describe('auth.controller.me', () => {
       data: { user: { id: OTHER_ID } },
       event: { code: 'auth.retrieved', payload: { actor: OTHER_ID } },
     });
-    const { data } = reply.payload as ReplyEnvelope<MeResponse>;
+    const { data } = reply.payload as ReplyEnvelope<AuthMeResponse>;
     expect(data.scopes).toEqual([...Roles.scopes('manager')]);
   });
 

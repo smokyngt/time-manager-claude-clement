@@ -4,7 +4,7 @@ import { Fake } from '../../../support/fake.js';
 import { OTHER_ID } from '../../services/user/support.js';
 import { cookieReply, installAuthService } from './support.js';
 
-import type { LogoutResponse } from '@/controllers/auth/index.js';
+import type { AuthLogoutResponse } from '@/controllers/auth/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply } from 'fastify';
 
@@ -21,7 +21,7 @@ afterEach(() => {
 
 const { logout } = await import('@/controllers/auth/logout.js');
 
-type Rep = FastifyReply<{ Reply: ReplyEnvelope<LogoutResponse> }>;
+type Rep = FastifyReply<{ Reply: ReplyEnvelope<AuthLogoutResponse> }>;
 
 const run = async (cookies: Record<string, string>) => {
   const { fake: reply, reply: target } = cookieReply<Rep>();

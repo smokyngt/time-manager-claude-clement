@@ -6,7 +6,7 @@ import { Access } from '@/utils/auth/authz.js';
 
 import { Fake } from '../../../support/fake.js';
 
-import type { ListBody, ListParams, ListResponse } from '@/controllers/team-member/index.js';
+import type { ListTeamMembersBody, ListTeamMembersParams, ListTeamMembersResponse } from '@/controllers/team-member/index.js';
 import type { TeamRow } from '@/db/schema/team.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -57,10 +57,10 @@ afterEach(() => {
 
 const actor: Actor = { id: EMPLOYEE_ID, role: 'employee', team_ids: [] };
 
-const run = async (who: Actor | undefined, body: ListBody) => {
-  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>>();
+const run = async (who: Actor | undefined, body: ListTeamMembersBody) => {
+  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<ListTeamMembersResponse> }>>();
   const req = Fake.request({ actor: who, body, params: { id: TEAM_ID } });
-  await list(req as FastifyRequest<{ Body: ListBody; Params: ListParams }>, reply);
+  await list(req as FastifyRequest<{ Body: ListTeamMembersBody; Params: ListTeamMembersParams }>, reply);
 
   return reply;
 };

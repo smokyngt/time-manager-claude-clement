@@ -1,5 +1,5 @@
 import type { Scope } from './scopes.js';
-import type { Role } from '@/types/entities/user.js';
+import type { Role } from '@/types/entities/index.js';
 
 export const ROLE_SCOPES: Record<Role, readonly Scope[]> = {
   admin: [

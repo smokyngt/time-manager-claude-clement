@@ -1,22 +1,22 @@
-import { ClockNotFoundError, ClockRetrieveError } from '@/lib/errors/domains/clock.js';
-import { ClockRetrieved } from '@/lib/events/domains/clock.js';
-import { clockService } from '@/services/clock/index.js';
+import { ClockNotFoundError, ClockRetrieveError } from '@/lib/errors/index.js';
+import { ClockRetrieved } from '@/lib/events/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { ClockResponse, RetrieveParams } from './index.js';
+import type { ClockResponse, RetrieveClockParams } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route clock.controller.retrieve
- * @param {FastifyRequest<{ Params: RetrieveParams }>} req
+ * @param {FastifyRequest<{ Params: RetrieveClockParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ClockNotFoundError | ClockRetrieveError | UnauthorizedError}
  */
 export const retrieve = async (
-  req: FastifyRequest<{ Params: RetrieveParams }>,
+  req: FastifyRequest<{ Params: RetrieveClockParams }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<ClockResponse> }>,
 ): Promise<void> => {
   try {

@@ -8,7 +8,7 @@ import { FakeDb } from '../../../support/db.js';
 import { Prehandler } from '../../../support/prehandler.js';
 import { actorOf, EMPLOYEE_ID, OTHER_ID, rowOf, sealed } from '../../services/clock/support.js';
 
-import type { ClockResponse, CurrentResponse } from '@/controllers/clock/index.js';
+import type { ClockResponse, CurrentClockResponse } from '@/controllers/clock/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyInstance } from 'fastify';
 
@@ -75,7 +75,7 @@ describe('routes.clock round trip', () => {
     fakeDb.enqueue([openRow]);
     const current = await call('GET', '/v1/clocks/current');
     expect(current.statusCode).toBe(200);
-    const currentBody = current.json<ReplyEnvelope<CurrentResponse>>();
+    const currentBody = current.json<ReplyEnvelope<CurrentClockResponse>>();
     expect(currentBody.data.clock).toMatchObject({ clocked_out_at: null, note: 'Morning' });
     expect(currentBody.event.code).toBe('clock.current.retrieved');
 
@@ -103,7 +103,7 @@ describe('routes.clock round trip', () => {
     fakeDb.enqueue([]);
     const response = await call('GET', '/v1/clocks/current');
     expect(response.statusCode).toBe(200);
-    expect(response.json<ReplyEnvelope<CurrentResponse>>().data).toEqual({ clock: null });
+    expect(response.json<ReplyEnvelope<CurrentClockResponse>>().data).toEqual({ clock: null });
   });
 
   it('answers 409 clock.conflict when the open clock index is violated', async () => {

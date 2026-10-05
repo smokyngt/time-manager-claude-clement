@@ -1,26 +1,26 @@
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
-import { UserListError } from '@/lib/errors/domains/user.js';
-import { UserListed } from '@/lib/events/domains/user.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { userService } from '@/services/user/index.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
+import { UserListError } from '@/lib/errors/index.js';
+import { UserListed } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
-import type { ListBody, ListResponse } from './index.js';
+import type { ListUsersBody, ListUsersResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.list
- * @param {FastifyRequest<{ Body: ListBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>} reply
+ * @param {FastifyRequest<{ Body: ListUsersBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<ListUsersResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {UnauthorizedError | UserListError}
  */
 export const list = async (
-  req: FastifyRequest<{ Body: ListBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
+  req: FastifyRequest<{ Body: ListUsersBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<ListUsersResponse> }>,
 ): Promise<void> => {
   try {
     const actor = Access.role.require(req, ['admin', 'manager']);

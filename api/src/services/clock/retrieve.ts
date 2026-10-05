@@ -1,20 +1,20 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockNotFoundError, ClockRetrieveError } from '@/lib/errors/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockNotFoundError, ClockRetrieveError } from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
-import type { RetrieveParams, RetrieveResponse } from './index.js';
+import type { RetrieveClockParams, RetrieveClockResponse } from './index.js';
 
 /**
  * @route clock.service.retrieve
- * @param {RetrieveParams} params
- * @returns {Promise<RetrieveResponse>}
+ * @param {RetrieveClockParams} params
+ * @returns {Promise<RetrieveClockResponse>}
  * @throws {ClockNotFoundError | ClockRetrieveError}
  */
-export const retrieve = async (params: RetrieveParams): Promise<RetrieveResponse> => {
+export const retrieve = async (params: RetrieveClockParams): Promise<RetrieveClockResponse> => {
   try {
     const { id } = params;
     const [row] = await Tracing.span('db.clock.retrieve', () =>

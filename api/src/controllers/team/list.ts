@@ -1,25 +1,25 @@
-import { TeamListError } from '@/lib/errors/domains/team.js';
-import { TeamListed } from '@/lib/events/domains/team.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { teamService } from '@/services/team/index.js';
+import { TeamListError } from '@/lib/errors/index.js';
+import { TeamListed } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { teamService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
-import type { ListBody, ListResponse } from './index.js';
+import type { ListTeamsBody, ListTeamsResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route team.controller.list
- * @param {FastifyRequest<{ Body: ListBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>} reply
+ * @param {FastifyRequest<{ Body: ListTeamsBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<ListTeamsResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {TeamListError | UnauthorizedError}
  */
 export const list = async (
-  req: FastifyRequest<{ Body: ListBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
+  req: FastifyRequest<{ Body: ListTeamsBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<ListTeamsResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);

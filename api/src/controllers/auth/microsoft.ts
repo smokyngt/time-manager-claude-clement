@@ -1,7 +1,7 @@
 import { Cookies } from '@/lib/auth/cookies.js';
-import { AuthMicrosoftError } from '@/lib/errors/domains/auth.js';
-import { AuthMicrosoftStarted } from '@/lib/events/domains/auth.js';
-import { authService } from '@/services/auth/index.js';
+import { AuthMicrosoftError } from '@/lib/errors/index.js';
+import { AuthMicrosoftStarted } from '@/lib/events/index.js';
+import { authService } from '@/services/index.js';
 
 import type { FastifyReply, FastifyRequest } from 'fastify';
 

@@ -5,7 +5,7 @@ import { teamMemberService } from '@/services/team-member/index.js';
 
 import { Fake } from '../../../support/fake.js';
 
-import type { RemoveBody, RemoveParams, RemoveResponse } from '@/controllers/team-member/index.js';
+import type { RemoveTeamMembersBody, RemoveTeamMembersParams, RemoveTeamMembersResponse } from '@/controllers/team-member/index.js';
 import type { TeamRow } from '@/db/schema/team.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
@@ -52,10 +52,10 @@ afterEach(() => {
 
 const actorOf = (role: Actor['role'], id = MANAGER_ID): Actor => ({ id, role, team_ids: [] });
 
-const run = async (actor: Actor | undefined, body: RemoveBody) => {
-  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<RemoveResponse> }>>();
+const run = async (actor: Actor | undefined, body: RemoveTeamMembersBody) => {
+  const reply = Fake.reply<FastifyReply<{ Reply: ReplyEnvelope<RemoveTeamMembersResponse> }>>();
   const req = Fake.request({ actor, body, params: { id: TEAM_ID } });
-  await remove(req as FastifyRequest<{ Body: RemoveBody; Params: RemoveParams }>, reply);
+  await remove(req as FastifyRequest<{ Body: RemoveTeamMembersBody; Params: RemoveTeamMembersParams }>, reply);
 
   return reply;
 };

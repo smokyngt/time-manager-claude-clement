@@ -1,27 +1,27 @@
-import { InternalError, ValidationError } from '@/lib/errors/base/core.js';
-import { AppError } from '@/lib/errors/base/registry.js';
-import { ClockDeleteError, ClockNotFoundError } from '@/lib/errors/domains/clock.js';
-import { ClockDeleted } from '@/lib/events/domains/clock.js';
-import { RequestLimits } from '@/schemas/common.js';
-import { clockService } from '@/services/clock/index.js';
+import { InternalError, ValidationError } from '@/lib/errors/index.js';
+import { AppError } from '@/lib/errors/index.js';
+import { ClockDeleteError, ClockNotFoundError } from '@/lib/errors/index.js';
+import { ClockDeleted } from '@/lib/events/index.js';
+import { RequestLimits } from '@/schemas/index.js';
+import { clockService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
-import type { Clock } from '@/types/entities/clock.js';
+import type { BulkFailure, DeleteClocksBody, DeleteClocksResponse } from './index.js';
+import type { Clock } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route clock.controller.delete
- * @param {FastifyRequest<{ Body: DeleteBody }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>} reply
+ * @param {FastifyRequest<{ Body: DeleteClocksBody }>} req
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<DeleteClocksResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {ClockDeleteError | UnauthorizedError | ValidationError}
  */
 export const remove = async (
-  req: FastifyRequest<{ Body: DeleteBody }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
+  req: FastifyRequest<{ Body: DeleteClocksBody }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteClocksResponse> }>,
 ): Promise<void> => {
   try {
     const actor = Access.role.require(req, ['admin', 'manager']);
@@ -68,7 +68,7 @@ export const remove = async (
         }
       }),
     );
-    const result: DeleteResponse = { deleted, failed, success: failed.length === 0 };
+    const result: DeleteClocksResponse = { deleted, failed, success: failed.length === 0 };
     await Reply.send(
       req,
       reply,

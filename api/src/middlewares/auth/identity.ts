@@ -1,10 +1,10 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { TokenAuthenticationError } from '@/lib/errors/base/core.js';
+import { users } from '@/db/schema/index.js';
+import { TokenAuthenticationError } from '@/lib/errors/index.js';
 
-import type { Actor } from '@/types/entities/actor.js';
+import type { Actor } from '@/types/entities/index.js';
 
 export class Identity {
   /**

@@ -1,21 +1,21 @@
 import { Cookies } from '@/lib/auth/cookies.js';
-import { AuthLoggedOut } from '@/lib/events/domains/auth.js';
-import { authService } from '@/services/auth/index.js';
+import { AuthLoggedOut } from '@/lib/events/index.js';
+import { authService } from '@/services/index.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { LogoutResponse } from './index.js';
+import type { AuthLogoutResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.logout
  * @param {FastifyRequest} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<LogoutResponse> }>} reply
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<AuthLogoutResponse> }>} reply
  * @returns {Promise<void>}
  */
 export const logout = async (
   req: FastifyRequest,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<LogoutResponse> }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<AuthLogoutResponse> }>,
 ): Promise<void> => {
   const result = await authService.logout({ token: req.cookies[Cookies.refresh] }).catch(
     (error: unknown) => {

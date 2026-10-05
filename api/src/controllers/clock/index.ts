@@ -7,13 +7,9 @@ import { clockOut } from './out.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { ClockCreateData, ClockUpdateData } from '@/services/clock/index.js';
-import type { Clock } from '@/types/entities/clock.js';
-
-export type BulkFailure = {
-  code: string;
-  id: string;
-};
+import type { BulkFailure } from '@/types/entities/index.js';
+import type { ClockCreateData, ClockUpdateData } from '@/services/index.js';
+import type { Clock } from '@/types/entities/index.js';
 
 export type ClockInBody = {
   note?: string;
@@ -27,23 +23,23 @@ export type ClockResponse = {
   clock: Clock;
 };
 
-export type CreateBody = ClockCreateData;
+export type CreateClockBody = ClockCreateData;
 
-export type CurrentResponse = {
+export type CurrentClockResponse = {
   clock: Clock | null;
 };
 
-export type DeleteBody = {
+export type DeleteClocksBody = {
   ids: string[];
 };
 
-export type DeleteResponse = {
+export type DeleteClocksResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
 };
 
-export type ListBody = {
+export type ListClocksBody = {
   cursor?: string;
   from?: number | string;
   limit?: number;
@@ -53,29 +49,29 @@ export type ListBody = {
   user_ids?: string[];
 };
 
-export type ListResponse = {
+export type ListClocksResponse = {
   items: Clock[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RetrieveParams = {
+export type RetrieveClockParams = {
   id: string;
 };
 
-export type UpdateBody = {
+export type UpdateClocksBody = {
   data: ClockUpdateData;
   ids: string[];
 };
 
-export type UpdateResponse = {
+export type UpdateClocksResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
 };
 
-class ClockController {
+export class ClockController {
   public clockIn = clockIn;
   public clockOut = clockOut;
   public create = create;
@@ -86,4 +82,4 @@ class ClockController {
   public update = update;
 }
 
-export const clock = new ClockController();
+export const clockController = new ClockController();

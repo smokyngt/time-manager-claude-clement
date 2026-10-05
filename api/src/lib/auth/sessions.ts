@@ -1,7 +1,7 @@
 import { and, eq, isNotNull, isNull, lt, or } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { refreshTokens } from '@/db/schema/refresh-token.js';
+import { refreshTokens } from '@/db/schema/index.js';
 
 const RETENTION = 30 * 86_400_000;
 

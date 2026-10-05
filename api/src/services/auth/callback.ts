@@ -2,7 +2,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { decodeJwt, jwtVerify } from 'jose';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
+import { users } from '@/db/schema/index.js';
 import { Microsoft } from '@/lib/auth/microsoft.js';
 import { Tokens } from '@/lib/auth/tokens.js';
 import {
@@ -10,22 +10,22 @@ import {
   AuthMicrosoftRejectedError,
   AuthMicrosoftUnavailableError,
   AuthMicrosoftUnknownUserError,
-} from '@/lib/errors/domains/auth.js';
-import { AuthLoggedIn, AuthMicrosoftLinked } from '@/lib/events/domains/auth.js';
-import { logService } from '@/services/log/index.js';
+} from '@/lib/errors/index.js';
+import { AuthLoggedIn, AuthMicrosoftLinked } from '@/lib/events/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Digest } from '@/utils/crypto/digest.js';
 
 import { Session } from './session.js';
 
-import type { CallbackParams, CallbackResponse } from './index.js';
+import type { AuthCallbackParams, AuthCallbackResponse } from './index.js';
 
 /**
  * @route auth.service.callback
- * @param {CallbackParams} params
- * @returns {Promise<CallbackResponse>}
+ * @param {AuthCallbackParams} params
+ * @returns {Promise<AuthCallbackResponse>}
  * @throws {AuthMicrosoftError | AuthMicrosoftRejectedError | AuthMicrosoftUnavailableError | AuthMicrosoftUnknownUserError}
  */
-export const callback = async (params: CallbackParams): Promise<CallbackResponse> => {
+export const callback = async (params: AuthCallbackParams): Promise<AuthCallbackResponse> => {
   try {
     const config = Microsoft.config();
     if (config === undefined) {
@@ -100,14 +100,14 @@ export const callback = async (params: CallbackParams): Promise<CallbackResponse
         .returning();
       if (updated === undefined) throw rejected();
       linked = updated;
-      await logService.create({
+      await Audit.record({
         actor: row,
         event: AuthMicrosoftLinked.code,
         metadata: { user_id: row.id },
       });
     }
     const session = await Session.issue({ user: linked });
-    await logService.create({
+    await Audit.record({
       actor: linked,
       event: AuthLoggedIn.code,
       metadata: { method: 'microsoft', user_id: linked.id },

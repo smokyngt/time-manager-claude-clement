@@ -1,0 +1,35 @@
+api:
+  replicas: 3
+  resources:
+    requests:
+      cpu: 250m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+
+web:
+  replicas: 3
+
+autoscaling:
+  api:
+    minReplicas: 3
+    maxReplicas: 12
+  web:
+    minReplicas: 3
+    maxReplicas: 6
+
+podDisruptionBudget:
+  api:
+    minAvailable: 2
+  web:
+    minAvailable: 2
+
+backup:
+  s3Uri: s3://time-manager-backups/postgres-dumps
+  ageRecipient: ""
+
+networkPolicy:
+  kubeApiCidrs:
+    - 10.0.0.0/8
+  s3Cidrs:
+    - 0.0.0.0/0

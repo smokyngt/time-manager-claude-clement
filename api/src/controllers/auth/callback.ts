@@ -4,22 +4,22 @@ import {
   AuthMicrosoftError,
   AuthMicrosoftRejectedError,
   AuthMicrosoftUnavailableError,
-} from '@/lib/errors/domains/auth.js';
-import { AuthLoggedIn } from '@/lib/events/domains/auth.js';
-import { authService } from '@/services/auth/index.js';
+} from '@/lib/errors/index.js';
+import { AuthLoggedIn } from '@/lib/events/index.js';
+import { authService } from '@/services/index.js';
 
-import type { CallbackQuery } from './index.js';
+import type { AuthCallbackQuery } from './index.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route auth.controller.callback
- * @param {FastifyRequest<{ Querystring: CallbackQuery }>} req
+ * @param {FastifyRequest<{ Querystring: AuthCallbackQuery }>} req
  * @param {FastifyReply} reply
  * @returns {Promise<void>}
  * @throws {AuthMicrosoftUnavailableError}
  */
 export const callback = async (
-  req: FastifyRequest<{ Querystring: CallbackQuery }>,
+  req: FastifyRequest<{ Querystring: AuthCallbackQuery }>,
   reply: FastifyReply,
 ): Promise<void> => {
   const web = Config.web();

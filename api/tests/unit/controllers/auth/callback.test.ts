@@ -4,7 +4,7 @@ import { Fake } from '../../../support/fake.js';
 import { caught, OTHER_ID, userOf } from '../../services/user/support.js';
 import { cookieReply, installAuthService } from './support.js';
 
-import type { CallbackQuery } from '@/controllers/auth/index.js';
+import type { AuthCallbackQuery } from '@/controllers/auth/index.js';
 import type { FastifyRequest } from 'fastify';
 
 const harness = await installAuthService();
@@ -20,9 +20,9 @@ afterEach(() => {
 
 const { callback } = await import('@/controllers/auth/callback.js');
 
-type Req = FastifyRequest<{ Querystring: CallbackQuery }>;
+type Req = FastifyRequest<{ Querystring: AuthCallbackQuery }>;
 
-const run = async (query: CallbackQuery) => {
+const run = async (query: AuthCallbackQuery) => {
   const { fake: reply, reply: target } = cookieReply();
   const req = Object.assign(Fake.request({ query }), { cookies: { tm_oauth: 'state-cookie' } });
   await callback(req as Req, target);

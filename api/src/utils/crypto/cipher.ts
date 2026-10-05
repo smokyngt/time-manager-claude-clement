@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 
-import { CryptoDecryptFailedError } from '@/lib/errors/domains/crypto.js';
+import { CryptoDecryptFailedError } from '@/lib/errors/index.js';
 
 import { Keys } from './keys.js';
 

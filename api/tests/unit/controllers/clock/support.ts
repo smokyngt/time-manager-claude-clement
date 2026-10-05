@@ -2,7 +2,7 @@ import { mock } from 'bun:test';
 
 import { ClockNotFoundError } from '@/lib/errors/domains/clock.js';
 
-import type { ClockCreateData, ClockUpdateData, ListParams } from '@/services/clock/index.js';
+import type { ClockCreateData, ClockUpdateData, ListClocksParams } from '@/services/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { Clock } from '@/types/entities/clock.js';
 
@@ -46,7 +46,7 @@ export const installClockService = async () => {
 
       return Promise.resolve({ success: true });
     }),
-    list: mock((_params: ListParams) =>
+    list: mock((_params: ListClocksParams) =>
       Promise.resolve({ items: [] as Clock[], more: false, next: null, total: 0 }),
     ),
     retrieve: mock((params: { id: string }) =>

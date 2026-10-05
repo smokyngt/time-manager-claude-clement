@@ -1,23 +1,23 @@
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
-import { UserNotFoundError, UserRestoreError } from '@/lib/errors/domains/user.js';
-import { UserRestored } from '@/lib/events/domains/user.js';
-import { userService } from '@/services/user/index.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
+import { UserNotFoundError, UserRestoreError } from '@/lib/errors/index.js';
+import { UserRestored } from '@/lib/events/index.js';
+import { userService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 
-import type { RestoreParams, UserResponse } from './index.js';
+import type { RestoreUserParams, UserResponse } from './index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.restore
- * @param {FastifyRequest<{ Params: RestoreParams }>} req
+ * @param {FastifyRequest<{ Params: RestoreUserParams }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>} reply
  * @returns {Promise<void>}
  * @throws {UnauthorizedError | UserRestoreError | UserNotFoundError}
  */
 export const restore = async (
-  req: FastifyRequest<{ Params: RestoreParams }>,
+  req: FastifyRequest<{ Params: RestoreUserParams }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>,
 ): Promise<void> => {
   try {

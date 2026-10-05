@@ -139,10 +139,9 @@ describe('Config.proxy', () => {
   });
 
   it('parses booleans, hop counts and cidr lists', () => {
-    const cases: [string, boolean | number | string[]][] = [
+    const cases: [string, boolean | string[]][] = [
       ['true', true],
       ['false', false],
-      ['2', 2],
       ['10.0.0.0/8, 172.16.0.0/12', ['10.0.0.0/8', '172.16.0.0/12']],
       ['127.0.0.1', ['127.0.0.1']],
     ];
@@ -150,6 +149,14 @@ describe('Config.proxy', () => {
       process.env['TRUST_PROXY'] = raw;
       expect(Config.proxy()).toEqual(expected);
     }
+  });
+
+  it('turns a hop count into a trust function', () => {
+    process.env['TRUST_PROXY'] = '2';
+    const trust = Config.proxy();
+    expect(typeof trust).toBe('function');
+    if (typeof trust !== 'function') return;
+    expect([trust('10.0.0.1', 0), trust('10.0.0.2', 1), trust('10.0.0.3', 2)]).toEqual([true, true, false]);
   });
 });
 

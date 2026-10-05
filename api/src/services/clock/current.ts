@@ -1,20 +1,20 @@
 import { and, eq, isNull } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { ClockCurrentError } from '@/lib/errors/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockCurrentError } from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
-import type { CurrentParams, CurrentResponse } from './index.js';
+import type { CurrentClockParams, CurrentClockResponse } from './index.js';
 
 /**
  * @route clock.service.current
- * @param {CurrentParams} params
- * @returns {Promise<CurrentResponse>}
+ * @param {CurrentClockParams} params
+ * @returns {Promise<CurrentClockResponse>}
  * @throws {ClockCurrentError}
  */
-export const current = async (params: CurrentParams): Promise<CurrentResponse> => {
+export const current = async (params: CurrentClockParams): Promise<CurrentClockResponse> => {
   try {
     const { actor } = params;
     const [row] = await Tracing.span('db.clock.current', () =>

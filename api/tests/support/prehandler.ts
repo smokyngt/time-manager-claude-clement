@@ -38,8 +38,8 @@ export class Prehandler {
    * @returns {Promise<FastifyInstance>}
    */
   public static async app(router: FastifyPluginAsync, prefix: string): Promise<FastifyInstance> {
-    const { build } = await import('@/app.v2.js');
-    const app = await build({ logger: false });
+    const { configure } = await import('@/app.js');
+    const app = await configure({ logger: false });
     await app.register(router, { prefix });
     await app.ready();
 

@@ -1,7 +1,7 @@
 import { Cipher } from '@/utils/crypto/cipher.js';
 
-import type { ClockRow } from '@/db/schema/clock.js';
-import type { Clock } from '@/types/entities/clock.js';
+import type { ClockRow } from '@/db/schema/index.js';
+import type { Clock } from '@/types/entities/index.js';
 
 export class ClockMapper {
   /**

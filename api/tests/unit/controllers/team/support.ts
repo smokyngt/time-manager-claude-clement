@@ -4,7 +4,7 @@ import { TeamNotFoundError } from '@/lib/errors/domains/team.js';
 
 import { teamOf } from '../../services/team/support.js';
 
-import type { ListParams, TeamCreateData, TeamUpdateData } from '@/services/team/index.js';
+import type { ListTeamsParams, TeamCreateData, TeamUpdateData } from '@/services/team/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { Team } from '@/types/entities/team.js';
 
@@ -31,7 +31,7 @@ export const installTeamService = async () => {
 
       return Promise.resolve({ success: true });
     }),
-    list: mock((_params: ListParams) =>
+    list: mock((_params: ListTeamsParams) =>
       Promise.resolve({ items: [] as Team[], more: false, next: null, total: 0 }),
     ),
     restore: mock((params: { actor: Actor; id: string }) =>

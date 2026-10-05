@@ -1,12 +1,12 @@
 import { and, eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers } from '@/db/schema/team.js';
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
+import { teamMembers } from '@/db/schema/index.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
 
-import type { TeamRow } from '@/db/schema/team.js';
-import type { Actor } from '@/types/entities/actor.js';
-import type { Role } from '@/types/entities/user.js';
+import type { TeamRow } from '@/db/schema/index.js';
+import type { Actor } from '@/types/entities/index.js';
+import type { Role } from '@/types/entities/index.js';
 
 export class TeamMemberAccess {
   /**

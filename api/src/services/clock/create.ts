@@ -1,27 +1,27 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { clocks } from '@/db/schema/clock.js';
-import { users } from '@/db/schema/user.js';
-import { ClockCreateError } from '@/lib/errors/domains/clock.js';
-import { UserNotFoundError } from '@/lib/errors/domains/user.js';
-import { ClockCreated } from '@/lib/events/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { users } from '@/db/schema/index.js';
+import { ClockCreateError } from '@/lib/errors/index.js';
+import { UserNotFoundError } from '@/lib/errors/index.js';
+import { ClockCreated } from '@/lib/events/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
-import { logService } from '@/services/log/index.js';
+import { Audit } from '@/services/log/audit.js';
 import { Cipher } from '@/utils/crypto/cipher.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
 import { ClockRules } from './helpers/rules.js';
 
-import type { CreateParams, CreateResponse } from './index.js';
+import type { CreateClockParams, CreateClockResponse } from './index.js';
 
 /**
  * @route clock.service.create
- * @param {CreateParams} params
- * @returns {Promise<CreateResponse>}
+ * @param {CreateClockParams} params
+ * @returns {Promise<CreateClockResponse>}
  * @throws {ClockCreateError | ClockInvalidError | ClockOverlapError | UserNotFoundError}
  */
-export const create = async (params: CreateParams): Promise<CreateResponse> => {
+export const create = async (params: CreateClockParams): Promise<CreateClockResponse> => {
   try {
     const { actor, data } = params;
     const { clocked_in_at: clockedIn, clocked_out_at: clockedOut, note, user_id: userId } = data;
@@ -46,7 +46,7 @@ export const create = async (params: CreateParams): Promise<CreateResponse> => {
         .returning(),
     );
     if (row === undefined) throw ClockCreateError({ metadata: { route: 'clock.service.create' } });
-    await logService.create({
+    await Audit.record({
       actor,
       event: ClockCreated.code,
       metadata: { clock_id: row.id, user_id: userId },

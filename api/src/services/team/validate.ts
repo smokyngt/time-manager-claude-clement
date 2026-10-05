@@ -1,8 +1,8 @@
 import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { users } from '@/db/schema/user.js';
-import { TeamManagerInvalidError, TeamScheduleInvalidError } from '@/lib/errors/domains/team.js';
+import { users } from '@/db/schema/index.js';
+import { TeamManagerInvalidError, TeamScheduleInvalidError } from '@/lib/errors/index.js';
 
 export class TeamValidate {
   /**

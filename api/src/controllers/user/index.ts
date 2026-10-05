@@ -6,31 +6,27 @@ import { restore } from './restore.js';
 import { retrieve } from './retrieve.js';
 import { update } from './update.js';
 
-import type { UserCreateData, UserUpdateData } from '@/services/user/index.js';
-import type { Role, User } from '@/types/entities/user.js';
+import type { BulkFailure } from '@/types/entities/index.js';
+import type { UserCreateData, UserUpdateData } from '@/services/index.js';
+import type { Role, User } from '@/types/entities/index.js';
 
-export type ArchiveParams = {
+export type ArchiveUserParams = {
   id: string;
 };
 
-export type BulkFailure = {
-  code: string;
-  id: string;
-};
+export type CreateUserBody = UserCreateData;
 
-export type CreateBody = UserCreateData;
-
-export type DeleteBody = {
+export type DeleteUsersBody = {
   ids: string[];
 };
 
-export type DeleteResponse = {
+export type DeleteUsersResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
 };
 
-export type ListBody = {
+export type ListUsersBody = {
   archived?: boolean;
   created_after?: number | string;
   created_before?: number | string;
@@ -42,27 +38,27 @@ export type ListBody = {
   team_id?: string;
 };
 
-export type ListResponse = {
+export type ListUsersResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
 };
 
-export type RestoreParams = {
+export type RestoreUserParams = {
   id: string;
 };
 
-export type RetrieveParams = {
+export type RetrieveUserParams = {
   id: string;
 };
 
-export type UpdateBody = {
+export type UpdateUsersBody = {
   data: UserUpdateData;
   ids: string[];
 };
 
-export type UpdateResponse = {
+export type UpdateUsersResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
@@ -72,7 +68,7 @@ export type UserResponse = {
   user: User;
 };
 
-class UserController {
+export class UserController {
   public archive = archive;
   public create = create;
   public delete = remove;
@@ -82,4 +78,4 @@ class UserController {
   public update = update;
 }
 
-export const user = new UserController();
+export const userController = new UserController();

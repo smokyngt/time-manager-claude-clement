@@ -1,7 +1,7 @@
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
 import { Membership } from '@/utils/membership.js';
 
-import type { Actor } from '@/types/entities/actor.js';
+import type { Actor } from '@/types/entities/index.js';
 
 export type ClockAction = 'create' | 'delete' | 'read' | 'update';
 

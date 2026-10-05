@@ -1,21 +1,21 @@
 import { eq, inArray } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
-import { teamMembers } from '@/db/schema/team.js';
-import { users } from '@/db/schema/user.js';
-import { TeamMemberListError } from '@/lib/errors/domains/team-member.js';
+import { teamMembers } from '@/db/schema/index.js';
+import { users } from '@/db/schema/index.js';
+import { TeamMemberListError } from '@/lib/errors/index.js';
 import { Cursor } from '@/utils/http/cursor.js';
 import { UserMapper } from '@/utils/mappers/user.js';
 
-import type { ListParams, ListResponse } from './index.js';
+import type { ListTeamMembersParams, ListTeamMembersResponse } from './index.js';
 
 /**
  * @route team.member.service.list
- * @param {ListParams} params
- * @returns {Promise<ListResponse>}
+ * @param {ListTeamMembersParams} params
+ * @returns {Promise<ListTeamMembersResponse>}
  * @throws {TeamMemberListError}
  */
-export const list = async (params: ListParams): Promise<ListResponse> => {
+export const list = async (params: ListTeamMembersParams): Promise<ListTeamMembersResponse> => {
   try {
     const { cursor, id, limit, order } = params;
     const members = db

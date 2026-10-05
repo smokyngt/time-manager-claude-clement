@@ -1,25 +1,25 @@
-import { UnauthorizedError } from '@/lib/errors/base/core.js';
-import { ReportTeamError, ReportTeamNotFoundError } from '@/lib/errors/domains/report.js';
-import { ReportTeamGenerated } from '@/lib/events/domains/report.js';
-import { reportService } from '@/services/report/index.js';
+import { UnauthorizedError } from '@/lib/errors/index.js';
+import { ReportTeamError, ReportTeamNotFoundError } from '@/lib/errors/index.js';
+import { ReportTeamGenerated } from '@/lib/events/index.js';
+import { reportService } from '@/services/index.js';
 import { Access } from '@/utils/auth/authz.js';
 import { Reply } from '@/utils/http/reply.js';
 import { Membership } from '@/utils/membership.js';
 
-import type { TeamBody } from './index.js';
-import type { TeamReport } from '@/types/entities/report.js';
+import type { ReportTeamBody } from './index.js';
+import type { TeamReport } from '@/types/entities/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route report.controller.team
- * @param {FastifyRequest<{ Body: TeamBody }>} req
+ * @param {FastifyRequest<{ Body: ReportTeamBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<{ report: TeamReport }> }>} reply
  * @returns {Promise<void>}
  * @throws {ReportTeamError | ReportTeamNotFoundError | UnauthorizedError}
  */
 export const team = async (
-  req: FastifyRequest<{ Body: TeamBody }>,
+  req: FastifyRequest<{ Body: ReportTeamBody }>,
   reply: FastifyReply<{ Reply: ReplyEnvelope<{ report: TeamReport }> }>,
 ): Promise<void> => {
   try {

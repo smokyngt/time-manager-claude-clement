@@ -1,8 +1,8 @@
-import { clock } from '@/controllers/clock/index.js';
+import { clock } from '@/controllers/index.js';
 import { auth } from '@/middlewares/auth/index.js';
-import { ClockOutBodySchema, ClockResponses } from '@/schemas/clock.js';
+import { ClockOutBodySchema, ClockResponses } from '@/schemas/index.js';
 
-import type { ClockOutBody, ClockResponse } from '@/controllers/clock/index.js';
+import type { ClockOutBody, ClockResponse } from '@/controllers/index.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 

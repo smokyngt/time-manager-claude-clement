@@ -1,20 +1,20 @@
 import { and, gte, inArray, isNotNull, isNull, lte } from 'drizzle-orm';
 
-import { clocks } from '@/db/schema/clock.js';
-import { ClockListError } from '@/lib/errors/domains/clock.js';
+import { clocks } from '@/db/schema/index.js';
+import { ClockListError } from '@/lib/errors/index.js';
 import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Cursor } from '@/utils/http/cursor.js';
 import { ClockMapper } from '@/utils/mappers/clock.js';
 
-import type { ListParams, ListResponse } from './index.js';
+import type { ListClocksParams, ListClocksResponse } from './index.js';
 
 /**
  * @route clock.service.list
- * @param {ListParams} params
- * @returns {Promise<ListResponse>}
+ * @param {ListClocksParams} params
+ * @returns {Promise<ListClocksResponse>}
  * @throws {ClockListError}
  */
-export const list = async (params: ListParams): Promise<ListResponse> => {
+export const list = async (params: ListClocksParams): Promise<ListClocksResponse> => {
   try {
     const { cursor, filters, limit, order } = params;
     const { from, open, to, user_ids: userIds } = filters;
