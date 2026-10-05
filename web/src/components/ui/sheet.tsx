@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react'
 
 import { Dialog as SheetPrimitive } from 'radix-ui'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 export const Sheet = SheetPrimitive.Root
 export const SheetTitle = SheetPrimitive.Title

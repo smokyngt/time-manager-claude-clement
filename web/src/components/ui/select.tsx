@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import { CheckIcon, ChevronDownIcon } from 'lucide-react'
 import { Select as SelectPrimitive } from 'radix-ui'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 export const Select = SelectPrimitive.Root
 export const SelectValue = SelectPrimitive.Value

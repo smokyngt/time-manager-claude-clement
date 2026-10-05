@@ -32,6 +32,11 @@ export const authenticate = async (config: VaultConfig): Promise<void> => {
         `token rejected by Vault (HTTP ${error.status}): check that VAULT_TOKEN is valid, unexpired and attached to the app policy`,
         { cause: error, status: error.status },
       );
+    if (error instanceof VaultError && error.status === 503)
+      throw new VaultError('Vault is sealed or unavailable (HTTP 503)', {
+        cause: error,
+        status: 503,
+      });
     throw error;
   }
 };

@@ -63,6 +63,11 @@ describe('initialize', () => {
     expect(ctx.mocks.read).not.toHaveBeenCalled();
   });
 
+  it('reports a sealed Vault answering 503 to the token lookup', async () => {
+    stub(ctx, 'lookupSelf', () => Promise.reject(rejection(503)));
+    expect((await failure(initialize(ctx.config))).message).toContain('Vault is sealed or unavailable');
+  });
+
   it('refuses an uninitialized Vault', async () => {
     stub(ctx, 'health', () => Promise.resolve(({ ...healthy, initialized: false })));
     expect((await failure(initialize(ctx.config))).message).toContain('Vault is not initialized');

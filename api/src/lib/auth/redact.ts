@@ -11,19 +11,20 @@ export type RedactedRequest = {
 export class Redact {
   /**
    * @route redact.request
-   * @param {{ headers?: { host?: string }; method: string; socket?: { remoteAddress?: string; remotePort?: number }; url?: string }} req
+   * @param {{ hostname?: string; ip?: string; method: string; socket?: { remotePort?: number }; url?: string }} req
    * @returns {RedactedRequest}
    */
   public static request(req: {
-    headers?: { host?: string };
+    hostname?: string;
+    ip?: string;
     method: string;
-    socket?: { remoteAddress?: string; remotePort?: number };
+    socket?: { remotePort?: number };
     url?: string;
   }): RedactedRequest {
     return {
-      host: req.headers?.host,
+      host: req.hostname,
       method: req.method,
-      remoteAddress: req.socket?.remoteAddress,
+      remoteAddress: req.ip,
       remotePort: req.socket?.remotePort,
       url: Redact.url(req.url),
     };

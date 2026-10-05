@@ -22,9 +22,10 @@ describe('Redact.request', () => {
   it('serializes a request with the redacted url', () => {
     expect(
       Redact.request({
-        headers: { host: 'api' },
+        hostname: 'api',
+        ip: '10.0.0.1',
         method: 'GET',
-        socket: { remoteAddress: '10.0.0.1', remotePort: 1 },
+        socket: { remotePort: 1 },
         url: '/cb?code=abc&state=xyz',
       }),
     ).toEqual({

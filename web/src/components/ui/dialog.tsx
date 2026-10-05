@@ -3,7 +3,7 @@ import type { ComponentProps } from 'react'
 import { XIcon } from 'lucide-react'
 import { Dialog as DialogPrimitive } from 'radix-ui'
 
-import { cn } from '@/lib/utils'
+import { cn } from '@/lib/cn'
 
 export const Dialog = DialogPrimitive.Root
 export const DialogTrigger = DialogPrimitive.Trigger

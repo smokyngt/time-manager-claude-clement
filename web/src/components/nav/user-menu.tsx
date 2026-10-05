@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { getInitials } from '@/lib/utils'
+import { Initials } from '@/lib/initials'
 import { useAuth } from '@/providers/use-auth'
 import { useToastActions } from '@/providers/use-toast-actions'
 
@@ -42,7 +42,7 @@ export function UserMenu() {
         className="flex items-center gap-2.5 rounded-full p-0.5 outline-none focus-visible:ring-[3px] focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:rounded-md sm:py-1 sm:pr-2 sm:pl-1 sm:hover:bg-accent pointer-coarse:min-h-11 pointer-coarse:min-w-11 pointer-coarse:justify-center"
       >
         <Avatar>
-          <AvatarFallback>{getInitials(user.firstName, user.lastName)}</AvatarFallback>
+          <AvatarFallback>{Initials.of(user.firstName, user.lastName)}</AvatarFallback>
         </Avatar>
         <span className="hidden text-left sm:block">
           <span className="block text-sm leading-tight font-medium">{fullName}</span>

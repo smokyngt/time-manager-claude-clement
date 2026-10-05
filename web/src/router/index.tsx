@@ -37,19 +37,19 @@ export const routes: RouteObject[] = [
               },
               {
                 element: Lazy.element(() =>
-                  import('@/features/clocks/pages/clocks-page').then(pick('ClocksPage')),
+                  import('@/features/clocks/pages').then(pick('ClocksPage')),
                 ),
                 path: 'clocks',
               },
               {
                 element: Lazy.element(() =>
-                  import('@/features/teams/pages/teams-page').then(pick('TeamsPage')),
+                  import('@/features/teams/pages').then(pick('TeamsPage')),
                 ),
                 path: 'teams',
               },
               {
                 element: Lazy.element(() =>
-                  import('@/features/teams/pages/team-page').then(pick('TeamPage')),
+                  import('@/features/teams/pages').then(pick('TeamPage')),
                 ),
                 path: 'teams/:teamId',
               },
