@@ -17,7 +17,10 @@ export class TeamMembersResource {
   }
 
   /** Lists the members of a team. */
-  public list(teamId: string, params: TeamMemberListParams = {}): Promise<ListResponse<TeamMember>> {
+  public list(
+    teamId: string,
+    params: TeamMemberListParams = {},
+  ): Promise<ListResponse<TeamMember>> {
     return this.http.post<ListResponse<TeamMember>>(`/v1/teams/${teamId}/members/list`, params);
   }
 

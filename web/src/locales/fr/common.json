@@ -1,0 +1,126 @@
+{
+  "app_name": "Time Manager",
+  "skip_to_content": "Aller au contenu",
+  "actions": {
+    "add": "Ajouter",
+    "apply": "Appliquer",
+    "archive": "Archiver",
+    "back": "Retour",
+    "cancel": "Annuler",
+    "clear": "Effacer",
+    "close": "Fermer",
+    "confirm": "Confirmer",
+    "create": "Créer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "more": "Plus d'actions",
+    "refresh": "Actualiser",
+    "remove": "Retirer",
+    "reset": "Réinitialiser",
+    "restore": "Restaurer",
+    "retry": "Réessayer",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "search": "Rechercher",
+    "view": "Voir"
+  },
+  "state": {
+    "loading": "Chargement",
+    "active": "Actif",
+    "archived": "Archivé",
+    "none": "Aucun",
+    "unknown": "Inconnu"
+  },
+  "roles": {
+    "admin": "Administrateur",
+    "employee": "Employé",
+    "manager": "Manager"
+  },
+  "empty": {
+    "title": "Rien pour le moment",
+    "description": "Il n'y a rien à afficher pour le moment."
+  },
+  "error": {
+    "title": "Un problème est survenu",
+    "description": "Le contenu n'a pas pu être chargé.",
+    "retry": "Réessayer"
+  },
+  "search": {
+    "label": "Rechercher",
+    "placeholder": "Rechercher…",
+    "clear": "Effacer la recherche",
+    "no_results": "Aucun résultat pour « {{query}} »."
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Page précédente",
+    "next": "Page suivante",
+    "page": "Page {{page}} sur {{pages}}",
+    "load_more": "Charger plus",
+    "summary_one": "{{count}} résultat",
+    "summary_other": "{{count}} résultats",
+    "per_page": "Lignes par page"
+  },
+  "bulk": {
+    "label": "Actions groupées",
+    "selected_one": "{{count}} élément sélectionné",
+    "selected_other": "{{count}} éléments sélectionnés",
+    "clear": "Effacer la sélection",
+    "select_all": "Tout sélectionner",
+    "select_item": "Sélectionner l'élément",
+    "announce_cleared": "Sélection effacée"
+  },
+  "confirm": {
+    "title": "Êtes-vous sûr ?",
+    "description": "Cette action est irréversible."
+  },
+  "undo": {
+    "action": "Annuler",
+    "redo": "Rétablir",
+    "undone": "Action annulée",
+    "redone": "Action rétablie",
+    "deleted_one": "{{count}} élément supprimé",
+    "deleted_other": "{{count}} éléments supprimés",
+    "nothing": "Rien à annuler"
+  },
+  "toast": {
+    "success": "Terminé",
+    "error": "Erreur"
+  },
+  "access_denied": {
+    "title": "Accès refusé",
+    "description": "Vous n'avez pas l'autorisation de consulter cette page.",
+    "back": "Retour au tableau de bord"
+  },
+  "not_found": {
+    "code": "404",
+    "title": "Page introuvable",
+    "description": "La page que vous cherchez n'existe pas.",
+    "back": "Retour au tableau de bord"
+  },
+  "view_mode": {
+    "label": "Mode d'affichage",
+    "grid": "Vue en grille",
+    "list": "Vue en liste"
+  },
+  "language": {
+    "label": "Langue",
+    "en": "English",
+    "fr": "Français",
+    "switch": "Changer de langue"
+  },
+  "theme": {
+    "label": "Changer le thème",
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "offline": {
+    "banner": "Vous êtes hors ligne. Les modifications ne peuvent pas être enregistrées avant la reconnexion."
+  },
+  "boundary": {
+    "title": "Un problème est survenu",
+    "description": "Une erreur inattendue s'est produite. Rechargez la page pour continuer.",
+    "reload": "Recharger la page"
+  }
+}

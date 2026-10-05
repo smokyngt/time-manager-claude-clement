@@ -1,0 +1,126 @@
+{
+  "app_name": "Time Manager",
+  "skip_to_content": "Skip to content",
+  "actions": {
+    "add": "Add",
+    "apply": "Apply",
+    "archive": "Archive",
+    "back": "Back",
+    "cancel": "Cancel",
+    "clear": "Clear",
+    "close": "Close",
+    "confirm": "Confirm",
+    "create": "Create",
+    "delete": "Delete",
+    "edit": "Edit",
+    "more": "More actions",
+    "refresh": "Refresh",
+    "remove": "Remove",
+    "reset": "Reset",
+    "restore": "Restore",
+    "retry": "Try again",
+    "save": "Save",
+    "saving": "Saving…",
+    "search": "Search",
+    "view": "View"
+  },
+  "state": {
+    "loading": "Loading",
+    "active": "Active",
+    "archived": "Archived",
+    "none": "None",
+    "unknown": "Unknown"
+  },
+  "roles": {
+    "admin": "Administrator",
+    "employee": "Employee",
+    "manager": "Manager"
+  },
+  "empty": {
+    "title": "Nothing here yet",
+    "description": "There is nothing to show for now."
+  },
+  "error": {
+    "title": "Something went wrong",
+    "description": "The content could not be loaded.",
+    "retry": "Try again"
+  },
+  "search": {
+    "label": "Search",
+    "placeholder": "Search…",
+    "clear": "Clear search",
+    "no_results": "No results for “{{query}}”."
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous page",
+    "next": "Next page",
+    "page": "Page {{page}} of {{pages}}",
+    "load_more": "Load more",
+    "summary_one": "{{count}} result",
+    "summary_other": "{{count}} results",
+    "per_page": "Rows per page"
+  },
+  "bulk": {
+    "label": "Bulk actions",
+    "selected_one": "{{count}} item selected",
+    "selected_other": "{{count}} items selected",
+    "clear": "Clear selection",
+    "select_all": "Select all",
+    "select_item": "Select item",
+    "announce_cleared": "Selection cleared"
+  },
+  "confirm": {
+    "title": "Are you sure?",
+    "description": "This action cannot be undone."
+  },
+  "undo": {
+    "action": "Undo",
+    "redo": "Redo",
+    "undone": "Action undone",
+    "redone": "Action redone",
+    "deleted_one": "{{count}} item deleted",
+    "deleted_other": "{{count}} items deleted",
+    "nothing": "Nothing to undo"
+  },
+  "toast": {
+    "success": "Done",
+    "error": "Error"
+  },
+  "access_denied": {
+    "title": "Access denied",
+    "description": "You do not have permission to view this page.",
+    "back": "Back to dashboard"
+  },
+  "not_found": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist.",
+    "back": "Back to dashboard"
+  },
+  "view_mode": {
+    "label": "Display mode",
+    "grid": "Grid view",
+    "list": "List view"
+  },
+  "language": {
+    "label": "Language",
+    "en": "English",
+    "fr": "Français",
+    "switch": "Change language"
+  },
+  "theme": {
+    "label": "Change theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "offline": {
+    "banner": "You are offline. Changes cannot be saved until you reconnect."
+  },
+  "boundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Reload the page to continue.",
+    "reload": "Reload the page"
+  }
+}

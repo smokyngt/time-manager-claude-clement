@@ -1,0 +1,13 @@
+{
+  "title": "Services",
+  "pages": [
+    "index",
+    "auth",
+    "clock",
+    "log",
+    "report",
+    "team",
+    "team-member",
+    "user"
+  ]
+}

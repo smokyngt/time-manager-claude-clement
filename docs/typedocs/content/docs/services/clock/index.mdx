@@ -1,0 +1,239 @@
+---
+title: "Clock"
+description: "Reference for the `services/clock` module: interfaces, variables."
+---
+
+## Interfaces
+
+### ClockCreateData
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` |
+| <a id="property-clocked_out_at"></a> `clocked_out_at` | `number` |
+| <a id="property-note"></a> `note?` | `string` |
+| <a id="property-user_id"></a> `user_id` | `string` |
+
+***
+
+### ClockFilters
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from"></a> `from?` | `number` |
+| <a id="property-open"></a> `open?` | `boolean` |
+| <a id="property-to"></a> `to?` | `number` |
+| <a id="property-user_ids"></a> `user_ids?` | `string`[] |
+
+***
+
+### ClockServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-create"></a> `create` | (`params`) => `Promise`\<[`CreateResponse`](#createresponse)\> |
+| <a id="property-current"></a> `current` | (`params`) => `Promise`\<[`CurrentResponse`](#currentresponse)\> |
+| <a id="property-delete"></a> `delete` | (`params`) => `Promise`\<[`DeleteResponse`](#deleteresponse)\> |
+| <a id="property-in"></a> `in` | (`params`) => `Promise`\<[`InResponse`](#inresponse)\> |
+| <a id="property-list"></a> `list` | (`params`) => `Promise`\<[`ListResponse`](#listresponse)\> |
+| <a id="property-out"></a> `out` | (`params`) => `Promise`\<[`OutResponse`](#outresponse)\> |
+| <a id="property-retrieve"></a> `retrieve` | (`params`) => `Promise`\<[`RetrieveResponse`](#retrieveresponse)\> |
+| <a id="property-update"></a> `update` | (`params`) => `Promise`\<[`UpdateResponse`](#updateresponse)\> |
+
+***
+
+### ClockUpdateData
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clocked_in_at-1"></a> `clocked_in_at?` | `number` |
+| <a id="property-clocked_out_at-1"></a> `clocked_out_at?` | `number` |
+| <a id="property-note-1"></a> `note?` | `string` \| `null` |
+
+***
+
+### CreateParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-data"></a> `data` | [`ClockCreateData`](#clockcreatedata) |
+
+***
+
+### CreateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) |
+
+***
+
+### CurrentParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+
+***
+
+### CurrentResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock-1"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) \| `null` |
+
+***
+
+### DeleteParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-2"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id"></a> `id` | `string` |
+
+***
+
+### DeleteResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### InParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-3"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-note-2"></a> `note?` | `string` |
+
+***
+
+### InResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock-2"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) |
+
+***
+
+### ListParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` |
+| <a id="property-filters"></a> `filters` | [`ClockFilters`](#clockfilters) |
+| <a id="property-limit"></a> `limit` | `number` |
+| <a id="property-order"></a> `order` | `"asc"` \| `"desc"` |
+
+***
+
+### ListResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-items"></a> `items` | [`Clock`](/docs/types/entities/clock#clock)[] |
+| <a id="property-more"></a> `more` | `boolean` |
+| <a id="property-next"></a> `next` | `string` \| `null` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### OutParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-4"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-note-3"></a> `note?` | `string` |
+
+***
+
+### OutResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock-3"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) |
+
+***
+
+### RetrieveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id-1"></a> `id` | `string` |
+
+***
+
+### RetrieveResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock-4"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) |
+
+***
+
+### UpdateParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-5"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-data-1"></a> `data` | [`ClockUpdateData`](#clockupdatedata) |
+| <a id="property-id-2"></a> `id` | `string` |
+
+***
+
+### UpdateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock-5"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) |
+
+## Variables
+
+### clockService
+
+```ts
+const clockService: ClockService;
+```

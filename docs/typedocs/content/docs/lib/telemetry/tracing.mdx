@@ -1,8 +1,11 @@
+---
+title: "Tracing"
+description: "Reference for the `lib/telemetry/tracing` module: classes."
+---
+
 ## Classes
 
 ### Tracing
-
-Defined in: [lib/telemetry/tracing.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L17)
 
 #### Constructors
 
@@ -20,27 +23,21 @@ new Tracing(): Tracing;
 
 ##### enabled()
 
+<div className="route-badge"><span className="route-label">Route</span><code>tracing.enabled</code></div>
+
 ```ts
 static enabled(): boolean;
 ```
 
-Defined in: [lib/telemetry/tracing.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L22)
-
 ###### Returns
 
 `boolean`
-
-###### Route
-
-tracing.enabled
 
 ##### span()
 
 ```ts
 static span<Result>(name, fn): Promise<Result>;
 ```
-
-Defined in: [lib/telemetry/tracing.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L32)
 
 ###### Type Parameters
 
@@ -50,47 +47,35 @@ Defined in: [lib/telemetry/tracing.ts:32](https://github.com/smokyngt/time-manag
 
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `name` | `string` | - |
-| `fn` | (`span`) => `Promise`\<`Result`\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `name` | `string` |
+| `fn` | (`span`) => `Promise`\<`Result`\> |
 
 ###### Returns
 
 `Promise`\<`Result`\>
 
-###### Route
-
-tracing.span
-
 ##### start()
+
+<div className="route-badge"><span className="route-label">Route</span><code>tracing.start</code></div>
 
 ```ts
 static start(): boolean;
 ```
 
-Defined in: [lib/telemetry/tracing.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L53)
-
 ###### Returns
 
 `boolean`
 
-###### Route
-
-tracing.start
-
 ##### stop()
+
+<div className="route-badge"><span className="route-label">Route</span><code>tracing.stop</code></div>
 
 ```ts
 static stop(): Promise<void>;
 ```
 
-Defined in: [lib/telemetry/tracing.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/telemetry/tracing.ts#L82)
-
 ###### Returns
 
 `Promise`\<`void`\>
-
-###### Route
-
-tracing.stop

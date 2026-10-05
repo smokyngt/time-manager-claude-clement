@@ -1,0 +1,13 @@
+{
+  "title": "Schemas",
+  "pages": [
+    "auth",
+    "base",
+    "clock",
+    "common",
+    "report",
+    "team",
+    "team-member",
+    "user"
+  ]
+}

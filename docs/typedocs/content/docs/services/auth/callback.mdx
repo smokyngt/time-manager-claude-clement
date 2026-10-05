@@ -1,3 +1,11 @@
+---
+title: "Callback()"
+description: "Reference for the `callback()` function in `services/auth/callback` (route `auth.service.callback`)."
+route: "auth.service.callback"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.service.callback</code></div>
+
 ## Functions
 
 ### callback()
@@ -6,20 +14,16 @@
 function callback(params): Promise<SessionResult>;
 ```
 
-Defined in: [services/auth/callback.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/callback.ts#L26)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`CallbackParams`](../auth.mdx#callbackparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`CallbackParams`](/docs/services/auth#callbackparams) |
 
 #### Returns
 
-`Promise`\<[`SessionResult`](session.mdx#sessionresult)\>
-
-#### Route
-
-auth.service.callback
+`Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\>
 
 #### Throws
+
+- `AuthMicrosoftError`

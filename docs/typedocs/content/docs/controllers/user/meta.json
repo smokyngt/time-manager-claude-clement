@@ -1,0 +1,13 @@
+{
+  "title": "User",
+  "pages": [
+    "index",
+    "archive",
+    "create",
+    "delete",
+    "list",
+    "restore",
+    "retrieve",
+    "update"
+  ]
+}

@@ -1,3 +1,11 @@
+---
+title: "Current()"
+description: "Reference for the `current()` function in `controllers/clock/current` (route `clock.controller.current`)."
+route: "clock.controller.current"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.current</code></div>
+
 ## Functions
 
 ### current()
@@ -6,21 +14,17 @@
 function current(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/current.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/current.ts#L18)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest` | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`CurrentResponse`](../clock.mdx#currentresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest` |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`CurrentResponse`](/docs/controllers/clock#currentresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.current
-
 #### Throws
+
+- `ClockCurrentError`

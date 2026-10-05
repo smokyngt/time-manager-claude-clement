@@ -1,3 +1,11 @@
+---
+title: "Refresh()"
+description: "Reference for the `refresh()` function in `services/auth/refresh` (route `auth.service.refresh`)."
+route: "auth.service.refresh"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.service.refresh</code></div>
+
 ## Functions
 
 ### refresh()
@@ -6,20 +14,16 @@
 function refresh(params): Promise<SessionResult>;
 ```
 
-Defined in: [services/auth/refresh.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/refresh.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`RefreshParams`](../auth.mdx#refreshparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`RefreshParams`](/docs/services/auth#refreshparams) |
 
 #### Returns
 
-`Promise`\<[`SessionResult`](session.mdx#sessionresult)\>
-
-#### Route
-
-auth.service.refresh
+`Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\>
 
 #### Throws
+
+- `AuthRefreshError`

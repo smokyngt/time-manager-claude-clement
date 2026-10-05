@@ -1,0 +1,44 @@
+---
+title: "Log"
+description: "Reference for the `services/log` module: interfaces, variables."
+---
+
+## Interfaces
+
+### CreateParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | \| `Pick`\<[`Actor`](/docs/types/entities/actor#actor), `"id"` \| `"role"`\> \| `null` |
+| <a id="property-event"></a> `event` | `string` |
+| <a id="property-metadata"></a> `metadata?` | `Record`\<`string`, `unknown`\> |
+
+***
+
+### CreateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### LogServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-create"></a> `create` | (`params`) => `Promise`\<[`CreateResponse`](#createresponse)\> |
+
+## Variables
+
+### logService
+
+```ts
+const logService: LogService;
+```

@@ -1,0 +1,15 @@
+{
+  "title": "Clock",
+  "pages": [
+    "index",
+    "create",
+    "current",
+    "delete",
+    "in",
+    "list",
+    "out",
+    "retrieve",
+    "rules",
+    "update"
+  ]
+}

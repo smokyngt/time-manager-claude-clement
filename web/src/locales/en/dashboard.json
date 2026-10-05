@@ -1,0 +1,5 @@
+{
+  "title": "Dashboard",
+  "greeting": "Hello, {{name}}",
+  "subtitle": "Here is an overview of your working time"
+}

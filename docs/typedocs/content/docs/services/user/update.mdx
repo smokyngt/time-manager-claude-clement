@@ -1,3 +1,11 @@
+---
+title: "Update()"
+description: "Reference for the `update()` function in `services/user/update` (route `user.service.update`)."
+route: "user.service.update"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.service.update</code></div>
+
 ## Functions
 
 ### update()
@@ -6,20 +14,16 @@
 function update(params): Promise<UpdateResponse>;
 ```
 
-Defined in: [services/user/update.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/user/update.ts#L27)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`UpdateParams`](../user.mdx#updateparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`UpdateParams`](/docs/services/user#updateparams) |
 
 #### Returns
 
-`Promise`\<[`UpdateResponse`](../user.mdx#updateresponse)\>
-
-#### Route
-
-user.service.update
+`Promise`\<[`UpdateResponse`](/docs/services/user#updateresponse)\>
 
 #### Throws
+
+- `UserUpdateError`

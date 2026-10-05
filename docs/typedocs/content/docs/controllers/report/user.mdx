@@ -1,3 +1,11 @@
+---
+title: "User()"
+description: "Reference for the `user()` function in `controllers/report/user` (route `report.controller.user`)."
+route: "report.controller.user"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>report.controller.user</code></div>
+
 ## Functions
 
 ### user()
@@ -6,21 +14,17 @@
 function user(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/report/user.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/report/user.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`UserBody`](../report.mdx#userbody); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`UserReport`](../../types/entities/report.mdx#userreport)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`UserBody`](/docs/controllers/report#userbody); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`UserReport`](/docs/types/entities/report#userreport)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-report.controller.user
-
 #### Throws
+
+- `ReportUserError`

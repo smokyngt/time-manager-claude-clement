@@ -1,8 +1,11 @@
+---
+title: "Cipher"
+description: "Reference for the `utils/crypto/cipher` module: classes."
+---
+
 ## Classes
 
 ### Cipher
-
-Defined in: [utils/crypto/cipher.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L42)
 
 #### Constructors
 
@@ -18,96 +21,80 @@ new Cipher(): Cipher;
 
 #### Properties
 
-| Property | Modifier | Type | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-nullable"></a> `nullable` | `readonly` | `NullableCipher` | [utils/crypto/cipher.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L43) |
+| Property | Modifier | Type |
+| ------ | ------ | ------ |
+| <a id="property-nullable"></a> `nullable` | `readonly` | `NullableCipher` |
 
 #### Methods
 
 ##### current()
 
+<div className="route-badge"><span className="route-label">Route</span><code>cipher.current</code></div>
+
 ```ts
 static current(sealed): boolean;
 ```
 
-Defined in: [utils/crypto/cipher.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L50)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `sealed` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `sealed` | `string` |
 
 ###### Returns
 
 `boolean`
 
-###### Route
-
-cipher.current
-
 ##### open()
+
+<div className="route-badge"><span className="route-label">Route</span><code>cipher.open</code></div>
 
 ```ts
 static open(sealed): string;
 ```
 
-Defined in: [utils/crypto/cipher.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L60)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `sealed` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `sealed` | `string` |
 
 ###### Returns
 
 `string`
 
-###### Route
-
-cipher.open
-
 ##### rotate()
+
+<div className="route-badge"><span className="route-label">Route</span><code>cipher.rotate</code></div>
 
 ```ts
 static rotate(sealed): string;
 ```
 
-Defined in: [utils/crypto/cipher.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L96)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `sealed` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `sealed` | `string` |
 
 ###### Returns
 
 `string`
 
-###### Route
-
-cipher.rotate
-
 ##### seal()
+
+<div className="route-badge"><span className="route-label">Route</span><code>cipher.seal</code></div>
 
 ```ts
 static seal(plain): string;
 ```
 
-Defined in: [utils/crypto/cipher.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/cipher.ts#L105)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `plain` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `plain` | `string` |
 
 ###### Returns
 
 `string`
-
-###### Route
-
-cipher.seal

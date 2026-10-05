@@ -1,3 +1,11 @@
+---
+title: "Create()"
+description: "Reference for the `create()` function in `services/clock/create` (route `clock.service.create`)."
+route: "clock.service.create"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.service.create</code></div>
+
 ## Functions
 
 ### create()
@@ -6,20 +14,16 @@
 function create(params): Promise<CreateResponse>;
 ```
 
-Defined in: [services/clock/create.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/create.ts#L21)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`CreateParams`](../clock.mdx#createparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`CreateParams`](/docs/services/clock#createparams) |
 
 #### Returns
 
-`Promise`\<[`CreateResponse`](../clock.mdx#createresponse)\>
-
-#### Route
-
-clock.service.create
+`Promise`\<[`CreateResponse`](/docs/services/clock#createresponse)\>
 
 #### Throws
+
+- `ClockCreateError`

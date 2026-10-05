@@ -1,3 +1,11 @@
+---
+title: "List()"
+description: "Reference for the `list()` function in `services/clock/list` (route `clock.service.list`)."
+route: "clock.service.list"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.service.list</code></div>
+
 ## Functions
 
 ### list()
@@ -6,20 +14,16 @@
 function list(params): Promise<ListResponse>;
 ```
 
-Defined in: [services/clock/list.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/list.ts#L16)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`ListParams`](../clock.mdx#listparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`ListParams`](/docs/services/clock#listparams) |
 
 #### Returns
 
-`Promise`\<[`ListResponse`](../clock.mdx#listresponse)\>
-
-#### Route
-
-clock.service.list
+`Promise`\<[`ListResponse`](/docs/services/clock#listresponse)\>
 
 #### Throws
+
+- `ClockListError`

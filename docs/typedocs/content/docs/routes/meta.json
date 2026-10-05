@@ -1,0 +1,12 @@
+{
+  "title": "Routes",
+  "pages": [
+    "index",
+    "auth",
+    "clock",
+    "report",
+    "team",
+    "team-member",
+    "user"
+  ]
+}

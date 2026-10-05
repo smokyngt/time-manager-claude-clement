@@ -8,14 +8,18 @@ import { trace } from '@opentelemetry/api';
 import Fastify from 'fastify';
 
 import { Config } from '@/config/index.js';
+import { sql } from '@/db/client.js';
 import { Redact } from '@/lib/auth/redact.js';
 import { ValidationError } from '@/lib/errors/base/core.js';
+import { Telemetry } from '@/lib/telemetry/index.js';
 import { ErrorHandler } from '@/middlewares/error.js';
+import { health } from '@/plugins/health.js';
+import { metrics } from '@/plugins/metrics.js';
+import { observability } from '@/plugins/observability.js';
 import { Sanitizer } from '@/utils/http/sanitizer.js';
 
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
-const REQUEST_ID = /^[A-Za-z0-9_-]{1,128}$/;
 const BODY_LIMIT = 1_048_576;
 
 /**
@@ -35,18 +39,20 @@ export const build = async (options: FastifyServerOptions = {}): Promise<Fastify
       },
     },
     bodyLimit: BODY_LIMIT,
-    genReqId: (req) => {
-      const header = req.headers['x-request-id'];
-
-      return typeof header === 'string' && REQUEST_ID.test(header) ? header : crypto.randomUUID();
-    },
+    genReqId: (req) => Telemetry.id(req),
+    logger: Telemetry.logger(),
     requestIdHeader: false,
     trustProxy: Config.store.flag('TRUST_PROXY', true),
     ...options,
   });
   await app.register(fastifyRequestContext);
-  app.addHook('onRequest', (req, reply, next) => {
-    void reply.header('x-request-id', req.id);
+  await app.register(observability);
+  await app.register(metrics, {
+    production: Config.production(),
+    token: Config.store.optional('METRICS_TOKEN'),
+  });
+  await app.register(health, { probe: async () => sql`select 1` });
+  app.addHook('onRequest', (req, _reply, next) => {
     const log = req.log.child({
       ip: req.ip,
       method: req.method,
@@ -95,7 +101,7 @@ export const build = async (options: FastifyServerOptions = {}): Promise<Fastify
       tags: [
         { description: 'Sign in, sessions and Microsoft SSO.', name: 'auth' },
         { description: 'Clock entries.', name: 'clocks' },
-        { description: 'Liveness probe.', name: 'health' },
+        { description: 'Liveness and readiness probes.', name: 'health' },
         { description: 'Aggregated working time reports.', name: 'reports' },
         { description: 'Team membership.', name: 'team-members' },
         { description: 'Teams.', name: 'teams' },
@@ -104,24 +110,5 @@ export const build = async (options: FastifyServerOptions = {}): Promise<Fastify
     },
   });
   await app.register(swaggerUi, { routePrefix: '/docs' });
-  app.get(
-    '/health',
-    {
-      schema: {
-        response: {
-          200: {
-            additionalProperties: false,
-            properties: { status: { enum: ['ok'], type: 'string' } },
-            required: ['status'],
-            type: 'object',
-          },
-        },
-        summary: 'Liveness probe',
-        tags: ['health'],
-      },
-    },
-    () => ({ status: 'ok' as const }),
-  );
-
   return app;
 };

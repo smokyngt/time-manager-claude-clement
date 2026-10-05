@@ -1,3 +1,11 @@
+---
+title: "Login()"
+description: "Reference for the `login()` function in `controllers/auth/login` (route `auth.controller.login`)."
+route: "auth.controller.login"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.controller.login</code></div>
+
 ## Functions
 
 ### login()
@@ -6,21 +14,17 @@
 function login(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/auth/login.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/auth/login.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`LoginBody`](../auth.mdx#loginbody); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`SessionResponse`](../auth.mdx#sessionresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`LoginBody`](/docs/controllers/auth#loginbody); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`SessionResponse`](/docs/controllers/auth#sessionresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-auth.controller.login
-
 #### Throws
+
+- `AuthLoginError`

@@ -15,7 +15,7 @@
     "incremental": true,
     "paths": {
       "@/*": ["./*"],
-      "collections/*": [".source/*"]
+      "collections/*": ["./.source/*"]
     },
     "plugins": [{ "name": "next" }]
   },

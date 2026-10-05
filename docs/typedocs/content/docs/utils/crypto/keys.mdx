@@ -1,8 +1,11 @@
+---
+title: "Keys"
+description: "Reference for the `utils/crypto/keys` module: classes, type aliases."
+---
+
 ## Classes
 
 ### Keys
-
-Defined in: [utils/crypto/keys.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L15)
 
 #### Constructors
 
@@ -20,89 +23,69 @@ new Keys(): Keys;
 
 ##### current()
 
+<div className="route-badge"><span className="route-label">Route</span><code>keys.current</code></div>
+
 ```ts
 static current(): KeyEntry;
 ```
-
-Defined in: [utils/crypto/keys.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L20)
 
 ###### Returns
 
 [`KeyEntry`](#keyentry)
 
-###### Route
-
-keys.current
-
 ##### digest()
+
+<div className="route-badge"><span className="route-label">Route</span><code>keys.digest</code></div>
 
 ```ts
 static digest(): Buffer;
 ```
 
-Defined in: [utils/crypto/keys.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L37)
-
 ###### Returns
 
 `Buffer`
 
-###### Route
-
-keys.digest
-
 ##### find()
+
+<div className="route-badge"><span className="route-label">Route</span><code>keys.find</code></div>
 
 ```ts
 static find(id): Buffer<ArrayBufferLike> | undefined;
 ```
 
-Defined in: [utils/crypto/keys.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L54)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `id` | `string` |
 
 ###### Returns
 
 `Buffer`\<`ArrayBufferLike`\> \| `undefined`
 
-###### Route
-
-keys.find
-
 ##### previous()
+
+<div className="route-badge"><span className="route-label">Route</span><code>keys.previous</code></div>
 
 ```ts
 static previous(): KeyEntry[];
 ```
 
-Defined in: [utils/crypto/keys.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L64)
-
 ###### Returns
 
 [`KeyEntry`](#keyentry)[]
 
-###### Route
-
-keys.previous
-
 ##### validate()
+
+<div className="route-badge"><span className="route-label">Route</span><code>keys.validate</code></div>
 
 ```ts
 static validate(): string[];
 ```
 
-Defined in: [utils/crypto/keys.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L92)
-
 ###### Returns
 
 `string`[]
-
-###### Route
-
-keys.validate
 
 ## Type Aliases
 
@@ -112,11 +95,9 @@ keys.validate
 type KeyEntry = object;
 ```
 
-Defined in: [utils/crypto/keys.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L7)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-id"></a> `id` | `string` | [utils/crypto/keys.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L7) |
-| <a id="property-key"></a> `key` | `Buffer` | [utils/crypto/keys.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/crypto/keys.ts#L7) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id"></a> `id` | `string` |
+| <a id="property-key"></a> `key` | `Buffer` |

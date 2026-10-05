@@ -1,0 +1,10 @@
+{
+  "title": "Lib",
+  "pages": [
+    "auth",
+    "errors",
+    "events",
+    "lifecycle",
+    "telemetry"
+  ]
+}

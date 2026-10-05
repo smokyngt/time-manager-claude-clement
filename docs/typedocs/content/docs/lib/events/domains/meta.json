@@ -1,0 +1,11 @@
+{
+  "title": "Domains",
+  "pages": [
+    "auth",
+    "clock",
+    "report",
+    "team",
+    "team-member",
+    "user"
+  ]
+}

@@ -1,8 +1,11 @@
+---
+title: "Query"
+description: "Reference for the `services/report/query` module: classes, interfaces, type aliases."
+---
+
 ## Classes
 
 ### ReportQuery
-
-Defined in: [services/report/query.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L33)
 
 #### Constructors
 
@@ -20,63 +23,53 @@ new ReportQuery(): ReportQuery;
 
 ##### series()
 
+<div className="route-badge"><span className="route-label">Route</span><code>report.query.series</code></div>
+
 ```ts
 static series(range, members): Promise<SeriesRow[]>;
 ```
 
-Defined in: [services/report/query.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L40)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `range` | [`ReportRange`](#reportrange) | - |
-| `members` | `SQL` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `range` | [`ReportRange`](#reportrange) |
+| `members` | `SQL` |
 
 ###### Returns
 
 `Promise`\<[`SeriesRow`](#seriesrow)[]\>
 
-###### Route
-
-report.query.series
-
 ##### totals()
+
+<div className="route-badge"><span className="route-label">Route</span><code>report.query.totals</code></div>
 
 ```ts
 static totals(range, members): Promise<TotalsRow[]>;
 ```
 
-Defined in: [services/report/query.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L79)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `range` | [`ReportRange`](#reportrange) | - |
-| `members` | `SQL` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `range` | [`ReportRange`](#reportrange) |
+| `members` | `SQL` |
 
 ###### Returns
 
 `Promise`\<[`TotalsRow`](#totalsrow)[]\>
 
-###### Route
-
-report.query.totals
-
 ## Interfaces
 
 ### ReportRange
 
-Defined in: [services/report/query.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L10)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-from"></a> `from` | `number` | [services/report/query.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L11) |
-| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` | [services/report/query.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L12) |
-| <a id="property-to"></a> `to` | `number` | [services/report/query.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L13) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from"></a> `from` | `number` |
+| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-to"></a> `to` | `number` |
 
 ## Type Aliases
 
@@ -86,15 +79,13 @@ Defined in: [services/report/query.ts:10](https://github.com/smokyngt/time-manag
 type SeriesRow = object;
 ```
 
-Defined in: [services/report/query.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L16)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-late"></a> `late` | `number` | [services/report/query.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L17) |
-| <a id="property-period_start"></a> `period_start` | `number` | [services/report/query.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L18) |
-| <a id="property-worked_ms"></a> `worked_ms` | `number` | [services/report/query.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L19) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-late"></a> `late` | `number` |
+| <a id="property-period_start"></a> `period_start` | `number` |
+| <a id="property-worked_ms"></a> `worked_ms` | `number` |
 
 ***
 
@@ -104,17 +95,15 @@ Defined in: [services/report/query.ts:16](https://github.com/smokyngt/time-manag
 type TotalsRow = object;
 ```
 
-Defined in: [services/report/query.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L22)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-days_worked"></a> `days_worked` | `number` | [services/report/query.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L23) |
-| <a id="property-first_name"></a> `first_name` | `string` | [services/report/query.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L24) |
-| <a id="property-last_name"></a> `last_name` | `string` | [services/report/query.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L25) |
-| <a id="property-late_days"></a> `late_days` | `number` | [services/report/query.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L26) |
-| <a id="property-user_id"></a> `user_id` | `string` | [services/report/query.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L27) |
-| <a id="property-weekly_hours"></a> `weekly_hours` | `number` | [services/report/query.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L28) |
-| <a id="property-workdays"></a> `workdays` | `number` | [services/report/query.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L29) |
-| <a id="property-worked_ms-1"></a> `worked_ms` | `number` | [services/report/query.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/query.ts#L30) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-days_worked"></a> `days_worked` | `number` |
+| <a id="property-first_name"></a> `first_name` | `string` |
+| <a id="property-last_name"></a> `last_name` | `string` |
+| <a id="property-late_days"></a> `late_days` | `number` |
+| <a id="property-user_id"></a> `user_id` | `string` |
+| <a id="property-weekly_hours"></a> `weekly_hours` | `number` |
+| <a id="property-workdays"></a> `workdays` | `number` |
+| <a id="property-worked_ms-1"></a> `worked_ms` | `number` |

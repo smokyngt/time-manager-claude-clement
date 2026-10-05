@@ -1,3 +1,11 @@
+---
+title: "Update()"
+description: "Reference for the `update()` function in `services/clock/update` (route `clock.service.update`)."
+route: "clock.service.update"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.service.update</code></div>
+
 ## Functions
 
 ### update()
@@ -6,20 +14,16 @@
 function update(params): Promise<UpdateResponse>;
 ```
 
-Defined in: [services/clock/update.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/update.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`UpdateParams`](../clock.mdx#updateparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`UpdateParams`](/docs/services/clock#updateparams) |
 
 #### Returns
 
-`Promise`\<[`UpdateResponse`](../clock.mdx#updateresponse)\>
-
-#### Route
-
-clock.service.update
+`Promise`\<[`UpdateResponse`](/docs/services/clock#updateresponse)\>
 
 #### Throws
+
+- `ClockUpdateError`

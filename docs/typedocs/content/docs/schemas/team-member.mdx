@@ -1,3 +1,8 @@
+---
+title: "Team Member"
+description: "Reference for the `schemas/team-member` module: variables."
+---
+
 ## Variables
 
 ### TeamMemberAddBodySchema
@@ -6,24 +11,22 @@
 const TeamMemberAddBodySchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L23)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:24](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L24) |
-| <a id="property-properties"></a> `properties` | `object` | - | [schemas/team-member.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L25) |
-| `properties.user_ids` | `object` | `IdListSchema` | [schemas/team-member.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L25) |
-| `properties.user_ids.description` | `"List of user identifiers. Duplicates are ignored."` | `'List of user identifiers. Duplicates are ignored.'` | [schemas/common.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L15) |
-| `properties.user_ids.items` | `object` | - | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.items.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.items.type` | `"string"` | `'string'` | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.maxItems` | `100` | `RequestLimits.bulk` | [schemas/common.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L17) |
-| `properties.user_ids.minItems` | `1` | `1` | [schemas/common.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L18) |
-| `properties.user_ids.type` | `"array"` | `'array'` | [schemas/common.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L19) |
-| <a id="property-required"></a> `required` | readonly \[`"user_ids"`\] | - | [schemas/team-member.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L26) |
-| <a id="property-type"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L27) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties"></a> `properties` | `object` | - |
+| `properties.user_ids` | `object` | `IdListSchema` |
+| `properties.user_ids.description` | `"List of user identifiers. Duplicates are ignored."` | `'List of user identifiers. Duplicates are ignored.'` |
+| `properties.user_ids.items` | `object` | - |
+| `properties.user_ids.items.format` | `"uuid"` | `'uuid'` |
+| `properties.user_ids.items.type` | `"string"` | `'string'` |
+| `properties.user_ids.maxItems` | `100` | `RequestLimits.bulk` |
+| `properties.user_ids.minItems` | `1` | `1` |
+| `properties.user_ids.type` | `"array"` | `'array'` |
+| <a id="property-required"></a> `required` | readonly \[`"user_ids"`\] | - |
+| <a id="property-type"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -33,38 +36,36 @@ Defined in: [schemas/team-member.ts:23](https://github.com/smokyngt/time-manager
 const TeamMemberAddDataSchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L78)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-1"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L79) |
-| <a id="property-properties-1"></a> `properties` | `object` | - | [schemas/team-member.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L80) |
-| `properties.added` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/team-member.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L81) |
-| `properties.failed` | `object` | `failedArray` | [schemas/team-member.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L82) |
-| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` | [schemas/team-member.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L73) |
-| `properties.failed.items` | `object` | `BulkFailureSchema` | [schemas/team-member.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L74) |
-| `properties.failed.items.additionalProperties` | `false` | `false` | [schemas/common.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L87) |
-| `properties.failed.items.properties` | `object` | - | [schemas/common.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L88) |
-| `properties.failed.items.properties.code` | `object` | - | [schemas/common.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L89) |
-| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` | [schemas/common.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L90) |
-| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` | [schemas/common.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L91) |
-| `properties.failed.items.properties.code.type` | `"string"` | `'string'` | [schemas/common.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L92) |
-| `properties.failed.items.properties.id` | `object` | - | [schemas/common.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L94) |
-| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` | [schemas/common.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L95) |
-| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` | [schemas/common.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L96) |
-| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L97) |
-| `properties.failed.items.properties.id.type` | `"string"` | `'string'` | [schemas/common.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L98) |
-| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - | [schemas/common.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L101) |
-| `properties.failed.items.type` | `"object"` | `'object'` | [schemas/common.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L102) |
-| `properties.failed.type` | `"array"` | `'array'` | [schemas/team-member.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L75) |
-| `properties.success` | `object` | - | [schemas/team-member.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L83) |
-| `properties.success.description` | `"True when no id failed."` | `'True when no id failed.'` | [schemas/team-member.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L83) |
-| `properties.success.example` | `true` | `true` | [schemas/team-member.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L83) |
-| `properties.success.type` | `"boolean"` | `'boolean'` | [schemas/team-member.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L83) |
-| <a id="property-required-1"></a> `required` | readonly \[`"added"`, `"failed"`, `"success"`\] | - | [schemas/team-member.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L85) |
-| <a id="property-type-1"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L86) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-1"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-1"></a> `properties` | `object` | - |
+| `properties.added` | [`JsonSchema`](/docs/schemas/common#jsonschema) | - |
+| `properties.failed` | `object` | `failedArray` |
+| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` |
+| `properties.failed.items` | `object` | `BulkFailureSchema` |
+| `properties.failed.items.additionalProperties` | `false` | `false` |
+| `properties.failed.items.properties` | `object` | - |
+| `properties.failed.items.properties.code` | `object` | - |
+| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` |
+| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` |
+| `properties.failed.items.properties.code.type` | `"string"` | `'string'` |
+| `properties.failed.items.properties.id` | `object` | - |
+| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` |
+| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` |
+| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` |
+| `properties.failed.items.properties.id.type` | `"string"` | `'string'` |
+| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - |
+| `properties.failed.items.type` | `"object"` | `'object'` |
+| `properties.failed.type` | `"array"` | `'array'` |
+| `properties.success` | `object` | - |
+| `properties.success.description` | `"True when no id failed."` | `'True when no id failed.'` |
+| `properties.success.example` | `true` | `true` |
+| `properties.success.type` | `"boolean"` | `'boolean'` |
+| <a id="property-required-1"></a> `required` | readonly \[`"added"`, `"failed"`, `"success"`\] | - |
+| <a id="property-type-1"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -74,21 +75,19 @@ Defined in: [schemas/team-member.ts:78](https://github.com/smokyngt/time-manager
 const TeamMemberIdParamsSchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L14)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-2"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L15) |
-| <a id="property-properties-2"></a> `properties` | `object` | - | [schemas/team-member.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L16) |
-| `properties.id` | `object` | - | [schemas/team-member.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L17) |
-| `properties.id.description` | `"Team identifier."` | `'Team identifier.'` | [schemas/team-member.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L17) |
-| `properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `ID_EXAMPLE` | [schemas/team-member.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L17) |
-| `properties.id.format` | `"uuid"` | `'uuid'` | [schemas/team-member.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L17) |
-| `properties.id.type` | `"string"` | `'string'` | [schemas/team-member.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L17) |
-| <a id="property-required-2"></a> `required` | readonly \[`"id"`\] | - | [schemas/team-member.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L19) |
-| <a id="property-type-2"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L20) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-2"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-2"></a> `properties` | `object` | - |
+| `properties.id` | `object` | - |
+| `properties.id.description` | `"Team identifier."` | `'Team identifier.'` |
+| `properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `ID_EXAMPLE` |
+| `properties.id.format` | `"uuid"` | `'uuid'` |
+| `properties.id.type` | `"string"` | `'string'` |
+| <a id="property-required-2"></a> `required` | readonly \[`"id"`\] | - |
+| <a id="property-type-2"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -98,34 +97,32 @@ Defined in: [schemas/team-member.ts:14](https://github.com/smokyngt/time-manager
 const TeamMemberListBodySchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L37)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-3"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L38) |
-| <a id="property-properties-3"></a> `properties` | `object` | - | [schemas/team-member.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L39) |
-| `properties.cursor` | `object` | - | [schemas/team-member.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L40) |
-| `properties.cursor.description` | `"Opaque cursor returned as next by a previous call."` | `'Opaque cursor returned as next by a previous call.'` | [schemas/team-member.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L41) |
-| `properties.cursor.example` | `"MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA"` | `'MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA'` | [schemas/team-member.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L42) |
-| `properties.cursor.maxLength` | `200` | `RequestLimits.cursor` | [schemas/team-member.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L43) |
-| `properties.cursor.minLength` | `1` | `1` | [schemas/team-member.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L44) |
-| `properties.cursor.type` | `"string"` | `'string'` | [schemas/team-member.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L45) |
-| `properties.limit` | `object` | - | [schemas/team-member.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L47) |
-| `properties.limit.default` | `25` | `RequestLimits.limitDefault` | [schemas/team-member.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L48) |
-| `properties.limit.description` | `"Page size."` | `'Page size.'` | [schemas/team-member.ts:49](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L49) |
-| `properties.limit.example` | `25` | `25` | [schemas/team-member.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L50) |
-| `properties.limit.maximum` | `100` | `RequestLimits.limit` | [schemas/team-member.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L51) |
-| `properties.limit.minimum` | `1` | `1` | [schemas/team-member.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L52) |
-| `properties.limit.type` | `"integer"` | `'integer'` | [schemas/team-member.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L53) |
-| `properties.order` | `object` | - | [schemas/team-member.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L55) |
-| `properties.order.default` | `"desc"` | `'desc'` | [schemas/team-member.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L56) |
-| `properties.order.description` | `"Sort direction on created_at."` | `'Sort direction on created_at.'` | [schemas/team-member.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L57) |
-| `properties.order.enum` | readonly \[`"asc"`, `"desc"`\] | - | [schemas/team-member.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L58) |
-| `properties.order.example` | `"desc"` | `'desc'` | [schemas/team-member.ts:59](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L59) |
-| `properties.order.type` | `"string"` | `'string'` | [schemas/team-member.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L60) |
-| <a id="property-type-3"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L63) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-3"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-3"></a> `properties` | `object` | - |
+| `properties.cursor` | `object` | - |
+| `properties.cursor.description` | `"Opaque cursor returned as next by a previous call."` | `'Opaque cursor returned as next by a previous call.'` |
+| `properties.cursor.example` | `"MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA"` | `'MTc2NzIyNTYwMDAwMC4wYjNmNGE5ZS03ZDVjLTRjMWMtOWEzOS0yZjVmNWE3YTFlMTA'` |
+| `properties.cursor.maxLength` | `200` | `RequestLimits.cursor` |
+| `properties.cursor.minLength` | `1` | `1` |
+| `properties.cursor.type` | `"string"` | `'string'` |
+| `properties.limit` | `object` | - |
+| `properties.limit.default` | `25` | `RequestLimits.limitDefault` |
+| `properties.limit.description` | `"Page size."` | `'Page size.'` |
+| `properties.limit.example` | `25` | `25` |
+| `properties.limit.maximum` | `100` | `RequestLimits.limit` |
+| `properties.limit.minimum` | `1` | `1` |
+| `properties.limit.type` | `"integer"` | `'integer'` |
+| `properties.order` | `object` | - |
+| `properties.order.default` | `"desc"` | `'desc'` |
+| `properties.order.description` | `"Sort direction on created_at."` | `'Sort direction on created_at.'` |
+| `properties.order.enum` | readonly \[`"asc"`, `"desc"`\] | - |
+| `properties.order.example` | `"desc"` | `'desc'` |
+| `properties.order.type` | `"string"` | `'string'` |
+| <a id="property-type-3"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -135,92 +132,90 @@ Defined in: [schemas/team-member.ts:37](https://github.com/smokyngt/time-manager
 const TeamMemberListDataSchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:100](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L100)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-4"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L101) |
-| <a id="property-properties-4"></a> `properties` | `object` | - | [schemas/team-member.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L102) |
-| `properties.items` | `object` | - | [schemas/team-member.ts:103](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L103) |
-| `properties.items.description` | `"Members of the page."` | `'Members of the page.'` | [schemas/team-member.ts:103](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L103) |
-| `properties.items.items` | `object` | `UserSchema` | [schemas/team-member.ts:103](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L103) |
-| `properties.items.items.additionalProperties` | `false` | `false` | [schemas/user.ts:60](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L60) |
-| `properties.items.items.description` | `"A user of the application."` | `'A user of the application.'` | [schemas/user.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L61) |
-| `properties.items.items.properties` | `object` | - | [schemas/user.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L62) |
-| `properties.items.items.properties.archived_at` | `object` | - | [schemas/user.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L63) |
-| `properties.items.items.properties.archived_at.description` | `"Archival time in epoch milliseconds, null when active."` | `'Archival time in epoch milliseconds, null when active.'` | [schemas/user.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L64) |
-| `properties.items.items.properties.archived_at.example` | `null` | `null` | [schemas/user.ts:65](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L65) |
-| `properties.items.items.properties.archived_at.nullable` | `true` | `true` | [schemas/user.ts:66](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L66) |
-| `properties.items.items.properties.archived_at.type` | `"integer"` | `'integer'` | [schemas/user.ts:67](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L67) |
-| `properties.items.items.properties.created_at` | `object` | - | [schemas/user.ts:69](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L69) |
-| `properties.items.items.properties.created_at.description` | `"Creation time in epoch milliseconds."` | `'Creation time in epoch milliseconds.'` | [schemas/user.ts:70](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L70) |
-| `properties.items.items.properties.created_at.example` | `1767225600000` | `1767225600000` | [schemas/user.ts:71](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L71) |
-| `properties.items.items.properties.created_at.type` | `"integer"` | `'integer'` | [schemas/user.ts:72](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L72) |
-| `properties.items.items.properties.email` | `object` | `emailProperty` | [schemas/user.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L74) |
-| `properties.items.items.properties.email.description` | `"Email address, stored lowercased. Unique."` | `'Email address, stored lowercased. Unique.'` | [schemas/user.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L19) |
-| `properties.items.items.properties.email.example` | `"jane.doe@example.com"` | `'jane.doe@example.com'` | [schemas/user.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L20) |
-| `properties.items.items.properties.email.format` | `"email"` | `'email'` | [schemas/user.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L21) |
-| `properties.items.items.properties.email.maxLength` | `254` | `254` | [schemas/user.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L22) |
-| `properties.items.items.properties.email.type` | `"string"` | `'string'` | [schemas/user.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L23) |
-| `properties.items.items.properties.first_name` | `object` | `firstNameProperty` | [schemas/user.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L75) |
-| `properties.items.items.properties.first_name.description` | `"First name."` | `'First name.'` | [schemas/user.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L27) |
-| `properties.items.items.properties.first_name.example` | `"Jane"` | `'Jane'` | [schemas/user.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L28) |
-| `properties.items.items.properties.first_name.maxLength` | `100` | `100` | [schemas/user.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L29) |
-| `properties.items.items.properties.first_name.minLength` | `1` | `1` | [schemas/user.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L30) |
-| `properties.items.items.properties.first_name.pattern` | "^\[\\p\{L\}\\p\{M\}\]\[\\p\{L\}\\p\{M\}' .-\]\*$" | `NAME_PATTERN` | [schemas/user.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L31) |
-| `properties.items.items.properties.first_name.type` | `"string"` | `'string'` | [schemas/user.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L32) |
-| `properties.items.items.properties.id` | `object` | - | [schemas/user.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L76) |
-| `properties.items.items.properties.id.description` | `"Unique identifier."` | `'Unique identifier.'` | [schemas/user.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L76) |
-| `properties.items.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `ID_EXAMPLE` | [schemas/user.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L76) |
-| `properties.items.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/user.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L76) |
-| `properties.items.items.properties.id.type` | `"string"` | `'string'` | [schemas/user.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L76) |
-| `properties.items.items.properties.last_name` | `object` | `lastNameProperty` | [schemas/user.ts:77](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L77) |
-| `properties.items.items.properties.last_name.description` | `"Last name."` | `'Last name.'` | [schemas/user.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L36) |
-| `properties.items.items.properties.last_name.example` | `"Doe"` | `'Doe'` | [schemas/user.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L37) |
-| `properties.items.items.properties.last_name.maxLength` | `100` | `100` | [schemas/user.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L38) |
-| `properties.items.items.properties.last_name.minLength` | `1` | `1` | [schemas/user.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L39) |
-| `properties.items.items.properties.last_name.pattern` | "^\[\\p\{L\}\\p\{M\}\]\[\\p\{L\}\\p\{M\}' .-\]\*$" | `NAME_PATTERN` | [schemas/user.ts:40](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L40) |
-| `properties.items.items.properties.last_name.type` | `"string"` | `'string'` | [schemas/user.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L41) |
-| `properties.items.items.properties.object` | `object` | - | [schemas/user.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L78) |
-| `properties.items.items.properties.object.description` | `"Object type."` | `'Object type.'` | [schemas/user.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L78) |
-| `properties.items.items.properties.object.enum` | readonly \[`"user"`\] | - | [schemas/user.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L78) |
-| `properties.items.items.properties.object.example` | `"user"` | `'user'` | [schemas/user.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L78) |
-| `properties.items.items.properties.object.type` | `"string"` | `'string'` | [schemas/user.ts:78](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L78) |
-| `properties.items.items.properties.phone_number` | `object` | - | [schemas/user.ts:79](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L79) |
-| `properties.items.items.properties.phone_number.description` | `"Phone number, null when unknown."` | `'Phone number, null when unknown.'` | [schemas/user.ts:80](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L80) |
-| `properties.items.items.properties.phone_number.example` | `"+33 6 12 34 56 78"` | `'+33 6 12 34 56 78'` | [schemas/user.ts:81](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L81) |
-| `properties.items.items.properties.phone_number.nullable` | `true` | `true` | [schemas/user.ts:82](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L82) |
-| `properties.items.items.properties.phone_number.type` | `"string"` | `'string'` | [schemas/user.ts:83](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L83) |
-| `properties.items.items.properties.role` | `object` | `roleProperty` | [schemas/user.ts:85](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L85) |
-| `properties.items.items.properties.role.description` | `"Role of the user."` | `'Role of the user.'` | [schemas/user.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L53) |
-| `properties.items.items.properties.role.enum` | readonly \[`"admin"`, `"employee"`, `"manager"`\] | `ROLES` | [schemas/user.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L54) |
-| `properties.items.items.properties.role.example` | `"employee"` | `'employee'` | [schemas/user.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L55) |
-| `properties.items.items.properties.role.type` | `"string"` | `'string'` | [schemas/user.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L56) |
-| `properties.items.items.properties.updated_at` | `object` | - | [schemas/user.ts:86](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L86) |
-| `properties.items.items.properties.updated_at.description` | `"Last update time in epoch milliseconds, null when never updated."` | `'Last update time in epoch milliseconds, null when never updated.'` | [schemas/user.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L87) |
-| `properties.items.items.properties.updated_at.example` | `null` | `null` | [schemas/user.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L88) |
-| `properties.items.items.properties.updated_at.nullable` | `true` | `true` | [schemas/user.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L89) |
-| `properties.items.items.properties.updated_at.type` | `"integer"` | `'integer'` | [schemas/user.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L90) |
-| `properties.items.items.required` | readonly \[`"archived_at"`, `"created_at"`, `"email"`, `"first_name"`, `"id"`, `"last_name"`, `"object"`, `"phone_number"`, `"role"`, `"updated_at"`\] | - | [schemas/user.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L93) |
-| `properties.items.items.type` | `"object"` | `'object'` | [schemas/user.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/user.ts#L105) |
-| `properties.items.type` | `"array"` | `'array'` | [schemas/team-member.ts:103](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L103) |
-| `properties.more` | `object` | - | [schemas/team-member.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L104) |
-| `properties.more.description` | `"Whether another page exists."` | `'Whether another page exists.'` | [schemas/team-member.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L104) |
-| `properties.more.example` | `false` | `false` | [schemas/team-member.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L104) |
-| `properties.more.type` | `"boolean"` | `'boolean'` | [schemas/team-member.ts:104](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L104) |
-| `properties.next` | `object` | - | [schemas/team-member.ts:105](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L105) |
-| `properties.next.description` | `"Cursor of the next page, null on the last page."` | `'Cursor of the next page, null on the last page.'` | [schemas/team-member.ts:106](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L106) |
-| `properties.next.example` | `null` | `null` | [schemas/team-member.ts:107](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L107) |
-| `properties.next.nullable` | `true` | `true` | [schemas/team-member.ts:108](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L108) |
-| `properties.next.type` | `"string"` | `'string'` | [schemas/team-member.ts:109](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L109) |
-| `properties.total` | `object` | - | [schemas/team-member.ts:111](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L111) |
-| `properties.total.description` | `"Total members of the team."` | `'Total members of the team.'` | [schemas/team-member.ts:111](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L111) |
-| `properties.total.example` | `1` | `1` | [schemas/team-member.ts:111](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L111) |
-| `properties.total.type` | `"integer"` | `'integer'` | [schemas/team-member.ts:111](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L111) |
-| <a id="property-required-3"></a> `required` | readonly \[`"items"`, `"more"`, `"next"`, `"total"`\] | - | [schemas/team-member.ts:113](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L113) |
-| <a id="property-type-4"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:114](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L114) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-4"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-4"></a> `properties` | `object` | - |
+| `properties.items` | `object` | - |
+| `properties.items.description` | `"Members of the page."` | `'Members of the page.'` |
+| `properties.items.items` | `object` | `UserSchema` |
+| `properties.items.items.additionalProperties` | `false` | `false` |
+| `properties.items.items.description` | `"A user of the application."` | `'A user of the application.'` |
+| `properties.items.items.properties` | `object` | - |
+| `properties.items.items.properties.archived_at` | `object` | - |
+| `properties.items.items.properties.archived_at.description` | `"Archival time in epoch milliseconds, null when active."` | `'Archival time in epoch milliseconds, null when active.'` |
+| `properties.items.items.properties.archived_at.example` | `null` | `null` |
+| `properties.items.items.properties.archived_at.nullable` | `true` | `true` |
+| `properties.items.items.properties.archived_at.type` | `"integer"` | `'integer'` |
+| `properties.items.items.properties.created_at` | `object` | - |
+| `properties.items.items.properties.created_at.description` | `"Creation time in epoch milliseconds."` | `'Creation time in epoch milliseconds.'` |
+| `properties.items.items.properties.created_at.example` | `1767225600000` | `1767225600000` |
+| `properties.items.items.properties.created_at.type` | `"integer"` | `'integer'` |
+| `properties.items.items.properties.email` | `object` | `emailProperty` |
+| `properties.items.items.properties.email.description` | `"Email address, stored lowercased. Unique."` | `'Email address, stored lowercased. Unique.'` |
+| `properties.items.items.properties.email.example` | `"jane.doe@example.com"` | `'jane.doe@example.com'` |
+| `properties.items.items.properties.email.format` | `"email"` | `'email'` |
+| `properties.items.items.properties.email.maxLength` | `254` | `254` |
+| `properties.items.items.properties.email.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.first_name` | `object` | `firstNameProperty` |
+| `properties.items.items.properties.first_name.description` | `"First name."` | `'First name.'` |
+| `properties.items.items.properties.first_name.example` | `"Jane"` | `'Jane'` |
+| `properties.items.items.properties.first_name.maxLength` | `100` | `100` |
+| `properties.items.items.properties.first_name.minLength` | `1` | `1` |
+| `properties.items.items.properties.first_name.pattern` | "^\[\\p\{L\}\\p\{M\}\]\[\\p\{L\}\\p\{M\}' .-\]\*$" | `NAME_PATTERN` |
+| `properties.items.items.properties.first_name.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.id` | `object` | - |
+| `properties.items.items.properties.id.description` | `"Unique identifier."` | `'Unique identifier.'` |
+| `properties.items.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `ID_EXAMPLE` |
+| `properties.items.items.properties.id.format` | `"uuid"` | `'uuid'` |
+| `properties.items.items.properties.id.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.last_name` | `object` | `lastNameProperty` |
+| `properties.items.items.properties.last_name.description` | `"Last name."` | `'Last name.'` |
+| `properties.items.items.properties.last_name.example` | `"Doe"` | `'Doe'` |
+| `properties.items.items.properties.last_name.maxLength` | `100` | `100` |
+| `properties.items.items.properties.last_name.minLength` | `1` | `1` |
+| `properties.items.items.properties.last_name.pattern` | "^\[\\p\{L\}\\p\{M\}\]\[\\p\{L\}\\p\{M\}' .-\]\*$" | `NAME_PATTERN` |
+| `properties.items.items.properties.last_name.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.object` | `object` | - |
+| `properties.items.items.properties.object.description` | `"Object type."` | `'Object type.'` |
+| `properties.items.items.properties.object.enum` | readonly \[`"user"`\] | - |
+| `properties.items.items.properties.object.example` | `"user"` | `'user'` |
+| `properties.items.items.properties.object.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.phone_number` | `object` | - |
+| `properties.items.items.properties.phone_number.description` | `"Phone number, null when unknown."` | `'Phone number, null when unknown.'` |
+| `properties.items.items.properties.phone_number.example` | `"+33 6 12 34 56 78"` | `'+33 6 12 34 56 78'` |
+| `properties.items.items.properties.phone_number.nullable` | `true` | `true` |
+| `properties.items.items.properties.phone_number.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.role` | `object` | `roleProperty` |
+| `properties.items.items.properties.role.description` | `"Role of the user."` | `'Role of the user.'` |
+| `properties.items.items.properties.role.enum` | readonly \[`"admin"`, `"employee"`, `"manager"`\] | `ROLES` |
+| `properties.items.items.properties.role.example` | `"employee"` | `'employee'` |
+| `properties.items.items.properties.role.type` | `"string"` | `'string'` |
+| `properties.items.items.properties.updated_at` | `object` | - |
+| `properties.items.items.properties.updated_at.description` | `"Last update time in epoch milliseconds, null when never updated."` | `'Last update time in epoch milliseconds, null when never updated.'` |
+| `properties.items.items.properties.updated_at.example` | `null` | `null` |
+| `properties.items.items.properties.updated_at.nullable` | `true` | `true` |
+| `properties.items.items.properties.updated_at.type` | `"integer"` | `'integer'` |
+| `properties.items.items.required` | readonly \[`"archived_at"`, `"created_at"`, `"email"`, `"first_name"`, `"id"`, `"last_name"`, `"object"`, `"phone_number"`, `"role"`, `"updated_at"`\] | - |
+| `properties.items.items.type` | `"object"` | `'object'` |
+| `properties.items.type` | `"array"` | `'array'` |
+| `properties.more` | `object` | - |
+| `properties.more.description` | `"Whether another page exists."` | `'Whether another page exists.'` |
+| `properties.more.example` | `false` | `false` |
+| `properties.more.type` | `"boolean"` | `'boolean'` |
+| `properties.next` | `object` | - |
+| `properties.next.description` | `"Cursor of the next page, null on the last page."` | `'Cursor of the next page, null on the last page.'` |
+| `properties.next.example` | `null` | `null` |
+| `properties.next.nullable` | `true` | `true` |
+| `properties.next.type` | `"string"` | `'string'` |
+| `properties.total` | `object` | - |
+| `properties.total.description` | `"Total members of the team."` | `'Total members of the team.'` |
+| `properties.total.example` | `1` | `1` |
+| `properties.total.type` | `"integer"` | `'integer'` |
+| <a id="property-required-3"></a> `required` | readonly \[`"items"`, `"more"`, `"next"`, `"total"`\] | - |
+| <a id="property-type-4"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -230,24 +225,22 @@ Defined in: [schemas/team-member.ts:100](https://github.com/smokyngt/time-manage
 const TeamMemberRemoveBodySchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L30)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-5"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L31) |
-| <a id="property-properties-5"></a> `properties` | `object` | - | [schemas/team-member.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L32) |
-| `properties.user_ids` | `object` | `IdListSchema` | [schemas/team-member.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L32) |
-| `properties.user_ids.description` | `"List of user identifiers. Duplicates are ignored."` | `'List of user identifiers. Duplicates are ignored.'` | [schemas/common.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L15) |
-| `properties.user_ids.items` | `object` | - | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.items.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.items.type` | `"string"` | `'string'` | [schemas/common.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L16) |
-| `properties.user_ids.maxItems` | `100` | `RequestLimits.bulk` | [schemas/common.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L17) |
-| `properties.user_ids.minItems` | `1` | `1` | [schemas/common.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L18) |
-| `properties.user_ids.type` | `"array"` | `'array'` | [schemas/common.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L19) |
-| <a id="property-required-4"></a> `required` | readonly \[`"user_ids"`\] | - | [schemas/team-member.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L33) |
-| <a id="property-type-5"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:34](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L34) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-5"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-5"></a> `properties` | `object` | - |
+| `properties.user_ids` | `object` | `IdListSchema` |
+| `properties.user_ids.description` | `"List of user identifiers. Duplicates are ignored."` | `'List of user identifiers. Duplicates are ignored.'` |
+| `properties.user_ids.items` | `object` | - |
+| `properties.user_ids.items.format` | `"uuid"` | `'uuid'` |
+| `properties.user_ids.items.type` | `"string"` | `'string'` |
+| `properties.user_ids.maxItems` | `100` | `RequestLimits.bulk` |
+| `properties.user_ids.minItems` | `1` | `1` |
+| `properties.user_ids.type` | `"array"` | `'array'` |
+| <a id="property-required-4"></a> `required` | readonly \[`"user_ids"`\] | - |
+| <a id="property-type-5"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -257,38 +250,36 @@ Defined in: [schemas/team-member.ts:30](https://github.com/smokyngt/time-manager
 const TeamMemberRemoveDataSchema: object;
 ```
 
-Defined in: [schemas/team-member.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L89)
-
 #### Type Declaration
 
-| Name | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ |
-| <a id="property-additionalproperties-6"></a> `additionalProperties` | `false` | `false` | [schemas/team-member.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L90) |
-| <a id="property-properties-6"></a> `properties` | `object` | - | [schemas/team-member.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L91) |
-| `properties.failed` | `object` | `failedArray` | [schemas/team-member.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L92) |
-| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` | [schemas/team-member.ts:73](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L73) |
-| `properties.failed.items` | `object` | `BulkFailureSchema` | [schemas/team-member.ts:74](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L74) |
-| `properties.failed.items.additionalProperties` | `false` | `false` | [schemas/common.ts:87](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L87) |
-| `properties.failed.items.properties` | `object` | - | [schemas/common.ts:88](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L88) |
-| `properties.failed.items.properties.code` | `object` | - | [schemas/common.ts:89](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L89) |
-| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` | [schemas/common.ts:90](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L90) |
-| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` | [schemas/common.ts:91](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L91) |
-| `properties.failed.items.properties.code.type` | `"string"` | `'string'` | [schemas/common.ts:92](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L92) |
-| `properties.failed.items.properties.id` | `object` | - | [schemas/common.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L94) |
-| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` | [schemas/common.ts:95](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L95) |
-| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` | [schemas/common.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L96) |
-| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` | [schemas/common.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L97) |
-| `properties.failed.items.properties.id.type` | `"string"` | `'string'` | [schemas/common.ts:98](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L98) |
-| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - | [schemas/common.ts:101](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L101) |
-| `properties.failed.items.type` | `"object"` | `'object'` | [schemas/common.ts:102](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/common.ts#L102) |
-| `properties.failed.type` | `"array"` | `'array'` | [schemas/team-member.ts:75](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L75) |
-| `properties.removed` | [`JsonSchema`](common.mdx#jsonschema) | - | [schemas/team-member.ts:93](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L93) |
-| `properties.success` | `object` | - | [schemas/team-member.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L94) |
-| `properties.success.description` | `"True when no id failed."` | `'True when no id failed.'` | [schemas/team-member.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L94) |
-| `properties.success.example` | `true` | `true` | [schemas/team-member.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L94) |
-| `properties.success.type` | `"boolean"` | `'boolean'` | [schemas/team-member.ts:94](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L94) |
-| <a id="property-required-5"></a> `required` | readonly \[`"failed"`, `"removed"`, `"success"`\] | - | [schemas/team-member.ts:96](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L96) |
-| <a id="property-type-6"></a> `type` | `"object"` | `'object'` | [schemas/team-member.ts:97](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L97) |
+| Name | Type | Default value |
+| ------ | ------ | ------ |
+| <a id="property-additionalproperties-6"></a> `additionalProperties` | `false` | `false` |
+| <a id="property-properties-6"></a> `properties` | `object` | - |
+| `properties.failed` | `object` | `failedArray` |
+| `properties.failed.description` | `"Identifiers that could not be processed, with the reason."` | `'Identifiers that could not be processed, with the reason.'` |
+| `properties.failed.items` | `object` | `BulkFailureSchema` |
+| `properties.failed.items.additionalProperties` | `false` | `false` |
+| `properties.failed.items.properties` | `object` | - |
+| `properties.failed.items.properties.code` | `object` | - |
+| `properties.failed.items.properties.code.description` | `"Error code explaining the failure."` | `'Error code explaining the failure.'` |
+| `properties.failed.items.properties.code.example` | `"USER_NOT_FOUND"` | `'USER_NOT_FOUND'` |
+| `properties.failed.items.properties.code.type` | `"string"` | `'string'` |
+| `properties.failed.items.properties.id` | `object` | - |
+| `properties.failed.items.properties.id.description` | `"Identifier that failed."` | `'Identifier that failed.'` |
+| `properties.failed.items.properties.id.example` | `"0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10"` | `'0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10'` |
+| `properties.failed.items.properties.id.format` | `"uuid"` | `'uuid'` |
+| `properties.failed.items.properties.id.type` | `"string"` | `'string'` |
+| `properties.failed.items.required` | readonly \[`"code"`, `"id"`\] | - |
+| `properties.failed.items.type` | `"object"` | `'object'` |
+| `properties.failed.type` | `"array"` | `'array'` |
+| `properties.removed` | [`JsonSchema`](/docs/schemas/common#jsonschema) | - |
+| `properties.success` | `object` | - |
+| `properties.success.description` | `"True when no id failed."` | `'True when no id failed.'` |
+| `properties.success.example` | `true` | `true` |
+| `properties.success.type` | `"boolean"` | `'boolean'` |
+| <a id="property-required-5"></a> `required` | readonly \[`"failed"`, `"removed"`, `"success"`\] | - |
+| <a id="property-type-6"></a> `type` | `"object"` | `'object'` |
 
 ***
 
@@ -298,34 +289,32 @@ Defined in: [schemas/team-member.ts:89](https://github.com/smokyngt/time-manager
 const TeamMemberResponses: object;
 ```
 
-Defined in: [schemas/team-member.ts:117](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L117)
-
 #### Type Declaration
 
-| Name | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-add"></a> `add` | `object` | [schemas/team-member.ts:118](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L118) |
-| `add.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:119](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L119) |
-| `add.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:120](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L120) |
-| `add.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:121](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L121) |
-| `add.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:122](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L122) |
-| `add.404` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:123](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L123) |
-| `add.409` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:124](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L124) |
-| `add.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:125](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L125) |
-| `add.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:126](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L126) |
-| <a id="property-list"></a> `list` | `object` | [schemas/team-member.ts:128](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L128) |
-| `list.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:129](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L129) |
-| `list.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:130](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L130) |
-| `list.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:131](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L131) |
-| `list.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:132](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L132) |
-| `list.404` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:133](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L133) |
-| `list.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:134](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L134) |
-| `list.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:135](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L135) |
-| <a id="property-remove"></a> `remove` | `object` | [schemas/team-member.ts:137](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L137) |
-| `remove.200` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:138](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L138) |
-| `remove.400` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:139](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L139) |
-| `remove.401` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:140](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L140) |
-| `remove.403` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:141](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L141) |
-| `remove.404` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:142](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L142) |
-| `remove.429` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:143](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L143) |
-| `remove.500` | [`JsonSchema`](common.mdx#jsonschema) | [schemas/team-member.ts:144](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/schemas/team-member.ts#L144) |
+| Name | Type |
+| ------ | ------ |
+| <a id="property-add"></a> `add` | `object` |
+| `add.200` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.400` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.401` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.403` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.404` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.409` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.429` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `add.500` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| <a id="property-list"></a> `list` | `object` |
+| `list.200` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.400` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.401` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.403` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.404` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.429` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `list.500` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| <a id="property-remove"></a> `remove` | `object` |
+| `remove.200` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.400` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.401` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.403` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.404` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.429` | [`JsonSchema`](/docs/schemas/common#jsonschema) |
+| `remove.500` | [`JsonSchema`](/docs/schemas/common#jsonschema) |

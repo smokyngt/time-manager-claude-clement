@@ -1,0 +1,162 @@
+---
+title: "Clock"
+description: "Reference for the `controllers/clock` module: interfaces, type aliases, variables."
+---
+
+## Interfaces
+
+### BulkFailure
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code"></a> `code` | `string` |
+| <a id="property-id"></a> `id` | `string` |
+
+***
+
+### ClockControllerType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-create"></a> `create` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-current"></a> `current` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-delete"></a> `delete` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-in"></a> `in` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-list"></a> `list` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-out"></a> `out` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-retrieve"></a> `retrieve` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-update"></a> `update` | (`req`, `reply`) => `Promise`\<`void`\> |
+
+***
+
+### CurrentResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clock"></a> `clock` | [`Clock`](/docs/types/entities/clock#clock) \| `null` |
+
+***
+
+### DeleteBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-ids"></a> `ids` | `string`[] |
+
+***
+
+### DeleteResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-deleted"></a> `deleted` | `string`[] |
+| <a id="property-failed"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### InBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-note"></a> `note?` | `string` |
+
+***
+
+### ListBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` |
+| <a id="property-from"></a> `from?` | `string` \| `number` |
+| <a id="property-limit"></a> `limit?` | `number` |
+| <a id="property-open"></a> `open?` | `boolean` |
+| <a id="property-order"></a> `order?` | `"asc"` \| `"desc"` |
+| <a id="property-to"></a> `to?` | `string` \| `number` |
+| <a id="property-user_ids"></a> `user_ids?` | `string`[] |
+
+***
+
+### ListResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-items"></a> `items` | [`Clock`](/docs/types/entities/clock#clock)[] |
+| <a id="property-more"></a> `more` | `boolean` |
+| <a id="property-next"></a> `next` | `string` \| `null` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### OutBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-note-1"></a> `note?` | `string` |
+
+***
+
+### RetrieveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id-1"></a> `id` | `string` |
+
+***
+
+### UpdateBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-data"></a> `data` | [`ClockUpdateData`](/docs/services/clock#clockupdatedata) |
+| <a id="property-ids-1"></a> `ids` | `string`[] |
+
+***
+
+### UpdateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-failed-1"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-success-1"></a> `success` | `boolean` |
+| <a id="property-updated"></a> `updated` | `string`[] |
+
+## Type Aliases
+
+### CreateBody
+
+```ts
+type CreateBody = ClockCreateData;
+```
+
+## Variables
+
+### clock
+
+```ts
+const clock: ClockController;
+```

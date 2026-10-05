@@ -1,3 +1,11 @@
+---
+title: "Add()"
+description: "Reference for the `add()` function in `services/team-member/add` (route `team_member.service.add`)."
+route: "team_member.service.add"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>team_member.service.add</code></div>
+
 ## Functions
 
 ### add()
@@ -6,20 +14,16 @@
 function add(params): Promise<AddResponse>;
 ```
 
-Defined in: [services/team-member/add.ts:25](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/add.ts#L25)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`AddParams`](../team-member.mdx#addparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`AddParams`](/docs/services/team-member#addparams) |
 
 #### Returns
 
-`Promise`\<[`AddResponse`](../team-member.mdx#addresponse)\>
-
-#### Route
-
-team_member.service.add
+`Promise`\<[`AddResponse`](/docs/services/team-member#addresponse)\>
 
 #### Throws
+
+- `TeamMemberAddError`

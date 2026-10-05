@@ -1,0 +1,13 @@
+{
+  "title": "Auth",
+  "pages": [
+    "index",
+    "authorize",
+    "callback",
+    "login",
+    "logout",
+    "me",
+    "refresh",
+    "session"
+  ]
+}

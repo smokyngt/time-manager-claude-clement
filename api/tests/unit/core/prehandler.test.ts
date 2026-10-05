@@ -16,12 +16,13 @@ import { Reply } from '@/utils/http/reply.js';
 import { Prehandler } from '../../support/prehandler.js';
 
 import type { PrehandlerRoute } from '../../support/prehandler.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
 const Done = registerEvent<{ ok: boolean }>({ code: 'thing.done' });
 
-const router: FastifyPluginAsync = async (fastify) => {
-  fastify.post(
+const router: FastifyPluginAsync = (fastify) => {
+  fastify.post<{ Reply: ReplyEnvelope<{ ok: boolean }> }>(
     '/write',
     {
       preHandler: auth({ scopes: ['teams:manage'] }),
@@ -48,6 +49,8 @@ const router: FastifyPluginAsync = async (fastify) => {
       await Reply.send(req, reply, Done({ payload: { ok: true } }), { ok: true });
     },
   );
+
+  return Promise.resolve();
 };
 
 let route: PrehandlerRoute;

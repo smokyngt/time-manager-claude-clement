@@ -1,3 +1,11 @@
+---
+title: "Logout()"
+description: "Reference for the `logout()` function in `services/auth/logout` (route `auth.service.logout`)."
+route: "auth.service.logout"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.service.logout</code></div>
+
 ## Functions
 
 ### logout()
@@ -6,20 +14,16 @@
 function logout(params): Promise<LogoutResponse>;
 ```
 
-Defined in: [services/auth/logout.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/logout.ts#L19)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`LogoutParams`](../auth.mdx#logoutparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`LogoutParams`](/docs/services/auth#logoutparams) |
 
 #### Returns
 
-`Promise`\<[`LogoutResponse`](../auth.mdx#logoutresponse)\>
-
-#### Route
-
-auth.service.logout
+`Promise`\<[`LogoutResponse`](/docs/services/auth#logoutresponse)\>
 
 #### Throws
+
+- `AuthLogoutError`

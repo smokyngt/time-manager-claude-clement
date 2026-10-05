@@ -1,8 +1,11 @@
+---
+title: "Kpi"
+description: "Reference for the `utils/kpi` module: classes."
+---
+
 ## Classes
 
 ### Kpi
-
-Defined in: [utils/kpi.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L5)
 
 #### Constructors
 
@@ -18,126 +21,106 @@ new Kpi(): Kpi;
 
 #### Properties
 
-| Property | Modifier | Type | Default value | Defined in |
-| ------ | ------ | ------ | ------ | ------ |
-| <a id="property-defaultstart"></a> `defaultStart` | `readonly` | `"09:00"` | `'09:00'` | [utils/kpi.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L6) |
-| <a id="property-defaultweeklyhours"></a> `defaultWeeklyHours` | `readonly` | `35` | `35` | [utils/kpi.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L7) |
-| <a id="property-graceminutes"></a> `graceMinutes` | `readonly` | `5` | `5` | [utils/kpi.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L8) |
-| <a id="property-maxdays"></a> `maxDays` | `readonly` | `366` | `366` | [utils/kpi.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L9) |
+| Property | Modifier | Type | Default value |
+| ------ | ------ | ------ | ------ |
+| <a id="property-defaultstart"></a> `defaultStart` | `readonly` | `"09:00"` | `'09:00'` |
+| <a id="property-defaultweeklyhours"></a> `defaultWeeklyHours` | `readonly` | `35` | `35` |
+| <a id="property-graceminutes"></a> `graceMinutes` | `readonly` | `5` | `5` |
+| <a id="property-maxdays"></a> `maxDays` | `readonly` | `366` | `366` |
 
 #### Methods
 
 ##### average()
 
+<div className="route-badge"><span className="route-label">Route</span><code>kpi.average</code></div>
+
 ```ts
 static average(total, count): number;
 ```
 
-Defined in: [utils/kpi.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L17)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `total` | `number` | - |
-| `count` | `number` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `total` | `number` |
+| `count` | `number` |
 
 ###### Returns
 
 `number`
 
-###### Route
-
-kpi.average
-
 ##### overtime()
+
+<div className="route-badge"><span className="route-label">Route</span><code>kpi.overtime</code></div>
 
 ```ts
 static overtime(worked, target): number;
 ```
 
-Defined in: [utils/kpi.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L29)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `worked` | `number` | - |
-| `target` | `number` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `worked` | `number` |
+| `target` | `number` |
 
 ###### Returns
 
 `number`
 
-###### Route
-
-kpi.overtime
-
 ##### rate()
+
+<div className="route-badge"><span className="route-label">Route</span><code>kpi.rate</code></div>
 
 ```ts
 static rate(part, whole): number;
 ```
 
-Defined in: [utils/kpi.ts:39](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L39)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `part` | `number` | - |
-| `whole` | `number` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `part` | `number` |
+| `whole` | `number` |
 
 ###### Returns
 
 `number`
 
-###### Route
-
-kpi.rate
-
 ##### target()
+
+<div className="route-badge"><span className="route-label">Route</span><code>kpi.target</code></div>
 
 ```ts
 static target(weeklyHours, workdays): number;
 ```
 
-Defined in: [utils/kpi.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L51)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `weeklyHours` | `number` | - |
-| `workdays` | `number` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `weeklyHours` | `number` |
+| `workdays` | `number` |
 
 ###### Returns
 
 `number`
 
-###### Route
-
-kpi.target
-
 ##### valid()
+
+<div className="route-badge"><span className="route-label">Route</span><code>kpi.valid</code></div>
 
 ```ts
 static valid(from, to): boolean;
 ```
 
-Defined in: [utils/kpi.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/kpi.ts#L63)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `from` | `number` | - |
-| `to` | `number` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `from` | `number` |
+| `to` | `number` |
 
 ###### Returns
 
 `boolean`
-
-###### Route
-
-kpi.valid

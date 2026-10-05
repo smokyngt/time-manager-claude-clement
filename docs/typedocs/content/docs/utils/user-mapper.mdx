@@ -1,8 +1,14 @@
+---
+title: "User Mapper"
+description: "Reference for the `utils/user-mapper` module: classes."
+route: "user.mapper.entity"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.mapper.entity</code></div>
+
 ## Classes
 
 ### UserMapper
-
-Defined in: [utils/user-mapper.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/user-mapper.ts#L4)
 
 #### Constructors
 
@@ -24,29 +30,23 @@ new UserMapper(): UserMapper;
 static entity(row): User;
 ```
 
-Defined in: [utils/user-mapper.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/user-mapper.ts#L10)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `row` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} | - |
-| `row.archived_at` | `number` \| `null` | - |
-| `row.created_at` | `number` | - |
-| `row.email` | `string` | - |
-| `row.first_name` | `string` | - |
-| `row.id` | `string` | - |
-| `row.last_name` | `string` | - |
-| `row.microsoft_id` | `string` \| `null` | - |
-| `row.password_hash` | `string` \| `null` | - |
-| `row.phone_number` | `string` \| `null` | - |
-| `row.role` | `"admin"` \| `"employee"` \| `"manager"` | - |
-| `row.updated_at` | `number` \| `null` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `row` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} |
+| `row.archived_at` | `number` \| `null` |
+| `row.created_at` | `number` |
+| `row.email` | `string` |
+| `row.first_name` | `string` |
+| `row.id` | `string` |
+| `row.last_name` | `string` |
+| `row.microsoft_id` | `string` \| `null` |
+| `row.password_hash` | `string` \| `null` |
+| `row.phone_number` | `string` \| `null` |
+| `row.role` | `"admin"` \| `"employee"` \| `"manager"` |
+| `row.updated_at` | `number` \| `null` |
 
 ###### Returns
 
-[`User`](../types/entities/user.mdx#user)
-
-###### Route
-
-user.mapper.entity
+[`User`](/docs/types/entities/user#user)

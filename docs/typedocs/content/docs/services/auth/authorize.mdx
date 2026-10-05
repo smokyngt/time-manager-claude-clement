@@ -1,3 +1,11 @@
+---
+title: "Authorize()"
+description: "Reference for the `authorize()` function in `services/auth/authorize` (route `auth.service.authorize`)."
+route: "auth.service.authorize"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.service.authorize</code></div>
+
 ## Functions
 
 ### authorize()
@@ -6,14 +14,10 @@
 function authorize(): Promise<AuthorizeResponse>;
 ```
 
-Defined in: [services/auth/authorize.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/auth/authorize.ts#L16)
-
 #### Returns
 
-`Promise`\<[`AuthorizeResponse`](../auth.mdx#authorizeresponse)\>
-
-#### Route
-
-auth.service.authorize
+`Promise`\<[`AuthorizeResponse`](/docs/services/auth#authorizeresponse)\>
 
 #### Throws
+
+- `AuthMicrosoftError`

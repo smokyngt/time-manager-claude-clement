@@ -1,3 +1,11 @@
+---
+title: "Create()"
+description: "Reference for the `create()` function in `services/user/create` (route `user.service.create`)."
+route: "user.service.create"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.service.create</code></div>
+
 ## Functions
 
 ### create()
@@ -6,20 +14,16 @@
 function create(params): Promise<CreateResponse>;
 ```
 
-Defined in: [services/user/create.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/user/create.ts#L17)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`CreateParams`](../user.mdx#createparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`CreateParams`](/docs/services/user#createparams) |
 
 #### Returns
 
-`Promise`\<[`CreateResponse`](../user.mdx#createresponse)\>
-
-#### Route
-
-user.service.create
+`Promise`\<[`CreateResponse`](/docs/services/user#createresponse)\>
 
 #### Throws
+
+- `UserCreateError`

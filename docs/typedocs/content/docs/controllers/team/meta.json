@@ -1,0 +1,13 @@
+{
+  "title": "Team",
+  "pages": [
+    "index",
+    "archive",
+    "create",
+    "delete",
+    "list",
+    "restore",
+    "retrieve",
+    "update"
+  ]
+}

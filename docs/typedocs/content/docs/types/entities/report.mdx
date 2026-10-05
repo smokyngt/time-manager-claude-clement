@@ -1,120 +1,111 @@
+---
+title: "Report"
+description: "Reference for the `types/entities/report` module: interfaces, type aliases, variables."
+---
+
 ## Interfaces
 
 ### TeamMemberReport
 
-Defined in: [types/entities/report.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L5)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-days_worked"></a> `days_worked` | `number` | [types/entities/report.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L6) |
-| <a id="property-first_name"></a> `first_name` | `string` | [types/entities/report.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L7) |
-| <a id="property-last_name"></a> `last_name` | `string` | [types/entities/report.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L8) |
-| <a id="property-late_days"></a> `late_days` | `number` | [types/entities/report.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L9) |
-| <a id="property-overtime_ms"></a> `overtime_ms` | `number` | [types/entities/report.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L10) |
-| <a id="property-user_id"></a> `user_id` | `string` | [types/entities/report.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L11) |
-| <a id="property-worked_ms"></a> `worked_ms` | `number` | [types/entities/report.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L12) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-days_worked"></a> `days_worked` | `number` |
+| <a id="property-first_name"></a> `first_name` | `string` |
+| <a id="property-last_name"></a> `last_name` | `string` |
+| <a id="property-late_days"></a> `late_days` | `number` |
+| <a id="property-overtime_ms"></a> `overtime_ms` | `number` |
+| <a id="property-user_id"></a> `user_id` | `string` |
+| <a id="property-worked_ms"></a> `worked_ms` | `number` |
 
 ***
 
 ### TeamReport
 
-Defined in: [types/entities/report.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L15)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-from"></a> `from` | `number` | [types/entities/report.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L16) |
-| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` | [types/entities/report.ts:17](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L17) |
-| <a id="property-kpis"></a> `kpis` | [`TeamReportKpis`](#teamreportkpis) | [types/entities/report.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L18) |
-| <a id="property-members"></a> `members` | [`TeamMemberReport`](#teammemberreport)[] | [types/entities/report.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L19) |
-| <a id="property-object"></a> `object` | `"team_report"` | [types/entities/report.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L20) |
-| <a id="property-series"></a> `series` | [`TeamReportPoint`](#teamreportpoint)[] | [types/entities/report.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L21) |
-| <a id="property-team_id"></a> `team_id` | `string` | [types/entities/report.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L22) |
-| <a id="property-to"></a> `to` | `number` | [types/entities/report.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L23) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from"></a> `from` | `number` |
+| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-kpis"></a> `kpis` | [`TeamReportKpis`](#teamreportkpis) |
+| <a id="property-members"></a> `members` | [`TeamMemberReport`](#teammemberreport)[] |
+| <a id="property-object"></a> `object` | `"team_report"` |
+| <a id="property-series"></a> `series` | [`TeamReportPoint`](#teamreportpoint)[] |
+| <a id="property-team_id"></a> `team_id` | `string` |
+| <a id="property-to"></a> `to` | `number` |
 
 ***
 
 ### TeamReportKpis
 
-Defined in: [types/entities/report.ts:26](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L26)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-active_members"></a> `active_members` | `number` | [types/entities/report.ts:27](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L27) |
-| <a id="property-average_daily_ms"></a> `average_daily_ms` | `number` | [types/entities/report.ts:28](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L28) |
-| <a id="property-late_days-1"></a> `late_days` | `number` | [types/entities/report.ts:29](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L29) |
-| <a id="property-lateness_rate"></a> `lateness_rate` | `number` | [types/entities/report.ts:30](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L30) |
-| <a id="property-member_count"></a> `member_count` | `number` | [types/entities/report.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L31) |
-| <a id="property-overtime_ms-1"></a> `overtime_ms` | `number` | [types/entities/report.ts:32](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L32) |
-| <a id="property-worked_ms-1"></a> `worked_ms` | `number` | [types/entities/report.ts:33](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L33) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-active_members"></a> `active_members` | `number` |
+| <a id="property-average_daily_ms"></a> `average_daily_ms` | `number` |
+| <a id="property-late_days-1"></a> `late_days` | `number` |
+| <a id="property-lateness_rate"></a> `lateness_rate` | `number` |
+| <a id="property-member_count"></a> `member_count` | `number` |
+| <a id="property-overtime_ms-1"></a> `overtime_ms` | `number` |
+| <a id="property-worked_ms-1"></a> `worked_ms` | `number` |
 
 ***
 
 ### TeamReportPoint
 
-Defined in: [types/entities/report.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L36)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-period_start"></a> `period_start` | `number` | [types/entities/report.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L37) |
-| <a id="property-worked_ms-2"></a> `worked_ms` | `number` | [types/entities/report.ts:38](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L38) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-period_start"></a> `period_start` | `number` |
+| <a id="property-worked_ms-2"></a> `worked_ms` | `number` |
 
 ***
 
 ### UserReport
 
-Defined in: [types/entities/report.ts:41](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L41)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-from-1"></a> `from` | `number` | [types/entities/report.ts:42](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L42) |
-| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` | [types/entities/report.ts:43](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L43) |
-| <a id="property-kpis-1"></a> `kpis` | [`UserReportKpis`](#userreportkpis) | [types/entities/report.ts:44](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L44) |
-| <a id="property-object-1"></a> `object` | `"user_report"` | [types/entities/report.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L45) |
-| <a id="property-series-1"></a> `series` | [`UserReportPoint`](#userreportpoint)[] | [types/entities/report.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L46) |
-| <a id="property-to-1"></a> `to` | `number` | [types/entities/report.ts:47](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L47) |
-| <a id="property-user_id-1"></a> `user_id` | `string` | [types/entities/report.ts:48](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L48) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from-1"></a> `from` | `number` |
+| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-kpis-1"></a> `kpis` | [`UserReportKpis`](#userreportkpis) |
+| <a id="property-object-1"></a> `object` | `"user_report"` |
+| <a id="property-series-1"></a> `series` | [`UserReportPoint`](#userreportpoint)[] |
+| <a id="property-to-1"></a> `to` | `number` |
+| <a id="property-user_id-1"></a> `user_id` | `string` |
 
 ***
 
 ### UserReportKpis
 
-Defined in: [types/entities/report.ts:51](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L51)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-average_daily_ms-1"></a> `average_daily_ms` | `number` | [types/entities/report.ts:52](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L52) |
-| <a id="property-days_worked-1"></a> `days_worked` | `number` | [types/entities/report.ts:53](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L53) |
-| <a id="property-late_days-2"></a> `late_days` | `number` | [types/entities/report.ts:54](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L54) |
-| <a id="property-lateness_rate-1"></a> `lateness_rate` | `number` | [types/entities/report.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L55) |
-| <a id="property-overtime_ms-2"></a> `overtime_ms` | `number` | [types/entities/report.ts:56](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L56) |
-| <a id="property-target_ms"></a> `target_ms` | `number` | [types/entities/report.ts:57](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L57) |
-| <a id="property-worked_ms-3"></a> `worked_ms` | `number` | [types/entities/report.ts:58](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L58) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-average_daily_ms-1"></a> `average_daily_ms` | `number` |
+| <a id="property-days_worked-1"></a> `days_worked` | `number` |
+| <a id="property-late_days-2"></a> `late_days` | `number` |
+| <a id="property-lateness_rate-1"></a> `lateness_rate` | `number` |
+| <a id="property-overtime_ms-2"></a> `overtime_ms` | `number` |
+| <a id="property-target_ms"></a> `target_ms` | `number` |
+| <a id="property-worked_ms-3"></a> `worked_ms` | `number` |
 
 ***
 
 ### UserReportPoint
 
-Defined in: [types/entities/report.ts:61](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L61)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-late"></a> `late` | `number` | [types/entities/report.ts:62](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L62) |
-| <a id="property-period_start-1"></a> `period_start` | `number` | [types/entities/report.ts:63](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L63) |
-| <a id="property-worked_ms-4"></a> `worked_ms` | `number` | [types/entities/report.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L64) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-late"></a> `late` | `number` |
+| <a id="property-period_start-1"></a> `period_start` | `number` |
+| <a id="property-worked_ms-4"></a> `worked_ms` | `number` |
 
 ## Type Aliases
 
@@ -124,8 +115,6 @@ Defined in: [types/entities/report.ts:61](https://github.com/smokyngt/time-manag
 type Granularity = typeof GRANULARITIES[number];
 ```
 
-Defined in: [types/entities/report.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L3)
-
 ## Variables
 
 ### GRANULARITIES
@@ -133,5 +122,3 @@ Defined in: [types/entities/report.ts:3](https://github.com/smokyngt/time-manage
 ```ts
 const GRANULARITIES: readonly ["day", "month", "week"];
 ```
-
-Defined in: [types/entities/report.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/report.ts#L1)

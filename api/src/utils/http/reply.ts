@@ -1,3 +1,5 @@
+import { Metrics } from '@/lib/telemetry/metrics.js';
+
 import type { AppEvent } from '@/lib/events/base/registry.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -27,6 +29,7 @@ export class Reply {
       },
       timestamp: Date.now(),
     };
+    Metrics.event(event.code);
     req.log.info(
       {
         actor_id: req.requestContext.get('user')?.id,

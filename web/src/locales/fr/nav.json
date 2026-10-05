@@ -1,0 +1,19 @@
+{
+  "main": "Principale",
+  "dashboard": "Tableau de bord",
+  "clocks": "Mes pointages",
+  "teams": "Équipes",
+  "users": "Utilisateurs",
+  "profile": "Mon profil",
+  "open": "Ouvrir la navigation",
+  "menu_title": "Navigation",
+  "menu_description": "Menu de navigation principal",
+  "collapse": "Réduire le menu latéral",
+  "expand": "Développer le menu latéral",
+  "user_menu": {
+    "open": "Ouvrir le menu utilisateur",
+    "profile": "Mon profil",
+    "logout": "Se déconnecter",
+    "signed_out": "Vous avez été déconnecté"
+  }
+}

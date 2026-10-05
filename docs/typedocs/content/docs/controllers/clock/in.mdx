@@ -1,3 +1,11 @@
+---
+title: "In()"
+description: "Reference for the `clockIn()` function in `controllers/clock/in` (route `clock.controller.in`)."
+route: "clock.controller.in"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.in</code></div>
+
 ## Functions
 
 ### clockIn()
@@ -6,21 +14,17 @@
 function clockIn(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/in.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/in.ts#L19)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`InBody`](../clock.mdx#inbody); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Clock`](../../types/entities/clock.mdx#clock)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`InBody`](/docs/controllers/clock#inbody); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`Clock`](/docs/types/entities/clock#clock)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.in
-
 #### Throws
+
+- `ClockInError`

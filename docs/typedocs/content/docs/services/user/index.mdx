@@ -1,0 +1,231 @@
+---
+title: "User"
+description: "Reference for the `services/user` module: interfaces, variables."
+---
+
+## Interfaces
+
+### ArchiveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id"></a> `id` | `string` |
+
+***
+
+### ArchiveResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### CreateParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-data"></a> `data` | [`UserCreateData`](#usercreatedata) |
+
+***
+
+### CreateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user-1"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### DeleteParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-2"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id-1"></a> `id` | `string` |
+
+***
+
+### DeleteResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### ListParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-cursor"></a> `cursor?` | `string` |
+| <a id="property-filters"></a> `filters` | [`UserFilters`](#userfilters) |
+| <a id="property-limit"></a> `limit` | `number` |
+| <a id="property-order"></a> `order` | `"asc"` \| `"desc"` |
+
+***
+
+### ListResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-items"></a> `items` | [`User`](/docs/types/entities/user#user)[] |
+| <a id="property-more"></a> `more` | `boolean` |
+| <a id="property-next"></a> `next` | `string` \| `null` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### RestoreParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-3"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id-2"></a> `id` | `string` |
+
+***
+
+### RestoreResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user-2"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### RetrieveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id-3"></a> `id` | `string` |
+
+***
+
+### RetrieveResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user-3"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### UpdateParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-4"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-data-1"></a> `data` | [`UserUpdateData`](#userupdatedata) |
+| <a id="property-id-4"></a> `id` | `string` |
+
+***
+
+### UpdateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user-4"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### UserCreateData
+
+#### Extended by
+
+- [`CreateBody`](/docs/controllers/user#createbody)
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-email"></a> `email` | `string` |
+| <a id="property-first_name"></a> `first_name` | `string` |
+| <a id="property-last_name"></a> `last_name` | `string` |
+| <a id="property-password"></a> `password?` | `string` |
+| <a id="property-phone_number"></a> `phone_number?` | `string` \| `null` |
+| <a id="property-role"></a> `role?` | `"admin"` \| `"employee"` \| `"manager"` |
+
+***
+
+### UserFilters
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archived"></a> `archived?` | `boolean` |
+| <a id="property-created_after"></a> `created_after?` | `number` |
+| <a id="property-created_before"></a> `created_before?` | `number` |
+| <a id="property-ids"></a> `ids?` | `string`[] |
+| <a id="property-managed_by"></a> `managed_by?` | `string` |
+| <a id="property-role-1"></a> `role?` | `"admin"` \| `"employee"` \| `"manager"` |
+| <a id="property-team_id"></a> `team_id?` | `string` |
+
+***
+
+### UserServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archive"></a> `archive` | (`params`) => `Promise`\<[`ArchiveResponse`](#archiveresponse)\> |
+| <a id="property-create"></a> `create` | (`params`) => `Promise`\<[`CreateResponse`](#createresponse)\> |
+| <a id="property-delete"></a> `delete` | (`params`) => `Promise`\<[`DeleteResponse`](#deleteresponse)\> |
+| <a id="property-list"></a> `list` | (`params`) => `Promise`\<[`ListResponse`](#listresponse)\> |
+| <a id="property-restore"></a> `restore` | (`params`) => `Promise`\<[`RestoreResponse`](#restoreresponse)\> |
+| <a id="property-retrieve"></a> `retrieve` | (`params`) => `Promise`\<[`RetrieveResponse`](#retrieveresponse)\> |
+| <a id="property-update"></a> `update` | (`params`) => `Promise`\<[`UpdateResponse`](#updateresponse)\> |
+
+***
+
+### UserUpdateData
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-current_password"></a> `current_password?` | `string` |
+| <a id="property-email-1"></a> `email?` | `string` |
+| <a id="property-first_name-1"></a> `first_name?` | `string` |
+| <a id="property-last_name-1"></a> `last_name?` | `string` |
+| <a id="property-password-1"></a> `password?` | `string` |
+| <a id="property-phone_number-1"></a> `phone_number?` | `string` \| `null` |
+| <a id="property-role-2"></a> `role?` | `"admin"` \| `"employee"` \| `"manager"` |
+
+## Variables
+
+### userService
+
+```ts
+const userService: UserService;
+```

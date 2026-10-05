@@ -1,3 +1,11 @@
+---
+title: "Retrieve()"
+description: "Reference for the `retrieve()` function in `controllers/clock/retrieve` (route `clock.controller.retrieve`)."
+route: "clock.controller.retrieve"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.retrieve</code></div>
+
 ## Functions
 
 ### retrieve()
@@ -6,21 +14,17 @@
 function retrieve(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/retrieve.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/retrieve.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Params`: [`RetrieveParams`](../clock.mdx#retrieveparams); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Clock`](../../types/entities/clock.mdx#clock)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Params`: [`RetrieveParams`](/docs/controllers/clock#retrieveparams); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`Clock`](/docs/types/entities/clock#clock)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.retrieve
-
 #### Throws
+
+- `ClockRetrieveError`

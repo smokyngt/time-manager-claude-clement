@@ -1,0 +1,49 @@
+---
+title: "Report"
+description: "Reference for the `controllers/report` module: interfaces, variables."
+---
+
+## Interfaces
+
+### ReportControllerType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-team"></a> `team` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-user"></a> `user` | (`req`, `reply`) => `Promise`\<`void`\> |
+
+***
+
+### TeamBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from"></a> `from` | `number` |
+| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-team_id"></a> `team_id` | `string` |
+| <a id="property-to"></a> `to` | `number` |
+
+***
+
+### UserBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-from-1"></a> `from` | `number` |
+| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-to-1"></a> `to` | `number` |
+| <a id="property-user_id"></a> `user_id` | `string` |
+
+## Variables
+
+### report
+
+```ts
+const report: ReportController;
+```

@@ -1,3 +1,11 @@
+---
+title: "List()"
+description: "Reference for the `list()` function in `controllers/clock/list` (route `clock.controller.list`)."
+route: "clock.controller.list"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.list</code></div>
+
 ## Functions
 
 ### list()
@@ -6,21 +14,17 @@
 function list(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/list.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/list.ts#L21)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`ListBody`](../clock.mdx#listbody); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`ListResponse`](../clock.mdx#listresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`ListBody`](/docs/controllers/clock#listbody); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`ListResponse`](/docs/controllers/clock#listresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.list
-
 #### Throws
+
+- `ClockListError`

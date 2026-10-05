@@ -1,3 +1,11 @@
+---
+title: "Team()"
+description: "Reference for the `team()` function in `services/report/team` (route `report.service.team`)."
+route: "report.service.team"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>report.service.team</code></div>
+
 ## Functions
 
 ### team()
@@ -6,20 +14,16 @@
 function team(params): Promise<TeamResponse>;
 ```
 
-Defined in: [services/report/team.ts:23](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/report/team.ts#L23)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`TeamParams`](../report.mdx#teamparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`TeamParams`](/docs/services/report#teamparams) |
 
 #### Returns
 
-`Promise`\<[`TeamResponse`](../report.mdx#teamresponse)\>
-
-#### Route
-
-report.service.team
+`Promise`\<[`TeamResponse`](/docs/services/report#teamresponse)\>
 
 #### Throws
+
+- `ReportTeamError`

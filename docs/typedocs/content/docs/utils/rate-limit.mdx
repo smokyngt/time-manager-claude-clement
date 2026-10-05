@@ -1,8 +1,11 @@
+---
+title: "Rate Limit"
+description: "Reference for the `utils/rate-limit` module: classes, interfaces."
+---
+
 ## Classes
 
 ### RateLimit
-
-Defined in: [utils/rate-limit.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L16)
 
 #### Constructors
 
@@ -20,82 +23,68 @@ new RateLimit(): RateLimit;
 
 ##### error()
 
+<div className="route-badge"><span className="route-label">Route</span><code>rate_limit.error</code></div>
+
 ```ts
 static error(req): AppError;
 ```
 
-Defined in: [utils/rate-limit.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L22)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest` |
 
 ###### Returns
 
-[`AppError`](../lib/errors.mdx#apperror)
-
-###### Route
-
-rate_limit.error
+[`AppError`](/docs/lib/errors#apperror)
 
 ##### key()
+
+<div className="route-badge"><span className="route-label">Route</span><code>rate_limit.key</code></div>
 
 ```ts
 static key(req): Promise<string>;
 ```
 
-Defined in: [utils/rate-limit.ts:31](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L31)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest` |
 
 ###### Returns
 
 `Promise`\<`string`\>
 
-###### Route
-
-rate_limit.key
-
 ##### options()
+
+<div className="route-badge"><span className="route-label">Route</span><code>rate_limit.options</code></div>
 
 ```ts
 static options(entity): RateLimitOptions;
 ```
 
-Defined in: [utils/rate-limit.ts:45](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L45)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `entity` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `entity` | `string` |
 
 ###### Returns
 
 [`RateLimitOptions`](#ratelimitoptions-1)
 
-###### Route
-
-rate_limit.options
-
 ## Interfaces
 
 ### RateLimitOptions
 
-Defined in: [utils/rate-limit.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L8)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-errorresponsebuilder"></a> `errorResponseBuilder` | (`req`) => [`AppError`](../lib/errors.mdx#apperror) | [utils/rate-limit.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L9) |
-| <a id="property-global"></a> `global` | `boolean` | [utils/rate-limit.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L10) |
-| <a id="property-keygenerator"></a> `keyGenerator` | (`req`) => `Promise`\<`string`\> | [utils/rate-limit.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L11) |
-| <a id="property-max"></a> `max` | `number` | [utils/rate-limit.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L12) |
-| <a id="property-timewindow"></a> `timeWindow` | `string` | [utils/rate-limit.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/rate-limit.ts#L13) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-errorresponsebuilder"></a> `errorResponseBuilder` | (`req`) => [`AppError`](/docs/lib/errors#apperror) |
+| <a id="property-global"></a> `global` | `boolean` |
+| <a id="property-keygenerator"></a> `keyGenerator` | (`req`) => `Promise`\<`string`\> |
+| <a id="property-max"></a> `max` | `number` |
+| <a id="property-timewindow"></a> `timeWindow` | `string` |

@@ -1,3 +1,8 @@
+---
+title: "Auth"
+description: "Reference for the `lib/events/domains/auth` module: variables."
+---
+
 ## Variables
 
 ### AuthLoggedIn
@@ -7,8 +12,6 @@ const AuthLoggedIn: EventFactory<{
   user_id: string;
 }>;
 ```
-
-Defined in: [lib/events/domains/auth.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L3)
 
 ***
 
@@ -20,8 +23,6 @@ const AuthLoggedOut: EventFactory<{
 }>;
 ```
 
-Defined in: [lib/events/domains/auth.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L5)
-
 ***
 
 ### AuthMicrosoftLinked
@@ -32,8 +33,6 @@ const AuthMicrosoftLinked: EventFactory<{
 }>;
 ```
 
-Defined in: [lib/events/domains/auth.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L7)
-
 ***
 
 ### AuthMicrosoftStarted
@@ -41,8 +40,6 @@ Defined in: [lib/events/domains/auth.ts:7](https://github.com/smokyngt/time-mana
 ```ts
 const AuthMicrosoftStarted: EventFactory<Record<string, never>>;
 ```
-
-Defined in: [lib/events/domains/auth.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L9)
 
 ***
 
@@ -54,8 +51,6 @@ const AuthRefreshed: EventFactory<{
 }>;
 ```
 
-Defined in: [lib/events/domains/auth.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L11)
-
 ***
 
 ### AuthRetrieved
@@ -65,5 +60,3 @@ const AuthRetrieved: EventFactory<{
   user_id: string;
 }>;
 ```
-
-Defined in: [lib/events/domains/auth.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/events/domains/auth.ts#L13)

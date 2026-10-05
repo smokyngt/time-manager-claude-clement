@@ -1,0 +1,19 @@
+{
+  "main": "Main",
+  "dashboard": "Dashboard",
+  "clocks": "My clocks",
+  "teams": "Teams",
+  "users": "Users",
+  "profile": "My profile",
+  "open": "Open navigation",
+  "menu_title": "Navigation",
+  "menu_description": "Main navigation menu",
+  "collapse": "Collapse sidebar",
+  "expand": "Expand sidebar",
+  "user_menu": {
+    "open": "Open user menu",
+    "profile": "My profile",
+    "logout": "Log out",
+    "signed_out": "You have been signed out"
+  }
+}

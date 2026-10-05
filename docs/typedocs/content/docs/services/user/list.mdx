@@ -1,3 +1,11 @@
+---
+title: "List()"
+description: "Reference for the `list()` function in `services/user/list` (route `user.service.list`)."
+route: "user.service.list"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.service.list</code></div>
+
 ## Functions
 
 ### list()
@@ -6,20 +14,16 @@
 function list(params): Promise<ListResponse>;
 ```
 
-Defined in: [services/user/list.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/user/list.ts#L18)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`ListParams`](../user.mdx#listparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`ListParams`](/docs/services/user#listparams) |
 
 #### Returns
 
-`Promise`\<[`ListResponse`](../user.mdx#listresponse)\>
-
-#### Route
-
-user.service.list
+`Promise`\<[`ListResponse`](/docs/services/user#listresponse)\>
 
 #### Throws
+
+- `UserListError`

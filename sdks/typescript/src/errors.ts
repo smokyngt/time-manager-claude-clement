@@ -1,15 +1,5 @@
 import { ErrorCodes } from './error-codes.js';
 
-/** One field-level validation failure. */
-export interface ValidationIssue {
-  /** Machine readable failure code, for example `required`. */
-  code: string;
-  /** Dotted path of the offending field. */
-  path: string;
-  /** Extra parameters of the failure (limits, patterns). */
-  params: Record<string, unknown>;
-}
-
 /** Options shared by every error constructor. */
 export interface TimeManagerErrorOptions {
   /** Dotted lowercase error code. */
@@ -18,12 +8,22 @@ export interface TimeManagerErrorOptions {
   correlationId?: null | string;
   /** Request path the error relates to, null when unknown. */
   instance?: null | string;
-  /** Diagnostic metadata, present outside production only. */
-  metadata?: Record<string, unknown>;
   /** Human readable message for logs; never display it to users. */
   message?: string;
+  /** Diagnostic metadata, present outside production only. */
+  metadata?: Record<string, unknown>;
   /** HTTP status, 0 for network failures. */
   status: number;
+}
+
+/** One field-level validation failure. */
+export interface ValidationIssue {
+  /** Machine readable failure code, for example `required`. */
+  code: string;
+  /** Extra parameters of the failure (limits, patterns). */
+  params: Record<string, unknown>;
+  /** Dotted path of the offending field. */
+  path: string;
 }
 
 /** Base class of every error thrown by the SDK. */
@@ -100,39 +100,11 @@ export class TimeManagerError extends Error {
 /** The access token is missing, invalid or expired (401). */
 export class AuthenticationError extends TimeManagerError {}
 
-/** The caller is authenticated but not allowed (403). */
-export class ForbiddenError extends TimeManagerError {}
-
-/** The resource does not exist or is not visible (404). */
-export class NotFoundError extends TimeManagerError {}
-
 /** The request conflicts with the current state (409). */
 export class ConflictError extends TimeManagerError {}
 
-/** The request body or parameters are invalid (400). */
-export class ValidationError extends TimeManagerError {
-  /** Field-level failures, empty when the API gave none. */
-  public readonly errors: ValidationIssue[];
-
-  public constructor(options: TimeManagerErrorOptions & { errors?: ValidationIssue[] }) {
-    super(options);
-    this.errors = options.errors ?? [];
-  }
-}
-
-/** Too many requests (429). */
-export class RateLimitError extends TimeManagerError {
-  /** Seconds to wait before retrying, null when unknown. */
-  public readonly retryAfter: null | number;
-
-  public constructor(options: TimeManagerErrorOptions & { retryAfter?: null | number }) {
-    super(options);
-    this.retryAfter = options.retryAfter ?? null;
-  }
-}
-
-/** The API failed unexpectedly (5xx). */
-export class ServerError extends TimeManagerError {}
+/** The caller is authenticated but not allowed (403). */
+export class ForbiddenError extends TimeManagerError {}
 
 /** The request never reached the API or timed out. */
 export class NetworkError extends TimeManagerError {
@@ -149,6 +121,43 @@ export class NetworkError extends TimeManagerError {
     if (options.cause !== undefined) {
       this.cause = options.cause;
     }
+  }
+}
+
+/** The resource does not exist or is not visible (404). */
+export class NotFoundError extends TimeManagerError {}
+
+function retryAfter(response: Response, record: Record<string, unknown>): null | number {
+  const header = Number(response.headers.get('retry-after'));
+  if (Number.isFinite(header) && response.headers.has('retry-after')) {
+    return header;
+  }
+
+  return typeof record.retryAfter === 'number' ? record.retryAfter : null;
+}
+
+/** Too many requests (429). */
+export class RateLimitError extends TimeManagerError {
+  /** Seconds to wait before retrying, null when unknown. */
+  public readonly retryAfter: null | number;
+
+  public constructor(options: { retryAfter?: null | number } & TimeManagerErrorOptions) {
+    super(options);
+    this.retryAfter = options.retryAfter ?? null;
+  }
+}
+
+/** The API failed unexpectedly (5xx). */
+export class ServerError extends TimeManagerError {}
+
+/** The request body or parameters are invalid (400). */
+export class ValidationError extends TimeManagerError {
+  /** Field-level failures, empty when the API gave none. */
+  public readonly errors: ValidationIssue[];
+
+  public constructor(options: { errors?: ValidationIssue[] } & TimeManagerErrorOptions) {
+    super(options);
+    this.errors = options.errors ?? [];
   }
 }
 
@@ -186,13 +195,4 @@ function issues(value: unknown): ValidationIssue[] {
     params: isRecord(item.params) ? item.params : {},
     path: typeof item.path === 'string' ? item.path : '',
   }));
-}
-
-function retryAfter(response: Response, record: Record<string, unknown>): null | number {
-  const header = Number(response.headers.get('retry-after'));
-  if (Number.isFinite(header) && response.headers.has('retry-after')) {
-    return header;
-  }
-
-  return typeof record.retryAfter === 'number' ? record.retryAfter : null;
 }

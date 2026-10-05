@@ -1,3 +1,11 @@
+---
+title: "Create()"
+description: "Reference for the `create()` function in `controllers/clock/create` (route `clock.controller.create`)."
+route: "clock.controller.create"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.create</code></div>
+
 ## Functions
 
 ### create()
@@ -6,21 +14,17 @@
 function create(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/create.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/create.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`ClockCreateData`](../../services/clock.mdx#clockcreatedata); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Clock`](../../types/entities/clock.mdx#clock)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`ClockCreateData`](/docs/services/clock#clockcreatedata); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`Clock`](/docs/types/entities/clock#clock)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.create
-
 #### Throws
+
+- `ClockCreateError`

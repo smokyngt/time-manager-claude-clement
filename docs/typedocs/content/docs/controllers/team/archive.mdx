@@ -1,3 +1,11 @@
+---
+title: "Archive()"
+description: "Reference for the `archive()` function in `controllers/team/archive` (route `team.controller.archive`)."
+route: "team.controller.archive"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>team.controller.archive</code></div>
+
 ## Functions
 
 ### archive()
@@ -6,21 +14,17 @@
 function archive(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/team/archive.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team/archive.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Params`: [`ArchiveParams`](../team.mdx#archiveparams); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`Team`](../../types/entities/team.mdx#team)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Params`: [`ArchiveParams`](/docs/controllers/team#archiveparams); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`Team`](/docs/types/entities/team#team)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-team.controller.archive
-
 #### Throws
+
+- `TeamArchiveError`

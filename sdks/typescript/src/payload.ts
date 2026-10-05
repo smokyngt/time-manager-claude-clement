@@ -7,10 +7,10 @@ export class Payload {
    *
    * @route client.payload.deserialize
    * @param {unknown} value
-   * @returns {T}
+   * @returns {unknown}
    */
-  public static deserialize<T = unknown>(value: unknown): T {
-    return Payload.walk(value, Payload.camel) as T;
+  public static deserialize(value: unknown): unknown {
+    return Payload.walk(value, 'camel');
   }
 
   /**
@@ -18,10 +18,10 @@ export class Payload {
    *
    * @route client.payload.serialize
    * @param {unknown} value
-   * @returns {T}
+   * @returns {unknown}
    */
-  public static serialize<T = unknown>(value: unknown): T {
-    return Payload.walk(value, Payload.snake) as T;
+  public static serialize(value: unknown): unknown {
+    return Payload.walk(value, 'snake');
   }
 
   private static camel(key: string): string {
@@ -41,9 +41,9 @@ export class Payload {
     return key.replace(/[A-Z]/g, (char) => `_${char.toLowerCase()}`);
   }
 
-  private static walk(value: unknown, convert: (key: string) => string): unknown {
+  private static walk(value: unknown, mode: 'camel' | 'snake'): unknown {
     if (Array.isArray(value)) {
-      return value.map((item: unknown) => Payload.walk(item, convert));
+      return value.map((item: unknown) => Payload.walk(item, mode));
     }
     if (!Payload.plain(value)) {
       return value;
@@ -53,7 +53,7 @@ export class Payload {
       if (item === undefined) {
         continue;
       }
-      output[convert(key)] = Payload.walk(item, convert);
+      output[mode === 'camel' ? Payload.camel(key) : Payload.snake(key)] = Payload.walk(item, mode);
     }
 
     return output;

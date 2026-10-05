@@ -1,0 +1,110 @@
+---
+title: "Team Member"
+description: "Reference for the `services/team-member` module: interfaces, variables."
+---
+
+## Interfaces
+
+### AddParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id"></a> `id` | `string` |
+| <a id="property-user_ids"></a> `user_ids` | `string`[] |
+
+***
+
+### AddResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-added"></a> `added` | `string`[] |
+| <a id="property-failed"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### BulkFailure
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code"></a> `code` | `string` |
+| <a id="property-id-1"></a> `id` | `string` |
+
+***
+
+### ListParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-cursor"></a> `cursor?` | `string` |
+| <a id="property-id-2"></a> `id` | `string` |
+| <a id="property-limit"></a> `limit` | `number` |
+| <a id="property-order"></a> `order` | `"asc"` \| `"desc"` |
+
+***
+
+### ListResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-items"></a> `items` | [`User`](/docs/types/entities/user#user)[] |
+| <a id="property-more"></a> `more` | `boolean` |
+| <a id="property-next"></a> `next` | `string` \| `null` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### RemoveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-2"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-id-3"></a> `id` | `string` |
+| <a id="property-user_ids-1"></a> `user_ids` | `string`[] |
+
+***
+
+### RemoveResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-failed-1"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-removed"></a> `removed` | `string`[] |
+| <a id="property-success-1"></a> `success` | `boolean` |
+
+***
+
+### TeamMemberServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-add"></a> `add` | (`params`) => `Promise`\<[`AddResponse`](#addresponse)\> |
+| <a id="property-list"></a> `list` | (`params`) => `Promise`\<[`ListResponse`](#listresponse)\> |
+| <a id="property-remove"></a> `remove` | (`params`) => `Promise`\<[`RemoveResponse`](#removeresponse)\> |
+
+## Variables
+
+### teamMemberService
+
+```ts
+const teamMemberService: TeamMemberService;
+```

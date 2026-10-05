@@ -1,3 +1,11 @@
+---
+title: "Remove()"
+description: "Reference for the `remove()` function in `controllers/team-member/remove` (route `team_member.controller.remove`)."
+route: "team_member.controller.remove"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>team_member.controller.remove</code></div>
+
 ## Functions
 
 ### remove()
@@ -6,21 +14,17 @@
 function remove(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/team-member/remove.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/team-member/remove.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`RemoveBody`](../team-member.mdx#removebody); `Params`: [`RemoveParams`](../team-member.mdx#removeparams); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`RemoveResponse`](../team-member.mdx#removeresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`RemoveBody`](/docs/controllers/team-member#removebody); `Params`: [`RemoveParams`](/docs/controllers/team-member#removeparams); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`RemoveResponse`](/docs/controllers/team-member#removeresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-team_member.controller.remove
-
 #### Throws
+
+- `TeamMemberRemoveError`

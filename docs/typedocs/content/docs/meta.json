@@ -1,0 +1,20 @@
+{
+  "title": "Code Reference",
+  "pages": [
+    "index",
+    "routes",
+    "controllers",
+    "services",
+    "db",
+    "schemas",
+    "lib",
+    "utils",
+    "types",
+    "config",
+    "middlewares",
+    "plugins",
+    "app",
+    "app.v2",
+    "server"
+  ]
+}

@@ -1,3 +1,11 @@
+---
+title: "Update()"
+description: "Reference for the `update()` function in `controllers/clock/update` (route `clock.controller.update`)."
+route: "clock.controller.update"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.controller.update</code></div>
+
 ## Functions
 
 ### update()
@@ -6,21 +14,17 @@
 function update(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/clock/update.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/clock/update.ts#L22)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Body`: [`UpdateBody`](../clock.mdx#updatebody); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`UpdateResponse`](../clock.mdx#updateresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Body`: [`UpdateBody`](/docs/controllers/clock#updatebody); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`UpdateResponse`](/docs/controllers/clock#updateresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-clock.controller.update
-
 #### Throws
+
+- `ClockUpdateError`

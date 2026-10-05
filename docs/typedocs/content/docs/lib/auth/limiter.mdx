@@ -1,8 +1,11 @@
+---
+title: "Limiter"
+description: "Reference for the `lib/auth/limiter` module: classes."
+---
+
 ## Classes
 
 ### Limiter
-
-Defined in: [lib/auth/limiter.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L11)
 
 #### Constructors
 
@@ -20,104 +23,84 @@ new Limiter(): Limiter;
 
 ##### blocked()
 
+<div className="route-badge"><span className="route-label">Route</span><code>limiter.blocked</code></div>
+
 ```ts
 static blocked(email): boolean;
 ```
 
-Defined in: [lib/auth/limiter.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L19)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `email` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `email` | `string` |
 
 ###### Returns
 
 `boolean`
 
-###### Route
-
-limiter.blocked
-
 ##### clear()
+
+<div className="route-badge"><span className="route-label">Route</span><code>limiter.clear</code></div>
 
 ```ts
 static clear(email): void;
 ```
 
-Defined in: [lib/auth/limiter.ts:37](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L37)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `email` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `email` | `string` |
 
 ###### Returns
 
 `void`
 
-###### Route
-
-limiter.clear
-
 ##### fail()
+
+<div className="route-badge"><span className="route-label">Route</span><code>limiter.fail</code></div>
 
 ```ts
 static fail(email): void;
 ```
 
-Defined in: [lib/auth/limiter.ts:46](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L46)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `email` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `email` | `string` |
 
 ###### Returns
 
 `void`
 
-###### Route
-
-limiter.fail
-
 ##### key()
+
+<div className="route-badge"><span className="route-label">Route</span><code>limiter.key</code></div>
 
 ```ts
 static key(email): string;
 ```
 
-Defined in: [lib/auth/limiter.ts:68](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L68)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `email` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `email` | `string` |
 
 ###### Returns
 
 `string`
 
-###### Route
-
-limiter.key
-
 ##### reset()
+
+<div className="route-badge"><span className="route-label">Route</span><code>limiter.reset</code></div>
 
 ```ts
 static reset(): void;
 ```
 
-Defined in: [lib/auth/limiter.ts:76](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/lib/auth/limiter.ts#L76)
-
 ###### Returns
 
 `void`
-
-###### Route
-
-limiter.reset

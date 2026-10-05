@@ -1,0 +1,9 @@
+{
+  "title": "Team Member",
+  "pages": [
+    "index",
+    "add",
+    "list",
+    "remove"
+  ]
+}

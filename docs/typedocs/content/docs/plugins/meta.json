@@ -1,0 +1,9 @@
+{
+  "title": "Plugins",
+  "pages": [
+    "auth",
+    "health",
+    "metrics",
+    "observability"
+  ]
+}

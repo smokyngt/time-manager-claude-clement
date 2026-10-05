@@ -1,0 +1,143 @@
+---
+title: "Auth"
+description: "Reference for the `services/auth` module: interfaces, type aliases, variables, references."
+---
+
+## Interfaces
+
+### AuthorizeResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-max_age"></a> `max_age` | `number` |
+| <a id="property-state_cookie"></a> `state_cookie` | `string` |
+| <a id="property-url"></a> `url` | `string` |
+
+***
+
+### AuthServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-authorize"></a> `authorize` | () => `Promise`\<[`AuthorizeResponse`](#authorizeresponse)\> |
+| <a id="property-callback"></a> `callback` | (`params`) => `Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\> |
+| <a id="property-login"></a> `login` | (`params`) => `Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\> |
+| <a id="property-logout"></a> `logout` | (`params`) => `Promise`\<[`LogoutResponse`](#logoutresponse)\> |
+| <a id="property-me"></a> `me` | (`params`) => `Promise`\<[`MeResponse`](#meresponse)\> |
+| <a id="property-refresh"></a> `refresh` | (`params`) => `Promise`\<[`SessionResult`](/docs/services/auth/session#sessionresult)\> |
+
+***
+
+### CallbackParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code"></a> `code` | `string` |
+| <a id="property-state"></a> `state` | `string` |
+| <a id="property-state_cookie-1"></a> `state_cookie` | `string` \| `undefined` |
+
+***
+
+### LoginParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-email"></a> `email` | `string` |
+| <a id="property-password"></a> `password` | `string` |
+
+***
+
+### LogoutParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-token"></a> `token` | `string` \| `undefined` |
+
+***
+
+### LogoutResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-success"></a> `success` | `boolean` |
+| <a id="property-user_id"></a> `user_id` | `string` \| `null` |
+
+***
+
+### MeParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+
+***
+
+### MeResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user"></a> `user` | [`User`](/docs/types/entities/user#user) |
+
+***
+
+### RefreshParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-token-1"></a> `token` | `string` |
+
+## Type Aliases
+
+### CallbackResponse
+
+```ts
+type CallbackResponse = SessionResult;
+```
+
+***
+
+### LoginResponse
+
+```ts
+type LoginResponse = SessionResult;
+```
+
+***
+
+### RefreshResponse
+
+```ts
+type RefreshResponse = SessionResult;
+```
+
+## Variables
+
+### authService
+
+```ts
+const authService: AuthService;
+```
+
+## References
+
+### SessionResult
+
+Re-exports [SessionResult](/docs/services/auth/session#sessionresult)

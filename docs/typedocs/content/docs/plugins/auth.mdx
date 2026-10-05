@@ -1,14 +1,20 @@
+---
+title: "Auth"
+description: "Reference for the `plugins/auth` module: interfaces, functions."
+route: "plugins.auth"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>plugins.auth</code></div>
+
 ## Interfaces
 
 ### AuthOptions
 
-Defined in: [plugins/auth.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L12)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-scopes"></a> `scopes` | ( \| `"auth:self"` \| `"clocks:manage"` \| `"clocks:read"` \| `"clocks:write"` \| `"reports:read"` \| `"teams:manage"` \| `"teams:read"` \| `"users:manage"` \| `"users:read"` \| `"users:write"`)[] | [plugins/auth.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L13) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-scopes"></a> `scopes` | ( \| `"auth:self"` \| `"clocks:manage"` \| `"clocks:read"` \| `"clocks:write"` \| `"reports:read"` \| `"teams:manage"` \| `"teams:read"` \| `"users:manage"` \| `"users:read"` \| `"users:write"`)[] |
 
 ## Functions
 
@@ -18,20 +24,16 @@ Defined in: [plugins/auth.ts:12](https://github.com/smokyngt/time-manager-claude
 function auth(options): (req, reply) => Promise<void>;
 ```
 
-Defined in: [plugins/auth.ts:22](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/auth.ts#L22)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `options` | [`AuthOptions`](#authoptions) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `options` | [`AuthOptions`](#authoptions) |
 
 #### Returns
 
 (`req`, `reply`) => `Promise`\<`void`\>
 
-#### Route
-
-plugins.auth
-
 #### Throws
+
+- `ForbiddenError | UnauthorizedError`

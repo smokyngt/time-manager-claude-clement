@@ -1,0 +1,10 @@
+{
+  "title": "Entities",
+  "pages": [
+    "actor",
+    "clock",
+    "report",
+    "team",
+    "user"
+  ]
+}

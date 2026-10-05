@@ -1,23 +1,26 @@
+---
+title: "User"
+description: "Reference for the `types/entities/user` module: interfaces, type aliases, variables."
+---
+
 ## Interfaces
 
 ### User
 
-Defined in: [types/entities/user.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L5)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-archived_at"></a> `archived_at` | `number` \| `null` | [types/entities/user.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L6) |
-| <a id="property-created_at"></a> `created_at` | `number` | [types/entities/user.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L7) |
-| <a id="property-email"></a> `email` | `string` | [types/entities/user.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L8) |
-| <a id="property-first_name"></a> `first_name` | `string` | [types/entities/user.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L9) |
-| <a id="property-id"></a> `id` | `string` | [types/entities/user.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L10) |
-| <a id="property-last_name"></a> `last_name` | `string` | [types/entities/user.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L11) |
-| <a id="property-object"></a> `object` | `"user"` | [types/entities/user.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L12) |
-| <a id="property-phone_number"></a> `phone_number` | `string` \| `null` | [types/entities/user.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L13) |
-| <a id="property-role"></a> `role` | `"admin"` \| `"employee"` \| `"manager"` | [types/entities/user.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L14) |
-| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` | [types/entities/user.ts:15](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L15) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archived_at"></a> `archived_at` | `number` \| `null` |
+| <a id="property-created_at"></a> `created_at` | `number` |
+| <a id="property-email"></a> `email` | `string` |
+| <a id="property-first_name"></a> `first_name` | `string` |
+| <a id="property-id"></a> `id` | `string` |
+| <a id="property-last_name"></a> `last_name` | `string` |
+| <a id="property-object"></a> `object` | `"user"` |
+| <a id="property-phone_number"></a> `phone_number` | `string` \| `null` |
+| <a id="property-role"></a> `role` | `"admin"` \| `"employee"` \| `"manager"` |
+| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` |
 
 ## Type Aliases
 
@@ -27,8 +30,6 @@ Defined in: [types/entities/user.ts:5](https://github.com/smokyngt/time-manager-
 type Role = typeof ROLES[number];
 ```
 
-Defined in: [types/entities/user.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L3)
-
 ## Variables
 
 ### ROLES
@@ -36,5 +37,3 @@ Defined in: [types/entities/user.ts:3](https://github.com/smokyngt/time-manager-
 ```ts
 const ROLES: readonly ["admin", "employee", "manager"];
 ```
-
-Defined in: [types/entities/user.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/user.ts#L1)

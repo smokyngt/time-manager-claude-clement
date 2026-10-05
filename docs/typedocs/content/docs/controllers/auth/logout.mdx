@@ -1,3 +1,11 @@
+---
+title: "Logout()"
+description: "Reference for the `logout()` function in `controllers/auth/logout` (route `auth.controller.logout`)."
+route: "auth.controller.logout"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.controller.logout</code></div>
+
 ## Functions
 
 ### logout()
@@ -6,21 +14,17 @@
 function logout(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/auth/logout.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/auth/logout.ts#L18)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest` | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`LogoutResponse`](../auth.mdx#logoutresponse)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest` |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`LogoutResponse`](/docs/controllers/auth#logoutresponse)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-auth.controller.logout
-
 #### Throws
+
+- `AuthLogoutError`

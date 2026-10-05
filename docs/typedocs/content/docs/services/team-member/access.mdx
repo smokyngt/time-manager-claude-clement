@@ -1,8 +1,11 @@
+---
+title: "Access"
+description: "Reference for the `services/team-member/access` module: classes."
+---
+
 ## Classes
 
 ### TeamMemberAccess
-
-Defined in: [services/team-member/access.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L11)
 
 #### Constructors
 
@@ -20,6 +23,8 @@ new TeamMemberAccess(): TeamMemberAccess;
 
 ##### load()
 
+<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.load</code></div>
+
 ```ts
 static load(id, route): Promise<{
   archived_at: number | null;
@@ -35,14 +40,12 @@ static load(id, route): Promise<{
 }>;
 ```
 
-Defined in: [services/team-member/access.ts:19](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L19)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `id` | `string` | - |
-| `route` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `id` | `string` |
+| `route` | `string` |
 
 ###### Returns
 
@@ -59,13 +62,13 @@ Defined in: [services/team-member/access.ts:19](https://github.com/smokyngt/time
   `work_start`: `string`;
 \}\>
 
-###### Route
-
-team_member.access.load
-
 ###### Throws
 
+- `TeamMemberTeamNotFoundError`
+
 ##### manage()
+
+<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.manage</code></div>
 
 ```ts
 static manage(
@@ -75,37 +78,35 @@ static manage(
 ): void;
 ```
 
-Defined in: [services/team-member/access.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L36)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
-| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
-| `team.archived_at` | `number` \| `null` | - |
-| `team.created_at` | `number` | - |
-| `team.description` | `string` \| `null` | - |
-| `team.id` | `string` | - |
-| `team.manager_id` | `string` | - |
-| `team.name` | `string` | - |
-| `team.updated_at` | `number` \| `null` | - |
-| `team.weekly_hours_target` | `number` | - |
-| `team.work_end` | `string` | - |
-| `team.work_start` | `string` | - |
-| `route` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} |
+| `team.archived_at` | `number` \| `null` |
+| `team.created_at` | `number` |
+| `team.description` | `string` \| `null` |
+| `team.id` | `string` |
+| `team.manager_id` | `string` |
+| `team.name` | `string` |
+| `team.updated_at` | `number` \| `null` |
+| `team.weekly_hours_target` | `number` |
+| `team.work_end` | `string` |
+| `team.work_start` | `string` |
+| `route` | `string` |
 
 ###### Returns
 
 `void`
 
-###### Route
-
-team_member.access.manage
-
 ###### Throws
 
+- `ForbiddenError`
+
 ##### view()
+
+<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.view</code></div>
 
 ```ts
 static view(
@@ -115,32 +116,28 @@ static view(
 ): Promise<void>;
 ```
 
-Defined in: [services/team-member/access.ts:50](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/team-member/access.ts#L50)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
-| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} | - |
-| `team.archived_at` | `number` \| `null` | - |
-| `team.created_at` | `number` | - |
-| `team.description` | `string` \| `null` | - |
-| `team.id` | `string` | - |
-| `team.manager_id` | `string` | - |
-| `team.name` | `string` | - |
-| `team.updated_at` | `number` \| `null` | - |
-| `team.weekly_hours_target` | `number` | - |
-| `team.work_end` | `string` | - |
-| `team.work_start` | `string` | - |
-| `route` | `string` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `team` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `description`: `string` \| `null`; `id`: `string`; `manager_id`: `string`; `name`: `string`; `updated_at`: `number` \| `null`; `weekly_hours_target`: `number`; `work_end`: `string`; `work_start`: `string`; \} |
+| `team.archived_at` | `number` \| `null` |
+| `team.created_at` | `number` |
+| `team.description` | `string` \| `null` |
+| `team.id` | `string` |
+| `team.manager_id` | `string` |
+| `team.name` | `string` |
+| `team.updated_at` | `number` \| `null` |
+| `team.weekly_hours_target` | `number` |
+| `team.work_end` | `string` |
+| `team.work_start` | `string` |
+| `route` | `string` |
 
 ###### Returns
 
 `Promise`\<`void`\>
 
-###### Route
-
-team_member.access.view
-
 ###### Throws
+
+- `ForbiddenError`

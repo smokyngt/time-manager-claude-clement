@@ -1,0 +1,11 @@
+{
+  "title": "Schema",
+  "pages": [
+    "index",
+    "audit-log",
+    "clock",
+    "refresh-token",
+    "team",
+    "user"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "title": "Auth",
+  "pages": [
+    "index",
+    "callback",
+    "login",
+    "logout",
+    "me",
+    "microsoft",
+    "refresh"
+  ]
+}

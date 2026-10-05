@@ -1,3 +1,11 @@
+---
+title: "Delete()"
+description: "Reference for the `remove()` function in `services/user/delete` (route `user.service.delete`)."
+route: "user.service.delete"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.service.delete</code></div>
+
 ## Functions
 
 ### remove()
@@ -6,20 +14,16 @@
 function remove(params): Promise<DeleteResponse>;
 ```
 
-Defined in: [services/user/delete.ts:18](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/user/delete.ts#L18)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`DeleteParams`](../user.mdx#deleteparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`DeleteParams`](/docs/services/user#deleteparams) |
 
 #### Returns
 
-`Promise`\<[`DeleteResponse`](../user.mdx#deleteresponse)\>
-
-#### Route
-
-user.service.delete
+`Promise`\<[`DeleteResponse`](/docs/services/user#deleteresponse)\>
 
 #### Throws
+
+- `UserDeleteError`

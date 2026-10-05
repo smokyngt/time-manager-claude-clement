@@ -1,8 +1,14 @@
+---
+title: "Reply"
+description: "Reference for the `utils/http/reply` module: classes."
+route: "reply.send"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>reply.send</code></div>
+
 ## Classes
 
 ### Reply
-
-Defined in: [utils/http/reply.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/http/reply.ts#L5)
 
 #### Constructors
 
@@ -29,8 +35,6 @@ static send<Data, Payload>(
 ): Promise<void>;
 ```
 
-Defined in: [utils/http/reply.ts:14](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/http/reply.ts#L14)
-
 ###### Type Parameters
 
 | Type Parameter |
@@ -40,17 +44,13 @@ Defined in: [utils/http/reply.ts:14](https://github.com/smokyngt/time-manager-cl
 
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest` | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/misc/reply.mdx#replyenvelope)\<`Data`\>; \}\> | - |
-| `event` | [`AppEvent`](../../lib/events/base/registry.mdx#appevent)\<`Payload`\> | - |
-| `data` | `Data` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest` |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/misc/reply#replyenvelope)\<`Data`\>; \}\> |
+| `event` | [`AppEvent`](/docs/lib/events/base/registry#appevent)\<`Payload`\> |
+| `data` | `Data` |
 
 ###### Returns
 
 `Promise`\<`void`\>
-
-###### Route
-
-reply.send

@@ -1,3 +1,11 @@
+---
+title: "Callback()"
+description: "Reference for the `callback()` function in `controllers/auth/callback` (route `auth.controller.callback`)."
+route: "auth.controller.callback"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>auth.controller.callback</code></div>
+
 ## Functions
 
 ### callback()
@@ -6,21 +14,17 @@
 function callback(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/auth/callback.ts:21](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/auth/callback.ts#L21)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Querystring`: [`CallbackQuery`](../auth.mdx#callbackquery); \}\> | - |
-| `reply` | `FastifyReply` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Querystring`: [`CallbackQuery`](/docs/controllers/auth#callbackquery); \}\> |
+| `reply` | `FastifyReply` |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-auth.controller.callback
-
 #### Throws
+
+- `AuthMicrosoftError`

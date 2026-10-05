@@ -1,3 +1,11 @@
+---
+title: "Observability"
+description: "Reference for the `plugins/observability` module: variables."
+route: "plugins.observability"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>plugins.observability</code></div>
+
 ## Variables
 
 ### observability
@@ -6,20 +14,14 @@
 const observability: (app, _options, done) => void;
 ```
 
-Defined in: [plugins/observability.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/plugins/observability.ts#L16)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `app` | `FastifyInstance`\<`RawServerDefault`, `IncomingMessage`, `ServerResponse`\<`IncomingMessage`\>, `FastifyBaseLogger`, `FastifyTypeProviderDefault`\> | - |
-| `_options` | `Record`\<`never`, `never`\> | - |
-| `done` | (`err?`) => `void` | - |
+| Parameter | Type |
+| ------ | ------ |
+| `app` | `FastifyInstance`\<`RawServerDefault`, `IncomingMessage`, `ServerResponse`\<`IncomingMessage`\>, `FastifyBaseLogger`, `FastifyTypeProviderDefault`\> |
+| `_options` | `Record`\<`never`, `never`\> |
+| `done` | (`err?`) => `void` |
 
 #### Returns
 
 `void`
-
-#### Route
-
-plugins.observability

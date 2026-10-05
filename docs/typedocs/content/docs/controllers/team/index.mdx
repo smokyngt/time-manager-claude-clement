@@ -1,0 +1,164 @@
+---
+title: "Team"
+description: "Reference for the `controllers/team` module: interfaces, variables."
+---
+
+## Interfaces
+
+### ArchiveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id"></a> `id` | `string` |
+
+***
+
+### BulkFailure
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code"></a> `code` | `string` |
+| <a id="property-id-1"></a> `id` | `string` |
+
+***
+
+### CreateBody
+
+#### Extends
+
+- `Omit`\<[`TeamCreateData`](/docs/services/team#teamcreatedata), `"manager_id"`\>
+
+#### Properties
+
+| Property | Type | Inherited from |
+| ------ | ------ | ------ |
+| <a id="property-description"></a> `description?` | `string` \| `null` | [`TeamCreateData`](/docs/services/team#teamcreatedata).[`description`](/docs/services/team#property-description) |
+| <a id="property-manager_id"></a> `manager_id?` | `string` | - |
+| <a id="property-name"></a> `name` | `string` | [`TeamCreateData`](/docs/services/team#teamcreatedata).[`name`](/docs/services/team#property-name) |
+| <a id="property-weekly_hours_target"></a> `weekly_hours_target?` | `number` | [`TeamCreateData`](/docs/services/team#teamcreatedata).[`weekly_hours_target`](/docs/services/team#property-weekly_hours_target) |
+| <a id="property-work_end"></a> `work_end?` | `string` | [`TeamCreateData`](/docs/services/team#teamcreatedata).[`work_end`](/docs/services/team#property-work_end) |
+| <a id="property-work_start"></a> `work_start?` | `string` | [`TeamCreateData`](/docs/services/team#teamcreatedata).[`work_start`](/docs/services/team#property-work_start) |
+
+***
+
+### DeleteBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-ids"></a> `ids` | `string`[] |
+
+***
+
+### DeleteResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-deleted"></a> `deleted` | `string`[] |
+| <a id="property-failed"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-success"></a> `success` | `boolean` |
+
+***
+
+### ListBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archived"></a> `archived?` | `boolean` |
+| <a id="property-created_after"></a> `created_after?` | `string` \| `number` |
+| <a id="property-created_before"></a> `created_before?` | `string` \| `number` |
+| <a id="property-cursor"></a> `cursor?` | `string` |
+| <a id="property-ids-1"></a> `ids?` | `string`[] |
+| <a id="property-limit"></a> `limit?` | `number` |
+| <a id="property-manager_id-1"></a> `manager_id?` | `string` |
+| <a id="property-member_id"></a> `member_id?` | `string` |
+| <a id="property-order"></a> `order?` | `"asc"` \| `"desc"` |
+
+***
+
+### ListResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-items"></a> `items` | [`Team`](/docs/types/entities/team#team)[] |
+| <a id="property-more"></a> `more` | `boolean` |
+| <a id="property-next"></a> `next` | `string` \| `null` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### RestoreParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id-2"></a> `id` | `string` |
+
+***
+
+### RetrieveParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id-3"></a> `id` | `string` |
+
+***
+
+### TeamControllerType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archive"></a> `archive` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-create"></a> `create` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-delete"></a> `delete` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-list"></a> `list` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-restore"></a> `restore` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-retrieve"></a> `retrieve` | (`req`, `reply`) => `Promise`\<`void`\> |
+| <a id="property-update"></a> `update` | (`req`, `reply`) => `Promise`\<`void`\> |
+
+***
+
+### UpdateBody
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-data"></a> `data` | [`TeamUpdateData`](/docs/services/team#teamupdatedata) |
+| <a id="property-ids-2"></a> `ids` | `string`[] |
+
+***
+
+### UpdateResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-failed-1"></a> `failed` | [`BulkFailure`](#bulkfailure)[] |
+| <a id="property-success-1"></a> `success` | `boolean` |
+| <a id="property-updated"></a> `updated` | `string`[] |
+
+## Variables
+
+### team
+
+```ts
+const team: TeamController;
+```

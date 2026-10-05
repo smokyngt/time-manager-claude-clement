@@ -1,0 +1,815 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Loki log explorer for the api: volume by level, errors and request/trace correlation.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "id": null,
+  "links": [
+    {
+      "asDropdown": true,
+      "icon": "external link",
+      "includeVars": true,
+      "keepTime": true,
+      "tags": [
+        "time-manager"
+      ],
+      "targetBlank": false,
+      "title": "Time Manager dashboards",
+      "type": "dashboards"
+    }
+  ],
+  "panels": [
+    {
+      "title": "Navigation",
+      "description": "Links to the other Time Manager dashboards. The alert rules live under Alerting > Alert rules.",
+      "type": "text",
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "[Overview](/d/tm-overview) | [API RED](/d/tm-api-red) | [Business](/d/tm-business) | [Traces](/d/tm-traces) | **Logs** | [PostgreSQL](/d/tm-postgres) | [Runtime](/d/tm-runtime) | [Alerts](/alerting/list)",
+        "mode": "markdown"
+      },
+      "transparent": true,
+      "id": 1,
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 2
+      },
+      "id": 2,
+      "panels": [],
+      "title": "Overview",
+      "type": "row"
+    },
+    {
+      "title": "Log volume by level",
+      "description": "Number of api log lines per level. Sudden warn/error growth precedes most incidents.",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (level) (count_over_time({service=\"api\"} [$__auto]))",
+          "legendFormat": "{{level}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "bars",
+            "fillOpacity": 60,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "trace"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "debug"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "info"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "warn"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "error"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "fatal"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "unknown"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "text",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 3,
+      "gridPos": {
+        "h": 8,
+        "w": 16,
+        "x": 0,
+        "y": 3
+      }
+    },
+    {
+      "title": "Errors in range",
+      "description": "api log lines with level error or fatal in the selected range.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({service=\"api\",level=~\"error|fatal\"}[$__range]))",
+          "legendFormat": "__auto",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "id": 4,
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 16,
+        "y": 3
+      }
+    },
+    {
+      "title": "Warnings in range",
+      "description": "api log lines with level warn in the selected range.",
+      "type": "stat",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "sum(count_over_time({service=\"api\",level=\"warn\"}[$__range]))",
+          "legendFormat": "__auto",
+          "queryType": "instant",
+          "refId": "A"
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "id": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 4,
+        "x": 20,
+        "y": 3
+      }
+    },
+    {
+      "title": "Volume by service",
+      "description": "Log lines per second per compose service (api, db, web, ...).",
+      "type": "timeseries",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service) (rate({service=~\".+\"} [$__auto]))",
+          "legendFormat": "{{service}}",
+          "queryType": "range",
+          "refId": "A"
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 4,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "cps"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "id": 6,
+      "gridPos": {
+        "h": 6,
+        "w": 24,
+        "x": 0,
+        "y": 11
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 7,
+      "panels": [],
+      "title": "Errors",
+      "type": "row"
+    },
+    {
+      "title": "Error logs",
+      "description": "api lines with level error or fatal, newest first. Expand a line to see request_id and trace_id and jump to the trace.",
+      "type": "logs",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "{service=\"api\",level=~\"error|fatal\"}",
+          "legendFormat": "__auto",
+          "queryType": "range",
+          "refId": "A",
+          "maxLines": 500
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "id": 8,
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      }
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Request and trace correlation",
+      "type": "row"
+    },
+    {
+      "title": "Logs for request_id / trace_id",
+      "description": "Lines matching the request_id and trace_id variables (regex; both default to everything). Paste a trace id from Tempo or an x-request-id response header.",
+      "type": "logs",
+      "targets": [
+        {
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "editorMode": "code",
+          "expr": "{service=\"api\", level=~\"$level\"} | request_id=~\"$request_id\" | trace_id=~\"$trace_id\" |~ \"$search\"",
+          "legendFormat": "__auto",
+          "queryType": "range",
+          "refId": "A",
+          "maxLines": 500
+        }
+      ],
+      "datasource": {
+        "type": "loki",
+        "uid": "${ds_loki}"
+      },
+      "options": {
+        "dedupStrategy": "none",
+        "enableInfiniteScrolling": false,
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": true,
+        "sortOrder": "Descending",
+        "wrapLogMessage": true
+      },
+      "id": 10,
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      }
+    },
+    {
+      "title": "Jump to traces",
+      "description": "How to go from a log line to its trace.",
+      "type": "text",
+      "options": {
+        "mode": "markdown",
+        "content": "Expand a log line and click **View trace in Tempo** (derived field on `trace_id`), or copy the id into the `trace_id` variable of the [Traces dashboard](/d/tm-traces)."
+      },
+      "transparent": true,
+      "id": 11,
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 41
+      }
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 12,
+      "panels": [
+        {
+          "title": "All logs",
+          "description": "Lines of every collected container filtered with the search variable.",
+          "type": "logs",
+          "targets": [
+            {
+              "datasource": {
+                "type": "loki",
+                "uid": "${ds_loki}"
+              },
+              "editorMode": "code",
+              "expr": "{service=~\".+\"} |~ \"$search\"",
+              "legendFormat": "__auto",
+              "queryType": "range",
+              "refId": "A",
+              "maxLines": 500
+            }
+          ],
+          "datasource": {
+            "type": "loki",
+            "uid": "${ds_loki}"
+          },
+          "options": {
+            "dedupStrategy": "none",
+            "enableInfiniteScrolling": false,
+            "enableLogDetails": true,
+            "prettifyLogMessage": false,
+            "showCommonLabels": false,
+            "showLabels": false,
+            "showTime": true,
+            "sortOrder": "Descending",
+            "wrapLogMessage": true
+          },
+          "id": 13,
+          "gridPos": {
+            "h": 12,
+            "w": 24,
+            "x": 0,
+            "y": 44
+          }
+        }
+      ],
+      "title": "All services",
+      "type": "row"
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 41,
+  "tags": [
+    "time-manager",
+    "logs",
+    "loki"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "Loki",
+          "value": "loki"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "label": "Logs",
+        "multi": false,
+        "name": "ds_loki",
+        "options": [],
+        "query": "loki",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "/^Loki$/",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": ".*",
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "hide": 0,
+        "includeAll": true,
+        "label": "Level",
+        "multi": true,
+        "name": "level",
+        "options": [],
+        "query": "trace,debug,info,warn,error,fatal,unknown",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
+        "hide": 0,
+        "label": "request_id (regex)",
+        "name": "request_id",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "query": ".*",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
+        "hide": 0,
+        "label": "trace_id (regex)",
+        "name": "trace_id",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "query": ".*",
+        "skipUrlSync": false,
+        "type": "textbox"
+      },
+      {
+        "current": {
+          "text": ".*",
+          "value": ".*"
+        },
+        "hide": 0,
+        "label": "search (regex)",
+        "name": "search",
+        "options": [
+          {
+            "selected": true,
+            "text": ".*",
+            "value": ".*"
+          }
+        ],
+        "query": ".*",
+        "skipUrlSync": false,
+        "type": "textbox"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "1h"
+    ]
+  },
+  "timezone": "browser",
+  "title": "Time Manager - Logs",
+  "uid": "tm-logs",
+  "version": 1,
+  "weekStart": ""
+}

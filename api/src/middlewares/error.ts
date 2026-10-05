@@ -8,6 +8,7 @@ import {
   ValidationError,
 } from '@/lib/errors/base/core.js';
 import { AppError, Registry } from '@/lib/errors/base/registry.js';
+import { Metrics } from '@/lib/telemetry/metrics.js';
 
 import type { ErrorDetail, ErrorEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
@@ -102,6 +103,7 @@ export class ErrorHandler {
       metadata: resolved.metadata,
       status: resolved.status,
     };
+    Metrics.error(resolved.code, resolved.status);
     if (resolved.status >= 500) req.log.error(entry, 'request failed');
     else req.log.warn(entry, 'request rejected');
     if (resolved.retry_after !== undefined) {

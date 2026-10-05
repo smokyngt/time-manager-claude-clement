@@ -1,0 +1,9 @@
+{
+  "title": "Report",
+  "pages": [
+    "index",
+    "query",
+    "team",
+    "user"
+  ]
+}

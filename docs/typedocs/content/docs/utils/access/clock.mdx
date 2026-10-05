@@ -1,8 +1,11 @@
+---
+title: "Clock"
+description: "Reference for the `utils/access/clock` module: classes, interfaces, type aliases, variables."
+---
+
 ## Classes
 
 ### ClockAccess
-
-Defined in: [utils/access/clock.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L12)
 
 #### Constructors
 
@@ -20,6 +23,8 @@ new ClockAccess(): ClockAccess;
 
 ##### allow()
 
+<div className="route-badge"><span className="route-label">Route</span><code>access.clock.allow</code></div>
+
 ```ts
 allow(
    actor, 
@@ -28,25 +33,21 @@ allow(
 ): Promise<boolean>;
 ```
 
-Defined in: [utils/access/clock.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L20)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
-| `action` | [`ClockAction`](#clockaction) | - |
-| `target` | [`ClockTarget`](#clocktarget) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `action` | [`ClockAction`](#clockaction) |
+| `target` | [`ClockTarget`](#clocktarget) |
 
 ###### Returns
 
 `Promise`\<`boolean`\>
 
-###### Route
-
-access.clock.allow
-
 ##### require()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.clock.require</code></div>
 
 ```ts
 require(
@@ -56,60 +57,50 @@ require(
 ): Promise<void>;
 ```
 
-Defined in: [utils/access/clock.ts:36](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L36)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
-| `action` | [`ClockAction`](#clockaction) | - |
-| `target` | [`ClockTarget`](#clocktarget) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `action` | [`ClockAction`](#clockaction) |
+| `target` | [`ClockTarget`](#clocktarget) |
 
 ###### Returns
 
 `Promise`\<`void`\>
 
-###### Route
-
-access.clock.require
-
 ###### Throws
 
+- `ForbiddenError`
+
 ##### users()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.clock.users</code></div>
 
 ```ts
 users(actor, requested?): Promise<string[] | undefined>;
 ```
 
-Defined in: [utils/access/clock.ts:55](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L55)
-
 ###### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `actor` | [`Actor`](../../types/entities/actor.mdx#actor) | - |
-| `requested?` | `string`[] | - |
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `requested?` | `string`[] |
 
 ###### Returns
 
 `Promise`\<`string`[] \| `undefined`\>
 
-###### Route
-
-access.clock.users
-
 ## Interfaces
 
 ### ClockTarget
 
-Defined in: [utils/access/clock.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L8)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-user_id"></a> `user_id` | `string` | [utils/access/clock.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L9) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-user_id"></a> `user_id` | `string` |
 
 ## Type Aliases
 
@@ -119,8 +110,6 @@ Defined in: [utils/access/clock.ts:8](https://github.com/smokyngt/time-manager-c
 type ClockAction = "create" | "delete" | "read" | "update";
 ```
 
-Defined in: [utils/access/clock.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L6)
-
 ## Variables
 
 ### clockAccess
@@ -128,5 +117,3 @@ Defined in: [utils/access/clock.ts:6](https://github.com/smokyngt/time-manager-c
 ```ts
 const clockAccess: ClockAccess;
 ```
-
-Defined in: [utils/access/clock.ts:64](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/utils/access/clock.ts#L64)

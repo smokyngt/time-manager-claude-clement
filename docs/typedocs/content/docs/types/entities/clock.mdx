@@ -1,23 +1,26 @@
+---
+title: "Clock"
+description: "Reference for the `types/entities/clock` module: interfaces, type aliases, variables."
+---
+
 ## Interfaces
 
 ### Clock
 
-Defined in: [types/entities/clock.ts:3](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L3)
-
 #### Properties
 
-| Property | Type | Defined in |
-| ------ | ------ | ------ |
-| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` | [types/entities/clock.ts:4](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L4) |
-| <a id="property-clocked_out_at"></a> `clocked_out_at` | `number` \| `null` | [types/entities/clock.ts:5](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L5) |
-| <a id="property-created_at"></a> `created_at` | `number` | [types/entities/clock.ts:6](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L6) |
-| <a id="property-duration_ms"></a> `duration_ms` | `number` \| `null` | [types/entities/clock.ts:7](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L7) |
-| <a id="property-id"></a> `id` | `string` | [types/entities/clock.ts:8](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L8) |
-| <a id="property-note"></a> `note` | `string` \| `null` | [types/entities/clock.ts:9](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L9) |
-| <a id="property-object"></a> `object` | `"clock"` | [types/entities/clock.ts:10](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L10) |
-| <a id="property-source"></a> `source` | `"clock"` \| `"manual"` | [types/entities/clock.ts:11](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L11) |
-| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` | [types/entities/clock.ts:12](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L12) |
-| <a id="property-user_id"></a> `user_id` | `string` | [types/entities/clock.ts:13](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L13) |
+| Property | Type |
+| ------ | ------ |
+| <a id="property-clocked_in_at"></a> `clocked_in_at` | `number` |
+| <a id="property-clocked_out_at"></a> `clocked_out_at` | `number` \| `null` |
+| <a id="property-created_at"></a> `created_at` | `number` |
+| <a id="property-duration_ms"></a> `duration_ms` | `number` \| `null` |
+| <a id="property-id"></a> `id` | `string` |
+| <a id="property-note"></a> `note` | `string` \| `null` |
+| <a id="property-object"></a> `object` | `"clock"` |
+| <a id="property-source"></a> `source` | `"clock"` \| `"manual"` |
+| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` |
+| <a id="property-user_id"></a> `user_id` | `string` |
 
 ## Type Aliases
 
@@ -27,8 +30,6 @@ Defined in: [types/entities/clock.ts:3](https://github.com/smokyngt/time-manager
 type ClockSource = typeof CLOCK_SOURCES[number];
 ```
 
-Defined in: [types/entities/clock.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L16)
-
 ## Variables
 
 ### CLOCK\_SOURCES
@@ -36,5 +37,3 @@ Defined in: [types/entities/clock.ts:16](https://github.com/smokyngt/time-manage
 ```ts
 const CLOCK_SOURCES: readonly ["clock", "manual"];
 ```
-
-Defined in: [types/entities/clock.ts:1](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/types/entities/clock.ts#L1)

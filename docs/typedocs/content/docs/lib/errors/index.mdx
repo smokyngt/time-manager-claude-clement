@@ -1,0 +1,181 @@
+---
+title: "Errors"
+description: "Reference for the `lib/errors` module: classes, interfaces, variables, functions."
+---
+
+## Classes
+
+### AppError
+
+#### Extends
+
+- `Error`
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new AppError(definition, options?): AppError;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) |
+| `options` | [`ErrorOptions`](#erroroptions) |
+
+###### Returns
+
+[`AppError`](#apperror)
+
+###### Overrides
+
+```ts
+Error.constructor
+```
+
+#### Properties
+
+| Property | Modifier | Type |
+| ------ | ------ | ------ |
+| <a id="property-code"></a> `code` | `readonly` | `string` |
+| <a id="property-metadata"></a> `metadata` | `readonly` | `Record`\<`string`, `unknown`\> |
+| <a id="property-status"></a> `status` | `readonly` | `number` |
+
+#### Methods
+
+##### is()
+
+<div className="route-badge"><span className="route-label">Route</span><code>errors.app.is</code></div>
+
+```ts
+static is(value): value is AppError;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `value` | `unknown` |
+
+###### Returns
+
+`value is AppError`
+
+## Interfaces
+
+### ErrorDefinition
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code-1"></a> `code` | `string` |
+| <a id="property-defaultstatus"></a> `defaultStatus` | `number` |
+| <a id="property-message"></a> `message` | `string` |
+
+***
+
+### ErrorFactory()
+
+```ts
+ErrorFactory(options?): AppError;
+```
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `options?` | [`ErrorOptions`](#erroroptions) |
+
+#### Returns
+
+[`AppError`](#apperror)
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-code-2"></a> `code` | `string` |
+| <a id="property-defaultstatus-1"></a> `defaultStatus` | `number` |
+
+***
+
+### ErrorOptions
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-cause"></a> `cause?` | `unknown` |
+| <a id="property-metadata-1"></a> `metadata?` | `Record`\<`string`, `unknown`\> |
+
+## Variables
+
+### ForbiddenError
+
+```ts
+const ForbiddenError: ErrorFactory;
+```
+
+***
+
+### InternalError
+
+```ts
+const InternalError: ErrorFactory;
+```
+
+***
+
+### NotFoundError
+
+```ts
+const NotFoundError: ErrorFactory;
+```
+
+***
+
+### RateLimitError
+
+```ts
+const RateLimitError: ErrorFactory;
+```
+
+***
+
+### UnauthorizedError
+
+```ts
+const UnauthorizedError: ErrorFactory;
+```
+
+***
+
+### ValidationError
+
+```ts
+const ValidationError: ErrorFactory;
+```
+
+## Functions
+
+### registerError()
+
+<div className="route-badge"><span className="route-label">Route</span><code>errors.register</code></div>
+
+```ts
+function registerError(definition): ErrorFactory;
+```
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `definition` | [`ErrorDefinition`](#errordefinition) |
+
+#### Returns
+
+[`ErrorFactory`](#errorfactory)

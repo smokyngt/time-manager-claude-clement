@@ -29,7 +29,7 @@ const NO_REFRESH_PATHS = ['/v1/auth/login', REFRESH_PATH, '/v1/auth/logout'];
  */
 export class HttpClient {
   private readonly baseUrl: string;
-  private readonly fetcher: typeof fetch;
+  private readonly fetcher: (input: string, init: RequestInit) => Promise<Response>;
   private readonly getToken: () => null | string;
   private readonly onLogout: (() => void) | undefined;
   private readonly onTokenRefresh: ((token: string, session: AuthSession) => void) | undefined;
@@ -38,11 +38,19 @@ export class HttpClient {
 
   public constructor(options: HttpClientOptions) {
     this.baseUrl = options.baseUrl.replace(/\/+$/, '');
-    this.fetcher = options.fetch ?? ((input, init) => globalThis.fetch(input, init));
+    this.fetcher =
+      options.fetch ??
+      ((input: string, init: RequestInit): Promise<Response> => globalThis.fetch(input, init));
     this.getToken = options.getToken;
     this.onTokenRefresh = options.onTokenRefresh;
     this.onLogout = options.onLogout;
     this.timeoutMs = options.timeoutMs ?? 15000;
+  }
+
+  private static expired(error: unknown): boolean {
+    return (
+      error instanceof AuthenticationError && error.code === ErrorCodes.TokenAuthenticationFailed
+    );
   }
 
   /** Sends a DELETE request and returns the unwrapped data. */
@@ -86,9 +94,9 @@ export class HttpClient {
 
   private async dispatch(method: string, path: string, body: unknown): Promise<Response> {
     const controller = new AbortController();
-    let timedOut = false;
+    const state = { timedOut: false };
     const timer = setTimeout(() => {
-      timedOut = true;
+      state.timedOut = true;
       controller.abort();
     }, this.timeoutMs);
     const headers: Record<string, string> = { Accept: 'application/json' };
@@ -112,8 +120,10 @@ export class HttpClient {
     } catch (error) {
       throw new NetworkError({
         cause: error,
-        isTimeout: timedOut,
-        message: timedOut ? `Request timed out after ${this.timeoutMs}ms` : 'Network request failed',
+        isTimeout: state.timedOut,
+        message: state.timedOut
+          ? `Request timed out after ${this.timeoutMs}ms`
+          : 'Network request failed',
       });
     } finally {
       clearTimeout(timer);
@@ -179,11 +189,5 @@ export class HttpClient {
     }
 
     return undefined as T;
-  }
-
-  private static expired(error: unknown): boolean {
-    return (
-      error instanceof AuthenticationError && error.code === ErrorCodes.TokenAuthenticationFailed
-    );
   }
 }

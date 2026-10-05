@@ -1,0 +1,71 @@
+---
+title: "Report"
+description: "Reference for the `services/report` module: interfaces, variables."
+---
+
+## Interfaces
+
+### ReportServiceType
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-team"></a> `team` | (`params`) => `Promise`\<[`TeamResponse`](#teamresponse)\> |
+| <a id="property-user"></a> `user` | (`params`) => `Promise`\<[`UserResponse`](#userresponse)\> |
+
+***
+
+### TeamParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-from"></a> `from` | `number` |
+| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-team_id"></a> `team_id` | `string` |
+| <a id="property-to"></a> `to` | `number` |
+
+***
+
+### TeamResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-report"></a> `report` | [`TeamReport`](/docs/types/entities/report#teamreport) |
+
+***
+
+### UserParams
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| <a id="property-from-1"></a> `from` | `number` |
+| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-to-1"></a> `to` | `number` |
+| <a id="property-user_id"></a> `user_id` | `string` |
+
+***
+
+### UserResponse
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-report-1"></a> `report` | [`UserReport`](/docs/types/entities/report#userreport) |
+
+## Variables
+
+### reportService
+
+```ts
+const reportService: ReportService;
+```

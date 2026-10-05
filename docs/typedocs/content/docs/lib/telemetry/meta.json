@@ -1,0 +1,9 @@
+{
+  "title": "Telemetry",
+  "pages": [
+    "index",
+    "instrument",
+    "metrics",
+    "tracing"
+  ]
+}

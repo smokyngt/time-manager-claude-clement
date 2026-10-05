@@ -1,3 +1,11 @@
+---
+title: "Retrieve()"
+description: "Reference for the `retrieve()` function in `services/clock/retrieve` (route `clock.service.retrieve`)."
+route: "clock.service.retrieve"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>clock.service.retrieve</code></div>
+
 ## Functions
 
 ### retrieve()
@@ -6,20 +14,16 @@
 function retrieve(params): Promise<RetrieveResponse>;
 ```
 
-Defined in: [services/clock/retrieve.ts:16](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/services/clock/retrieve.ts#L16)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `params` | [`RetrieveParams`](../clock.mdx#retrieveparams) | - |
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`RetrieveParams`](/docs/services/clock#retrieveparams) |
 
 #### Returns
 
-`Promise`\<[`RetrieveResponse`](../clock.mdx#retrieveresponse)\>
-
-#### Route
-
-clock.service.retrieve
+`Promise`\<[`RetrieveResponse`](/docs/services/clock#retrieveresponse)\>
 
 #### Throws
+
+- `ClockRetrieveError`

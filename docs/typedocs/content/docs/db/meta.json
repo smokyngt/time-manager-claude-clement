@@ -1,0 +1,12 @@
+{
+  "title": "DB",
+  "pages": [
+    "client",
+    "demo",
+    "migrate",
+    "purge",
+    "rotate",
+    "schema",
+    "seed"
+  ]
+}

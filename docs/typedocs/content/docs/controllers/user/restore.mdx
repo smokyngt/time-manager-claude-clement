@@ -1,3 +1,11 @@
+---
+title: "Restore()"
+description: "Reference for the `restore()` function in `controllers/user/restore` (route `user.controller.restore`)."
+route: "user.controller.restore"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>user.controller.restore</code></div>
+
 ## Functions
 
 ### restore()
@@ -6,21 +14,17 @@
 function restore(req, reply): Promise<void>;
 ```
 
-Defined in: [controllers/user/restore.ts:20](https://github.com/smokyngt/time-manager-claude-clement/blob/2a5b0d728608e6cefef645e206ce70680c80a50c/api/src/controllers/user/restore.ts#L20)
-
 #### Parameters
 
-| Parameter | Type | Description |
-| ------ | ------ | ------ |
-| `req` | `FastifyRequest`\<\{ `Params`: [`RestoreParams`](../user.mdx#restoreparams); \}\> | - |
-| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](../../types/envelope.mdx#replyenvelope)\<[`User`](../../types/entities/user.mdx#user)\>; \}\> | - |
+| Parameter | Type |
+| ------ | ------ |
+| `req` | `FastifyRequest`\<\{ `Params`: [`RestoreParams`](/docs/controllers/user#restoreparams); \}\> |
+| `reply` | `FastifyReply`\<\{ `Reply`: [`ReplyEnvelope`](/docs/types/envelope#replyenvelope)\<[`User`](/docs/types/entities/user#user)\>; \}\> |
 
 #### Returns
 
 `Promise`\<`void`\>
 
-#### Route
-
-user.controller.restore
-
 #### Throws
+
+- `UserRestoreError`
