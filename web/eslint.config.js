@@ -31,6 +31,7 @@ export default tseslint.config(
       '@typescript-eslint/consistent-type-imports': 'error',
       '@typescript-eslint/no-explicit-any': 'error',
       '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      'perfectionist/sort-modules': 'off',
       'perfectionist/sort-imports': ['error', { internalPattern: ['^@/.+'] }],
       'react-refresh/only-export-components': ['warn', { allowConstantExport: true }],
     },
