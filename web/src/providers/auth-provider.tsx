@@ -23,7 +23,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         const session = await sdk.auth.refresh()
         useAuthStore
           .getState()
-          .setSession({ accessToken: session.accessToken, scopes: session.scopes, user: session.user })
+          .setSession({
+            accessToken: session.accessToken,
+            scopes: session.scopes,
+            user: session.user,
+          })
         const me = await sdk.auth.me()
         useAuthStore.getState().setUser(me.user)
       } catch {

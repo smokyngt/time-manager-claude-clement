@@ -2,16 +2,18 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { users } from '@/db/schema/user.js';
+import { DuplicateKeyError } from '@/lib/errors/base/core.js';
 import {
-  UserConflictError,
   UserNotFoundError,
   UserPasswordInvalidError,
   UserUpdateError,
 } from '@/lib/errors/domains/user.js';
 import { logService } from '@/services/log/index.js';
+import { Cipher } from '@/utils/crypto/cipher.js';
+import { Digest } from '@/utils/crypto/digest.js';
+import { UserMapper } from '@/utils/mappers/user.js';
 import { Password } from '@/utils/password.js';
 import { Postgres } from '@/utils/postgres.js';
-import { UserMapper } from '@/utils/user-mapper.js';
 
 import { revoke } from './revoke.js';
 
@@ -22,7 +24,7 @@ import type { UserInsert } from '@/db/schema/user.js';
  * @route user.service.update
  * @param {UpdateParams} params
  * @returns {Promise<UpdateResponse>}
- * @throws {UserUpdateError}
+ * @throws {DuplicateKeyError | UserNotFoundError | UserPasswordInvalidError | UserUpdateError}
  */
 export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
   try {
@@ -48,10 +50,16 @@ export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
       }
     }
     const values: Partial<UserInsert> = { updated_at: Date.now() };
-    if (email !== undefined) values.email = email.toLowerCase();
-    if (firstName !== undefined) values.first_name = firstName;
-    if (lastName !== undefined) values.last_name = lastName;
-    if (data.phone_number !== undefined) values.phone_number = data.phone_number;
+    if (email !== undefined) {
+      const normalized = email.trim().toLowerCase();
+      values.email = Cipher.seal(normalized);
+      values.email_hash = Digest.email(normalized);
+    }
+    if (firstName !== undefined) values.first_name = Cipher.seal(firstName);
+    if (lastName !== undefined) values.last_name = Cipher.seal(lastName);
+    if (data.phone_number !== undefined) {
+      values.phone_number = Cipher.nullable.seal(data.phone_number);
+    }
     if (data.role !== undefined) values.role = data.role;
     if (password !== undefined) values.password_hash = await Password.hash(password);
     const [row] = await db.update(users).set(values).where(eq(users.id, id)).returning();
@@ -66,9 +74,12 @@ export const update = async (params: UpdateParams): Promise<UpdateResponse> => {
       event: 'user.updated',
       metadata: { fields: Object.keys(data), user_id: id },
     });
+
     return { user: UserMapper.entity(row) };
   } catch (error) {
-    const cause = Postgres.conflict(error) ? UserConflictError({ cause: error }) : error;
+    const cause = Postgres.conflict(error)
+      ? DuplicateKeyError({ cause: error, metadata: { route: 'user.service.update' } })
+      : error;
     throw UserUpdateError({ cause, metadata: { route: 'user.service.update' } });
   }
 };

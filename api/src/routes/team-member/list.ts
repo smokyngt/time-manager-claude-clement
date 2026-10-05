@@ -1,5 +1,5 @@
 import { teamMember } from '@/controllers/team-member/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberIdParamsSchema,
   TeamMemberListBodySchema,
@@ -7,10 +7,10 @@ import {
 } from '@/schemas/team-member.js';
 
 import type { ListBody, ListParams, ListResponse } from '@/controllers/team-member/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const listRoute: FastifyPluginAsync = async (fastify) => {
+const list: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: ListBody; Params: ListParams; Reply: ReplyEnvelope<ListResponse> }>(
     '/:id/members/list',
     {
@@ -23,9 +23,11 @@ export const listRoute: FastifyPluginAsync = async (fastify) => {
         response: TeamMemberResponses.list,
         security: [{ bearerAuth: [] }],
         summary: 'List team members',
-        tags: ['teams'],
+        tags: ['team-members'],
       },
     },
     teamMember.list,
   );
 };
+
+export { list };

@@ -1,38 +1,39 @@
+import { UnauthorizedError } from '@/lib/errors/base/core.js';
 import { UserNotFoundError, UserRetrieveError } from '@/lib/errors/domains/user.js';
-import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserRetrieved } from '@/lib/events/domains/user.js';
 import { userService } from '@/services/user/index.js';
-import { Access } from '@/utils/access.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
-import type { RetrieveParams } from './index.js';
-import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { RetrieveParams, UserResponse } from './index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.retrieve
  * @param {FastifyRequest<{ Params: RetrieveParams }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<User> }>} reply
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {UserRetrieveError}
+ * @throws {UnauthorizedError | UserNotFoundError | UserRetrieveError}
  */
 export const retrieve = async (
   req: FastifyRequest<{ Params: RetrieveParams }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
     const { id } = req.params;
     if (!Access.user.reach(actor, id)) {
-      throw ForbiddenError({ metadata: { route: 'user.controller.retrieve' } });
+      throw UnauthorizedError({ metadata: { route: 'user.controller.retrieve', user_id: id } });
     }
     const { user } = await userService.retrieve({ id });
     if (!(await Access.user.scope(actor, user))) {
       throw UserNotFoundError({ metadata: { route: 'user.controller.retrieve', user_id: id } });
     }
     Access.user.require(actor, 'read', user);
-    await Reply.send(req, reply, UserRetrieved({ payload: { user_id: user.id } }), user);
+    await Reply.send(req, reply, UserRetrieved({ payload: { actor: actor.id, user_id: user.id } }), {
+      user,
+    });
   } catch (error) {
     throw UserRetrieveError({ cause: error, metadata: { route: 'user.controller.retrieve' } });
   }

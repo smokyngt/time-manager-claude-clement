@@ -1,0 +1,30 @@
+---
+title: Roles
+description: The three roles of Time Manager, what each can do, and what a managed user is.
+---
+
+Every user has exactly one role: `employee`, `manager` or `admin`. The role decides which [scopes](../../api/scopes) your access token holds and which records you can see.
+
+| Role | What it can do |
+| --- | --- |
+| `employee` | Clock in and out, edit their own profile, see their own clocks and reports, and see the teams they belong to. |
+| `manager` | Everything an employee can do, and create employees, create and run teams they manage, manage the members of those teams, and see or correct clocks and reports of those members. |
+| `admin` | Everything, on every user, team and clock. |
+
+## Managed users
+
+A managed user, relative to a manager, is a user who belongs to at least one non-archived team that the manager manages. Archiving a team ends the management relationship through that team. If the user is in no other team of that manager, the manager no longer sees their clocks or reports.
+
+Admins manage everyone. Employees manage nobody.
+
+For user administration only, a manager can also act on an unassigned employee: an employee who belongs to no non-archived team. This lets a manager create an employee and then place them in a team. Clocks, reports and team data never use this extension.
+
+## Visibility
+
+Records outside your visibility behave as if they do not exist. Asking for a user, team or clock you cannot see returns `404`, not `403`. A `403` means the record is visible to you but the action is not allowed, for example an employee trying to change their own `role`.
+
+## Role changes
+
+Scopes are derived from the role when the access token is issued. A role change applies to new access tokens, so it takes effect at the next refresh, within the access token lifetime (15 minutes by default).
+
+Only admins can set or change a role, and only admins can create managers or admins.

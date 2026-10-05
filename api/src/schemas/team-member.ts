@@ -1,4 +1,13 @@
 import {
+  TeamMemberAddError,
+  TeamMemberListError,
+  TeamMemberRemoveError,
+  TeamMemberTeamArchivedError,
+  TeamMemberTeamNotFoundError,
+  TeamMemberUserNotFoundError,
+} from '@/lib/errors/domains/team-member.js';
+
+import {
   ErrorSchema,
   RateLimitErrorSchema,
   ReplyEnvelopeSchema,
@@ -8,14 +17,6 @@ import {
 } from './base/envelope.js';
 import { RequestLimits } from './common.js';
 import { UserSchema } from './user.js';
-
-import {
-  TeamMemberNotFoundError,
-  TeamMemberTeamArchivedError,
-  TeamMemberTeamNotFoundError,
-  TeamMemberUserArchivedError,
-  TeamMemberUserNotFoundError,
-} from '@/lib/errors/domains/team-member.js';
 
 import type { JsonSchema } from './base/envelope.js';
 
@@ -198,6 +199,7 @@ export const TeamMemberResponses = {
     404: wrap(ErrorSchema(TeamMemberTeamNotFoundError), 'The team does not exist.'),
     409: wrap(ErrorSchema(TeamMemberTeamArchivedError), 'The team is archived.'),
     429: wrap(RateLimitErrorSchema, 'Rate limit exceeded.'),
+    500: wrap(ErrorSchema(TeamMemberAddError), 'The operation failed unexpectedly.'),
   },
   list: {
     200: wrap(
@@ -209,6 +211,7 @@ export const TeamMemberResponses = {
     403: wrap(UnauthorizedErrorSchema, 'The caller may not see this team.'),
     404: wrap(ErrorSchema(TeamMemberTeamNotFoundError), 'The team does not exist.'),
     429: wrap(RateLimitErrorSchema, 'Rate limit exceeded.'),
+    500: wrap(ErrorSchema(TeamMemberListError), 'The operation failed unexpectedly.'),
   },
   remove: {
     200: wrap(
@@ -220,10 +223,6 @@ export const TeamMemberResponses = {
     403: wrap(UnauthorizedErrorSchema, 'The caller may not manage the members of this team.'),
     404: wrap(ErrorSchema(TeamMemberTeamNotFoundError), 'The team does not exist.'),
     429: wrap(RateLimitErrorSchema, 'Rate limit exceeded.'),
+    500: wrap(ErrorSchema(TeamMemberRemoveError), 'The operation failed unexpectedly.'),
   },
 } as const;
-
-export const TeamMemberErrorSchemas = {
-  archived: ErrorSchema(TeamMemberUserArchivedError),
-  notFound: ErrorSchema(TeamMemberNotFoundError),
-};

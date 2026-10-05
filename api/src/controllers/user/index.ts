@@ -8,33 +8,29 @@ import { update } from './update.js';
 
 import type { UserCreateData, UserUpdateData } from '@/services/user/index.js';
 import type { Role, User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export interface ArchiveParams {
+export type ArchiveParams = {
   id: string;
-}
+};
 
-export interface BulkFailure {
+export type BulkFailure = {
   code: string;
   id: string;
-}
+};
 
-export interface CreateBody extends UserCreateData {
-  role?: Role;
-}
+export type CreateBody = UserCreateData;
 
-export interface DeleteBody {
+export type DeleteBody = {
   ids: string[];
-}
+};
 
-export interface DeleteResponse {
+export type DeleteResponse = {
   deleted: string[];
   failed: BulkFailure[];
   success: boolean;
-}
+};
 
-export interface ListBody {
+export type ListBody = {
   archived?: boolean;
   created_after?: number | string;
   created_before?: number | string;
@@ -44,66 +40,39 @@ export interface ListBody {
   order?: 'asc' | 'desc';
   role?: Role;
   team_id?: string;
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface RestoreParams {
+export type RestoreParams = {
   id: string;
-}
+};
 
-export interface RetrieveParams {
+export type RetrieveParams = {
   id: string;
-}
+};
 
-export interface UpdateBody {
+export type UpdateBody = {
   data: UserUpdateData;
   ids: string[];
-}
+};
 
-export interface UpdateResponse {
+export type UpdateResponse = {
   failed: BulkFailure[];
   success: boolean;
   updated: string[];
-}
+};
 
-export interface UserControllerType {
-  archive: (
-    req: FastifyRequest<{ Params: ArchiveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
-  ) => Promise<void>;
-  create: (
-    req: FastifyRequest<{ Body: CreateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
-  ) => Promise<void>;
-  delete: (
-    req: FastifyRequest<{ Body: DeleteBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<DeleteResponse> }>,
-  ) => Promise<void>;
-  list: (
-    req: FastifyRequest<{ Body: ListBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
-  ) => Promise<void>;
-  restore: (
-    req: FastifyRequest<{ Params: RestoreParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
-  ) => Promise<void>;
-  retrieve: (
-    req: FastifyRequest<{ Params: RetrieveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
-  ) => Promise<void>;
-  update: (
-    req: FastifyRequest<{ Body: UpdateBody }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<UpdateResponse> }>,
-  ) => Promise<void>;
-}
+export type UserResponse = {
+  user: User;
+};
 
-class UserController implements UserControllerType {
+class UserController {
   public archive = archive;
   public create = create;
   public delete = remove;

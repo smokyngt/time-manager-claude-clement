@@ -13,7 +13,8 @@ export type ErrorStateProps = {
 
 export function ErrorState({ description, error, onRetry, title }: ErrorStateProps) {
   const { t } = useTranslation('common')
-  const text = description ?? (error === undefined ? t('error.description') : Errors.translate(error))
+  const text =
+    description ?? (error === undefined ? t('error.description') : Errors.translate(error))
 
   return (
     <div

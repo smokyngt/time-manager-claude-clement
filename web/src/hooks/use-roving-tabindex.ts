@@ -57,5 +57,8 @@ export function useRovingTabindex(count: number, options: Options = {}) {
     [activeIndex, columns, count, focusIndex],
   )
 
-  return useMemo(() => ({ activeIndex, focusIndex, getItemProps }), [activeIndex, focusIndex, getItemProps])
+  return useMemo(
+    () => ({ activeIndex, focusIndex, getItemProps }),
+    [activeIndex, focusIndex, getItemProps],
+  )
 }

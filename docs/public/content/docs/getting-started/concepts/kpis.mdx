@@ -1,0 +1,38 @@
+---
+title: KPIs
+description: The indicators that user and team reports compute, and how each one is defined.
+---
+
+Reports are read-only and computed from closed clocks. An open clock counts up to the current time. You choose a range and a granularity.
+
+## Range and granularity
+
+`from` is inclusive and `to` is exclusive, both in epoch milliseconds. The range can span at most 366 days; a longer range fails with `report.invalid` (400). The granularity is `day`, `week` or `month`, and decides the size of each bucket in `series`. Buckets with no work are present with a value of `0`.
+
+## User report
+
+| KPI | Definition |
+| --- | --- |
+| `worked_ms` | Total worked time in the range. |
+| `days_worked` | Distinct days with at least one clock. |
+| `average_daily_ms` | `worked_ms / days_worked`, `0` when no day was worked. |
+| `target_ms` | The weekly target of the user, prorated to the working days (Monday to Friday) of the range. |
+| `overtime_ms` | `worked_ms - target_ms`. Negative when the user worked less than the target. |
+| `late_days` | Days whose first clock-in is more than 5 minutes after `work_start`. |
+| `lateness_rate` | `late_days / days_worked`, between 0 and 1. |
+
+The overtime formula is:
+
+$$
+\text{overtime} = \text{worked} - \text{target}
+$$
+
+## Team report
+
+A team report adds `member_count` and `active_members` (members with worked time), and sums `worked_ms`, `late_days` and `overtime_ms` across members. It also lists each member with `worked_ms`, `days_worked`, `late_days` and `overtime_ms`.
+
+## Which schedule applies
+
+The target and the lateness threshold come from the user's non-archived teams. See [teams](./teams). Day boundaries use the company timezone; see [timezones](../../best-practices/timezones).
+
+See the [reports guide](../../sdks/reports) for the operations.

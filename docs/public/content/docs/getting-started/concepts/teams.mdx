@@ -1,0 +1,29 @@
+---
+title: Teams
+description: How teams group users under a manager, with a working schedule and a weekly hours target.
+---
+
+A team groups users under one manager. It also holds the working schedule that reports use to compute overtime and lateness.
+
+| Field | Meaning |
+| --- | --- |
+| `name` | 1 to 100 characters. |
+| `description` | Optional, up to 500 characters. |
+| `manager_id` | The managing user, who must be an active `manager` or `admin`. |
+| `weekly_hours_target` | Hours per week for every member, 1 to 80, default 35. |
+| `work_start`, `work_end` | The working day as `HH:MM` in the company timezone, default `09:00` and `17:00`. `work_end` must be after `work_start`. |
+| `member_count` | The number of members. |
+
+## Membership
+
+A user can belong to several teams. Only a team's manager and admins can add or remove members, and managers can add employees only. You cannot add an archived user or add anyone to an archived team.
+
+## Several teams
+
+When a user belongs to several teams, reports use the highest `weekly_hours_target` and the earliest `work_start` among their non-archived teams. A user in no team uses 35 hours and `09:00`.
+
+## Archive and delete
+
+Archiving a team keeps it and its membership but ends the management relationship through it. You can restore it later. Deleting a team is permanent and reserved for admins.
+
+See the [teams guide](../../sdks/teams) and the [team members guide](../../sdks/team-members) for the operations.

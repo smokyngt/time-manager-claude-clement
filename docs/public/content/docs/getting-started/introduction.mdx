@@ -1,0 +1,40 @@
+---
+title: Introduction
+description: What Time Manager is, who uses it, and where to find the API reference, the TypeScript SDK and the self-hosting guide.
+---
+
+Time Manager records working time. Employees clock in and out, managers follow their teams through KPIs, and admins run the whole company.
+
+You can use Time Manager in three ways:
+
+- Through the web application, which employees and managers use every day.
+- Through the HTTP API under `/v1`, which you call from your own tools.
+- Through the TypeScript SDK `@time-manager/sdk`, a typed client for the API.
+
+## What you can do
+
+- Create users and organise them into teams with a manager, a weekly hours target and a working day.
+- Let employees clock in and out, and let managers correct or add clocks for their team.
+- Read KPIs per user or per team: worked time, overtime, days worked and lateness.
+- Sign in with a password or, for registered users, with a Microsoft account.
+
+## How the documentation is organised
+
+| Section | Read it to |
+| --- | --- |
+| [Getting started](./quickstart) | Make your first request and learn the core concepts. |
+| [API](../api/overview) | Understand the envelope, pagination, scopes, limits and errors. |
+| [SDKs](../sdks/installation) | Use the TypeScript client resource by resource. |
+| [Platform](../platform/self-hosting) | Run, configure, back up and observe your own instance. |
+| [Best practices](../best-practices/security) | Store tokens safely and handle timezones correctly. |
+
+## Conventions used in this documentation
+
+- Every identifier, field, code and scope appears in `code` style.
+- The API uses `snake_case` on the wire. The SDK converts to `camelCase`, so SDK examples use `firstName` where the API uses `first_name`.
+- Timestamps are epoch milliseconds in UTC.
+- HTTP statuses are written as numbers, for example `409`.
+
+## Next step
+
+Follow the [quickstart](./quickstart) to sign in and clock in for the first time.

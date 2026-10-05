@@ -22,9 +22,7 @@ export const routes: RouteObject[] = [
         element: <GuestGuard />,
       },
       {
-        element: Lazy.element(() =>
-          import('@/features/auth/pages').then(pick('AuthCallbackPage')),
-        ),
+        element: Lazy.element(() => import('@/features/auth/pages').then(pick('AuthCallbackPage'))),
         path: '/auth/callback',
       },
       {

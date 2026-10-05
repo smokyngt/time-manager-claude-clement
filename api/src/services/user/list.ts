@@ -4,8 +4,8 @@ import { db } from '@/db/client.js';
 import { teamMembers, teams } from '@/db/schema/team.js';
 import { users } from '@/db/schema/user.js';
 import { UserListError } from '@/lib/errors/domains/user.js';
-import { Cursor } from '@/utils/cursor.js';
-import { UserMapper } from '@/utils/user-mapper.js';
+import { Cursor } from '@/utils/http/cursor.js';
+import { UserMapper } from '@/utils/mappers/user.js';
 
 import type { ListParams, ListResponse } from './index.js';
 
@@ -67,6 +67,7 @@ export const list = async (params: ListParams): Promise<ListResponse> => {
       order,
       sort: 'created_at',
     });
+
     return {
       items: page.items.map((row) => UserMapper.entity(row)),
       more: page.more,

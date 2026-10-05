@@ -1,8 +1,10 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import { ADMIN_ID, caught, makeActor, MISSING_ID, OTHER_ID } from '../../../helpers/fixtures.js';
-import { makeTeam, TEAM_ID } from './team.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+
+import { FakeDb } from '../../../support/db.js';
+
+import type { Actor } from '@/types/entities/actor.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -26,55 +28,60 @@ afterEach(() => {
 
 const { remove } = await import('@/services/team-member/remove.js');
 
-const admin = makeActor('admin');
-const manager = makeActor('manager');
+const TEAM_ID = '00000000-0000-4000-8000-0000000000e1';
+const USER_ID = '00000000-0000-4000-8000-0000000000c2';
+const MISSING_ID = '00000000-0000-4000-8000-0000000000ff';
 
-describe('team_member.service.remove', () => {
+const admin: Actor = {
+  id: '00000000-0000-4000-8000-0000000000a1',
+  role: 'admin',
+  team_ids: [],
+};
+
+const caught = async (promise: Promise<unknown>): Promise<AppError> => {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AppError) return error;
+    throw error;
+  }
+  throw new TypeError('expected the promise to reject');
+};
+
+describe('team.member.service.remove', () => {
   it('removes members, reports non members and writes an audit log', async () => {
-    fakeDb.enqueue([makeTeam()], [{ user_id: OTHER_ID }]);
+    fakeDb.enqueue([{ user_id: USER_ID }]);
     const result = await remove({
-      actor: manager,
+      actor: admin,
       id: TEAM_ID,
-      user_ids: [OTHER_ID, MISSING_ID, OTHER_ID],
+      user_ids: [USER_ID, MISSING_ID, USER_ID],
     });
     expect(result).toEqual({
-      failed: [{ code: 'TEAM_MEMBER_NOT_FOUND', id: MISSING_ID }],
-      removed: [OTHER_ID],
+      failed: [{ code: 'team.member.not.found', id: MISSING_ID }],
+      removed: [USER_ID],
       success: false,
     });
     expect(logCreate).toHaveBeenCalledWith({
-      actor: manager,
+      actor: admin,
       event: 'team.members.removed',
       metadata: { failed: 1, removed: 1, team_id: TEAM_ID },
     });
   });
 
-  it('lets an admin remove from any team', async () => {
-    fakeDb.enqueue([makeTeam({ manager_id: ADMIN_ID })], [{ user_id: OTHER_ID }]);
-    const result = await remove({ actor: admin, id: TEAM_ID, user_ids: [OTHER_ID] });
-    expect(result).toEqual({ failed: [], removed: [OTHER_ID], success: true });
-  });
-
-  it('forbids a manager who does not manage the team', async () => {
-    fakeDb.enqueue([makeTeam({ manager_id: ADMIN_ID })]);
-    const error = await caught(remove({ actor: manager, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(logCreate).not.toHaveBeenCalled();
-  });
-
-  it('throws TEAM_MEMBER_TEAM_NOT_FOUND for an unknown team', async () => {
-    fakeDb.enqueue([]);
-    const error = await caught(remove({ actor: admin, id: MISSING_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('TEAM_MEMBER_TEAM_NOT_FOUND');
-    expect(error.status).toBe(404);
+  it('succeeds when every user was a member', async () => {
+    fakeDb.enqueue([{ user_id: USER_ID }]);
+    const result = await remove({ actor: admin, id: TEAM_ID, user_ids: [USER_ID] });
+    expect(result).toEqual({ failed: [], removed: [USER_ID], success: true });
   });
 
   it('wraps unexpected failures and keeps the cause', async () => {
     const failure = new Error('db down');
-    fakeDb.enqueue([makeTeam()], failure);
-    const error = await caught(remove({ actor: manager, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('TEAM_MEMBER_REMOVE_ERROR');
+    fakeDb.enqueue(failure);
+    const error = await caught(remove({ actor: admin, id: TEAM_ID, user_ids: [USER_ID] }));
+    expect(error.code).toBe('team.member.remove.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team_member.service.remove');
+    expect(error.metadata['route']).toBe('team.member.service.remove');
+    expect(logCreate).not.toHaveBeenCalled();
   });
 });

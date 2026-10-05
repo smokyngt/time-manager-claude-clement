@@ -1,16 +1,24 @@
 import rateLimit from '@fastify/rate-limit';
 
-import { RateLimit } from '@/utils/rate-limit.js';
+import { Config } from '@/config/index.js';
+import { RateLimit } from '@/utils/http/rate-limit.js';
 
-import { addRoute } from './add.js';
-import { listRoute } from './list.js';
-import { removeRoute } from './remove.js';
+import { add } from './add.js';
+import { list } from './list.js';
+import { remove } from './remove.js';
 
 import type { FastifyPluginAsync } from 'fastify';
 
-export const teamMemberRouter: FastifyPluginAsync = async (fastify) => {
-  await fastify.register(rateLimit, RateLimit.options('team_member'));
-  await fastify.register(addRoute);
-  await fastify.register(listRoute);
-  await fastify.register(removeRoute);
+const teamMembers: FastifyPluginAsync = async (fastify) => {
+  await fastify.register(rateLimit, {
+    errorResponseBuilder: RateLimit.error,
+    keyGenerator: RateLimit.key,
+    max: Config.store.number('TEAM_MEMBER_RATE_LIMIT_MAX', 6000),
+    timeWindow: Config.store.text('TEAM_MEMBER_RATE_LIMIT_WINDOW', '1 minute'),
+  });
+  await fastify.register(add);
+  await fastify.register(list);
+  await fastify.register(remove);
 };
+
+export { teamMembers };

@@ -1,31 +1,30 @@
+import { UnauthorizedError } from '@/lib/errors/base/core.js';
 import { UserArchiveError, UserNotFoundError } from '@/lib/errors/domains/user.js';
-import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserArchived } from '@/lib/events/domains/user.js';
 import { userService } from '@/services/user/index.js';
-import { Access } from '@/utils/access.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
-import type { ArchiveParams } from './index.js';
-import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ArchiveParams, UserResponse } from './index.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
  * @route user.controller.archive
  * @param {FastifyRequest<{ Params: ArchiveParams }>} req
- * @param {FastifyReply<{ Reply: ReplyEnvelope<User> }>} reply
+ * @param {FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {UserArchiveError}
+ * @throws {UnauthorizedError | UserArchiveError | UserNotFoundError}
  */
 export const archive = async (
   req: FastifyRequest<{ Params: ArchiveParams }>,
-  reply: FastifyReply<{ Reply: ReplyEnvelope<User> }>,
+  reply: FastifyReply<{ Reply: ReplyEnvelope<UserResponse> }>,
 ): Promise<void> => {
   try {
     const { actor } = Access.context(req);
     const { id } = req.params;
     if (!Access.user.reach(actor, id)) {
-      throw ForbiddenError({ metadata: { route: 'user.controller.archive' } });
+      throw UnauthorizedError({ metadata: { route: 'user.controller.archive', user_id: id } });
     }
     const { user: target } = await userService.retrieve({ id });
     if (!(await Access.user.scope(actor, target))) {
@@ -33,7 +32,7 @@ export const archive = async (
     }
     Access.user.require(actor, 'archive', target);
     const { user } = await userService.archive({ actor, id });
-    await Reply.send(req, reply, UserArchived({ payload: { user_id: user.id } }), user);
+    await Reply.send(req, reply, UserArchived({ payload: { actor: actor.id, user_id: user.id } }), { user });
   } catch (error) {
     throw UserArchiveError({ cause: error, metadata: { route: 'user.controller.archive' } });
   }

@@ -1,0 +1,78 @@
+---
+title: Quickstart
+description: Sign in, clock in and out, and read your first report with the TypeScript SDK.
+---
+
+This guide takes you from an empty client to your first report. You need a running Time Manager instance and an account. There is no public sign-up: an admin or a manager creates your account. If you run your own instance, follow [self-hosting](../platform/self-hosting) first. The seeded admin account works for this guide.
+
+## Install the SDK
+
+```bash
+bun add @time-manager/sdk
+```
+
+## Create the client
+
+The client keeps no session of its own. You give it a function that returns the current access token, and it calls that function before every request.
+
+```ts
+import { TimeManagerClient } from '@time-manager/sdk';
+
+let accessToken: string | null = null;
+
+const client = new TimeManagerClient({
+  baseUrl: 'http://localhost:8080',
+  getToken: () => accessToken,
+  onTokenRefresh: (token) => {
+    accessToken = token;
+  },
+  onLogout: () => {
+    accessToken = null;
+  },
+});
+```
+
+## Sign in
+
+```ts
+const session = await client.auth.login({
+  email: 'jane.doe@example.com',
+  password: 'correct-horse-battery',
+});
+
+accessToken = session.accessToken;
+console.log(session.user.role, session.scopes);
+```
+
+The access token lives 15 minutes by default. The API also sets an `httpOnly` refresh cookie, and the SDK uses it to renew the token when a request returns `401`.
+
+## Clock in and out
+
+```ts
+const { clock } = await client.clocks.in({ note: 'Starting at the office' });
+console.log(clock.clockedInAt, clock.clockedOutAt); // clockedOutAt is null while the clock is open
+
+const closed = await client.clocks.out();
+console.log(closed.clock.durationMs);
+```
+
+Calling `clocks.in` twice in a row fails with `clock.conflict` (409): a user has at most one open clock.
+
+## Read a report
+
+```ts
+const { report } = await client.reports.user({
+  userId: session.user.id,
+  from: 1767225600000, // 2026-01-01T00:00:00Z
+  to: 1769904000000, // 2026-02-01T00:00:00Z
+  granularity: 'week',
+});
+
+console.log(report.kpis.workedMs, report.kpis.overtimeMs);
+```
+
+## Next steps
+
+- Learn the [roles](./concepts/roles), [teams](./concepts/teams) and [clocks](./concepts/clocks) concepts.
+- Read the [API overview](../api/overview) for the envelope and pagination.
+- Browse the SDK guides, starting with [installation and client setup](../sdks/installation).

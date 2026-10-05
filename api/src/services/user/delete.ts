@@ -13,7 +13,7 @@ import type { DeleteParams, DeleteResponse } from './index.js';
  * @route user.service.delete
  * @param {DeleteParams} params
  * @returns {Promise<DeleteResponse>}
- * @throws {UserDeleteError}
+ * @throws {UserDeleteError | UserNotFoundError}
  */
 export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
   try {
@@ -24,6 +24,7 @@ export const remove = async (params: DeleteParams): Promise<DeleteResponse> => {
       throw UserNotFoundError({ metadata: { route: 'user.service.delete', user_id: id } });
     }
     await logService.create({ actor, event: 'user.deleted', metadata: { user_id: id } });
+
     return { success: true };
   } catch (error) {
     throw UserDeleteError({ cause: error, metadata: { route: 'user.service.delete' } });

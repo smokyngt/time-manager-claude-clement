@@ -1,14 +1,13 @@
 import { UserDeleteError, UserNotFoundError } from '@/lib/errors/domains/user.js';
-import { AppError, ForbiddenError, InternalError, ValidationError } from '@/lib/errors/index.js';
 import { UserDeleted } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { userService } from '@/services/user/index.js';
-import { Access } from '@/utils/access.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 
 import type { BulkFailure, DeleteBody, DeleteResponse } from './index.js';
 import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -33,7 +32,7 @@ export const remove = async (
     const loaded = await Promise.all(
       ids.map(async (id) => {
         if (!Access.user.reach(actor, id)) {
-          throw ForbiddenError({ metadata: { route: 'user.controller.delete' } });
+          throw UnauthorizedError({ metadata: { route: 'user.controller.delete' } });
         }
         return userService.retrieve({ id }).then(
           ({ user }) => ({ id, user }),

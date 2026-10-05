@@ -1,28 +1,33 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import {
-  ADMIN_ID,
-  caught,
-  EMPLOYEE_ID,
-  makeActor,
-  makeRow,
-  MISSING_ID,
-} from '../../../helpers/fixtures.js';
-import { makeTeam, TEAM_ID } from './team.js';
+import { ValidationError } from '@/lib/errors/base/core.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+
+import { FakeDb } from '../../../support/db.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
-const realCursor = { ...(await import('@/utils/cursor.js')) };
+const realCursor = { ...(await import('@/utils/http/cursor.js')) };
 const fakeDb = new FakeDb();
-const paginate = mock(() =>
-  Promise.resolve({ items: [makeRow()], more: true, next: 'abc', total: 5 }),
-);
+const row = {
+  archived_at: null,
+  created_at: 1_700_000_000_000,
+  email: 'jane.doe@example.com',
+  first_name: 'Jane',
+  id: '00000000-0000-4000-8000-0000000000c2',
+  last_name: 'Doe',
+  microsoft_id: null,
+  password_hash: 'hash',
+  phone_number: null,
+  role: 'employee',
+  updated_at: null,
+};
+const paginate = mock(() => Promise.resolve({ items: [row], more: true, next: 'abc', total: 5 }));
 await mock.module('@/db/client.js', () => ({ ...realDb, db: fakeDb }));
-await mock.module('@/utils/cursor.js', () => ({ ...realCursor, Cursor: { paginate } }));
+await mock.module('@/utils/http/cursor.js', () => ({ ...realCursor, Cursor: { paginate } }));
 
 afterAll(() => {
   void mock.module('@/db/client.js', () => realDb);
-  void mock.module('@/utils/cursor.js', () => realCursor);
+  void mock.module('@/utils/http/cursor.js', () => realCursor);
 });
 
 afterEach(() => {
@@ -32,12 +37,21 @@ afterEach(() => {
 
 const { list } = await import('@/services/team-member/list.js');
 
-const base = { id: TEAM_ID, limit: 10, order: 'desc' } as const;
+const base = { id: '00000000-0000-4000-8000-0000000000e1', limit: 10, order: 'desc' } as const;
 
-describe('team_member.service.list', () => {
-  it('paginates the members of the team for an admin', async () => {
-    fakeDb.enqueue([makeTeam()]);
-    const result = await list({ ...base, actor: makeActor('admin') });
+const caught = async (promise: Promise<unknown>): Promise<AppError> => {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AppError) return error;
+    throw error;
+  }
+  throw new TypeError('expected the promise to reject');
+};
+
+describe('team.member.service.list', () => {
+  it('paginates the members of the team', async () => {
+    const result = await list(base);
     expect(result.more).toBe(true);
     expect(result.next).toBe('abc');
     expect(result.total).toBe(5);
@@ -48,54 +62,20 @@ describe('team_member.service.list', () => {
     expect(calls[0]?.[1]['filters']).toBeDefined();
   });
 
-  it('lets the manager of the team list without a membership lookup', async () => {
-    fakeDb.enqueue([makeTeam()]);
-    await list({ ...base, actor: makeActor('manager') });
-    expect(paginate).toHaveBeenCalledTimes(1);
-  });
-
-  it('lets a member list the team', async () => {
-    fakeDb.enqueue([makeTeam()], [{ user_id: EMPLOYEE_ID }]);
-    await list({ ...base, actor: makeActor('employee') });
-    expect(paginate).toHaveBeenCalledTimes(1);
-  });
-
-  it('forbids a user who is not in the team', async () => {
-    fakeDb.enqueue([makeTeam()], []);
-    const error = await caught(list({ ...base, actor: makeActor('employee') }));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(paginate).not.toHaveBeenCalled();
-  });
-
-  it('forbids a manager of another team', async () => {
-    fakeDb.enqueue([makeTeam({ manager_id: ADMIN_ID })], []);
-    const error = await caught(list({ ...base, actor: makeActor('manager') }));
-    expect(error.code).toBe('FORBIDDEN');
-  });
-
-  it('throws TEAM_MEMBER_TEAM_NOT_FOUND for an unknown team', async () => {
-    fakeDb.enqueue([]);
-    const error = await caught(list({ ...base, actor: makeActor('admin'), id: MISSING_ID }));
-    expect(error.code).toBe('TEAM_MEMBER_TEAM_NOT_FOUND');
-    expect(error.status).toBe(404);
-  });
-
   it('wraps failures and keeps the cause', async () => {
     const failure = new Error('db down');
-    fakeDb.enqueue([makeTeam()]);
     paginate.mockImplementationOnce(() => Promise.reject(failure));
-    const error = await caught(list({ ...base, actor: makeActor('admin') }));
-    expect(error.code).toBe('TEAM_MEMBER_LIST_ERROR');
+    const error = await caught(list(base));
+    expect(error.code).toBe('team.member.list.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team_member.service.list');
+    expect(error.metadata['route']).toBe('team.member.service.list');
   });
 
   it('keeps a validation error raised by the cursor', async () => {
-    const { ValidationError } = await import('@/lib/errors/index.js');
-    fakeDb.enqueue([makeTeam()]);
     paginate.mockImplementationOnce(() => Promise.reject(ValidationError()));
-    const error = await caught(list({ ...base, actor: makeActor('admin'), cursor: 'bad' }));
-    expect(error.code).toBe('VALIDATION_ERROR');
+    const error = await caught(list({ ...base, cursor: 'bad' }));
+    expect(error.code).toBe('validation.error');
     expect(error.status).toBe(400);
   });
 });

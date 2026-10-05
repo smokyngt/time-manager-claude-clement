@@ -10,13 +10,10 @@ export type CacheSnapshot = [QueryKey, unknown][]
 export function useOptimisticCache<T extends { id: string }>(queryKey: QueryKey) {
   const queryClient = useQueryClient()
 
-  const snapshot = useCallback(
-    async (): Promise<CacheSnapshot> => {
-      await queryClient.cancelQueries({ queryKey })
-      return queryClient.getQueriesData<unknown>({ queryKey })
-    },
-    [queryClient, queryKey],
-  )
+  const snapshot = useCallback(async (): Promise<CacheSnapshot> => {
+    await queryClient.cancelQueries({ queryKey })
+    return queryClient.getQueriesData<unknown>({ queryKey })
+  }, [queryClient, queryKey])
 
   const remove = useCallback(
     async (ids: readonly string[]): Promise<CacheSnapshot> => {
@@ -27,7 +24,11 @@ export function useOptimisticCache<T extends { id: string }>(queryKey: QueryKey)
           return data
         }
         const items = data.items.filter((item) => !removed.has(item.id))
-        return { ...data, items, total: Math.max(0, data.total - (data.items.length - items.length)) }
+        return {
+          ...data,
+          items,
+          total: Math.max(0, data.total - (data.items.length - items.length)),
+        }
       })
       return previous
     },

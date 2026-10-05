@@ -23,7 +23,9 @@ export class ErrorBoundary extends Component<Props, State> {
     return (
       <div className="grid min-h-dvh place-items-center p-4 text-center" role="alert">
         <div className="max-w-sm space-y-4">
-          <h1 className="text-2xl font-semibold tracking-tight">{i18n.t('common:boundary.title')}</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">
+            {i18n.t('common:boundary.title')}
+          </h1>
           <p className="text-muted-foreground">{i18n.t('common:boundary.description')}</p>
           <Button
             onClick={() => {

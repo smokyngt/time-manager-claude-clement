@@ -1,17 +1,11 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
-import { FakeDb } from '../../../helpers/fake-db.js';
-import {
-  ADMIN_ID,
-  caught,
-  EMPLOYEE_ID,
-  makeActor,
-  makeRow,
-  MISSING_ID,
-  OTHER_ID,
-} from '../../../helpers/fixtures.js';
-import './conflict.js';
-import { makeTeam, TEAM_ID } from './team.js';
+import { AppError } from '@/lib/errors/base/registry.js';
+
+import { FakeDb } from '../../../support/db.js';
+
+import type { TeamRow } from '@/db/schema/team.js';
+import type { Actor } from '@/types/entities/actor.js';
 
 const realDb = { ...(await import('@/db/client.js')) };
 const realLog = { ...(await import('@/services/log/index.js')) };
@@ -35,29 +29,63 @@ afterEach(() => {
 
 const { add } = await import('@/services/team-member/add.js');
 
-const admin = makeActor('admin');
-const manager = makeActor('manager');
+const TEAM_ID = '00000000-0000-4000-8000-0000000000e1';
+const MANAGER_ID = '00000000-0000-4000-8000-0000000000b1';
+const USER_ID = '00000000-0000-4000-8000-0000000000c2';
+const ARCHIVED_ID = '00000000-0000-4000-8000-0000000000c1';
+const MISSING_ID = '00000000-0000-4000-8000-0000000000ff';
 
-describe('team_member.service.add', () => {
+const manager: Actor = { id: MANAGER_ID, role: 'manager', team_ids: [] };
+
+const team = (overrides: Partial<TeamRow> = {}): TeamRow => ({
+  archived_at: null,
+  created_at: 1_700_000_000_000,
+  description: null,
+  id: TEAM_ID,
+  manager_id: MANAGER_ID,
+  name: 'Team',
+  updated_at: null,
+  weekly_hours_target: 35,
+  work_end: '17:00',
+  work_start: '09:00',
+  ...overrides,
+});
+
+const user = (overrides: Record<string, unknown> = {}): Record<string, unknown> => ({
+  archived_at: null,
+  id: USER_ID,
+  role: 'employee',
+  ...overrides,
+});
+
+const caught = async (promise: Promise<unknown>): Promise<AppError> => {
+  try {
+    await promise;
+  } catch (error) {
+    if (error instanceof AppError) return error;
+    throw error;
+  }
+  throw new TypeError('expected the promise to reject');
+};
+
+describe('team.member.service.add', () => {
   it('adds users, reports unknown and archived ones, and writes an audit log', async () => {
-    fakeDb.enqueue(
-      [makeTeam()],
-      [makeRow({ id: OTHER_ID }), makeRow({ archived_at: 5, id: EMPLOYEE_ID })],
-      [{ user_id: OTHER_ID }],
-    );
+    fakeDb.enqueue([user(), user({ archived_at: 5, id: ARCHIVED_ID })], [{ user_id: USER_ID }]);
     const result = await add({
       actor: manager,
-      id: TEAM_ID,
-      user_ids: [OTHER_ID, EMPLOYEE_ID, MISSING_ID, OTHER_ID],
+      roles: ['employee'],
+      team: team(),
+      user_ids: [USER_ID, ARCHIVED_ID, MISSING_ID, USER_ID],
     });
     expect(result).toEqual({
-      added: [OTHER_ID],
+      added: [USER_ID],
       failed: [
-        { code: 'TEAM_MEMBER_USER_ARCHIVED', id: EMPLOYEE_ID },
-        { code: 'TEAM_MEMBER_USER_NOT_FOUND', id: MISSING_ID },
+        { code: 'team.member.user.archived', id: ARCHIVED_ID },
+        { code: 'team.member.user.not.found', id: MISSING_ID },
       ],
       success: false,
     });
+    expect(fakeDb.calls.some((call) => call.method === 'onConflictDoNothing')).toBe(true);
     expect(logCreate).toHaveBeenCalledWith({
       actor: manager,
       event: 'team.members.added',
@@ -65,65 +93,62 @@ describe('team_member.service.add', () => {
     });
   });
 
-  it('lets an admin add a manager to any team', async () => {
-    fakeDb.enqueue(
-      [makeTeam()],
-      [makeRow({ id: OTHER_ID, role: 'manager' })],
-      [{ user_id: OTHER_ID }],
-    );
-    const result = await add({ actor: admin, id: TEAM_ID, user_ids: [OTHER_ID] });
-    expect(result).toEqual({ added: [OTHER_ID], failed: [], success: true });
+  it('accepts a manager when the roles allow it', async () => {
+    fakeDb.enqueue([user({ role: 'manager' })], [{ user_id: USER_ID }]);
+    const result = await add({
+      actor: manager,
+      roles: ['employee', 'manager'],
+      team: team(),
+      user_ids: [USER_ID],
+    });
+    expect(result).toEqual({ added: [USER_ID], failed: [], success: true });
   });
 
   it('skips the insert when no user is eligible', async () => {
-    fakeDb.enqueue([makeTeam()], []);
-    const result = await add({ actor: admin, id: TEAM_ID, user_ids: [MISSING_ID] });
+    fakeDb.enqueue([]);
+    const result = await add({
+      actor: manager,
+      roles: ['employee'],
+      team: team(),
+      user_ids: [MISSING_ID],
+    });
     expect(result.added).toEqual([]);
     expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
   });
 
-  it('forbids a manager who does not manage the team', async () => {
-    fakeDb.enqueue([makeTeam({ manager_id: ADMIN_ID })]);
-    const error = await caught(add({ actor: manager, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(logCreate).not.toHaveBeenCalled();
-  });
-
-  it('forbids a manager from adding a non employee', async () => {
-    fakeDb.enqueue([makeTeam()], [makeRow({ id: OTHER_ID, role: 'manager' })]);
-    const error = await caught(add({ actor: manager, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('FORBIDDEN');
-    expect(logCreate).not.toHaveBeenCalled();
-  });
-
-  it('forbids an employee', async () => {
-    fakeDb.enqueue([makeTeam()]);
+  it('rejects a role outside the allowed roles before any insert', async () => {
+    fakeDb.enqueue([user({ role: 'manager' })]);
     const error = await caught(
-      add({ actor: makeActor('employee'), id: TEAM_ID, user_ids: [OTHER_ID] }),
+      add({ actor: manager, roles: ['employee'], team: team(), user_ids: [USER_ID] }),
     );
-    expect(error.code).toBe('FORBIDDEN');
+    expect(error.code).toBe('unauthorized');
+    expect(error.status).toBe(403);
+    expect(fakeDb.calls.some((call) => call.op === 'insert')).toBe(false);
+    expect(logCreate).not.toHaveBeenCalled();
   });
 
-  it('throws TEAM_MEMBER_TEAM_NOT_FOUND for an unknown team', async () => {
-    fakeDb.enqueue([]);
-    const error = await caught(add({ actor: admin, id: MISSING_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('TEAM_MEMBER_TEAM_NOT_FOUND');
-    expect(error.status).toBe(404);
-  });
-
-  it('throws a conflict for an archived team', async () => {
-    fakeDb.enqueue([makeTeam({ archived_at: 10 })]);
-    const error = await caught(add({ actor: admin, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('TEAM_MEMBER_TEAM_ARCHIVED');
+  it('throws team.member.team.archived for an archived team', async () => {
+    const error = await caught(
+      add({
+        actor: manager,
+        roles: ['employee'],
+        team: team({ archived_at: 10 }),
+        user_ids: [USER_ID],
+      }),
+    );
+    expect(error.code).toBe('team.member.team.archived');
     expect(error.status).toBe(409);
   });
 
   it('wraps unexpected failures and keeps the cause', async () => {
     const failure = new Error('db down');
     fakeDb.enqueue(failure);
-    const error = await caught(add({ actor: admin, id: TEAM_ID, user_ids: [OTHER_ID] }));
-    expect(error.code).toBe('TEAM_MEMBER_ADD_ERROR');
+    const error = await caught(
+      add({ actor: manager, roles: ['employee'], team: team(), user_ids: [USER_ID] }),
+    );
+    expect(error.code).toBe('team.member.add.failed');
+    expect(error.status).toBe(500);
     expect(error.cause).toBe(failure);
-    expect(error.metadata['route']).toBe('team_member.service.add');
+    expect(error.metadata['route']).toBe('team.member.service.add');
   });
 });

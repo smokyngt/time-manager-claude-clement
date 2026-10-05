@@ -1,14 +1,14 @@
+import { UnauthorizedError } from '@/lib/errors/base/core.js';
 import { UserListError } from '@/lib/errors/domains/user.js';
-import { ForbiddenError } from '@/lib/errors/index.js';
 import { UserListed } from '@/lib/events/domains/user.js';
 import { RequestLimits } from '@/schemas/common.js';
 import { userService } from '@/services/user/index.js';
-import { Access } from '@/utils/access.js';
-import { Reply } from '@/utils/reply.js';
+import { Access } from '@/utils/auth/authz.js';
+import { Reply } from '@/utils/http/reply.js';
 import { Time } from '@/utils/time.js';
 
 import type { ListBody, ListResponse } from './index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
 
 /**
@@ -16,7 +16,7 @@ import type { FastifyReply, FastifyRequest } from 'fastify';
  * @param {FastifyRequest<{ Body: ListBody }>} req
  * @param {FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>} reply
  * @returns {Promise<void>}
- * @throws {UserListError}
+ * @throws {UnauthorizedError | UserListError}
  */
 export const list = async (
   req: FastifyRequest<{ Body: ListBody }>,
@@ -26,7 +26,7 @@ export const list = async (
     const actor = Access.role.require(req, ['admin', 'manager']);
     const { archived, cursor, ids, limit, order, role, team_id: teamId } = req.body;
     if (actor.role === 'manager' && role !== undefined && role !== 'employee') {
-      throw ForbiddenError({ metadata: { route: 'user.controller.list' } });
+      throw UnauthorizedError({ metadata: { route: 'user.controller.list', role } });
     }
     const result = await userService.list({
       cursor,
@@ -45,7 +45,7 @@ export const list = async (
     await Reply.send(
       req,
       reply,
-      UserListed({ payload: { count: result.items.length, total: result.total } }),
+      UserListed({ payload: { actor: actor.id, count: result.items.length, total: result.total } }),
       result,
     );
   } catch (error) {

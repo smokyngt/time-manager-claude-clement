@@ -1,5 +1,5 @@
 import { teamMember } from '@/controllers/team-member/index.js';
-import { auth } from '@/plugins/auth.js';
+import { auth } from '@/middlewares/auth/index.js';
 import {
   TeamMemberIdParamsSchema,
   TeamMemberRemoveBodySchema,
@@ -7,10 +7,10 @@ import {
 } from '@/schemas/team-member.js';
 
 import type { RemoveBody, RemoveParams, RemoveResponse } from '@/controllers/team-member/index.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const removeRoute: FastifyPluginAsync = async (fastify) => {
+const remove: FastifyPluginAsync = async (fastify) => {
   fastify.post<{ Body: RemoveBody; Params: RemoveParams; Reply: ReplyEnvelope<RemoveResponse> }>(
     '/:id/members/remove',
     {
@@ -22,9 +22,11 @@ export const removeRoute: FastifyPluginAsync = async (fastify) => {
         response: TeamMemberResponses.remove,
         security: [{ bearerAuth: [] }],
         summary: 'Remove members from a team',
-        tags: ['teams'],
+        tags: ['team-members'],
       },
     },
     teamMember.remove,
   );
 };
+
+export { remove };

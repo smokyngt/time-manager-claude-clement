@@ -1,0 +1,28 @@
+---
+title: Clocks
+description: How clock entries work, including the one-open-clock rule, manual entries and corrections.
+---
+
+A clock is one period of work for one user. It has a `clocked_in_at` time and, once the user clocks out, a `clocked_out_at` time and a `duration_ms`. While the clock is open, `clocked_out_at` and `duration_ms` are `null`.
+
+## Source
+
+Each clock has a `source`:
+
+- `clock`: the user clocked in and out themselves.
+- `manual`: a manager or admin entered it.
+
+## Rules
+
+- A user has at most one open clock. Clocking in while a clock is open, or out while none is open, fails with `clock.conflict` (409).
+- `clocked_out_at` must be after `clocked_in_at`.
+- Timestamps cannot be in the future.
+- One clock cannot exceed 24 hours.
+- A manual or corrected clock cannot overlap another clock of the same user. An overlap fails with `clock.overlap` (409).
+- A note is optional and holds up to 500 characters.
+
+## Who can do what
+
+Everyone clocks themselves in and out. Managers can add manual entries, correct and delete clocks for the members of the teams they manage. Admins can do it for everyone. Employees see only their own clocks. See [roles](./roles).
+
+See the [clocks guide](../../sdks/clocks) for the operations.

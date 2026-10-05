@@ -45,9 +45,7 @@ export function Pagination({
           <ChevronLeftIcon />
         </Button>
         <span aria-current="page">
-          {pages === undefined
-            ? String(page)
-            : t('pagination.page', { page, pages })}
+          {pages === undefined ? String(page) : t('pagination.page', { page, pages })}
         </span>
         <Button
           aria-label={t('pagination.next')}

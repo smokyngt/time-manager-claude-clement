@@ -2,21 +2,17 @@ import { create } from './create.js';
 
 import type { Actor } from '@/types/entities/actor.js';
 
-export interface CreateParams {
+export type CreateParams = {
   actor: null | Pick<Actor, 'id' | 'role'>;
   event: string;
   metadata?: Record<string, unknown>;
-}
+};
 
-export interface CreateResponse {
+export type CreateResponse = {
   success: boolean;
-}
+};
 
-export interface LogServiceType {
-  create: (params: CreateParams) => Promise<CreateResponse>;
-}
-
-class LogService implements LogServiceType {
+class LogService {
   public create = create;
 }
 

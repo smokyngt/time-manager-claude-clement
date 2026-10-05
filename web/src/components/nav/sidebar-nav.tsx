@@ -17,7 +17,9 @@ export function SidebarNav({ collapsed = false, onNavigate }: SidebarNavProps) {
   const { t } = useTranslation('nav')
   const { scopes } = useAuth()
   const { pathname } = useLocation()
-  const items = NAV_ITEMS.filter((item) => !item.scopes || Permission.scope.any(scopes, item.scopes))
+  const items = NAV_ITEMS.filter(
+    (item) => !item.scopes || Permission.scope.any(scopes, item.scopes),
+  )
 
   return (
     <nav aria-label={t('main')} className="flex flex-col gap-1 p-3">

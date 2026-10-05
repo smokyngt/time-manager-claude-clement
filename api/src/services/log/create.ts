@@ -19,6 +19,7 @@ export const create = async (params: CreateParams): Promise<CreateResponse> => {
       event,
       metadata: metadata ?? {},
     });
+
     return { success: true };
   } catch (error) {
     throw LogCreateError({ cause: error, metadata: { route: 'log.service.create' } });
