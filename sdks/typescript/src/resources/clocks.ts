@@ -2,8 +2,9 @@ import type { HttpClient } from '../http.js';
 import type {
   BulkDeleteResponse,
   BulkUpdateResponse,
-  ClockInResponse,
+  Clock,
   ClockCreateParams,
+  ClockInResponse,
   ClockListParams,
   ClockNoteParams,
   ClockOutResponse,

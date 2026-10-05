@@ -1,25 +1,17 @@
-import { registerError } from '../index.js';
+import { registerError } from '../base/registry.js';
 
-export const ReportInvalidError = registerError({
-  code: 'REPORT_INVALID',
-  defaultStatus: 400,
-  message: 'The report range is invalid.',
-});
+export const ReportInvalidError = registerError({ code: 'report.invalid', defaultStatus: 400 });
 
-export const ReportTeamError = registerError({
-  code: 'REPORT_TEAM_ERROR',
-  defaultStatus: 500,
-  message: 'The team report could not be computed.',
-});
+export const ReportTeamError = registerError({ code: 'report.team.failed', defaultStatus: 500 });
 
 export const ReportTeamNotFoundError = registerError({
-  code: 'REPORT_TEAM_NOT_FOUND',
+  code: 'report.team.not.found',
   defaultStatus: 404,
-  message: 'The team does not exist.',
 });
 
-export const ReportUserError = registerError({
-  code: 'REPORT_USER_ERROR',
-  defaultStatus: 500,
-  message: 'The user report could not be computed.',
+export const ReportUserError = registerError({ code: 'report.user.failed', defaultStatus: 500 });
+
+export const ReportUserNotFoundError = registerError({
+  code: 'report.user.not.found',
+  defaultStatus: 404,
 });

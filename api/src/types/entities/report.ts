@@ -2,7 +2,7 @@ export const GRANULARITIES = ['day', 'month', 'week'] as const;
 
 export type Granularity = (typeof GRANULARITIES)[number];
 
-export interface TeamMemberReport {
+export type TeamMemberReport = {
   days_worked: number;
   first_name: string;
   last_name: string;
@@ -10,9 +10,9 @@ export interface TeamMemberReport {
   overtime_ms: number;
   user_id: string;
   worked_ms: number;
-}
+};
 
-export interface TeamReport {
+export type TeamReport = {
   from: number;
   granularity: Granularity;
   kpis: TeamReportKpis;
@@ -21,9 +21,9 @@ export interface TeamReport {
   series: TeamReportPoint[];
   team_id: string;
   to: number;
-}
+};
 
-export interface TeamReportKpis {
+export type TeamReportKpis = {
   active_members: number;
   average_daily_ms: number;
   late_days: number;
@@ -31,14 +31,14 @@ export interface TeamReportKpis {
   member_count: number;
   overtime_ms: number;
   worked_ms: number;
-}
+};
 
-export interface TeamReportPoint {
+export type TeamReportPoint = {
   period_start: number;
   worked_ms: number;
-}
+};
 
-export interface UserReport {
+export type UserReport = {
   from: number;
   granularity: Granularity;
   kpis: UserReportKpis;
@@ -46,9 +46,9 @@ export interface UserReport {
   series: UserReportPoint[];
   to: number;
   user_id: string;
-}
+};
 
-export interface UserReportKpis {
+export type UserReportKpis = {
   average_daily_ms: number;
   days_worked: number;
   late_days: number;
@@ -56,10 +56,10 @@ export interface UserReportKpis {
   overtime_ms: number;
   target_ms: number;
   worked_ms: number;
-}
+};
 
-export interface UserReportPoint {
+export type UserReportPoint = {
   late: number;
   period_start: number;
   worked_ms: number;
-}
+};

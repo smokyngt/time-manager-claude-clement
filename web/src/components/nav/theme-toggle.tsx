@@ -1,6 +1,7 @@
 import { MonitorIcon, MoonIcon, SunIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 
-import type { Theme } from '@/lib/theme/theme-context'
+import type { Theme } from '@/stores/preferences'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -10,12 +11,12 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useTheme } from '@/lib/theme/use-theme'
+import { useTheme } from '@/providers/use-theme'
 
-const THEMES: { icon: typeof SunIcon; label: string; value: Theme }[] = [
-  { icon: SunIcon, label: 'Light', value: 'light' },
-  { icon: MoonIcon, label: 'Dark', value: 'dark' },
-  { icon: MonitorIcon, label: 'System', value: 'system' },
+const THEMES: { icon: typeof SunIcon; value: Theme }[] = [
+  { icon: SunIcon, value: 'light' },
+  { icon: MoonIcon, value: 'dark' },
+  { icon: MonitorIcon, value: 'system' },
 ]
 
 function isTheme(value: string): value is Theme {
@@ -23,12 +24,13 @@ function isTheme(value: string): value is Theme {
 }
 
 export function ThemeToggle() {
+  const { t } = useTranslation('common')
   const { setTheme, theme } = useTheme()
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button aria-label="Change theme" size="icon" variant="ghost">
+        <Button aria-label={t('theme.label')} size="icon" variant="ghost">
           <SunIcon className="dark:hidden" />
           <MoonIcon className="hidden dark:block" />
         </Button>
@@ -36,14 +38,16 @@ export function ThemeToggle() {
       <DropdownMenuContent align="end" className="min-w-36">
         <DropdownMenuRadioGroup
           onValueChange={(value) => {
-            if (isTheme(value)) setTheme(value)
+            if (isTheme(value)) {
+              setTheme(value)
+            }
           }}
           value={theme}
         >
           {THEMES.map((item) => (
             <DropdownMenuRadioItem key={item.value} value={item.value}>
               <item.icon />
-              {item.label}
+              {t(`theme.${item.value}`)}
             </DropdownMenuRadioItem>
           ))}
         </DropdownMenuRadioGroup>

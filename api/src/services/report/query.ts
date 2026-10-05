@@ -2,16 +2,17 @@ import { sql } from 'drizzle-orm';
 
 import { Config } from '@/config/index.js';
 import { db } from '@/db/client.js';
+import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
 
 import type { Granularity } from '@/types/entities/report.js';
 import type { SQL } from 'drizzle-orm';
 
-export interface ReportRange {
+export type ReportRange = {
   from: number;
   granularity: Granularity;
   to: number;
-}
+};
 
 export type SeriesRow = {
   late: number;
@@ -40,7 +41,8 @@ export class ReportQuery {
   public static async series(range: ReportRange, members: SQL): Promise<SeriesRow[]> {
     const tz = Config.store.text('APP_TIMEZONE', 'Europe/Paris');
     const granularity = range.granularity;
-    const rows = await db.execute<SeriesRow>(sql`
+    const rows = await Tracing.span('db.report.series', () =>
+      db.execute<SeriesRow>(sql`
       ${ReportQuery.base(range, members, tz)},
       buckets as (
         select g.bucket
@@ -65,7 +67,8 @@ export class ReportQuery {
       from buckets bk
       left join agg on agg.bucket = bk.bucket
       order by bk.bucket
-    `);
+    `),
+    );
 
     return Array.from(rows);
   }
@@ -78,7 +81,8 @@ export class ReportQuery {
    */
   public static async totals(range: ReportRange, members: SQL): Promise<TotalsRow[]> {
     const tz = Config.store.text('APP_TIMEZONE', 'Europe/Paris');
-    const rows = await db.execute<TotalsRow>(sql`
+    const rows = await Tracing.span('db.report.totals', () =>
+      db.execute<TotalsRow>(sql`
       ${ReportQuery.base(range, members, tz)}
       select
         c.user_id,
@@ -94,7 +98,8 @@ export class ReportQuery {
       left join ud on ud.user_id = c.user_id
       group by c.user_id, u.first_name, u.last_name, c.weekly_hours
       order by u.last_name, u.first_name, c.user_id
-    `);
+    `),
+    );
 
     return Array.from(rows);
   }

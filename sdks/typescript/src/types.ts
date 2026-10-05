@@ -1,3 +1,15 @@
+/** Response of `teams.archive`. */
+export interface ArchiveTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `users.archive`. */
+export interface ArchiveUserResponse {
+  /** The user. */
+  user: User;
+}
+
 /** Session returned by login and refresh. */
 export interface AuthSession {
   /** Short-lived JWT to send as a Bearer token; keep it in memory. */
@@ -76,6 +88,12 @@ export interface ClockCreateParams {
   userId: string;
 }
 
+/** Response of `clocks.in`. */
+export interface ClockInResponse {
+  /** The newly opened clock. */
+  clock: Clock;
+}
+
 /** Parameters of `clocks.list`. */
 export interface ClockListParams extends PaginationParams {
   /** Lower bound on `clockedInAt`, inclusive. */
@@ -94,6 +112,12 @@ export interface ClockNoteParams {
   note?: string;
 }
 
+/** Response of `clocks.out`. */
+export interface ClockOutResponse {
+  /** The closed clock. */
+  clock: Clock;
+}
+
 /** How a clock was recorded: by the user (`clock`) or entered by a manager (`manual`). */
 export type ClockSource = 'clock' | 'manual';
 
@@ -105,6 +129,30 @@ export interface ClockUpdateData {
   clockedOutAt?: number;
   /** New note. */
   note?: string;
+}
+
+/** Response of `clocks.create`. */
+export interface CreateClockResponse {
+  /** The created clock. */
+  clock: Clock;
+}
+
+/** Response of `teams.create`. */
+export interface CreateTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `users.create`. */
+export interface CreateUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `clocks.current`. */
+export interface CurrentClockResponse {
+  /** The open clock, null when clocked out. */
+  clock: Clock | null;
 }
 
 /** A date bound: epoch milliseconds, an ISO 8601 string or a `Date`. */
@@ -154,6 +202,36 @@ export interface PaginationParams {
   order?: Order;
   /** Number of items to skip. */
   skip?: number;
+}
+
+/** Response of `teams.restore`. */
+export interface RestoreTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `users.restore`. */
+export interface RestoreUserResponse {
+  /** The user. */
+  user: User;
+}
+
+/** Response of `clocks.retrieve`. */
+export interface RetrieveClockResponse {
+  /** The clock. */
+  clock: Clock;
+}
+
+/** Response of `teams.retrieve`. */
+export interface RetrieveTeamResponse {
+  /** The team. */
+  team: Team;
+}
+
+/** Response of `users.retrieve`. */
+export interface RetrieveUserResponse {
+  /** The user. */
+  user: User;
 }
 
 /** Role of a user, from least to most privileged. */
@@ -334,6 +412,12 @@ export interface TeamReportPoint {
   workedMs: number;
 }
 
+/** Response of `reports.team`. */
+export interface TeamReportResponse {
+  /** The team report. */
+  report: TeamReport;
+}
+
 /** Fields `teams.update` can change. */
 export interface TeamUpdateData {
   /** New description, null to clear it. */
@@ -464,6 +548,12 @@ export interface UserReportPoint {
   workedMs: number;
 }
 
+/** Response of `reports.user`. */
+export interface UserReportResponse {
+  /** The user report. */
+  report: UserReport;
+}
+
 /** Fields `users.update` can change. */
 export interface UserUpdateData {
   /** New email address. */
@@ -478,94 +568,4 @@ export interface UserUpdateData {
   phoneNumber?: null | string;
   /** New role. */
   role?: Role;
-}
-
-/** Response of `users.create`. */
-export interface CreateUserResponse {
-  /** The user. */
-  user: User;
-}
-
-/** Response of `users.retrieve`. */
-export interface RetrieveUserResponse {
-  /** The user. */
-  user: User;
-}
-
-/** Response of `users.archive`. */
-export interface ArchiveUserResponse {
-  /** The user. */
-  user: User;
-}
-
-/** Response of `users.restore`. */
-export interface RestoreUserResponse {
-  /** The user. */
-  user: User;
-}
-
-/** Response of `teams.create`. */
-export interface CreateTeamResponse {
-  /** The team. */
-  team: Team;
-}
-
-/** Response of `teams.retrieve`. */
-export interface RetrieveTeamResponse {
-  /** The team. */
-  team: Team;
-}
-
-/** Response of `teams.archive`. */
-export interface ArchiveTeamResponse {
-  /** The team. */
-  team: Team;
-}
-
-/** Response of `teams.restore`. */
-export interface RestoreTeamResponse {
-  /** The team. */
-  team: Team;
-}
-
-/** Response of `clocks.create`. */
-export interface CreateClockResponse {
-  /** The created clock. */
-  clock: Clock;
-}
-
-/** Response of `clocks.retrieve`. */
-export interface RetrieveClockResponse {
-  /** The clock. */
-  clock: Clock;
-}
-
-/** Response of `clocks.in`. */
-export interface ClockInResponse {
-  /** The newly opened clock. */
-  clock: Clock;
-}
-
-/** Response of `clocks.out`. */
-export interface ClockOutResponse {
-  /** The closed clock. */
-  clock: Clock;
-}
-
-/** Response of `clocks.current`. */
-export interface CurrentClockResponse {
-  /** The open clock, null when clocked out. */
-  clock: Clock | null;
-}
-
-/** Response of `reports.user`. */
-export interface UserReportResponse {
-  /** The user report. */
-  report: UserReport;
-}
-
-/** Response of `reports.team`. */
-export interface TeamReportResponse {
-  /** The team report. */
-  report: TeamReport;
 }

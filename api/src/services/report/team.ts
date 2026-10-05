@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { and, eq, sql } from 'drizzle-orm';
 
 import { db } from '@/db/client.js';
 import { teams } from '@/db/schema/team.js';
@@ -7,7 +7,7 @@ import {
   ReportTeamError,
   ReportTeamNotFoundError,
 } from '@/lib/errors/domains/report.js';
-import { ForbiddenError } from '@/lib/errors/index.js';
+import { Tracing } from '@/lib/telemetry/tracing.js';
 import { Kpi } from '@/utils/kpi.js';
 
 import { ReportQuery } from './query.js';
@@ -18,28 +18,29 @@ import type { TeamParams, TeamResponse } from './index.js';
  * @route report.service.team
  * @param {TeamParams} params
  * @returns {Promise<TeamResponse>}
- * @throws {ReportTeamError}
+ * @throws {ReportInvalidError | ReportTeamError | ReportTeamNotFoundError}
  */
 export const team = async (params: TeamParams): Promise<TeamResponse> => {
   try {
-    const { actor, from, granularity, team_id: teamId, to } = params;
+    const { from, granularity, manager_id: managerId, team_id: teamId, to } = params;
     if (!Kpi.valid(from, to)) {
       throw ReportInvalidError({
         metadata: { from, route: 'report.service.team', team_id: teamId, to },
       });
     }
-    const [row] = await db
-      .select({ manager_id: teams.manager_id })
-      .from(teams)
-      .where(eq(teams.id, teamId))
-      .limit(1);
+    const filters = [eq(teams.id, teamId)];
+    if (managerId !== undefined) filters.push(eq(teams.manager_id, managerId));
+    const [row] = await Tracing.span('db.report.team', () =>
+      db
+        .select({ id: teams.id })
+        .from(teams)
+        .where(and(...filters))
+        .limit(1),
+    );
     if (row === undefined) {
       throw ReportTeamNotFoundError({
         metadata: { route: 'report.service.team', team_id: teamId },
       });
-    }
-    if (actor.role !== 'admin' && row.manager_id !== actor.id) {
-      throw ForbiddenError({ metadata: { route: 'report.service.team', team_id: teamId } });
     }
     const range = { from, granularity, to };
     const members = sql`

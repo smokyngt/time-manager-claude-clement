@@ -5,7 +5,10 @@
 // (error rate > 10%) and the report shows where the budget was exceeded.
 import { summarize } from './lib/summary.js';
 import { thresholds } from './lib/thresholds.js';
-import { mixedJourney, prepare } from './lib/workload.js';
+import { mixedJourney, prepare, setThink } from './lib/workload.js';
+
+// Open model: arrival rate is the load, so iterations must not idle (no think time unless THINK is set).
+setThink(Number(__ENV.THINK || 0));
 
 const start = Number(__ENV.START_RATE || 10);
 const step = Number(__ENV.STEP_RATE || 20);

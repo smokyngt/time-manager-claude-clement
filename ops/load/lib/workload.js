@@ -24,8 +24,15 @@ export function prepare(accounts = ALL_ACCOUNTS) {
   return { sessions, teams };
 }
 
+let think = THINK;
+
+/** Override the think time of this VU (open models such as stress run without it). */
+export function setThink(seconds) {
+  think = seconds;
+}
+
 export function pause(min = 0.5, max = 1.5) {
-  if (THINK > 0) sleep((min + Math.random() * (max - min)) * THINK);
+  if (think > 0) sleep((min + Math.random() * (max - min)) * think);
 }
 
 /** Pick the account of this VU in a list, stable for the whole run. */

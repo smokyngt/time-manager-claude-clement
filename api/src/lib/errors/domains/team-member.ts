@@ -1,49 +1,41 @@
-import { registerError } from '../index.js';
+import { registerError } from '../base/registry.js';
 
 export const TeamMemberAddError = registerError({
-  code: 'TEAM_MEMBER_ADD_ERROR',
+  code: 'team.member.add.failed',
   defaultStatus: 500,
-  message: 'The team members could not be added.',
 });
 
 export const TeamMemberListError = registerError({
-  code: 'TEAM_MEMBER_LIST_ERROR',
+  code: 'team.member.list.failed',
   defaultStatus: 500,
-  message: 'The team members could not be listed.',
 });
 
 export const TeamMemberNotFoundError = registerError({
-  code: 'TEAM_MEMBER_NOT_FOUND',
+  code: 'team.member.not.found',
   defaultStatus: 404,
-  message: 'The user is not a member of this team.',
 });
 
 export const TeamMemberRemoveError = registerError({
-  code: 'TEAM_MEMBER_REMOVE_ERROR',
+  code: 'team.member.remove.failed',
   defaultStatus: 500,
-  message: 'The team members could not be removed.',
 });
 
 export const TeamMemberTeamArchivedError = registerError({
-  code: 'TEAM_MEMBER_TEAM_ARCHIVED',
+  code: 'team.member.team.archived',
   defaultStatus: 409,
-  message: 'The team is archived.',
 });
 
 export const TeamMemberTeamNotFoundError = registerError({
-  code: 'TEAM_MEMBER_TEAM_NOT_FOUND',
+  code: 'team.member.team.not.found',
   defaultStatus: 404,
-  message: 'The team does not exist.',
 });
 
 export const TeamMemberUserArchivedError = registerError({
-  code: 'TEAM_MEMBER_USER_ARCHIVED',
+  code: 'team.member.user.archived',
   defaultStatus: 409,
-  message: 'The user is archived.',
 });
 
 export const TeamMemberUserNotFoundError = registerError({
-  code: 'TEAM_MEMBER_USER_NOT_FOUND',
+  code: 'team.member.user.not.found',
   defaultStatus: 404,
-  message: 'The user does not exist.',
 });

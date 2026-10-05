@@ -1,0 +1,28 @@
+# Root-context builds (web image). The api image uses ./api as context and api/.dockerignore.
+**/node_modules
+**/dist
+**/coverage
+**/.git
+.git
+.github
+**/.env
+**/.env.*
+!**/.env.example
+**/*.log
+**/.DS_Store
+.vscode
+.idea
+
+# Not needed to build the web image
+api
+docs
+ops
+**/*.md
+web/e2e
+web/playwright-report
+web/test-results
+sdks/typescript/dist
+**/Dockerfile*
+**/.dockerignore
+docker-compose*.yml
+Makefile

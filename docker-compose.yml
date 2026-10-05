@@ -23,7 +23,23 @@ x-api-env: &api-env
   SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
   # nginx terminates the proxy hop; set COOKIE_SECURE=true once served over HTTPS.
   COOKIE_SECURE: ${COOKIE_SECURE:-false}
-  TRUST_PROXY: ${TRUST_PROXY:-true}
+  # Number of trusted proxy hops in front of the api (nginx = 1).
+  TRUST_PROXY: ${TRUST_PROXY:-1}
+  # Local prod stack is plain http://localhost:8080; the api rejects non-https WEB_URL otherwise.
+  ALLOW_INSECURE_URLS: ${ALLOW_INSECURE_URLS:-true}
+  # Field encryption and lookup hashing (see docs/ENCRYPTION.md). Both are required in production.
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required (openssl rand -base64 32)}
+  ENCRYPTION_KEY_ID: ${ENCRYPTION_KEY_ID:-k1}
+  ENCRYPTION_KEYS_PREVIOUS: ${ENCRYPTION_KEYS_PREVIOUS:-}
+  HASH_KEY: ${HASH_KEY:?HASH_KEY is required (openssl rand -base64 32)}
+  # Required by the api only when MICROSOFT_CLIENT_ID is set.
+  OAUTH_STATE_SECRET: ${OAUTH_STATE_SECRET:-}
+  METRICS_TOKEN: ${METRICS_TOKEN:-}
+  # Empty = tracing off. docker-compose.observability.yml points it at alloy.
+  OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+  OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-time-manager-api}
+  APP_VERSION: ${APP_VERSION:-}
+  JSON_BODY_MAX_DEPTH: ${JSON_BODY_MAX_DEPTH:-10}
   MIGRATIONS_DIR: drizzle
   DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
   APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Paris}
@@ -33,6 +49,8 @@ x-api-env: &api-env
   AUTH_RATE_LIMIT_WINDOW: ${AUTH_RATE_LIMIT_WINDOW:-1 minute}
   AUTH_LOGIN_RATE_LIMIT_MAX: ${AUTH_LOGIN_RATE_LIMIT_MAX:-10}
   AUTH_LOGIN_RATE_LIMIT_WINDOW: ${AUTH_LOGIN_RATE_LIMIT_WINDOW:-1 minute}
+  AUTH_ACCOUNT_RATE_LIMIT_MAX: ${AUTH_ACCOUNT_RATE_LIMIT_MAX:-10}
+  AUTH_ACCOUNT_RATE_LIMIT_WINDOW: ${AUTH_ACCOUNT_RATE_LIMIT_WINDOW:-1 minute}
 
 services:
   db:
@@ -67,8 +85,9 @@ services:
 
   web:
     build:
-      context: ./web
-      dockerfile: Dockerfile.prod
+      # Repo root: the web bundle imports the SDK from sdks/typescript.
+      context: .
+      dockerfile: web/Dockerfile.prod
       args:
         VITE_API_URL: ${VITE_API_URL:-}
     restart: unless-stopped

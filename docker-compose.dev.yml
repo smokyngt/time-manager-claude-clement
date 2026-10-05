@@ -1,5 +1,5 @@
 # Development stack with hot reload: `docker compose -f docker-compose.dev.yml up --build`
-# Source is bind-mounted; node_modules lives in an anonymous volume so the host's is never used.
+# Source (web, sdks, api) is bind-mounted; node_modules lives in an anonymous volume so the host's is never used.
 
 services:
   db:
@@ -53,8 +53,9 @@ services:
 
   web:
     build:
-      context: ./web
-      dockerfile: Dockerfile.dev
+      # Repo root: the web bundle imports the SDK from sdks/typescript.
+      context: .
+      dockerfile: web/Dockerfile.dev
     environment:
       # Empty = same origin; the Vite dev server proxies /v1 and /docs to the api container.
       VITE_API_URL: ""
@@ -63,8 +64,9 @@ services:
     ports:
       - "5173:5173"
     volumes:
-      - ./web:/app
-      - /app/node_modules
+      - ./web:/repo/web
+      - ./sdks:/repo/sdks
+      - /repo/web/node_modules
     depends_on:
       - api
 

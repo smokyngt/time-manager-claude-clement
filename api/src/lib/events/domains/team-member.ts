@@ -1,13 +1,34 @@
-import { registerEvent } from '../index.js';
+import { registerEvent } from '../base/registry.js';
 
-export const TeamMembersAdded = registerEvent<{ added: number; failed: number }>(
-  'team.members.added',
-);
+export type TeamMembersAddedPayload = {
+  actor: string;
+  added: number;
+  failed: number;
+  team_id: string;
+};
 
-export const TeamMembersListed = registerEvent<{ count: number; total: number }>(
-  'team.members.listed',
-);
+export type TeamMembersListedPayload = {
+  actor: string;
+  count: number;
+  team_id: string;
+  total: number;
+};
 
-export const TeamMembersRemoved = registerEvent<{ failed: number; removed: number }>(
-  'team.members.removed',
-);
+export type TeamMembersRemovedPayload = {
+  actor: string;
+  failed: number;
+  removed: number;
+  team_id: string;
+};
+
+export const TeamMembersAdded = registerEvent<TeamMembersAddedPayload>({
+  code: 'team.members.added',
+});
+
+export const TeamMembersListed = registerEvent<TeamMembersListedPayload>({
+  code: 'team.members.listed',
+});
+
+export const TeamMembersRemoved = registerEvent<TeamMembersRemovedPayload>({
+  code: 'team.members.removed',
+});

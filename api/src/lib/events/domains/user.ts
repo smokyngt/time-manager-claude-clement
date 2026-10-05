@@ -1,15 +1,15 @@
-import { registerEvent } from '../index.js';
+import { registerEvent } from '@/lib/events/base/registry.js';
 
-export const UserArchived = registerEvent<{ user_id: string }>('user.archived');
+export const UserArchived = registerEvent<{ actor: string; user_id: string }>({ code: 'user.archived' });
 
-export const UserCreated = registerEvent<{ user_id: string }>('user.created');
+export const UserCreated = registerEvent<{ actor: string; user_id: string }>({ code: 'user.created' });
 
-export const UserDeleted = registerEvent<{ deleted: number; failed: number }>('user.deleted');
+export const UserDeleted = registerEvent<{ actor: string; deleted: number; failed: number }>({ code: 'user.deleted' });
 
-export const UserListed = registerEvent<{ count: number; total: number }>('user.listed');
+export const UserListed = registerEvent<{ actor: string; count: number; total: number }>({ code: 'user.listed' });
 
-export const UserRestored = registerEvent<{ user_id: string }>('user.restored');
+export const UserRestored = registerEvent<{ actor: string; user_id: string }>({ code: 'user.restored' });
 
-export const UserRetrieved = registerEvent<{ user_id: string }>('user.retrieved');
+export const UserRetrieved = registerEvent<{ actor: string; user_id: string }>({ code: 'user.retrieved' });
 
-export const UserUpdated = registerEvent<{ failed: number; updated: number }>('user.updated');
+export const UserUpdated = registerEvent<{ actor: string; failed: number; updated: number }>({ code: 'user.updated' });

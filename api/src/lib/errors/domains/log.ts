@@ -1,7 +1,3 @@
-import { registerError } from '../index.js';
+import { registerError } from '@/lib/errors/base/registry.js';
 
-export const LogCreateError = registerError({
-  code: 'LOG_CREATE_ERROR',
-  defaultStatus: 500,
-  message: 'The audit log entry could not be created.',
-});
+export const LogCreateError = registerError({ code: 'log.create.failed', defaultStatus: 500 });

@@ -2,7 +2,7 @@ export const ROLES = ['admin', 'employee', 'manager'] as const;
 
 export type Role = (typeof ROLES)[number];
 
-export interface User {
+export type User = {
   archived_at: null | number;
   created_at: number;
   email: string;
@@ -13,4 +13,4 @@ export interface User {
   phone_number: null | string;
   role: Role;
   updated_at: null | number;
-}
+};
