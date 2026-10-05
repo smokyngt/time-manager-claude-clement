@@ -164,7 +164,7 @@ variable "vault_backup_passphrase" {
   sensitive   = true
 
   validation {
-    condition     = var.vault_backup_passphrase == null ? true : length(var.vault_backup_passphrase) >= 24
+    condition     = try(length(var.vault_backup_passphrase), 24) >= 24
     error_message = "vault_backup_passphrase must be at least 24 characters."
   }
 }

@@ -60,6 +60,17 @@ export class VaultClient {
   }
 
   /**
+   * @route config.vault.client.authenticate
+   * @param {string} token
+   * @returns {void}
+   * @throws {VaultError}
+   */
+  public authenticate(token: string): void {
+    if (this.settings === undefined) throw new VaultError('Vault client is not configured');
+    this.settings = { ...this.settings, token };
+  }
+
+  /**
    * @route config.vault.client.health
    * @param {{ standbyok: boolean }} options
    * @returns {Promise<VaultHealth>}
