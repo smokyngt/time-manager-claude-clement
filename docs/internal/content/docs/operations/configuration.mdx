@@ -1,0 +1,154 @@
+---
+title: Configuration reference
+description: Every environment variable read by the API, the web build, Compose and the operations tooling, with defaults and production requirements.
+---
+
+This is the canonical list of environment variables. It is derived from `Config.store.*` and `process.env` reads in `api/src`, `docker-compose*.yml`, `web/vite.config.ts` and the scripts in `ops/`. Public-facing summaries on the public site link here for details.
+
+How values reach the API:
+
+- Compose: values come from `.env` at the repository root (copy `.env.example`). Only variables listed in `x-api-env` of `docker-compose.yml` are passed to the container; add a variable there before setting it in `.env`.
+- Host: the API reads `process.env`, and Bun loads `api/.env` automatically (copy `api/.env.example`).
+- Placeholders are `CHANGE_ME_*` in the root `.env.example` and `dev-only-*` in code fallbacks. Production validation rejects both.
+
+## Production checks
+
+When `NODE_ENV=production`, `Config.validate()` runs at start and the API exits with `invalid configuration: ...` unless all of these hold:
+
+- `JWT_ACCESS_SECRET` and `JWT_REFRESH_SECRET` are at least 32 characters, are not placeholders (`change-me`, `change_me`, `dev-only`) and differ from each other.
+- `DATABASE_URL` is set.
+- `ENCRYPTION_KEY` is valid base64 of exactly 32 bytes, `HASH_KEY` is valid base64 of at least 32 bytes, and `ENCRYPTION_KEYS_PREVIOUS` entries are well-formed with unique ids.
+- `WEB_URL` is a non-local `https` URL, unless `ALLOW_INSECURE_URLS=true`.
+- `TRUST_PROXY` is `true`, `false`, a hop count or a list of IPs and CIDR ranges.
+- When `MICROSOFT_CLIENT_ID` is set: `OAUTH_STATE_SECRET` follows the secret rules above, `MICROSOFT_CLIENT_SECRET` is set and not a placeholder, `MICROSOFT_TENANT_ID` is a single-tenant GUID (not `common`, `organizations` or `consumers`) and `MICROSOFT_REDIRECT_URI` is a non-local `https` URL unless `ALLOW_INSECURE_URLS=true`.
+
+The local Compose stack runs in production mode over plain HTTP, so it sets `ALLOW_INSECURE_URLS=true` and `COOKIE_SECURE=false`. Remove both behind HTTPS.
+
+## API runtime
+
+| Variable | Default | Production | Meaning |
+| --- | --- | --- | --- |
+| `NODE_ENV` | `development` | `production` (Compose sets it) | Enables production validation, hides error metadata, defaults `COOKIE_SECURE` to true, hides `/metrics` without a token and turns off pretty logs. |
+| `PORT` | `8000` | no | API listen port. nginx proxies to `api:8000`, so keep 8000 in Compose. |
+| `LOG_LEVEL` | `info` | no | pino level. Dev Compose uses `debug`. |
+| `DATABASE_URL` | `postgres://timemanager:timemanager@localhost:5432/timemanager` (read by the db client) | required | Connection string. Compose builds it from `POSTGRES_*`. |
+| `DATABASE_POOL_MAX` | `10` | no | Maximum pool size, also exported as `tm_db_pool_max_connections`. Keep pool size times API replicas below PostgreSQL `max_connections`. |
+| `CORS_ORIGIN` | `http://localhost:5173` | set to the public SPA origin | Comma-separated allowed origins, with credentials. |
+| `WEB_URL` | `http://localhost:5173` | required, https | Where the API redirects the browser after Microsoft sign-in. |
+| `ALLOW_INSECURE_URLS` | `false` | no | Allows non-https or local `WEB_URL` and `MICROSOFT_REDIRECT_URI` in production mode. Local stacks only. |
+| `COOKIE_SECURE` | `true` in production, otherwise `false` | no | `Secure` flag of the `tm_refresh` and `tm_oauth` cookies. Set `false` for the plain-HTTP local stack. |
+| `TRUST_PROXY` | `true` | no | Trust `X-Forwarded-For`: `true`, `false`, a hop count (`1` for nginx) or a comma-separated list of IPs and CIDR ranges. A wrong value breaks client IPs and rate limits. |
+| `JSON_BODY_MAX_DEPTH` | `10` | no | Maximum JSON nesting depth of request bodies. |
+| `APP_TIMEZONE` | `Europe/Paris` | no | Company timezone for team schedules, report days and demo data. |
+| `MIGRATIONS_DIR` | `drizzle` | no | Migration folder, relative to the working directory. Compose fixes it to `drizzle`. |
+
+## Authentication
+
+| Variable | Default | Production | Meaning |
+| --- | --- | --- | --- |
+| `JWT_ACCESS_SECRET` | `dev-only-jwt_access_secret-change-me-in-production` | required | Signs access tokens. |
+| `JWT_REFRESH_SECRET` | `dev-only-jwt_refresh_secret-change-me-in-production` | required | HMAC key of stored refresh tokens. |
+| `OAUTH_STATE_SECRET` | `dev-only-oauth_state_secret-change-me-in-production` | required with Microsoft | Signs the `tm_oauth` state cookie. |
+| `JWT_ACCESS_TTL` | `15m` | no | Access token lifetime. |
+| `JWT_REFRESH_TTL` | `7d` | no | Refresh token and cookie lifetime. |
+| `SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD` | none | required for the first start | The idempotent admin seed run on every API start. |
+| `DEMO_PASSWORD` | `Demo1234!` | development only | Password of users created by `make demo`. Also read by the k6 scripts. |
+
+### Microsoft sign-in
+
+All optional. Without the client id and secret, `GET /v1/auth/microsoft` answers `503 auth.microsoft.unavailable`.
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `MICROSOFT_CLIENT_ID` | unset | Application (client) id of the Entra ID app registration. |
+| `MICROSOFT_CLIENT_SECRET` | unset | Client secret value. Required when the client id is set. |
+| `MICROSOFT_TENANT_ID` | unset | Directory (tenant) GUID. Aliases such as `common` are not accepted. |
+| `MICROSOFT_REDIRECT_URI` | `http://localhost:8000/v1/auth/microsoft/callback` | Must equal the redirect URI of the registration. |
+
+Registration steps: [Authentication internals](/docs/engineering/auth-internals#register-the-microsoft-application).
+
+## Encryption
+
+| Variable | Default | Production | Meaning |
+| --- | --- | --- | --- |
+| `ENCRYPTION_KEY` | derived development key | required | base64, exactly 32 bytes. |
+| `ENCRYPTION_KEY_ID` | `k1` | no | Id stored with every ciphertext. |
+| `ENCRYPTION_KEYS_PREVIOUS` | unset | no | Retired keys, `id:base64[,id:base64]`. |
+| `HASH_KEY` | derived development key | required | base64, at least 32 bytes. |
+
+Generate keys with `openssl rand -base64 32`. See [Key rotation](/docs/operations/key-rotation).
+
+## Rate limits
+
+Each router reads `<ENTITY>_RATE_LIMIT_MAX` and `<ENTITY>_RATE_LIMIT_WINDOW`. Windows use the `@fastify/rate-limit` format (`1 minute`).
+
+| Variable prefix | Code default | Compose default |
+| --- | --- | --- |
+| `USER_` | `6000` per `1 minute` | `100` |
+| `TEAM_`, `TEAM_MEMBER_`, `CLOCK_`, `REPORT_` | `6000` per `1 minute` | not passed through |
+| `AUTH_` | `100` per `1 minute` | `100` |
+| `AUTH_LOGIN_` | `10` per `1 minute`, keyed by IP | same |
+| `AUTH_ACCOUNT_` | `5` failures per `15m`, per email | same |
+
+`AUTH_ACCOUNT_RATE_LIMIT_WINDOW` uses a short duration (`15m`, `30s`). Counters are in memory per API process.
+
+## Observability
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `METRICS_TOKEN` | unset | Bearer token for `GET /metrics`. Required by the observability overlay. Without it `/metrics` is open outside production and answers 404 in production. |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | unset (tracing off) | OTLP/HTTP base URL. The overlay sets `http://alloy:4318`. |
+| `OTEL_SERVICE_NAME` | `time-manager-api` | Service name in traces. Dashboards filter on it. |
+| `APP_VERSION` | `0.1.0` | Reported as `service.version`. |
+| `GRAFANA_ADMIN_USER`, `GRAFANA_ADMIN_PASSWORD` | none | Required by the overlay. |
+| `GRAFANA_BIND`, `GRAFANA_PORT` | `127.0.0.1`, `3000` | Published address of Grafana. |
+| `GRAFANA_ROOT_URL` | `http://localhost:3000` | Public URL of Grafana. |
+| `GRAFANA_COOKIE_SECURE` | `false` | Set `true` behind HTTPS. |
+| `ALERT_WEBHOOK_URL` | empty | Alertmanager webhook receiver. |
+| `GRAFANA_ALERT_WEBHOOK_URL` | Alertmanager health endpoint | Contact point of Grafana-managed alerts. |
+| `PG_EXPORTER_DATA_SOURCE_NAME` | application credentials | Connection string of the postgres-exporter, normally the read-only monitoring role. |
+
+## Database and Compose
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` | required in production Compose, `timemanager` in dev Compose | Database credentials. |
+| `VITE_API_URL` | empty | Web build argument: API origin. Empty means same origin through nginx. |
+| `VITE_PROXY_TARGET` | `http://localhost:8000` | Dev server proxy target for `/v1` and `/docs`. |
+| `CHOKIDAR_USEPOLLING` | `true` in dev Compose | File watching in containers. |
+| `E2E_DATABASE_URL` | `postgres://timemanager:timemanager@localhost:5432/timemanager_e2e` | Database used by Playwright. |
+
+## Backups
+
+Read by `ops/backup/bin/*` through `docker-compose.backup.yml`. Details in [Backups](/docs/operations/backups).
+
+| Variable | Default | Meaning |
+| --- | --- | --- |
+| `BACKUP_SCHEDULE` | `15 2 * * *` | Cron expression. |
+| `BACKUP_TZ` | `UTC` | Timezone of the schedule. |
+| `BACKUP_RUN_ON_START` | `false` | Run one backup when the container starts. |
+| `BACKUP_KEEP_DAILY`, `BACKUP_KEEP_WEEKLY`, `BACKUP_KEEP_MONTHLY` | `7`, `4`, `6` | Retention. |
+| `BACKUP_COMPRESSION` | `6` | `pg_dump -Z` value, for example `6` or `zstd:3`. |
+| `BACKUP_AGE_RECIPIENT` | unset | age recipient(s). Encrypts dumps to `*.dump.age`. |
+| `BACKUP_AGE_IDENTITY_HOST_PATH` | unset | Host path of the age identity, mounted into the `restore` service only. |
+| `BACKUP_ENCRYPTION_RECIPIENT`, `BACKUP_GPG_PUBLIC_KEY_FILE` | unset | gpg alternative to age. |
+| `BACKUP_S3_URI`, `BACKUP_S3_ENDPOINT_URL`, `BACKUP_S3_CLIENT` | unset, unset, `auto` | Offsite copy to S3-compatible storage with `aws` or `rclone`. |
+| `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_DEFAULT_REGION` | unset, unset, `us-east-1` | Credentials for the offsite copy. |
+| `BACKUP_ALERT_WEBHOOK` | unset | Called with a JSON message when a run fails. |
+| `BACKUP_HEARTBEAT_URL` | unset | Pinged after each successful run. |
+| `BACKUP_MAX_AGE_HOURS` | `26` | The container healthcheck fails when the last success is older. |
+| `VERIFY_REQUIRED_TABLES`, `VERIFY_EXPECTED_TABLES`, `VERIFY_NONEMPTY_TABLES`, `VERIFY_STRICT`, `VERIFY_ADMIN_URL` | see `verify.sh` | Checks run by `verify.sh`. |
+
+## Load tests
+
+Passed to k6 with `-e NAME=value`. See [Performance](/docs/operations/performance).
+
+| Variable | Default |
+| --- | --- |
+| `BASE_URL` | `http://localhost:8000` |
+| `DEMO_PASSWORD` | `Demo1234!` |
+| `THINK`, `SUMMARY_DIR` | scenario-dependent, `ops/load/results` |
+| `VUS_EMPLOYEES`, `VUS_MANAGERS`, `RAMP`, `HOLD` | load scenario |
+| `START_RATE`, `STEP_RATE`, `STEPS`, `STEP_DURATION`, `PRE_VUS`, `MAX_VUS` | stress scenario |
+| `BASE_VUS`, `SPIKE_VUS` | spike scenario |
+| `SOAK_VUS`, `SOAK_DURATION` | soak scenario |

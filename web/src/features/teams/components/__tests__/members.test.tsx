@@ -8,9 +8,24 @@ import { MembersTable } from '@/features/teams/components/members-table'
 
 vi.mock('react-i18next', async () => (await import('@/test-support/test-i18n')).TestI18n.module())
 
-const ada = TeamFixtures.user({ email: 'ada@example.com', firstName: 'Ada', id: 'ada', lastName: 'Lovelace' })
-const bob = TeamFixtures.user({ email: 'bob@example.com', firstName: 'Bob', id: 'bob', lastName: 'Stone' })
-const cleo = TeamFixtures.user({ email: 'cleo@example.com', firstName: 'Cleo', id: 'cleo', lastName: 'Ray' })
+const ada = TeamFixtures.user({
+  email: 'ada@example.com',
+  firstName: 'Ada',
+  id: 'ada',
+  lastName: 'Lovelace',
+})
+const bob = TeamFixtures.user({
+  email: 'bob@example.com',
+  firstName: 'Bob',
+  id: 'bob',
+  lastName: 'Stone',
+})
+const cleo = TeamFixtures.user({
+  email: 'cleo@example.com',
+  firstName: 'Cleo',
+  id: 'cleo',
+  lastName: 'Ray',
+})
 
 function renderDialog(props: Partial<React.ComponentProps<typeof AddMembersDialog>> = {}) {
   const onSubmit = vi.fn()
@@ -77,7 +92,7 @@ describe('AddMembersDialog', () => {
   it('shows the error with a retry', async () => {
     const onRetry = vi.fn()
     renderDialog({ candidates: [], isError: true, onRetry })
-    await userEvent.click(screen.getByRole('button', { name: 'common:error.retry' }))
+    await userEvent.click(screen.getByRole('button', { name: 'error.retry' }))
     expect(onRetry).toHaveBeenCalled()
   })
 

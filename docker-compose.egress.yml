@@ -1,0 +1,9 @@
+# Outbound internet for the api (Microsoft sign-in). The default stack keeps api on the internal "backend" network only.
+#   docker compose -f docker-compose.yml -f docker-compose.egress.yml up -d
+
+services:
+  api:
+    networks: [backend, egress]
+
+networks:
+  egress:

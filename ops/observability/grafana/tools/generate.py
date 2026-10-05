@@ -502,10 +502,10 @@ HTTP_COUNT = "http_request_duration_seconds_count"
 HTTP_BUCKET = "http_request_duration_seconds_bucket"
 LAT_STEPS = [(None, C_OK), (0.5, C_WARN), (1, C_BAD)]
 ERR_STEPS = [(None, C_OK), (0.01, C_WARN), (0.02, C_BAD)]
-CLOCK_IN = 'tm_events_total{code=~"clock[.](in|clocked_in)"}'
-CLOCK_OUT = 'tm_events_total{code=~"clock[.](out|clocked_out)"}'
+CLOCK_IN = 'tm_events_total{code=~"clock[.](started|in|clocked_in)"}'
+CLOCK_OUT = 'tm_events_total{code=~"clock[.](stopped|out|clocked_out)"}'
 LOGIN_OK = 'tm_events_total{code=~"auth[.](logged_in|login)"}'
-LOGIN_KO = 'tm_errors_total{code=~"AUTH_INVALID_CREDENTIALS|auth[._]invalid.*"}'
+LOGIN_KO = 'tm_errors_total{code=~"auth[.]credentials[.]invalid|AUTH_INVALID_CREDENTIALS|auth[._]invalid.*"}'
 AUTH_ERR = 'tm_errors_total{code=~"(?i)auth[._].*"}'
 USER_CREATED = 'tm_events_total{code=~"user[.]created"}'
 TEAM_CREATED = 'tm_events_total{code=~"team[.]created"}'
@@ -697,8 +697,8 @@ def business() -> dict:
     b.add(stat("Net clock-ins", "Clock-ins minus clock-outs in the range: people still clocked in at the end of the window, relative to its start.",
                f"sum(increase({CLOCK_IN}[$__range])) - sum(increase({CLOCK_OUT}[$__range]))", "short",
                [(None, C_INFO)], spark=False, decimals=0), 6, 4)
-    b.add(stat("Clock errors", "Failed clock operations (tm_errors_total, CLOCK_*) in the range, e.g. already clocked in or overlap.",
-               'sum(increase(tm_errors_total{code=~"CLOCK_.*"}[$__range]))', "short",
+    b.add(stat("Clock errors", "Failed clock operations (tm_errors_total, clock.*) in the range, e.g. already clocked in or overlap.",
+               'sum(increase(tm_errors_total{code=~"(?i)clock[._].*"}[$__range]))', "short",
                [(None, C_OK), (1, C_WARN), (20, C_BAD)], spark=False, decimals=0), 6, 4)
     b.add(series("Clock-ins and clock-outs per hour", "Hourly count of clock-in and clock-out events: the working-day heartbeat.",
                  [target(inc(CLOCK_IN), "clock-ins", 0, **hourly), target(inc(CLOCK_OUT), "clock-outs", 1, **hourly)],
@@ -729,8 +729,8 @@ def business() -> dict:
                "short", [(None, C_INFO)], spark=False, decimals=0), 4, 4)
     b.add(stat("Teams archived", "Teams archived in the range.",
                'sum(increase(tm_events_total{code="team.archived"}[$__range]))', "short", [(None, C_INFO)], spark=False, decimals=0), 4, 4)
-    b.add(stat("User conflicts", "Duplicate-email conflicts (USER_CONFLICT) in the range.",
-               'sum(increase(tm_errors_total{code="USER_CONFLICT"}[$__range]))', "short",
+    b.add(stat("Duplicate-key conflicts", "Duplicate-key conflicts (duplicate.key, 409) in the range.",
+               'sum(increase(tm_errors_total{code="duplicate.key"}[$__range]))', "short",
                [(None, C_OK), (5, C_WARN)], spark=False, decimals=0), 4, 4)
     b.add(stat("Validation errors", "Requests rejected by schema validation (validation.error) in the range: a rise after a deploy signals a client/API contract drift.",
                'sum(increase(tm_errors_total{code="validation.error"}[$__range]))', "short",

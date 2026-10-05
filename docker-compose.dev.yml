@@ -1,15 +1,28 @@
 # Development stack with hot reload: `docker compose -f docker-compose.dev.yml up --build`
 # Source (web, sdks, api) is bind-mounted; node_modules lives in an anonymous volume so the host's is never used.
+# Ports bind to 127.0.0.1 only. Dev containers run as root so bind-mounted sources stay writable; never expose them.
+
+x-dev-hardening: &dev-hardening
+  security_opt:
+    - no-new-privileges:true
+  logging:
+    driver: json-file
+    options:
+      max-size: "10m"
+      max-file: "3"
 
 services:
   db:
-    image: postgres:17-alpine
+    <<: *dev-hardening
+    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    command: ["postgres", "-c", "password_encryption=scram-sha-256"]
     environment:
+      POSTGRES_INITDB_ARGS: --auth=scram-sha-256
       POSTGRES_USER: ${POSTGRES_USER:-timemanager}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-timemanager}
       POSTGRES_DB: ${POSTGRES_DB:-timemanager}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - db-dev-data:/var/lib/postgresql/data
     healthcheck:
@@ -17,15 +30,28 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    shm_size: 128mb
+    pids_limit: 200
+    mem_limit: 1g
 
   api:
+    <<: *dev-hardening
+    pids_limit: 400
+    mem_limit: 1g
+    init: true
+    healthcheck:
+      test: ["CMD", "bun", "-e", "fetch('http://127.0.0.1:8000/health',{signal:AbortSignal.timeout(2500)}).then(r=>process.exit(r.ok?0:1),()=>process.exit(1))"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+      start_period: 30s
     build:
       context: ./api
       dockerfile: Dockerfile.dev
     command: sh -c "bun run db:migrate && bun run db:seed && bun run dev"
     environment:
       NODE_ENV: development
-      PORT: 8000
+      PORT: "8000"
       LOG_LEVEL: ${LOG_LEVEL:-debug}
       DATABASE_URL: postgres://${POSTGRES_USER:-timemanager}:${POSTGRES_PASSWORD:-timemanager}@db:5432/${POSTGRES_DB:-timemanager}
       JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-dev-access-secret-change-me-0123456789}
@@ -43,7 +69,7 @@ services:
       APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Paris}
       DEMO_PASSWORD: ${DEMO_PASSWORD:-Demo1234!}
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     volumes:
       - ./api:/app
       - /app/node_modules
@@ -52,6 +78,10 @@ services:
         condition: service_healthy
 
   web:
+    <<: *dev-hardening
+    pids_limit: 400
+    mem_limit: 1g
+    init: true
     build:
       # Repo root: the web bundle imports the SDK from sdks/typescript.
       context: .
@@ -62,13 +92,14 @@ services:
       VITE_PROXY_TARGET: http://api:8000
       CHOKIDAR_USEPOLLING: "true"
     ports:
-      - "5173:5173"
+      - "127.0.0.1:5173:5173"
     volumes:
       - ./web:/repo/web
       - ./sdks:/repo/sdks
       - /repo/web/node_modules
     depends_on:
-      - api
+      api:
+        condition: service_healthy
 
 volumes:
   db-dev-data:

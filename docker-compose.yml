@@ -1,16 +1,15 @@
 # Production stack: `docker compose up --build`
-# Only the web container (nginx) is published; db and api stay on the internal network.
-# The api container applies migrations and the idempotent admin seed on startup, using the
-# same runtime image (compiled dist/db/*.js + drizzle/), so no drizzle-kit or extra service.
-# This assumes a single api replica; scale out only after moving migrations to a release step.
+# Only web (nginx, 127.0.0.1:8080 by default) is published; db and api sit on the internal "backend" network.
+# `migrate` then `seed` run once from the api image (distroless, no shell) before api starts.
+# Docker secrets instead of env: add -f docker-compose.secrets.yml. Outbound api access (Microsoft login): add -f docker-compose.egress.yml.
 
 x-api-env: &api-env
   NODE_ENV: ${NODE_ENV:-production}
-  PORT: ${PORT:-8000}
+  PORT: "8000"
   LOG_LEVEL: ${LOG_LEVEL:-info}
-  DATABASE_URL: postgres://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}
-  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET is required}
-  JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET is required}
+  DATABASE_URL: postgres://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:-}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:-}
+  JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:-}
   JWT_ACCESS_TTL: ${JWT_ACCESS_TTL:-15m}
   JWT_REFRESH_TTL: ${JWT_REFRESH_TTL:-7d}
   CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:8080}
@@ -20,27 +19,25 @@ x-api-env: &api-env
   MICROSOFT_TENANT_ID: ${MICROSOFT_TENANT_ID:-}
   MICROSOFT_REDIRECT_URI: ${MICROSOFT_REDIRECT_URI:-http://localhost:8080/v1/auth/microsoft/callback}
   SEED_ADMIN_EMAIL: ${SEED_ADMIN_EMAIL:?SEED_ADMIN_EMAIL is required}
-  SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:?SEED_ADMIN_PASSWORD is required}
+  SEED_ADMIN_PASSWORD: ${SEED_ADMIN_PASSWORD:-}
   # nginx terminates the proxy hop; set COOKIE_SECURE=true once served over HTTPS.
   COOKIE_SECURE: ${COOKIE_SECURE:-false}
   # Number of trusted proxy hops in front of the api (nginx = 1).
   TRUST_PROXY: ${TRUST_PROXY:-1}
   # Local prod stack is plain http://localhost:8080; the api rejects non-https WEB_URL otherwise.
   ALLOW_INSECURE_URLS: ${ALLOW_INSECURE_URLS:-true}
-  # Field encryption and lookup hashing (see docs/ENCRYPTION.md). Both are required in production.
-  ENCRYPTION_KEY: ${ENCRYPTION_KEY:?ENCRYPTION_KEY is required (openssl rand -base64 32)}
+  # Secrets may come from *_FILE instead (docker-compose.secrets.yml); the api validates them at boot.
+  ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
   ENCRYPTION_KEY_ID: ${ENCRYPTION_KEY_ID:-k1}
   ENCRYPTION_KEYS_PREVIOUS: ${ENCRYPTION_KEYS_PREVIOUS:-}
-  HASH_KEY: ${HASH_KEY:?HASH_KEY is required (openssl rand -base64 32)}
+  HASH_KEY: ${HASH_KEY:-}
   # Required by the api only when MICROSOFT_CLIENT_ID is set.
   OAUTH_STATE_SECRET: ${OAUTH_STATE_SECRET:-}
   METRICS_TOKEN: ${METRICS_TOKEN:-}
   # Empty = tracing off. docker-compose.observability.yml points it at alloy.
   OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
   OTEL_SERVICE_NAME: ${OTEL_SERVICE_NAME:-time-manager-api}
-  APP_VERSION: ${APP_VERSION:-}
   JSON_BODY_MAX_DEPTH: ${JSON_BODY_MAX_DEPTH:-10}
-  MIGRATIONS_DIR: drizzle
   DATABASE_POOL_MAX: ${DATABASE_POOL_MAX:-10}
   APP_TIMEZONE: ${APP_TIMEZONE:-Europe/Paris}
   USER_RATE_LIMIT_MAX: ${USER_RATE_LIMIT_MAX:-100}
@@ -52,16 +49,57 @@ x-api-env: &api-env
   AUTH_ACCOUNT_RATE_LIMIT_MAX: ${AUTH_ACCOUNT_RATE_LIMIT_MAX:-5}
   AUTH_ACCOUNT_RATE_LIMIT_WINDOW: ${AUTH_ACCOUNT_RATE_LIMIT_WINDOW:-15m}
 
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+x-hardened: &hardened
+  restart: unless-stopped
+  read_only: true
+  security_opt:
+    - no-new-privileges:true
+  cap_drop: [ALL]
+  logging: *logging
+
+x-api-image: &api-image
+  image: ${API_IMAGE:-time-manager-api:local}
+  build:
+    context: ./api
+    dockerfile: Dockerfile.prod
+    target: runtime
+    args:
+      VERSION: ${APP_VERSION:-0.0.0}
+      REVISION: ${GIT_SHA:-unknown}
+
 services:
   db:
-    image: postgres:17-alpine
-    restart: unless-stopped
+    <<: *hardened
+    image: postgres:17.11-alpine@sha256:b0f9560a2de083e2cc7382e75f808c7381a32852a7ec49117deedb300e552b24
+    user: "70:70"
+    command: ["postgres", "-c", "password_encryption=scram-sha-256", "-c", "log_connections=on"]
     environment:
       POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
       POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_INITDB_ARGS: --auth=scram-sha-256
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
     volumes:
       - db-data:/var/lib/postgresql/data
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+      - /run/postgresql:rw,noexec,nosuid,nodev,size=8m,uid=70,gid=70
+    shm_size: 256mb
+    mem_limit: 1g
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
+          pids: 200
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
       interval: 5s
@@ -70,36 +108,111 @@ services:
       start_period: 10s
     networks: [backend]
 
-  api:
-    build:
-      context: ./api
-      dockerfile: Dockerfile.prod
-      target: runtime
-    restart: unless-stopped
-    environment: *api-env
-    command: ["sh", "-c", "bun run db:migrate:prod && bun run db:seed:prod && exec bun run start"]
+  migrate:
+    <<: [*hardened, *api-image]
+    restart: "no"
+    user: "65532:65532"
+    command: ["dist/db/migrate.js"]
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER:?POSTGRES_USER is required}:${POSTGRES_PASSWORD:-}@db:5432/${POSTGRES_DB:?POSTGRES_DB is required}
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256m
+          pids: 100
+    healthcheck:
+      disable: true
     depends_on:
       db:
         condition: service_healthy
     networks: [backend]
 
+  seed:
+    <<: [*hardened, *api-image]
+    restart: "no"
+    user: "65532:65532"
+    command: ["dist/db/seed.js"]
+    environment: *api-env
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m
+    mem_limit: 256m
+    cpus: 0.5
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256m
+          pids: 100
+    healthcheck:
+      disable: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks: [backend]
+
+  api:
+    <<: [*hardened, *api-image]
+    user: "65532:65532"
+    init: true
+    environment: *api-env
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=32m
+    mem_limit: 512m
+    cpus: 1.0
+    pids_limit: 200
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 512m
+          pids: 200
+    depends_on:
+      seed:
+        condition: service_completed_successfully
+    networks: [backend]
+
   web:
+    <<: *hardened
+    image: ${WEB_IMAGE:-time-manager-web:local}
     build:
       # Repo root: the web bundle imports the SDK from sdks/typescript.
       context: .
       dockerfile: web/Dockerfile.prod
       args:
         VITE_API_URL: ${VITE_API_URL:-}
-    restart: unless-stopped
+        VERSION: ${APP_VERSION:-0.0.0}
+        REVISION: ${GIT_SHA:-unknown}
+    user: "101:101"
     ports:
-      - "8080:80"
+      - "${WEB_BIND:-127.0.0.1}:${WEB_PORT:-8080}:8080"
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    mem_limit: 128m
+    cpus: 0.5
+    pids_limit: 100
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128m
+          pids: 100
     depends_on:
       api:
         condition: service_healthy
-    networks: [backend]
+    networks: [frontend, backend]
 
 volumes:
   db-data:
 
 networks:
+  frontend:
   backend:
+    internal: true

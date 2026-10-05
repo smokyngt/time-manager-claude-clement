@@ -1,0 +1,73 @@
+---
+title: Backups
+description: The PostgreSQL backup sidecar - schedule, retention, encryption, offsite copies, restore runbook, drills and alert runbooks.
+---
+
+The `backup` sidecar (`ops/backup`, `docker-compose.backup.yml`) runs `pg_dump -Fc` on a schedule, writes a SHA-256 checksum per dump, optionally encrypts it, optionally copies it to S3-compatible storage and applies retention locally and remotely. Start it with `make backup-up`. Variables are listed in the [configuration reference](/docs/operations/configuration#backups).
+
+| Target | Value |
+| --- | --- |
+| RPO | Up to 24 hours with the daily default. Shorten `BACKUP_SCHEDULE` or add WAL archiving for less. |
+| RTO | Minutes to tens of minutes: download, decrypt, `pg_restore`, restart. Measure it with the drill. |
+
+## What a backup does
+
+- Schedule: `BACKUP_SCHEDULE` (default `15 2 * * *`) in `BACKUP_TZ` (default `UTC`). `BACKUP_RUN_ON_START=true` runs one backup immediately.
+- Files: `<db>_<UTC timestamp>.dump[.age|.gpg]` with a `.sha256` file next to each, in the `backups` volume.
+- A dump that fails `pg_restore --list` is rejected before any pruning.
+- Encryption: age through `BACKUP_AGE_RECIPIENT`, or gpg through `BACKUP_ENCRYPTION_RECIPIENT` and `BACKUP_GPG_PUBLIC_KEY_FILE`. The two are mutually exclusive. Only the public key lives on the server, and the identity is mounted only to restore (`BACKUP_AGE_IDENTITY_HOST_PATH`).
+- Offsite: `BACKUP_S3_URI` and `BACKUP_S3_ENDPOINT_URL`, with `aws` by default or `rclone` (build argument `WITH_RCLONE=1` and `BACKUP_S3_CLIENT=rclone`).
+- Retention after each backup: the newest per day for `BACKUP_KEEP_DAILY` (7) days, per ISO week for `BACKUP_KEEP_WEEKLY` (4) and per month for `BACKUP_KEEP_MONTHLY` (6). A backup is kept if any rule keeps it, and the newest is always kept. `backup.sh --prune-only` prunes without dumping.
+- The container only receives the database credentials and backup settings, never the JWT secrets.
+
+## Keys
+
+Dumps contain ciphertext. They are unreadable without `ENCRYPTION_KEY`, every key in `ENCRYPTION_KEYS_PREVIOUS` and `HASH_KEY`. Keep those keys and the age identity in a secret manager, separate from the dumps and their storage. Keep old keys until every backup that needs them is past retention. See [Encryption](/docs/engineering/encryption).
+
+## Restore runbook
+
+1. Stop the application: `docker compose stop api web`.
+2. List backups: `docker compose exec backup ls /backups`, or use `--remote` to read S3.
+3. Rehearse into a new database:
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.backup.yml --profile tools \
+     run --rm restore restore.sh latest --target postgres://USER:PASS@db:5432/restore_test --create
+   ```
+
+4. Restore over production:
+
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.backup.yml --profile tools \
+     run --rm restore restore.sh latest --force
+   ```
+
+   The checksum is verified first. The restore is one transaction, so a failure leaves the database unchanged.
+5. Make sure the same `ENCRYPTION_KEY`, previous keys and `HASH_KEY` are configured, then `docker compose start api web`.
+6. Check `GET /health/ready` and sign in.
+
+`restore.sh` options: a file name or `latest`, `--target URL`, `--remote`, `--create`, `--force` and `--skip-checksum` (not recommended).
+
+## Drills
+
+- Weekly: the `Backup restore drill` workflow migrates a database, loads demo data, takes an age-encrypted backup, runs `verify.sh` into a scratch database and keeps the artifact for 3 days.
+- On demand: `make backup-verify` restores the latest backup into a scratch database. It requires `users` to exist and be non-empty, and counts `teams`, `team_members`, `clocks`, `refresh_tokens` and `audit_logs`. `VERIFY_STRICT=true` turns a missing table into an error.
+- Quarterly: do a full manual restore into staging and record the measured RTO.
+
+## Monitoring
+
+- The container healthcheck is healthy while the last success is younger than `BACKUP_MAX_AGE_HOURS` (26).
+- Metrics are served on `http://backup:9187/metrics` inside the Compose network: `tm_backup_last_success_timestamp_seconds` and `tm_backup_last_size_bytes`. The observability overlay scrapes them.
+- Alerts `BackupStale` and `BackupMetricsMissing` are defined in `ops/observability/prometheus/rules/alerts.yml`, and Grafana mirrors `BackupStale`.
+- `BACKUP_ALERT_WEBHOOK` receives a JSON message (`text` and `content` fields, accepted by Slack, Teams and Discord) when a run fails. `BACKUP_HEARTBEAT_URL` is pinged after each success.
+- Logs: `docker compose logs backup`. Credentials are never logged.
+
+## Alert runbooks
+
+### BackupStale
+
+The last successful backup is more than 26 hours old. Check `docker compose logs backup` for the failure (database unreachable, disk full, offsite upload error, encryption recipient invalid) and `docker compose ps backup`. Fix the cause, then run `make backup-now` and confirm the metric advances. If the volume is full, lower retention or enlarge the volume, then run `backup.sh --prune-only`.
+
+### BackupMetricsMissing
+
+No backup metrics for 30 minutes. Either the overlay is not running (`make backup-up`), Alloy cannot reach `backup:9187` (`docker compose logs alloy`), or no backup has ever succeeded. Run `make backup-now` and check that `/backups/metrics.prom` is written.

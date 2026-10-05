@@ -1295,7 +1295,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "sum(increase(tm_events_total{code=~\"clock[.](in|clocked_in)\"}[$__range])) - sum(increase(tm_events_total{code=~\"clock[.](out|clocked_out)\"}[$__range]))",
+              "expr": "sum(increase(tm_events_total{code=~\"clock[.](started|in|clocked_in)\"}[$__range])) - sum(increase(tm_events_total{code=~\"clock[.](stopped|out|clocked_out)\"}[$__range]))",
               "legendFormat": "__auto",
               "range": false,
               "refId": "A",

@@ -59,7 +59,12 @@ describe('TeamMapper', () => {
 
   it('omits an empty description and the manager on create', () => {
     const params = TeamMapper.toCreate({ ...valid, name: 'Ops' }, false)
-    expect(params).toEqual({ name: 'Ops', weeklyHoursTarget: 35, workEnd: '17:00', workStart: '09:00' })
+    expect(params).toEqual({
+      name: 'Ops',
+      weeklyHoursTarget: 35,
+      workEnd: '17:00',
+      workStart: '09:00',
+    })
     expect(TeamMapper.toCreate({ ...valid, name: 'Ops' }, true).managerId).toBe('manager-1')
   })
 
@@ -70,9 +75,9 @@ describe('TeamMapper', () => {
       managerId: 'other',
     })
     expect(TeamMapper.toUpdate(values, team, false)).not.toHaveProperty('managerId')
-    expect(TeamMapper.toUpdate({ ...values, managerId: 'manager-1' }, team, true)).not.toHaveProperty(
-      'managerId',
-    )
+    expect(
+      TeamMapper.toUpdate({ ...values, managerId: 'manager-1' }, team, true),
+    ).not.toHaveProperty('managerId')
   })
 
   it('snapshots the editable fields', () => {

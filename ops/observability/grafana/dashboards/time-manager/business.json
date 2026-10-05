@@ -81,7 +81,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_events_total{code=~\"clock[.](in|clocked_in)\"}[$__range]))",
+          "expr": "sum(increase(tm_events_total{code=~\"clock[.](started|in|clocked_in)\"}[$__range]))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",
@@ -146,7 +146,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_events_total{code=~\"clock[.](out|clocked_out)\"}[$__range]))",
+          "expr": "sum(increase(tm_events_total{code=~\"clock[.](stopped|out|clocked_out)\"}[$__range]))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",
@@ -211,7 +211,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_events_total{code=~\"clock[.](in|clocked_in)\"}[$__range])) - sum(increase(tm_events_total{code=~\"clock[.](out|clocked_out)\"}[$__range]))",
+          "expr": "sum(increase(tm_events_total{code=~\"clock[.](started|in|clocked_in)\"}[$__range])) - sum(increase(tm_events_total{code=~\"clock[.](stopped|out|clocked_out)\"}[$__range]))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",
@@ -267,7 +267,7 @@
     },
     {
       "title": "Clock errors",
-      "description": "Failed clock operations (tm_errors_total, CLOCK_*) in the range, e.g. already clocked in or overlap.",
+      "description": "Failed clock operations (tm_errors_total, clock.*) in the range, e.g. already clocked in or overlap.",
       "type": "stat",
       "targets": [
         {
@@ -276,7 +276,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_errors_total{code=~\"CLOCK_.*\"}[$__range]))",
+          "expr": "sum(increase(tm_errors_total{code=~\"(?i)clock[._].*\"}[$__range]))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",
@@ -349,7 +349,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_events_total{code=~\"clock[.](in|clocked_in)\"}[1h]))",
+          "expr": "sum(increase(tm_events_total{code=~\"clock[.](started|in|clocked_in)\"}[1h]))",
           "legendFormat": "clock-ins",
           "range": true,
           "refId": "A",
@@ -361,7 +361,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_events_total{code=~\"clock[.](out|clocked_out)\"}[1h]))",
+          "expr": "sum(increase(tm_events_total{code=~\"clock[.](stopped|out|clocked_out)\"}[1h]))",
           "legendFormat": "clock-outs",
           "range": true,
           "refId": "B",
@@ -500,7 +500,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "(sum(increase(tm_errors_total{code=~\"AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[$__range])) or vector(0)) / (sum(increase(tm_errors_total{code=~\"AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[$__range])) + sum(increase(tm_events_total{code=~\"auth[.](logged_in|login)\"}[$__range])))",
+          "expr": "(sum(increase(tm_errors_total{code=~\"auth[.]credentials[.]invalid|AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[$__range])) or vector(0)) / (sum(increase(tm_errors_total{code=~\"auth[.]credentials[.]invalid|AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[$__range])) + sum(increase(tm_events_total{code=~\"auth[.](logged_in|login)\"}[$__range])))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",
@@ -585,7 +585,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_errors_total{code=~\"AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[1h]))",
+          "expr": "sum(increase(tm_errors_total{code=~\"auth[.]credentials[.]invalid|AUTH_INVALID_CREDENTIALS|auth[._]invalid.*\"}[1h]))",
           "legendFormat": "failed",
           "range": true,
           "refId": "B",
@@ -1179,8 +1179,8 @@
       }
     },
     {
-      "title": "User conflicts",
-      "description": "Duplicate-email conflicts (USER_CONFLICT) in the range.",
+      "title": "Duplicate-key conflicts",
+      "description": "Duplicate-key conflicts (duplicate.key, 409) in the range.",
       "type": "stat",
       "targets": [
         {
@@ -1189,7 +1189,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "sum(increase(tm_errors_total{code=\"USER_CONFLICT\"}[$__range]))",
+          "expr": "sum(increase(tm_errors_total{code=\"duplicate.key\"}[$__range]))",
           "legendFormat": "__auto",
           "range": false,
           "refId": "A",

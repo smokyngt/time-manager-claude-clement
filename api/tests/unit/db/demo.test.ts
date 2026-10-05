@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'bun:test';
 
+import { Cipher } from '@/utils/crypto/cipher.js';
+import { Digest } from '@/utils/crypto/digest.js';
+
 import { Demo, Prng, Zone } from '@/db/demo.js';
 
 import type { ClockSeed } from '@/db/demo.js';
@@ -157,5 +160,16 @@ describe('Demo data', () => {
 
   it('derives the earliest start and the highest target for multi-team users', () => {
     expect(Demo.profile(3)).toEqual({ start: '08:30', target: 37 });
+  });
+});
+
+describe('Demo.person', () => {
+  it('seals the identity and stores the email hash', () => {
+    const person = Demo.person('Jane Doe', 'employee', 'hash');
+    expect(Cipher.open(person.email)).toBe('jane.doe@timemanager.dev');
+    expect(Cipher.open(person.first_name)).toBe('Jane');
+    expect(Cipher.open(person.last_name)).toBe('Doe');
+    expect(person.email_hash).toBe(Digest.email('jane.doe@timemanager.dev'));
+    expect(person.email).not.toContain('jane');
   });
 });

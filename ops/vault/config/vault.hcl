@@ -1,8 +1,9 @@
 ui                = false
 disable_mlock     = false
 log_level         = "info"
-api_addr          = "http://vault:8200"
-cluster_addr      = "http://vault:8201"
+log_format        = "json"
+api_addr          = "https://vault:8200"
+cluster_addr      = "https://vault:8201"
 max_lease_ttl     = "768h"
 default_lease_ttl = "1h"
 
@@ -14,10 +15,17 @@ storage "raft" {
 listener "tcp" {
   address         = "0.0.0.0:8200"
   cluster_address = "0.0.0.0:8201"
-  tls_disable     = true
+  tls_cert_file   = "/vault/tls/tls.crt"
+  tls_disable     = false
+  tls_key_file    = "/vault/tls/tls.key"
+  tls_min_version = "tls12"
+
+  telemetry {
+    unauthenticated_metrics_access = false
+  }
 }
 
 telemetry {
   disable_hostname          = true
-  prometheus_retention_time = "0s"
+  prometheus_retention_time = "24h"
 }

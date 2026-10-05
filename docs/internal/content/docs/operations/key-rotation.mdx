@@ -1,0 +1,41 @@
+---
+title: Key rotation
+description: Rotating the encryption key, the hash key, JWT secrets and the Microsoft client secret.
+---
+
+## Encryption key
+
+Values are sealed with the key whose id is stored in each ciphertext, so rotation needs no downtime. Background: [Encryption](/docs/engineering/encryption).
+
+1. Generate a new key with `openssl rand -base64 32` and pick a new id, for example `k2`.
+2. Move the current key to `ENCRYPTION_KEYS_PREVIOUS="k1:<old key>"`, set `ENCRYPTION_KEY=<new key>` and `ENCRYPTION_KEY_ID=k2`, then deploy. New writes use `k2` and old values stay readable.
+3. Re-encrypt existing rows:
+
+   ```bash
+   make rotate-keys
+   ```
+
+   This runs `bun run db:rotate:prod` in the production image. It processes `teams`, `clocks` and `users` in batches of 500 rows, each batch in one transaction, and re-seals only values whose key id is not current. It is idempotent, can resume after an interruption and prints counts only (`users: scanned N rows, rotated M rows`).
+4. Run `make rotate-keys` again and confirm every table reports `rotated 0 rows`.
+5. Keep the old key in `ENCRYPTION_KEYS_PREVIOUS` until every backup you may restore is past retention, then remove it.
+6. Store the new key in the secret manager before the first write that uses it. Losing a key makes the values sealed with it unrecoverable.
+
+## Hash key
+
+`HASH_KEY` derives lookup hashes such as `users.email_hash`. Hashes cannot be recomputed from ciphertext without decrypting. To rotate it, decrypt, recompute and update the hash columns in a dedicated migration, with the API stopped, then switch the key. Do not change `HASH_KEY` without that migration: logins and lookups by email would stop matching.
+
+## JWT secrets
+
+- `JWT_REFRESH_SECRET` signs the HMAC of stored refresh tokens. Rotating it invalidates every refresh token, so all users sign in again.
+- `JWT_ACCESS_SECRET` signs access tokens. Rotating it invalidates tokens within `JWT_ACCESS_TTL` (15 minutes by default); clients recover through a refresh.
+- `OAUTH_STATE_SECRET` only signs the short-lived Microsoft state cookie. Rotating it affects only sign-ins in progress.
+
+Deploy new values to the `api` container and restart it. Run `make purge-sessions` afterwards to remove dead refresh tokens.
+
+## Microsoft client secret
+
+Client secrets expire. Create a new secret in the Entra ID app registration before the old one expires, update `MICROSOFT_CLIENT_SECRET`, restart the API and delete the old secret.
+
+## Database and Grafana credentials
+
+Change `POSTGRES_PASSWORD` in the database (`ALTER USER`) and in `.env` together, then recreate `api`, `backup` and `postgres-exporter`. Change Grafana credentials through Grafana and the `GRAFANA_ADMIN_*` variables.

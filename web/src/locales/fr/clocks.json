@@ -94,8 +94,7 @@
     "description": "Les pointages sélectionnés seront supprimés. Vous pouvez annuler pendant quelques secondes.",
     "confirm": "Supprimer",
     "selected_one": "{{count}} pointage sélectionné",
-    "selected_other": "{{count}} pointages sélectionnés",
-    "cleared": "Sélection effacée"
+    "selected_other": "{{count}} pointages sélectionnés"
   },
   "toast": {
     "clocked_in": "Arrivée pointée",

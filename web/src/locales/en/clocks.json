@@ -94,8 +94,7 @@
     "description": "The selected entries will be deleted. You can undo this for a few seconds.",
     "confirm": "Delete",
     "selected_one": "{{count}} entry selected",
-    "selected_other": "{{count}} entries selected",
-    "cleared": "Selection cleared"
+    "selected_other": "{{count}} entries selected"
   },
   "toast": {
     "clocked_in": "Clocked in",

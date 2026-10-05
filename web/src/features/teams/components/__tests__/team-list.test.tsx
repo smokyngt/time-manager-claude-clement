@@ -52,10 +52,12 @@ describe('TeamList', () => {
 
   it('shows only the actions whose callbacks exist', async () => {
     renderList({ onArchive: vi.fn(), onEdit: vi.fn(), onRestore: vi.fn() })
-    await userEvent.click(screen.getByRole('button', { name: 'card.actions' }))
+    await userEvent.click(screen.getAllByRole('button', { name: 'card.actions' })[0]!)
     expect(await screen.findByRole('menuitem', { name: 'common:actions.edit' })).toBeInTheDocument()
     expect(screen.getByRole('menuitem', { name: 'common:actions.archive' })).toBeInTheDocument()
-    expect(screen.queryByRole('menuitem', { name: 'common:actions.delete' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('menuitem', { name: 'common:actions.delete' }),
+    ).not.toBeInTheDocument()
     expect(screen.queryByRole('menuitem', { name: 'common:actions.restore' })).toBeNull()
   })
 
