@@ -146,7 +146,7 @@ Security properties:
 - Archived users are rejected.
 - Linking by email trusts the email claim. To prevent an account from another tenant claiming a company address, set `MICROSOFT_TENANT_ID` to your own tenant id instead of `common`: the authorize and token endpoints are then tenant-specific and only that directory can authenticate.
 - The role and profile always come from the Time Manager database, never from Microsoft.
-- A user created by a manager has no password (`password_hash` null) unless one is set; such a user can only sign in with Microsoft, and the reverse also holds.
+- A user without a password (`password_hash` null) can only sign in with Microsoft; a user without a linked Microsoft identity can only use the password.
 
 ### Why OAuth tokens are never stored
 
@@ -174,7 +174,7 @@ Rules:
 - Outside production, missing JWT secrets fall back to a built-in `dev-only-...` value so tests and local runs work. Never rely on this in a deployed environment.
 - Secrets are never baked into images (only `VITE_API_URL`, which is public, is a web build argument) and never logged; logs carry ids only.
 - If a secret is committed by mistake, treat it as compromised: rotate it, and rewrite history only after rotation. Rotating `JWT_REFRESH_SECRET` invalidates all refresh tokens (everybody signs in again); rotating `JWT_ACCESS_SECRET` invalidates access tokens within `JWT_ACCESS_TTL`.
-- Create `.env` files outside CI/CD pipelines through the platform's secret store (GitHub Actions secrets, Docker secrets or your host's equivalent). The CI workflow uses throwaway values.
+- In deployed environments inject secrets through the platform's secret store (GitHub Actions secrets, Docker secrets or your host's equivalent) rather than copying `.env` files around. The CI workflow uses throwaway values.
 
 ## 5. Register the Azure (Microsoft Entra ID) application
 
