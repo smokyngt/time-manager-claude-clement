@@ -1,5 +1,5 @@
 # Scheduled PostgreSQL backups: `docker compose -f docker-compose.yml -f docker-compose.backup.yml up -d --build`
-# (or `make backup-up`). See docs/BACKUPS.md for retention, encryption, offsite copies and restores.
+# (or `make backup-up`). See docs/internal (operations/backups) for retention, encryption, offsite copies and restores.
 # Only the variables listed here reach the container: the .env file is not passed through wholesale.
 
 x-backup-env: &backup-env

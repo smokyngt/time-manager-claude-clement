@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, jest, mock } from 'bun:test';
+import { afterEach, beforeEach, describe, expect, it, jest } from 'bun:test';
 
 import { environment, failure, fixture, stub } from './fixture.js';
 

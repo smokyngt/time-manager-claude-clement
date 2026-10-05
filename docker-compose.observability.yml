@@ -3,7 +3,7 @@
 #   docker compose -f docker-compose.yml -f docker-compose.observability.yml up -d
 # Only Grafana is published (127.0.0.1:3000 by default). Everything else stays on the
 # internal "observability" network; alloy and postgres-exporter also join the app network
-# ("backend") to scrape the api and db. See docs/OBSERVABILITY.md.
+# ("backend") to scrape the api and db. See docs/internal (operations/observability).
 #
 # Required in .env: GRAFANA_ADMIN_USER, GRAFANA_ADMIN_PASSWORD, METRICS_TOKEN.
 
@@ -82,7 +82,7 @@ services:
     volumes:
       - ./ops/observability/alloy/config.alloy:/etc/alloy/config.alloy:ro
       # Read-only socket mount: Alloy lists containers and tails their logs. The Docker socket
-      # is root-equivalent; see "Security" in docs/OBSERVABILITY.md for alternatives.
+      # is root-equivalent; see "Security" in docs/internal (operations/observability) for alternatives.
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - alloy-data:/var/lib/alloy/data
     healthcheck:
@@ -269,7 +269,7 @@ services:
       - ./ops/observability/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./ops/observability/grafana/provisioning:/etc/grafana/provisioning:ro
       - ./ops/observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
-      # Branding overlays (OSS has no white-label setting): see docs/OBSERVABILITY.md.
+      # Branding overlays (OSS has no white-label setting): see docs/internal (operations/observability).
       - ./ops/observability/grafana/branding/grafana_icon.svg:/usr/share/grafana/public/img/grafana_icon.svg:ro
       - ./ops/observability/grafana/branding/g8_login_dark.svg:/usr/share/grafana/public/img/g8_login_dark.svg:ro
       - ./ops/observability/grafana/branding/g8_login_light.svg:/usr/share/grafana/public/img/g8_login_light.svg:ro
