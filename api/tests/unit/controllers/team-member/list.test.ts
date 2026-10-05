@@ -41,8 +41,8 @@ const listService = mock((_params: unknown) =>
 );
 const teamService = mock((_params: unknown) => Promise.resolve({ team }));
 const view = mock((_actor: Actor, _team: TeamRow) => Promise.resolve());
-teamMemberService.list = listService as unknown as typeof teamMemberService.list;
-teamMemberService.team = teamService as unknown as typeof teamMemberService.team;
+teamMemberService.list = listService;
+teamMemberService.team = teamService;
 Access.teamMember.view = view;
 
 afterAll(() => {

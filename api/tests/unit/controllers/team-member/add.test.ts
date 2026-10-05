@@ -38,8 +38,8 @@ const addService = mock((_params: unknown) =>
   Promise.resolve({ added: [USER_ID], failed: [], success: true }),
 );
 const teamService = mock((_params: unknown) => Promise.resolve({ team }));
-teamMemberService.add = addService as unknown as typeof teamMemberService.add;
-teamMemberService.team = teamService as unknown as typeof teamMemberService.team;
+teamMemberService.add = addService;
+teamMemberService.team = teamService;
 
 afterAll(() => {
   teamMemberService.add = original.add;

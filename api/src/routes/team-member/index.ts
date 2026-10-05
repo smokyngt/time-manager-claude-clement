@@ -11,8 +11,8 @@ import type { FastifyPluginAsync } from 'fastify';
 
 const teamMembers: FastifyPluginAsync = async (fastify) => {
   await fastify.register(rateLimit, {
-    errorResponseBuilder: RateLimit.error,
-    keyGenerator: RateLimit.key,
+    errorResponseBuilder: (req, context) => RateLimit.error(req, context),
+    keyGenerator: (req) => RateLimit.key(req),
     max: Config.store.number('TEAM_MEMBER_RATE_LIMIT_MAX', 6000),
     timeWindow: Config.store.text('TEAM_MEMBER_RATE_LIMIT_WINDOW', '1 minute'),
   });

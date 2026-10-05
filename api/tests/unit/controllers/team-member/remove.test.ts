@@ -38,8 +38,8 @@ const removeService = mock((_params: unknown) =>
   Promise.resolve({ failed: [], removed: [USER_ID], success: true }),
 );
 const teamService = mock((_params: unknown) => Promise.resolve({ team }));
-teamMemberService.remove = removeService as unknown as typeof teamMemberService.remove;
-teamMemberService.team = teamService as unknown as typeof teamMemberService.team;
+teamMemberService.remove = removeService;
+teamMemberService.team = teamService;
 
 afterAll(() => {
   teamMemberService.remove = original.remove;

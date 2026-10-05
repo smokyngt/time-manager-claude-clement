@@ -38,13 +38,21 @@ const team: TeamRow = {
 
 describe('access.team_member.manage', () => {
   it('allows an admin and the manager of the team', () => {
-    expect(() => access.manage(actorOf('admin', 'a'), team)).not.toThrow();
-    expect(() => access.manage(actorOf('manager', MANAGER_ID), team)).not.toThrow();
+    expect(() => {
+      access.manage(actorOf('admin', 'a'), team);
+    }).not.toThrow();
+    expect(() => {
+      access.manage(actorOf('manager', MANAGER_ID), team);
+    }).not.toThrow();
   });
 
   it('forbids another manager and employees', () => {
-    expect(() => access.manage(actorOf('manager', 'other'), team)).toThrow();
-    expect(() => access.manage(actorOf('employee', MANAGER_ID), team)).toThrow();
+    expect(() => {
+      access.manage(actorOf('manager', 'other'), team);
+    }).toThrow();
+    expect(() => {
+      access.manage(actorOf('employee', MANAGER_ID), team);
+    }).toThrow();
   });
 });
 
