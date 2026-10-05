@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 
 import { initialize } from '@/config/vault/initialize.js';
 
-import { document, failure, environment, fixture, healthy, rejection, stub } from './fixture.js';
+import { document, environment, failure, fixture, healthy, rejection, stub } from './fixture.js';
 
 import type { Fixture } from './fixture.js';
 
