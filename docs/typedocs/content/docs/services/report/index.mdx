@@ -1,11 +1,15 @@
 ---
 title: "Report"
-description: "Reference for the `services/report` module: interfaces, variables."
+description: "Reference for the `services/report` module: type aliases, variables."
 ---
 
-## Interfaces
+## Type Aliases
 
 ### ReportServiceType
+
+```ts
+type ReportServiceType = object;
+```
 
 #### Properties
 
@@ -18,19 +22,27 @@ description: "Reference for the `services/report` module: interfaces, variables.
 
 ### TeamParams
 
+```ts
+type TeamParams = object;
+```
+
 #### Properties
 
 | Property | Type |
 | ------ | ------ |
-| <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
 | <a id="property-from"></a> `from` | `number` |
-| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-granularity"></a> `granularity` | [`Granularity`](/docs/types/entities/report#granularity) |
+| <a id="property-manager_id"></a> `manager_id?` | `string` |
 | <a id="property-team_id"></a> `team_id` | `string` |
 | <a id="property-to"></a> `to` | `number` |
 
 ***
 
 ### TeamResponse
+
+```ts
+type TeamResponse = object;
+```
 
 #### Properties
 
@@ -42,19 +54,26 @@ description: "Reference for the `services/report` module: interfaces, variables.
 
 ### UserParams
 
+```ts
+type UserParams = object;
+```
+
 #### Properties
 
 | Property | Type |
 | ------ | ------ |
-| <a id="property-actor-1"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
 | <a id="property-from-1"></a> `from` | `number` |
-| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-granularity-1"></a> `granularity` | [`Granularity`](/docs/types/entities/report#granularity) |
 | <a id="property-to-1"></a> `to` | `number` |
 | <a id="property-user_id"></a> `user_id` | `string` |
 
 ***
 
 ### UserResponse
+
+```ts
+type UserResponse = object;
+```
 
 #### Properties
 

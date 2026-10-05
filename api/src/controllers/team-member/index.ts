@@ -3,75 +3,58 @@ import { list } from './list.js';
 import { remove } from './remove.js';
 
 import type { User } from '@/types/entities/user.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
 
-export interface AddBody {
+export type AddBody = {
   user_ids: string[];
-}
+};
 
-export interface AddParams {
+export type AddParams = {
   id: string;
-}
+};
 
-export interface AddResponse {
+export type AddResponse = {
   added: string[];
   failed: BulkFailure[];
   success: boolean;
-}
+};
 
-export interface BulkFailure {
+export type BulkFailure = {
   code: string;
   id: string;
-}
+};
 
-export interface ListBody {
+export type ListBody = {
   cursor?: string;
   limit?: number;
   order?: 'asc' | 'desc';
-}
+};
 
-export interface ListParams {
+export type ListParams = {
   id: string;
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface RemoveBody {
+export type RemoveBody = {
   user_ids: string[];
-}
+};
 
-export interface RemoveParams {
+export type RemoveParams = {
   id: string;
-}
+};
 
-export interface RemoveResponse {
+export type RemoveResponse = {
   failed: BulkFailure[];
   removed: string[];
   success: boolean;
-}
+};
 
-export interface TeamMemberControllerType {
-  add: (
-    req: FastifyRequest<{ Body: AddBody; Params: AddParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<AddResponse> }>,
-  ) => Promise<void>;
-  list: (
-    req: FastifyRequest<{ Body: ListBody; Params: ListParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<ListResponse> }>,
-  ) => Promise<void>;
-  remove: (
-    req: FastifyRequest<{ Body: RemoveBody; Params: RemoveParams }>,
-    reply: FastifyReply<{ Reply: ReplyEnvelope<RemoveResponse> }>,
-  ) => Promise<void>;
-}
-
-class TeamMemberController implements TeamMemberControllerType {
+class TeamMemberController {
   public add = add;
   public list = list;
   public remove = remove;

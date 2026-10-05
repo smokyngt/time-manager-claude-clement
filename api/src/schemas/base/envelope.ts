@@ -107,19 +107,41 @@ export const ReplyEnvelopeSchema = (dataSchema: JsonSchema, eventCode: string): 
   additionalProperties: false,
   description: 'Successful response.',
   properties: {
-    data: dataSchema,
+    data: {
+      description: 'Named object holding the result of the operation.',
+      ...dataSchema,
+    },
     event: {
       additionalProperties: false,
+      description: 'Event describing what happened, also written to the audit trail.',
+      example: {
+        code: eventCode,
+        correlation_id: '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10',
+        metadata: {},
+        payload: { actor: '5d1f6a52-0b1e-4c0f-8d8e-2f9d1f6f3c11' },
+      },
       properties: {
-        code: { const: eventCode, description: 'Event code.', type: 'string' },
-        correlation_id: { description: 'Request identifier.', type: 'string' },
-        metadata: { additionalProperties: true, type: 'object' },
-        payload: { additionalProperties: true, type: 'object' },
+        code: { const: eventCode, description: 'Event code.', example: eventCode, type: 'string' },
+        correlation_id: {
+          description: 'Request identifier.',
+          example: '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10',
+          type: 'string',
+        },
+        metadata: { additionalProperties: true, description: 'Event metadata.', type: 'object' },
+        payload: {
+          additionalProperties: true,
+          description: 'Event payload: actor, identifiers and counts.',
+          type: 'object',
+        },
       },
       required: ['code', 'correlation_id', 'metadata', 'payload'],
       type: 'object',
     },
-    timestamp: { description: 'Epoch milliseconds.', type: 'integer' },
+    timestamp: {
+      description: 'Epoch milliseconds.',
+      example: 1_760_000_000_000,
+      type: 'integer',
+    },
   },
   required: ['data', 'event', 'timestamp'],
   type: 'object',

@@ -2,6 +2,7 @@ import type { ReactNode } from 'react'
 
 import { QueryClientProvider } from '@tanstack/react-query'
 
+import { AnnouncerRegion } from '@/components/shared/announcer-region'
 import { queryClient } from '@/config/query'
 import { AuthProvider } from '@/providers/auth-provider'
 import { ErrorBoundary } from '@/providers/error-boundary'
@@ -26,6 +27,7 @@ export function AppProviders({ children }: { children: ReactNode }) {
           <QueryClientProvider client={queryClient}>
             <ToastProvider>
               <AuthProvider>{children}</AuthProvider>
+              <AnnouncerRegion />
             </ToastProvider>
           </QueryClientProvider>
         </ThemeProvider>

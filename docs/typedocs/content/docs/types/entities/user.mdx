@@ -1,26 +1,7 @@
 ---
 title: "User"
-description: "Reference for the `types/entities/user` module: interfaces, type aliases, variables."
+description: "Reference for the `types/entities/user` module: type aliases, variables."
 ---
-
-## Interfaces
-
-### User
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| <a id="property-archived_at"></a> `archived_at` | `number` \| `null` |
-| <a id="property-created_at"></a> `created_at` | `number` |
-| <a id="property-email"></a> `email` | `string` |
-| <a id="property-first_name"></a> `first_name` | `string` |
-| <a id="property-id"></a> `id` | `string` |
-| <a id="property-last_name"></a> `last_name` | `string` |
-| <a id="property-object"></a> `object` | `"user"` |
-| <a id="property-phone_number"></a> `phone_number` | `string` \| `null` |
-| <a id="property-role"></a> `role` | `"admin"` \| `"employee"` \| `"manager"` |
-| <a id="property-updated_at"></a> `updated_at` | `number` \| `null` |
 
 ## Type Aliases
 
@@ -29,6 +10,29 @@ description: "Reference for the `types/entities/user` module: interfaces, type a
 ```ts
 type Role = typeof ROLES[number];
 ```
+
+***
+
+### User
+
+```ts
+type User = object;
+```
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-archived_at"></a> `archived_at` | `null` \| `number` |
+| <a id="property-created_at"></a> `created_at` | `number` |
+| <a id="property-email"></a> `email` | `string` |
+| <a id="property-first_name"></a> `first_name` | `string` |
+| <a id="property-id"></a> `id` | `string` |
+| <a id="property-last_name"></a> `last_name` | `string` |
+| <a id="property-object"></a> `object` | `"user"` |
+| <a id="property-phone_number"></a> `phone_number` | `null` \| `string` |
+| <a id="property-role"></a> `role` | [`Role`](#role) |
+| <a id="property-updated_at"></a> `updated_at` | `null` \| `number` |
 
 ## Variables
 

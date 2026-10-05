@@ -10,30 +10,16 @@ import { Button } from '@/components/ui/button'
 import { Sheet, SheetContent, SheetDescription, SheetTitle } from '@/components/ui/sheet'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import { cn } from '@/lib/cn'
-
-const STORAGE_KEY = 'tm-sidebar-collapsed'
-
-function readCollapsed() {
-  try {
-    return localStorage.getItem(STORAGE_KEY) === 'true'
-  } catch {
-    return false
-  }
-}
+import { usePreferencesStore } from '@/stores/preferences'
 
 export function AppLayout() {
   const { t } = useTranslation(['common', 'nav'])
-  const [collapsed, setCollapsed] = useState(readCollapsed)
+  const collapsed = usePreferencesStore((state) => state.collapsedSidebar)
+  const setCollapsed = usePreferencesStore((state) => state.setCollapsedSidebar)
   const [mobile_open, setMobileOpen] = useState(false)
 
   function toggleCollapsed() {
-    const next = !collapsed
-    setCollapsed(next)
-    try {
-      localStorage.setItem(STORAGE_KEY, String(next))
-    } catch {
-      return
-    }
+    setCollapsed(!collapsed)
   }
 
   return (

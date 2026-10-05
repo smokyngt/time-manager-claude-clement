@@ -9,6 +9,7 @@ description: "Reference for the `lib/events/domains/user` module: variables."
 
 ```ts
 const UserArchived: EventFactory<{
+  actor: string;
   user_id: string;
 }>;
 ```
@@ -19,6 +20,7 @@ const UserArchived: EventFactory<{
 
 ```ts
 const UserCreated: EventFactory<{
+  actor: string;
   user_id: string;
 }>;
 ```
@@ -29,6 +31,7 @@ const UserCreated: EventFactory<{
 
 ```ts
 const UserDeleted: EventFactory<{
+  actor: string;
   deleted: number;
   failed: number;
 }>;
@@ -40,6 +43,7 @@ const UserDeleted: EventFactory<{
 
 ```ts
 const UserListed: EventFactory<{
+  actor: string;
   count: number;
   total: number;
 }>;
@@ -51,6 +55,7 @@ const UserListed: EventFactory<{
 
 ```ts
 const UserRestored: EventFactory<{
+  actor: string;
   user_id: string;
 }>;
 ```
@@ -61,6 +66,7 @@ const UserRestored: EventFactory<{
 
 ```ts
 const UserRetrieved: EventFactory<{
+  actor: string;
   user_id: string;
 }>;
 ```
@@ -71,6 +77,7 @@ const UserRetrieved: EventFactory<{
 
 ```ts
 const UserUpdated: EventFactory<{
+  actor: string;
   failed: number;
   updated: number;
 }>;

@@ -1,14 +1,14 @@
 import { report } from '@/controllers/report/index.js';
-import { auth } from '@/plugins/auth.js';
-import { ReportResponses, ReportTeamBodySchema } from '@/schemas/report.js';
+import { auth } from '@/middlewares/auth/index.js';
+import { ReportTeamBodySchema, ReportResponses } from '@/schemas/report.js';
 
 import type { TeamBody } from '@/controllers/report/index.js';
 import type { TeamReport } from '@/types/entities/report.js';
-import type { ReplyEnvelope } from '@/types/envelope.js';
+import type { ReplyEnvelope } from '@/types/misc/reply.js';
 import type { FastifyPluginAsync } from 'fastify';
 
-export const teamRoute: FastifyPluginAsync = async (fastify) => {
-  fastify.post<{ Body: TeamBody; Reply: ReplyEnvelope<TeamReport> }>(
+const team: FastifyPluginAsync = async (fastify) => {
+  fastify.post<{ Body: TeamBody; Reply: ReplyEnvelope<{ report: TeamReport }> }>(
     '/team',
     {
       preHandler: auth({ scopes: ['reports:read'] }),
@@ -25,3 +25,5 @@ export const teamRoute: FastifyPluginAsync = async (fastify) => {
     report.team,
   );
 };
+
+export { team };

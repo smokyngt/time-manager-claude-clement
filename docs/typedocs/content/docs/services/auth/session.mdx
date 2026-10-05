@@ -60,12 +60,13 @@ static issue(params): Promise<SessionResult>;
 
 | Parameter | Type |
 | ------ | ------ |
-| `params` | \{ `family_id?`: `string`; `user`: \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \}; \} |
+| `params` | \{ `family_id?`: `string`; `user`: \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `email_hash`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \}; \} |
 | `params.family_id?` | `string` |
-| `params.user` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} |
+| `params.user` | \{ `archived_at`: `number` \| `null`; `created_at`: `number`; `email`: `string`; `email_hash`: `string`; `first_name`: `string`; `id`: `string`; `last_name`: `string`; `microsoft_id`: `string` \| `null`; `password_hash`: `string` \| `null`; `phone_number`: `string` \| `null`; `role`: `"admin"` \| `"employee"` \| `"manager"`; `updated_at`: `number` \| `null`; \} |
 | `params.user.archived_at` | `number` \| `null` |
 | `params.user.created_at` | `number` |
 | `params.user.email` | `string` |
+| `params.user.email_hash` | `string` |
 | `params.user.first_name` | `string` |
 | `params.user.id` | `string` |
 | `params.user.last_name` | `string` |

@@ -1,0 +1,154 @@
+---
+title: "User"
+description: "Reference for the `utils/auth/access/user` module: classes, type aliases."
+---
+
+## Classes
+
+### UserAccess
+
+#### Constructors
+
+##### Constructor
+
+```ts
+new UserAccess(): UserAccess;
+```
+
+###### Returns
+
+[`UserAccess`](#useraccess)
+
+#### Methods
+
+##### allow()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.user.allow</code></div>
+
+```ts
+allow(
+   actor, 
+   action, 
+   target?
+): boolean;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `action` | [`UserAction`](#useraction) |
+| `target?` | [`UserTarget`](#usertarget) |
+
+###### Returns
+
+`boolean`
+
+##### fields()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.user.fields</code></div>
+
+```ts
+fields(actor, target): string[];
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `target` | [`UserTarget`](#usertarget) |
+
+###### Returns
+
+`string`[]
+
+##### reach()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.user.reach</code></div>
+
+```ts
+reach(actor, id): boolean;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `id` | `string` |
+
+###### Returns
+
+`boolean`
+
+##### require()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.user.require</code></div>
+
+```ts
+require(
+   actor, 
+   action, 
+   target?
+): void;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `action` | [`UserAction`](#useraction) |
+| `target?` | [`UserTarget`](#usertarget) |
+
+###### Returns
+
+`void`
+
+###### Throws
+
+- `UnauthorizedError`
+
+##### scope()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.user.scope</code></div>
+
+```ts
+scope(actor, target): Promise<boolean>;
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+| `target` | `Required`\<[`UserTarget`](#usertarget)\> |
+
+###### Returns
+
+`Promise`\<`boolean`\>
+
+## Type Aliases
+
+### UserAction
+
+```ts
+type UserAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
+```
+
+***
+
+### UserTarget
+
+```ts
+type UserTarget = object;
+```
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-id"></a> `id?` | `string` |
+| <a id="property-role"></a> `role` | [`Role`](/docs/types/entities/user#role) |

@@ -1,19 +1,65 @@
+import { DuplicateKeyError, InternalError } from '@/lib/errors/base/core.js';
+import { UserNotFoundError } from '@/lib/errors/domains/user.js';
+import {
+  ErrorSchema,
+  RateLimitErrorSchema,
+  ReplyEnvelopeSchema,
+  TokenAuthenticationErrorSchema,
+  UnauthorizedErrorSchema,
+  ValidationErrorSchema,
+} from '@/schemas/base/envelope.js';
 import { ROLES } from '@/types/entities/user.js';
 
-import {
-  BulkFailureSchema,
-  DateBoundAnyOf,
-  errorResponse,
-  IdListSchema,
-  NAME_PATTERN,
-  PHONE_PATTERN,
-  ReplyEnvelopeSchema,
-  RequestLimits,
-} from './common.js';
+import { DateBoundAnyOf, NAME_PATTERN, PHONE_PATTERN, RequestLimits } from './common.js';
 
 import type { JsonSchema } from './common.js';
 
 const ID_EXAMPLE = '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10';
+const OTHER_ID_EXAMPLE = '7c9e6679-7425-40de-944b-e07fc1f90ae7';
+const ID_LIST_EXAMPLE = [ID_EXAMPLE, OTHER_ID_EXAMPLE];
+
+const USER_EXAMPLE = {
+  archived_at: null,
+  created_at: 1_767_225_600_000,
+  email: 'jane.doe@example.com',
+  first_name: 'Jane',
+  id: ID_EXAMPLE,
+  last_name: 'Doe',
+  object: 'user',
+  phone_number: '+33 6 12 34 56 78',
+  role: 'employee',
+  updated_at: null,
+} as const;
+
+const FAILED_EXAMPLE = [{ code: UserNotFoundError.code, id: OTHER_ID_EXAMPLE }];
+
+const idsProperty = {
+  description: 'Identifiers of the targeted users. Duplicates are ignored.',
+  example: ID_LIST_EXAMPLE,
+  items: { format: 'uuid', type: 'string' },
+  maxItems: RequestLimits.bulk,
+  minItems: 1,
+  type: 'array',
+} as const;
+
+const BulkFailureSchema = {
+  additionalProperties: false,
+  properties: {
+    code: {
+      description: 'Error code explaining the failure.',
+      example: UserNotFoundError.code,
+      type: 'string',
+    },
+    id: {
+      description: 'Identifier that failed.',
+      example: OTHER_ID_EXAMPLE,
+      format: 'uuid',
+      type: 'string',
+    },
+  },
+  required: ['code', 'id'],
+  type: 'object',
+} as const;
 
 const emailProperty = {
   description: 'Email address, stored lowercased. Unique.',
@@ -68,7 +114,7 @@ export const UserSchema = {
     },
     created_at: {
       description: 'Creation time in epoch milliseconds.',
-      example: 1767225600000,
+      example: 1_767_225_600_000,
       type: 'integer',
     },
     email: emailProperty,
@@ -117,14 +163,6 @@ export const UserIdParamsSchema = {
 export const UserCreateBodySchema = {
   additionalProperties: false,
   properties: {
-    current_password: {
-      description: 'Current password. Required when the actor changes their own password.',
-      example: 'correct-horse-battery',
-      maxLength: 128,
-      minLength: 10,
-      type: 'string',
-      writeOnly: true,
-    },
     email: emailProperty,
     first_name: firstNameProperty,
     last_name: lastNameProperty,
@@ -160,7 +198,7 @@ export const UserListBodySchema = {
       minLength: 1,
       type: 'string',
     },
-    ids: IdListSchema,
+    ids: idsProperty,
     limit: {
       default: RequestLimits.limitDefault,
       description: 'Page size.',
@@ -190,8 +228,17 @@ export const UserListBodySchema = {
 export const UserUpdateDataSchema = {
   additionalProperties: false,
   description: 'Fields to change. Allowed fields depend on the actor.',
+  example: { first_name: 'Jane' },
   minProperties: 1,
   properties: {
+    current_password: {
+      description: 'Current password. Required when the actor changes their own password.',
+      example: 'correct-horse-battery',
+      maxLength: 128,
+      minLength: 10,
+      type: 'string',
+      writeOnly: true,
+    },
     email: emailProperty,
     first_name: firstNameProperty,
     last_name: lastNameProperty,
@@ -212,36 +259,51 @@ export const UserUpdateDataSchema = {
 
 export const UserUpdateBodySchema = {
   additionalProperties: false,
-  properties: { data: UserUpdateDataSchema, ids: IdListSchema },
+  properties: { data: UserUpdateDataSchema, ids: idsProperty },
   required: ['data', 'ids'],
   type: 'object',
 } as const;
 
 export const UserDeleteBodySchema = {
   additionalProperties: false,
-  properties: { ids: IdListSchema },
+  properties: { ids: idsProperty },
   required: ['ids'],
   type: 'object',
 } as const;
 
 const idArray = (description: string): JsonSchema => ({
   description,
+  example: ID_LIST_EXAMPLE,
   items: { example: ID_EXAMPLE, format: 'uuid', type: 'string' },
   type: 'array',
 });
 
 const failedArray = {
   description: 'Identifiers that could not be processed, with the reason.',
+  example: FAILED_EXAMPLE,
   items: BulkFailureSchema,
   type: 'array',
 } as const;
 
-export const UserCreateDataSchema = UserSchema;
+export const UserDataSchema = {
+  additionalProperties: false,
+  description: 'The user.',
+  example: { user: USER_EXAMPLE },
+  properties: { user: UserSchema },
+  required: ['user'],
+  type: 'object',
+} as const;
 
 export const UserListDataSchema = {
   additionalProperties: false,
+  description: 'One page of users with the cursor of the next page.',
   properties: {
-    items: { description: 'Users of the page.', items: UserSchema, type: 'array' },
+    items: {
+      description: 'Users of the page.',
+      example: [USER_EXAMPLE],
+      items: UserSchema,
+      type: 'array',
+    },
     more: { description: 'Whether another page exists.', example: false, type: 'boolean' },
     next: {
       description: 'Cursor of the next page, null on the last page.',
@@ -257,6 +319,7 @@ export const UserListDataSchema = {
 
 export const UserUpdateDataResponseSchema = {
   additionalProperties: false,
+  description: 'Outcome of the bulk update.',
   properties: {
     failed: failedArray,
     success: { description: 'True when every id was updated.', example: true, type: 'boolean' },
@@ -268,6 +331,7 @@ export const UserUpdateDataResponseSchema = {
 
 export const UserDeleteDataResponseSchema = {
   additionalProperties: false,
+  description: 'Outcome of the bulk deletion.',
   properties: {
     deleted: idArray('Identifiers that were deleted.'),
     failed: failedArray,
@@ -277,63 +341,84 @@ export const UserDeleteDataResponseSchema = {
   type: 'object',
 } as const;
 
+const content = (schema: JsonSchema, description: string): JsonSchema => ({
+  content: { 'application/json': { schema } },
+  description,
+});
+
+const validation = content(ValidationErrorSchema, 'Invalid request.');
+const unauthenticated = content(TokenAuthenticationErrorSchema, 'Missing or invalid access token.');
+const limited = content(RateLimitErrorSchema, 'Rate limit exceeded.');
+const unexpected = content(ErrorSchema(InternalError), 'Unexpected error.');
+const notFound = content(ErrorSchema(UserNotFoundError), 'The user does not exist.');
+const duplicate = content(ErrorSchema(DuplicateKeyError), 'A user with this email already exists.');
+
 export const UserResponses = {
   archive: {
-    200: ReplyEnvelopeSchema(UserSchema, 'user.archived'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not archive this user.'),
-    404: errorResponse('The user does not exist.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(UserDataSchema, 'user.archived'), 'The archived user.'),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not archive this user.'),
+    404: notFound,
+    429: limited,
+    500: unexpected,
   },
   create: {
-    200: ReplyEnvelopeSchema(UserCreateDataSchema, 'user.created'),
-    400: errorResponse('Invalid request body.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not create this user.'),
-    409: errorResponse('A user with this email already exists.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(UserDataSchema, 'user.created'), 'The created user.'),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not create this user.'),
+    409: duplicate,
+    429: limited,
+    500: unexpected,
   },
   delete: {
-    200: ReplyEnvelopeSchema(UserDeleteDataResponseSchema, 'user.deleted'),
-    400: errorResponse('Invalid request body.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not delete one of these users.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(
+      ReplyEnvelopeSchema(UserDeleteDataResponseSchema, 'user.deleted'),
+      'Deleted identifiers and failures.',
+    ),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not delete one of these users.'),
+    429: limited,
+    500: unexpected,
   },
   list: {
-    200: ReplyEnvelopeSchema(UserListDataSchema, 'user.listed'),
-    400: errorResponse('Invalid filters or cursor.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not list users.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(UserListDataSchema, 'user.listed'), 'A page of users.'),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not list users.'),
+    429: limited,
+    500: unexpected,
   },
   restore: {
-    200: ReplyEnvelopeSchema(UserSchema, 'user.restored'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not restore this user.'),
-    404: errorResponse('The user does not exist.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(UserDataSchema, 'user.restored'), 'The restored user.'),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not restore this user.'),
+    404: notFound,
+    429: limited,
+    500: unexpected,
   },
   retrieve: {
-    200: ReplyEnvelopeSchema(UserSchema, 'user.retrieved'),
-    400: errorResponse('Invalid identifier.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not read this user.'),
-    404: errorResponse('The user does not exist.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(ReplyEnvelopeSchema(UserDataSchema, 'user.retrieved'), 'The user.'),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not read this user.'),
+    404: notFound,
+    429: limited,
+    500: unexpected,
   },
   update: {
-    200: ReplyEnvelopeSchema(UserUpdateDataResponseSchema, 'user.updated'),
-    400: errorResponse('Invalid request body.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not update one of these users or fields.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: content(
+      ReplyEnvelopeSchema(UserUpdateDataResponseSchema, 'user.updated'),
+      'Updated identifiers and failures.',
+    ),
+    400: validation,
+    401: unauthenticated,
+    403: content(UnauthorizedErrorSchema, 'The actor may not update one of these users or fields.'),
+    409: duplicate,
+    429: limited,
+    500: unexpected,
   },
 } as const;

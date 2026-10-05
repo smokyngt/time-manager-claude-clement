@@ -15,6 +15,7 @@
     "plugins",
     "app",
     "app.v2",
-    "server"
+    "server",
+    "server.v2"
   ]
 }

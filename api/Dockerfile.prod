@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 # Production image for the API. Stages: deps -> build -> runtime (prod-deps feeds runtime).
-# The runtime image also carries dist/db/{migrate,seed}.js and drizzle/, so migrations
+# The runtime image also carries dist/db/{migrate,seed,rotate,purge}.js and drizzle/, so migrations
 # and seeding run from the same image (no drizzle-kit needed).
 
 # ---- all dependencies (cached on lockfile only) ----
@@ -13,6 +13,9 @@ RUN bun install --frozen-lockfile
 FROM deps AS build
 COPY . .
 RUN bun run build
+# Maintenance entrypoints (key rotation, session purge) -> dist/db/{rotate,purge}.js.
+# Redundant once api/package.json's build script lists them; harmless to keep.
+RUN bun build src/db/rotate.ts src/db/purge.ts --target=bun --root=src --outdir=dist
 
 # ---- production dependencies only ----
 FROM oven/bun:1.3 AS prod-deps

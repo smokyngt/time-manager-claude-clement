@@ -1,10 +1,10 @@
 ---
 title: "Add()"
-description: "Reference for the `add()` function in `services/team-member/add` (route `team_member.service.add`)."
-route: "team_member.service.add"
+description: "Reference for the `add()` function in `services/team-member/add` (route `team.member.service.add`)."
+route: "team.member.service.add"
 ---
 
-<div className="route-badge"><span className="route-label">Route</span><code>team_member.service.add</code></div>
+<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.add</code></div>
 
 ## Functions
 
@@ -26,4 +26,4 @@ function add(params): Promise<AddResponse>;
 
 #### Throws
 
-- `TeamMemberAddError`
+- `TeamMemberTeamArchivedError | UnauthorizedError | TeamMemberAddError`

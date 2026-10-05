@@ -1,64 +1,69 @@
 import { add } from './add.js';
 import { list } from './list.js';
 import { remove } from './remove.js';
+import { team } from './team.js';
 
+import type { TeamRow } from '@/db/schema/team.js';
 import type { Actor } from '@/types/entities/actor.js';
-import type { User } from '@/types/entities/user.js';
+import type { Role, User } from '@/types/entities/user.js';
 
-export interface AddParams {
+export type AddParams = {
   actor: Actor;
-  id: string;
+  roles: Role[];
+  team: TeamRow;
   user_ids: string[];
-}
+};
 
-export interface AddResponse {
+export type AddResponse = {
   added: string[];
   failed: BulkFailure[];
   success: boolean;
-}
+};
 
-export interface BulkFailure {
+export type BulkFailure = {
   code: string;
   id: string;
-}
+};
 
-export interface ListParams {
-  actor: Actor;
+export type ListParams = {
   cursor?: string;
   id: string;
   limit: number;
   order: 'asc' | 'desc';
-}
+};
 
-export interface ListResponse {
+export type ListResponse = {
   items: User[];
   more: boolean;
   next: null | string;
   total: number;
-}
+};
 
-export interface RemoveParams {
+export type RemoveParams = {
   actor: Actor;
   id: string;
   user_ids: string[];
-}
+};
 
-export interface RemoveResponse {
+export type RemoveResponse = {
   failed: BulkFailure[];
   removed: string[];
   success: boolean;
-}
+};
 
-export interface TeamMemberServiceType {
-  add: (params: AddParams) => Promise<AddResponse>;
-  list: (params: ListParams) => Promise<ListResponse>;
-  remove: (params: RemoveParams) => Promise<RemoveResponse>;
-}
+export type TeamParams = {
+  id: string;
+};
 
-class TeamMemberService implements TeamMemberServiceType {
+export type TeamResponse = {
+  team: TeamRow;
+};
+
+class TeamMemberService {
   public add = add;
   public list = list;
   public remove = remove;
+  public team = team;
 }
 
 export const teamMemberService = new TeamMemberService();

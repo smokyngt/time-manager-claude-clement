@@ -1,6 +1,6 @@
 ---
-title: "Access"
-description: "Reference for the `services/team-member/access` module: classes."
+title: "Team Member"
+description: "Reference for the `utils/auth/access/team-member` module: classes."
 ---
 
 ## Classes
@@ -21,61 +21,12 @@ new TeamMemberAccess(): TeamMemberAccess;
 
 #### Methods
 
-##### load()
-
-<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.load</code></div>
-
-```ts
-static load(id, route): Promise<{
-  archived_at: number | null;
-  created_at: number;
-  description: string | null;
-  id: string;
-  manager_id: string;
-  name: string;
-  updated_at: number | null;
-  weekly_hours_target: number;
-  work_end: string;
-  work_start: string;
-}>;
-```
-
-###### Parameters
-
-| Parameter | Type |
-| ------ | ------ |
-| `id` | `string` |
-| `route` | `string` |
-
-###### Returns
-
-`Promise`\<\{
-  `archived_at`: `number` \| `null`;
-  `created_at`: `number`;
-  `description`: `string` \| `null`;
-  `id`: `string`;
-  `manager_id`: `string`;
-  `name`: `string`;
-  `updated_at`: `number` \| `null`;
-  `weekly_hours_target`: `number`;
-  `work_end`: `string`;
-  `work_start`: `string`;
-\}\>
-
-###### Throws
-
-- `TeamMemberTeamNotFoundError`
-
 ##### manage()
 
-<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.manage</code></div>
+<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.manage</code></div>
 
 ```ts
-static manage(
-   actor, 
-   team, 
-   route
-): void;
+manage(actor, team): void;
 ```
 
 ###### Parameters
@@ -94,7 +45,6 @@ static manage(
 | `team.weekly_hours_target` | `number` |
 | `team.work_end` | `string` |
 | `team.work_start` | `string` |
-| `route` | `string` |
 
 ###### Returns
 
@@ -102,18 +52,32 @@ static manage(
 
 ###### Throws
 
-- `ForbiddenError`
+- `UnauthorizedError`
+
+##### roles()
+
+<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.roles</code></div>
+
+```ts
+roles(actor): ("admin" | "employee" | "manager")[];
+```
+
+###### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `actor` | [`Actor`](/docs/types/entities/actor#actor) |
+
+###### Returns
+
+(`"admin"` \| `"employee"` \| `"manager"`)[]
 
 ##### view()
 
-<div className="route-badge"><span className="route-label">Route</span><code>team_member.access.view</code></div>
+<div className="route-badge"><span className="route-label">Route</span><code>access.team_member.view</code></div>
 
 ```ts
-static view(
-   actor, 
-   team, 
-   route
-): Promise<void>;
+view(actor, team): Promise<void>;
 ```
 
 ###### Parameters
@@ -132,7 +96,6 @@ static view(
 | `team.weekly_hours_target` | `number` |
 | `team.work_end` | `string` |
 | `team.work_start` | `string` |
-| `route` | `string` |
 
 ###### Returns
 
@@ -140,4 +103,4 @@ static view(
 
 ###### Throws
 
-- `ForbiddenError`
+- `UnauthorizedError`

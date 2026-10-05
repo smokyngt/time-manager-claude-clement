@@ -27,7 +27,7 @@ new Access(): Access;
 | Property | Modifier | Type |
 | ------ | ------ | ------ |
 | <a id="property-role"></a> `role` | `readonly` | `RoleAccess` |
-| <a id="property-user"></a> `user` | `readonly` | `UserAccess` |
+| <a id="property-user"></a> `user` | `readonly` | [`UserAccess`](/docs/utils/auth/access/user#useraccess) |
 
 #### Methods
 
@@ -65,26 +65,3 @@ type AccessContext = object;
 | ------ | ------ |
 | <a id="property-actor"></a> `actor` | [`Actor`](/docs/types/entities/actor#actor) |
 | <a id="property-scopes"></a> `scopes` | readonly [`Scope`](/docs/config/auth/scopes#scope)[] |
-
-***
-
-### UserAction
-
-```ts
-type UserAction = "archive" | "create" | "delete" | "list" | "read" | "restore" | "update";
-```
-
-***
-
-### UserTarget
-
-```ts
-type UserTarget = object;
-```
-
-#### Properties
-
-| Property | Type |
-| ------ | ------ |
-| <a id="property-id"></a> `id?` | `string` |
-| <a id="property-role-1"></a> `role` | [`Role`](/docs/types/entities/user#role) |

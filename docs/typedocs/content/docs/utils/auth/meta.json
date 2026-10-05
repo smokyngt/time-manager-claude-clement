@@ -1,6 +1,7 @@
 {
   "title": "Auth",
   "pages": [
+    "access",
     "authz"
   ]
 }

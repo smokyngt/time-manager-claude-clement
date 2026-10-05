@@ -1,0 +1,29 @@
+---
+title: "Team()"
+description: "Reference for the `team()` function in `services/team-member/team` (route `team.member.service.team`)."
+route: "team.member.service.team"
+---
+
+<div className="route-badge"><span className="route-label">Route</span><code>team.member.service.team</code></div>
+
+## Functions
+
+### team()
+
+```ts
+function team(params): Promise<TeamResponse>;
+```
+
+#### Parameters
+
+| Parameter | Type |
+| ------ | ------ |
+| `params` | [`TeamParams`](/docs/services/team-member#teamparams) |
+
+#### Returns
+
+`Promise`\<[`TeamResponse`](/docs/services/team-member#teamresponse)\>
+
+#### Throws
+
+- `TeamMemberTeamNotFoundError | TeamMemberListError`

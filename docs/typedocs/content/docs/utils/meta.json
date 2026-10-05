@@ -9,6 +9,7 @@
     "duration",
     "http",
     "kpi",
+    "mappers",
     "membership",
     "password",
     "postgres",

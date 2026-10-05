@@ -2,9 +2,9 @@
   "title": "Team Member",
   "pages": [
     "index",
-    "access",
     "add",
     "list",
-    "remove"
+    "remove",
+    "team"
   ]
 }

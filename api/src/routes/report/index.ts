@@ -1,14 +1,22 @@
 import rateLimit from '@fastify/rate-limit';
 
-import { RateLimit } from '@/utils/rate-limit.js';
+import { Config } from '@/config/index.js';
+import { RateLimit } from '@/utils/http/rate-limit.js';
 
-import { teamRoute } from './team.js';
-import { userRoute } from './user.js';
+import { team } from './team.js';
+import { user } from './user.js';
 
 import type { FastifyPluginAsync } from 'fastify';
 
-export const reportRouter: FastifyPluginAsync = async (fastify) => {
-  await fastify.register(rateLimit, RateLimit.options('report'));
-  await fastify.register(teamRoute);
-  await fastify.register(userRoute);
+const reports: FastifyPluginAsync = async (fastify) => {
+  await fastify.register(rateLimit, {
+    errorResponseBuilder: RateLimit.error,
+    keyGenerator: RateLimit.key,
+    max: Config.store.number('REPORT_RATE_LIMIT_MAX', 6000),
+    timeWindow: Config.store.text('REPORT_RATE_LIMIT_WINDOW', '1 minute'),
+  });
+  await fastify.register(team);
+  await fastify.register(user);
 };
+
+export { reports };

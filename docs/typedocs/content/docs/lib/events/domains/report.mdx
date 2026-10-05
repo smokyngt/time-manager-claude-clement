@@ -9,6 +9,7 @@ description: "Reference for the `lib/events/domains/report` module: variables."
 
 ```ts
 const ReportTeamGenerated: EventFactory<{
+  actor: string;
   team_id: string;
 }>;
 ```
@@ -19,6 +20,7 @@ const ReportTeamGenerated: EventFactory<{
 
 ```ts
 const ReportUserGenerated: EventFactory<{
+  actor: string;
   user_id: string;
 }>;
 ```

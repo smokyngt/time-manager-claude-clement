@@ -59,14 +59,16 @@ const LAYER = { controllers: 'controller', services: 'service' };
 function routeMatches(s) {
   const parts = s.module.split('/');
   const route = s.route.split('.');
-  if (!/^[a-z][a-z0-9-]*(\.[a-z0-9-]+)+$/i.test(s.route) && !/^[a-z][\w-]*$/i.test(s.route)) return 'route is not dot-separated lowercase segments';
+  if (!/^[a-z][a-z0-9_-]*(\.[a-z0-9_-]+)+$/i.test(s.route) && !/^[a-z][\w-]*$/i.test(s.route)) return 'route is not dot-separated lowercase segments';
   const layer = LAYER[parts[0]];
   if (layer && parts.length >= 3) {
-    const [, domain, file] = parts;
-    // controllers/team/create -> team.controller.create ; services/team/create -> team.service.create
-    if (file === 'validate' || file === 'index') return route[0] === domain ? null : `expected route to start with "${domain}"`;
+    const domain = parts[1].replace(/-/g, '_');
+    const file = parts[2].replace(/-/g, '_');
+    // functions: controllers/team/create -> team.controller.create ; services/team/create -> team.service.create
+    // class / object members: team.validate.manager (<domain>.<file>.<member>)
     const expected = `${domain}.${layer}.${file}`;
-    return s.route === expected ? null : `expected "${expected}"`;
+    if (s.kind === 'function') return s.route === expected ? null : `expected "${expected}"`;
+    return s.route === expected || s.route.startsWith(`${domain}.${file}.`) ? null : `expected "${expected}" or "${domain}.${file}.<member>"`;
   }
   const hay = new Set([...parts, s.module.split('/').pop(), s.name.split('.').pop(), s.name.split('.')[0]].flatMap((p) => [norm(p), singular(norm(p))]));
   const ok = route.some((r) => hay.has(norm(r)) || hay.has(singular(norm(r))));

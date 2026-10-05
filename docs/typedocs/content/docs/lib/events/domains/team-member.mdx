@@ -1,17 +1,65 @@
 ---
 title: "Team Member"
-description: "Reference for the `lib/events/domains/team-member` module: variables."
+description: "Reference for the `lib/events/domains/team-member` module: type aliases, variables."
 ---
+
+## Type Aliases
+
+### TeamMembersAddedPayload
+
+```ts
+type TeamMembersAddedPayload = object;
+```
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor"></a> `actor` | `string` |
+| <a id="property-added"></a> `added` | `number` |
+| <a id="property-failed"></a> `failed` | `number` |
+| <a id="property-team_id"></a> `team_id` | `string` |
+
+***
+
+### TeamMembersListedPayload
+
+```ts
+type TeamMembersListedPayload = object;
+```
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-1"></a> `actor` | `string` |
+| <a id="property-count"></a> `count` | `number` |
+| <a id="property-team_id-1"></a> `team_id` | `string` |
+| <a id="property-total"></a> `total` | `number` |
+
+***
+
+### TeamMembersRemovedPayload
+
+```ts
+type TeamMembersRemovedPayload = object;
+```
+
+#### Properties
+
+| Property | Type |
+| ------ | ------ |
+| <a id="property-actor-2"></a> `actor` | `string` |
+| <a id="property-failed-1"></a> `failed` | `number` |
+| <a id="property-removed"></a> `removed` | `number` |
+| <a id="property-team_id-2"></a> `team_id` | `string` |
 
 ## Variables
 
 ### TeamMembersAdded
 
 ```ts
-const TeamMembersAdded: EventFactory<{
-  added: number;
-  failed: number;
-}>;
+const TeamMembersAdded: EventFactory<TeamMembersAddedPayload>;
 ```
 
 ***
@@ -19,10 +67,7 @@ const TeamMembersAdded: EventFactory<{
 ### TeamMembersListed
 
 ```ts
-const TeamMembersListed: EventFactory<{
-  count: number;
-  total: number;
-}>;
+const TeamMembersListed: EventFactory<TeamMembersListedPayload>;
 ```
 
 ***
@@ -30,8 +75,5 @@ const TeamMembersListed: EventFactory<{
 ### TeamMembersRemoved
 
 ```ts
-const TeamMembersRemoved: EventFactory<{
-  failed: number;
-  removed: number;
-}>;
+const TeamMembersRemoved: EventFactory<TeamMembersRemovedPayload>;
 ```

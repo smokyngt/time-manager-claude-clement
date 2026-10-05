@@ -1,6 +1,20 @@
+import {
+  ReportInvalidError,
+  ReportTeamError,
+  ReportTeamNotFoundError,
+  ReportUserError,
+  ReportUserNotFoundError,
+} from '@/lib/errors/domains/report.js';
 import { GRANULARITIES } from '@/types/entities/report.js';
 
-import { errorResponse, ReplyEnvelopeSchema } from './common.js';
+import {
+  ErrorSchema,
+  RateLimitErrorSchema,
+  ReplyEnvelopeSchema,
+  TokenAuthenticationErrorSchema,
+  UnauthorizedErrorSchema,
+  ValidationErrorSchema,
+} from './base/envelope.js';
 
 const USER_ID_EXAMPLE = '0b3f4a9e-7d5c-4c1c-9a39-2f5f5a7a1e10';
 const TEAM_ID_EXAMPLE = '5d1c2b7a-3e4f-4a5b-8c9d-0e1f2a3b4c5d';
@@ -76,6 +90,16 @@ export const UserReportSchema = {
     ...rangeProperties,
     kpis: {
       additionalProperties: false,
+      description: 'Aggregated working time indicators of the user over the range.',
+      example: {
+        average_daily_ms: 25_200_000,
+        days_worked: 20,
+        late_days: 2,
+        lateness_rate: 0.1,
+        overtime_ms: 3_600_000,
+        target_ms: 126_000_000,
+        worked_ms: 129_600_000,
+      },
       properties: {
         average_daily_ms: integerMetric(
           'Worked time divided by days worked, 0 when none.',
@@ -119,6 +143,7 @@ export const UserReportSchema = {
     },
     series: {
       description: 'One zero-filled bucket per period of the range.',
+      example: [{ late: 1, period_start: 1767225600000, worked_ms: 25_200_000 }],
       items: {
         additionalProperties: false,
         properties: {
@@ -149,6 +174,16 @@ export const TeamReportSchema = {
     ...rangeProperties,
     kpis: {
       additionalProperties: false,
+      description: 'Aggregated working time indicators of the team over the range.',
+      example: {
+        active_members: 4,
+        average_daily_ms: 25_200_000,
+        late_days: 6,
+        lateness_rate: 0.07,
+        member_count: 5,
+        overtime_ms: -3_600_000,
+        worked_ms: 518_400_000,
+      },
       properties: {
         active_members: integerMetric('Members with worked time in the range.', 4),
         average_daily_ms: integerMetric(
@@ -183,6 +218,17 @@ export const TeamReportSchema = {
     },
     members: {
       description: 'Indicators of every member of the team.',
+      example: [
+        {
+          days_worked: 20,
+          first_name: 'Jane',
+          last_name: 'Doe',
+          late_days: 2,
+          overtime_ms: 3_600_000,
+          user_id: USER_ID_EXAMPLE,
+          worked_ms: 129_600_000,
+        },
+      ],
       items: {
         additionalProperties: false,
         properties: {
@@ -223,6 +269,7 @@ export const TeamReportSchema = {
     },
     series: {
       description: 'One zero-filled bucket per period of the range.',
+      example: [{ period_start: 1767225600000, worked_ms: 126_000_000 }],
       items: {
         additionalProperties: false,
         properties: {
@@ -245,23 +292,100 @@ export const TeamReportSchema = {
   type: 'object',
 } as const;
 
+const response = (schema: unknown, description: string) =>
+  ({ content: { 'application/json': { schema } }, description }) as const;
+
+const invalid = {
+  anyOf: [ValidationErrorSchema, ErrorSchema(ReportInvalidError, 'Invalid report range.')],
+  description: 'Invalid request body or report range.',
+} as const;
+
+const userExample = {
+  from: 1767225600000,
+  granularity: 'day',
+  kpis: {
+    average_daily_ms: 25_200_000,
+    days_worked: 20,
+    late_days: 2,
+    lateness_rate: 0.1,
+    overtime_ms: 3_600_000,
+    target_ms: 126_000_000,
+    worked_ms: 129_600_000,
+  },
+  object: 'user_report',
+  series: [{ late: 1, period_start: 1767225600000, worked_ms: 25_200_000 }],
+  to: 1769904000000,
+  user_id: USER_ID_EXAMPLE,
+};
+
+const teamExample = {
+  from: 1767225600000,
+  granularity: 'week',
+  kpis: {
+    active_members: 4,
+    average_daily_ms: 25_200_000,
+    late_days: 6,
+    lateness_rate: 0.07,
+    member_count: 5,
+    overtime_ms: -3_600_000,
+    worked_ms: 518_400_000,
+  },
+  members: [
+    {
+      days_worked: 20,
+      first_name: 'Jane',
+      last_name: 'Doe',
+      late_days: 2,
+      overtime_ms: 3_600_000,
+      user_id: USER_ID_EXAMPLE,
+      worked_ms: 129_600_000,
+    },
+  ],
+  object: 'team_report',
+  series: [{ period_start: 1767225600000, worked_ms: 126_000_000 }],
+  team_id: TEAM_ID_EXAMPLE,
+  to: 1769904000000,
+};
+
+const dataSchema = (schema: object, example: object) =>
+  ({
+    additionalProperties: false,
+    description: 'Response data.',
+    example: { report: example },
+    properties: { report: { ...schema, example } },
+    required: ['report'],
+    type: 'object',
+  }) as const;
+
 export const ReportResponses = {
   team: {
-    200: ReplyEnvelopeSchema(TeamReportSchema, 'report.team.generated'),
-    400: errorResponse('Invalid request body or report range.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not read the report of this team.'),
-    404: errorResponse('The team does not exist.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: response(
+      ReplyEnvelopeSchema(dataSchema(TeamReportSchema, teamExample), 'report.team.generated'),
+      'Team report.',
+    ),
+    400: response(invalid, 'Invalid request body or report range.'),
+    401: response(TokenAuthenticationErrorSchema, 'Missing or invalid access token.'),
+    403: response(UnauthorizedErrorSchema, 'The actor may not read the report of this team.'),
+    404: response(
+      ErrorSchema(ReportTeamNotFoundError),
+      'The team is not visible or does not exist.',
+    ),
+    429: response(RateLimitErrorSchema, 'Rate limit exceeded.'),
+    500: response(ErrorSchema(ReportTeamError), 'The team report could not be computed.'),
   },
   user: {
-    200: ReplyEnvelopeSchema(UserReportSchema, 'report.user.generated'),
-    400: errorResponse('Invalid request body or report range.'),
-    401: errorResponse('Missing or invalid access token.'),
-    403: errorResponse('The actor may not read the report of this user.'),
-    404: errorResponse('The user does not exist.'),
-    429: errorResponse('Rate limit exceeded.'),
-    500: errorResponse('Unexpected error.'),
+    200: response(
+      ReplyEnvelopeSchema(dataSchema(UserReportSchema, userExample), 'report.user.generated'),
+      'User report.',
+    ),
+    400: response(invalid, 'Invalid request body or report range.'),
+    401: response(TokenAuthenticationErrorSchema, 'Missing or invalid access token.'),
+    403: response(UnauthorizedErrorSchema, 'The actor may not read the report of this user.'),
+    404: response(
+      ErrorSchema(ReportUserNotFoundError),
+      'The user is not visible or does not exist.',
+    ),
+    429: response(RateLimitErrorSchema, 'Rate limit exceeded.'),
+    500: response(ErrorSchema(ReportUserError), 'The user report could not be computed.'),
   },
 } as const;

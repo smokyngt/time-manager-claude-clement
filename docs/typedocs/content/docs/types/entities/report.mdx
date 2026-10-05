@@ -1,11 +1,23 @@
 ---
 title: "Report"
-description: "Reference for the `types/entities/report` module: interfaces, type aliases, variables."
+description: "Reference for the `types/entities/report` module: type aliases, variables."
 ---
 
-## Interfaces
+## Type Aliases
+
+### Granularity
+
+```ts
+type Granularity = typeof GRANULARITIES[number];
+```
+
+***
 
 ### TeamMemberReport
+
+```ts
+type TeamMemberReport = object;
+```
 
 #### Properties
 
@@ -23,12 +35,16 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 
 ### TeamReport
 
+```ts
+type TeamReport = object;
+```
+
 #### Properties
 
 | Property | Type |
 | ------ | ------ |
 | <a id="property-from"></a> `from` | `number` |
-| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-granularity"></a> `granularity` | [`Granularity`](#granularity) |
 | <a id="property-kpis"></a> `kpis` | [`TeamReportKpis`](#teamreportkpis) |
 | <a id="property-members"></a> `members` | [`TeamMemberReport`](#teammemberreport)[] |
 | <a id="property-object"></a> `object` | `"team_report"` |
@@ -39,6 +55,10 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 ***
 
 ### TeamReportKpis
+
+```ts
+type TeamReportKpis = object;
+```
 
 #### Properties
 
@@ -56,6 +76,10 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 
 ### TeamReportPoint
 
+```ts
+type TeamReportPoint = object;
+```
+
 #### Properties
 
 | Property | Type |
@@ -67,12 +91,16 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 
 ### UserReport
 
+```ts
+type UserReport = object;
+```
+
 #### Properties
 
 | Property | Type |
 | ------ | ------ |
 | <a id="property-from-1"></a> `from` | `number` |
-| <a id="property-granularity-1"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-granularity-1"></a> `granularity` | [`Granularity`](#granularity) |
 | <a id="property-kpis-1"></a> `kpis` | [`UserReportKpis`](#userreportkpis) |
 | <a id="property-object-1"></a> `object` | `"user_report"` |
 | <a id="property-series-1"></a> `series` | [`UserReportPoint`](#userreportpoint)[] |
@@ -82,6 +110,10 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 ***
 
 ### UserReportKpis
+
+```ts
+type UserReportKpis = object;
+```
 
 #### Properties
 
@@ -99,6 +131,10 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 
 ### UserReportPoint
 
+```ts
+type UserReportPoint = object;
+```
+
 #### Properties
 
 | Property | Type |
@@ -106,14 +142,6 @@ description: "Reference for the `types/entities/report` module: interfaces, type
 | <a id="property-late"></a> `late` | `number` |
 | <a id="property-period_start-1"></a> `period_start` | `number` |
 | <a id="property-worked_ms-4"></a> `worked_ms` | `number` |
-
-## Type Aliases
-
-### Granularity
-
-```ts
-type Granularity = typeof GRANULARITIES[number];
-```
 
 ## Variables
 

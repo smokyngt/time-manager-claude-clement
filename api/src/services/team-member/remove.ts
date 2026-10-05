@@ -8,12 +8,10 @@ import {
 } from '@/lib/errors/domains/team-member.js';
 import { logService } from '@/services/log/index.js';
 
-import { TeamMemberAccess } from './access.js';
-
 import type { BulkFailure, RemoveParams, RemoveResponse } from './index.js';
 
 /**
- * @route team_member.service.remove
+ * @route team.member.service.remove
  * @param {RemoveParams} params
  * @returns {Promise<RemoveResponse>}
  * @throws {TeamMemberRemoveError}
@@ -22,8 +20,6 @@ export const remove = async (params: RemoveParams): Promise<RemoveResponse> => {
   try {
     const { actor, id } = params;
     const userIds = [...new Set(params.user_ids)];
-    const team = await TeamMemberAccess.load(id, 'team_member.service.remove');
-    TeamMemberAccess.manage(actor, team, 'team_member.service.remove');
     const rows = await db
       .delete(teamMembers)
       .where(and(eq(teamMembers.team_id, id), inArray(teamMembers.user_id, userIds)))
@@ -43,7 +39,7 @@ export const remove = async (params: RemoveParams): Promise<RemoveResponse> => {
   } catch (error) {
     throw TeamMemberRemoveError({
       cause: error,
-      metadata: { route: 'team_member.service.remove' },
+      metadata: { route: 'team.member.service.remove' },
     });
   }
 };

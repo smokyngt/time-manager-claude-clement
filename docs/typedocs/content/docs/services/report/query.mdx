@@ -1,6 +1,6 @@
 ---
 title: "Query"
-description: "Reference for the `services/report/query` module: classes, interfaces, type aliases."
+description: "Reference for the `services/report/query` module: classes, type aliases."
 ---
 
 ## Classes
@@ -59,19 +59,23 @@ static totals(range, members): Promise<TotalsRow[]>;
 
 `Promise`\<[`TotalsRow`](#totalsrow)[]\>
 
-## Interfaces
+## Type Aliases
 
 ### ReportRange
+
+```ts
+type ReportRange = object;
+```
 
 #### Properties
 
 | Property | Type |
 | ------ | ------ |
 | <a id="property-from"></a> `from` | `number` |
-| <a id="property-granularity"></a> `granularity` | `"day"` \| `"month"` \| `"week"` |
+| <a id="property-granularity"></a> `granularity` | [`Granularity`](/docs/types/entities/report#granularity) |
 | <a id="property-to"></a> `to` | `number` |
 
-## Type Aliases
+***
 
 ### SeriesRow
 
