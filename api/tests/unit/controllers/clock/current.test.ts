@@ -8,7 +8,7 @@ import type { FakeReply } from '../../../support/fake.js';
 import type { CurrentResponse } from '@/controllers/clock/index.js';
 import type { Actor } from '@/types/entities/actor.js';
 import type { ReplyEnvelope } from '@/types/misc/reply.js';
-import type { FastifyReply, FastifyRequest } from 'fastify';
+import type { FastifyReply } from 'fastify';
 
 const harness = await installClockService();
 const { sample, svc } = harness;

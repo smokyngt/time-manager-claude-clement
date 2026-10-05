@@ -324,6 +324,37 @@ export class Demo {
   }
 
   /**
+   * @route demo.person
+   * @param {string} name
+   * @param {'employee' | 'manager'} role
+   * @param {string} passwordHash
+   * @returns {{ email: string; email_hash: string; first_name: string; last_name: string; password_hash: string; role: "employee" | "manager" }}
+   */
+  public static person(
+    name: string,
+    role: 'employee' | 'manager',
+    passwordHash: string,
+  ): {
+    email: string;
+    email_hash: string;
+    first_name: string;
+    last_name: string;
+    password_hash: string;
+    role: 'employee' | 'manager';
+  } {
+    const [first = '', last = ''] = name.split(' ');
+
+    return {
+      email: Cipher.seal(Demo.email(name)),
+      email_hash: Digest.email(Demo.email(name)),
+      first_name: Cipher.seal(first),
+      last_name: Cipher.seal(last),
+      password_hash: passwordHash,
+      role,
+    };
+  }
+
+  /**
    * @route demo.profile
    * @param {number} index
    * @returns {{ start: string; target: number }}
@@ -420,37 +451,6 @@ export class Demo {
         teams: teamRows.length,
       };
     });
-  }
-
-  /**
-   * @route demo.person
-   * @param {string} name
-   * @param {'employee' | 'manager'} role
-   * @param {string} passwordHash
-   * @returns {{ email: string; email_hash: string; first_name: string; last_name: string; password_hash: string; role: "employee" | "manager" }}
-   */
-  public static person(
-    name: string,
-    role: 'employee' | 'manager',
-    passwordHash: string,
-  ): {
-    email: string;
-    email_hash: string;
-    first_name: string;
-    last_name: string;
-    password_hash: string;
-    role: 'employee' | 'manager';
-  } {
-    const [first = '', last = ''] = name.split(' ');
-
-    return {
-      email: Cipher.seal(Demo.email(name)),
-      email_hash: Digest.email(Demo.email(name)),
-      first_name: Cipher.seal(first),
-      last_name: Cipher.seal(last),
-      password_hash: passwordHash,
-      role,
-    };
   }
 
   private static same(left: LocalDate, right: LocalDate): boolean {

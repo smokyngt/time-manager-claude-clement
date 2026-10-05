@@ -1,7 +1,7 @@
 import { afterAll, afterEach, describe, expect, it, mock } from 'bun:test';
 
 import { Fake } from '../../../support/fake.js';
-import { actorOf, ADMIN_ID, caught, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_ID } from '../../services/clock/support.js';
+import { actorOf, caught, EMPLOYEE_ID, MANAGER_ID, MISSING_ID, OTHER_ID } from '../../services/clock/support.js';
 import { installClockService, installMembership } from './support.js';
 
 import type { FakeReply } from '../../../support/fake.js';
