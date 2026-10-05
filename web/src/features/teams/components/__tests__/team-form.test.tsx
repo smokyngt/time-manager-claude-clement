@@ -91,7 +91,7 @@ describe('TeamForm', () => {
     expect(submit()).toBeDisabled()
   })
 
-  it('prefills the fields when editing', () => {
+  it('prefills the fields when editing', async () => {
     setup({ team: TeamFixtures.team({ workEnd: '18:00' }) })
     expect(screen.getByLabelText('form.name')).toHaveValue('Support')
     expect(screen.getByLabelText('form.description')).toHaveValue('Handles customer requests')

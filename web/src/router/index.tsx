@@ -15,18 +15,14 @@ export const routes: RouteObject[] = [
       {
         children: [
           {
-            element: Lazy.element(() =>
-              import('@/features/auth/pages/login-page').then(pick('LoginPage')),
-            ),
+            element: Lazy.element(() => import('@/features/auth/pages').then(pick('LoginPage'))),
             path: '/login',
           },
         ],
         element: <GuestGuard />,
       },
       {
-        element: Lazy.element(() =>
-          import('@/features/auth/pages/auth-callback-page').then(pick('AuthCallbackPage')),
-        ),
+        element: Lazy.element(() => import('@/features/auth/pages').then(pick('AuthCallbackPage'))),
         path: '/auth/callback',
       },
       {
@@ -35,7 +31,7 @@ export const routes: RouteObject[] = [
             children: [
               {
                 element: Lazy.element(() =>
-                  import('@/features/dashboard/pages/dashboard-page').then(pick('DashboardPage')),
+                  import('@/features/dashboard/pages').then(pick('DashboardPage')),
                 ),
                 index: true,
               },
@@ -61,9 +57,7 @@ export const routes: RouteObject[] = [
                 children: [
                   {
                     element: Lazy.element(() =>
-                      import('@/features/reports/pages/team-report-page').then(
-                        pick('TeamReportPage'),
-                      ),
+                      import('@/features/reports/pages').then(pick('TeamReportPage')),
                     ),
                     path: 'teams/:teamId/dashboard',
                   },
@@ -74,21 +68,19 @@ export const routes: RouteObject[] = [
                 children: [
                   {
                     element: Lazy.element(() =>
-                      import('@/features/users/pages/users-page').then(pick('UsersPage')),
+                      import('@/features/users/pages').then(pick('UsersPage')),
                     ),
                     path: 'users',
                   },
                   {
                     element: Lazy.element(() =>
-                      import('@/features/users/pages/users-page').then(pick('UsersPage')),
+                      import('@/features/users/pages').then(pick('UserPage')),
                     ),
                     path: 'users/:userId',
                   },
                   {
                     element: Lazy.element(() =>
-                      import('@/features/reports/pages/user-report-page').then(
-                        pick('UserReportPage'),
-                      ),
+                      import('@/features/reports/pages').then(pick('UserReportPage')),
                     ),
                     path: 'reports/users/:userId',
                   },
@@ -97,13 +89,13 @@ export const routes: RouteObject[] = [
               },
               {
                 element: Lazy.element(() =>
-                  import('@/features/profile/pages/profile-page').then(pick('ProfilePage')),
+                  import('@/features/profile/pages').then(pick('ProfilePage')),
                 ),
                 path: 'me',
               },
               {
                 element: Lazy.element(() =>
-                  import('@/features/errors/pages/not-found-page').then(pick('NotFoundPage')),
+                  import('@/features/errors/pages').then(pick('NotFoundPage')),
                 ),
                 path: '*',
               },

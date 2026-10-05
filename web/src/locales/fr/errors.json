@@ -21,10 +21,17 @@
       }
     },
     "refresh": {
-      "failed": "Votre session n'a pas pu être renouvelée. Veuillez vous reconnecter."
+      "failed": "Votre session n'a pas pu être renouvelée. Veuillez vous reconnecter.",
+      "invalid": "Votre session a expiré. Reconnectez-vous."
     },
     "session": {
       "invalid": "Votre session a expiré. Veuillez vous reconnecter."
+    },
+    "credentials": {
+      "invalid": "L'adresse e-mail ou le mot de passe est incorrect."
+    },
+    "rate": {
+      "limited": "Trop de tentatives de connexion. Réessayez dans quelques minutes."
     }
   },
   "clock": {
@@ -100,7 +107,10 @@
       }
     },
     "user": {
-      "failed": "Le rapport de l'utilisateur n'a pas pu être chargé."
+      "failed": "Le rapport de l'utilisateur n'a pas pu être chargé.",
+      "not": {
+        "found": "Cet employé est introuvable."
+      }
     }
   },
   "route": {

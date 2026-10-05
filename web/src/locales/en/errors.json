@@ -21,10 +21,17 @@
       }
     },
     "refresh": {
-      "failed": "Your session could not be renewed. Please sign in again."
+      "failed": "Your session could not be renewed. Please sign in again.",
+      "invalid": "Your session has expired. Sign in again."
     },
     "session": {
       "invalid": "Your session has expired. Please sign in again."
+    },
+    "credentials": {
+      "invalid": "The email or password is incorrect."
+    },
+    "rate": {
+      "limited": "Too many sign-in attempts. Try again in a few minutes."
     }
   },
   "clock": {
@@ -100,7 +107,10 @@
       }
     },
     "user": {
-      "failed": "The user report could not be loaded."
+      "failed": "The user report could not be loaded.",
+      "not": {
+        "found": "This employee could not be found."
+      }
     }
   },
   "route": {

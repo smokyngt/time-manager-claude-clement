@@ -3,6 +3,7 @@ import { mock } from 'bun:test';
 import { FakeReply } from '../../../support/fake.js';
 
 import type { SessionResult } from '@/services/auth/index.js';
+import type { User } from '@/types/entities/user.js';
 import type { FastifyReply } from 'fastify';
 
 export class CookieReply extends FakeReply {
@@ -49,7 +50,7 @@ export const installAuthService = async () => {
     logout: mock((_params: unknown) =>
       Promise.resolve({ success: true, user_id: undefined as string | undefined }),
     ),
-    me: mock((_params: unknown) => Promise.reject(new Error('unset'))),
+    me: mock((_params: unknown): Promise<{ user: User }> => Promise.reject(new Error('unset'))),
     refresh: mock((_params: unknown): Promise<SessionResult> => Promise.reject(new Error('unset'))),
   };
   await mock.module('@/services/auth/index.js', () => ({ ...real, authService: svc }));

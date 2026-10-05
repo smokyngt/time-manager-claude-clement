@@ -11,7 +11,7 @@ let serial = 0;
 const issued = (ttl: number) => () => {
   serial += 1;
 
-  return {
+  return Promise.resolve({
     data: {
       ca_chain: ['INTERMEDIATE', 'ROOT'],
       certificate: `CERT-${serial}`,
@@ -20,7 +20,7 @@ const issued = (ttl: number) => () => {
       private_key: `KEY-${serial}`,
     },
     lease_duration: ttl,
-  };
+  });
 };
 
 beforeEach(() => {
@@ -28,7 +28,7 @@ beforeEach(() => {
   serial = 0;
   process.env['VAULT_PKI_ENABLED'] = 'true';
   ctx = fixture();
-  ctx.config.client.write = mock(issued(86_400));
+  stub(ctx, 'write', issued(86_400));
 });
 
 afterEach(() => {
@@ -94,7 +94,7 @@ describe('VaultPki', () => {
     expect(seen).toEqual([]);
     expect(ctx.config.pki.creds().key).toBe('KEY-1');
     expect(ctx.logs.some((line) => line.startsWith('[PKI] renewal failed'))).toBe(true);
-    ctx.config.client.write = mock(issued(86_400));
+    stub(ctx, 'write', issued(86_400));
     jest.advanceTimersByTime(60_000);
     await Promise.resolve();
     await Promise.resolve();

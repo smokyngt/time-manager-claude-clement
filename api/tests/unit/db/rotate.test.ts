@@ -55,7 +55,8 @@ describe('db rotate', () => {
       [{ email, email_hash: 'hash-value', first_name: first, id: 'u1', last_name: first, phone_number: null }],
       [],
     );
-    await import('../../../src/db/rotate.ts?users');
+    const tag = 'users';
+    await import(`../../../src/db/rotate.ts?${tag}`);
     expect(end).toHaveBeenCalled();
     expect(fakeDb.executed).toHaveLength(4);
     const [select, update] = [fakeDb.executed[2], fakeDb.executed[3]].map((item) => names(item));

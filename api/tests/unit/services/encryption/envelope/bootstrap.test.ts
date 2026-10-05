@@ -32,7 +32,7 @@ describe('ensureTransitKey', () => {
     });
   });
 
-  it('rethrows read failures that are not a missing key', async () => {
+  it('rethrows read failures that are not a missing key', () => {
     const client = {
       read: (): Promise<undefined> => Promise.reject(Object.assign(new Error('denied'), { status: 403 })),
       write: () => Promise.resolve(undefined),

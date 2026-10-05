@@ -111,7 +111,7 @@ sequenceDiagram
 
     B->>S: click "Sign in with Microsoft"
     S->>A: GET /v1/auth/microsoft (navigation)
-    A->>A: random state, nonce, code_verifier; challenge = BASE64URL(SHA256(verifier))
+    A->>A: random state, nonce, code_verifier, challenge = BASE64URL(SHA256(verifier))
     A->>A: tm_oauth = signed JWT { state, nonce, verifier } (10 min)
     A-->>B: 302 to login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize + Set-Cookie tm_oauth
     B->>M: user authenticates and consents
