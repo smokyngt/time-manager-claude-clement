@@ -28,17 +28,19 @@ import {
 } from '@/routes/index.js';
 import { Sanitizer } from '@/utils/http/sanitizer.js';
 
+import type { ServerOptions } from 'node:https';
 import type { FastifyInstance, FastifyServerOptions } from 'fastify';
 
 const BODY_LIMIT = 1_048_576;
+type AppOptions = FastifyServerOptions & { https?: ServerOptions };
 
 /**
  * @route app.configure
- * @param {FastifyServerOptions} options
+ * @param {AppOptions} options
  * @returns {Promise<FastifyInstance>}
  * @throws {ValidationError}
  */
-export const configure = async (options: FastifyServerOptions = {}): Promise<FastifyInstance> => {
+export const configure = async (options: AppOptions = {}): Promise<FastifyInstance> => {
   const app = Fastify({
     ajv: {
       customOptions: {
@@ -140,11 +142,11 @@ export const configure = async (options: FastifyServerOptions = {}): Promise<Fas
 
 /**
  * @route app.build
- * @param {FastifyServerOptions} options
+ * @param {AppOptions} options
  * @returns {Promise<FastifyInstance>}
  * @throws {ValidationError}
  */
-export const build = async (options: FastifyServerOptions = {}): Promise<FastifyInstance> => {
+export const build = async (options: AppOptions = {}): Promise<FastifyInstance> => {
   const app = await configure(options);
   await app.register(authRouter, { prefix: '/v1/auth' });
   await app.register(clockRouter, { prefix: '/v1/clocks' });

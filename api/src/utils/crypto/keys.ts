@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto';
 
-import { store } from '@/config/store.js';
-import { AppError, CryptoKeyInvalidError  } from '@/lib/errors/index.js';
+import { Config } from '@/config/index.js';
+import { vaultConfig } from '@/config/vault/index.js';
+import { AppError, CryptoKeyInvalidError } from '@/lib/errors/index.js';
 
 export type KeyEntry = { id: string; key: Buffer };
 
@@ -18,10 +19,13 @@ export class Keys {
    * @throws {CryptoKeyInvalidError}
    */
   public static current(): KeyEntry {
-    const id = Keys.identifier(store.text('ENCRYPTION_KEY_ID', 'k1'), 'ENCRYPTION_KEY_ID');
-    const raw = store.optional('ENCRYPTION_KEY');
+    const id = Keys.identifier(
+      vaultConfig.store.text('ENCRYPTION_KEY_ID', 'k1'),
+      'ENCRYPTION_KEY_ID',
+    );
+    const raw = vaultConfig.store.optional('ENCRYPTION_KEY');
     if (raw === undefined) {
-      if (store.production()) throw Keys.invalid('ENCRYPTION_KEY is required');
+      if (Config.production()) throw Keys.invalid('ENCRYPTION_KEY is required');
       return { id, key: Keys.derive('encryption') };
     }
     const key = Keys.decode(raw, 'ENCRYPTION_KEY');
@@ -36,9 +40,9 @@ export class Keys {
    * @throws {CryptoKeyInvalidError}
    */
   public static digest(): Buffer {
-    const raw = store.optional('HASH_KEY');
+    const raw = vaultConfig.store.optional('HASH_KEY');
     if (raw === undefined) {
-      if (store.production()) throw Keys.invalid('HASH_KEY is required');
+      if (Config.production()) throw Keys.invalid('HASH_KEY is required');
       return Keys.derive('hash');
     }
     const key = Keys.decode(raw, 'HASH_KEY');
@@ -64,9 +68,9 @@ export class Keys {
    * @throws {CryptoKeyInvalidError}
    */
   public static previous(): KeyEntry[] {
-    const raw = store.optional('ENCRYPTION_KEYS_PREVIOUS');
+    const raw = vaultConfig.store.optional('ENCRYPTION_KEYS_PREVIOUS');
     if (raw === undefined) return [];
-    const currentId = store.text('ENCRYPTION_KEY_ID', 'k1');
+    const currentId = vaultConfig.store.text('ENCRYPTION_KEY_ID', 'k1');
     const seen = new Set<string>([currentId]);
     const entries: KeyEntry[] = [];
     for (const item of raw.split(',')) {
@@ -93,7 +97,7 @@ export class Keys {
    * @throws {Error}
    */
   public static validate(): string[] {
-    if (!store.production()) return [];
+    if (!Config.production()) return [];
     const problems: string[] = [];
     const checks: (() => unknown)[] = [
       (): unknown => Keys.current(),

@@ -47,7 +47,7 @@ describe('resolvePeriod', () => {
 
   it('resolves a custom range and picks month for long spans', () => {
     const result = resolvePeriod(
-      state({ custom_from: '2026-01-01', custom_to: '2026-09-30', preset: 'custom' }),
+      state({ from: '2026-01-01', to: '2026-09-30', preset: 'custom' }),
       NOW,
     )
     expect(result.from).toBe(new Date(2026, 0, 1).getTime())
@@ -56,18 +56,18 @@ describe('resolvePeriod', () => {
   })
 
   it('rejects invalid custom ranges', () => {
-    expect(resolvePeriod(state({ preset: 'custom' }), NOW).error).toMatch(/Choose/)
+    expect(resolvePeriod(state({ preset: 'custom' }), NOW).error).toBe('range_required')
     expect(
       resolvePeriod(
-        state({ custom_from: '2026-02-01', custom_to: '2026-01-01', preset: 'custom' }),
+        state({ from: '2026-02-01', to: '2026-01-01', preset: 'custom' }),
         NOW,
       ).error,
-    ).toMatch(/after/)
+    ).toBe('range_order')
     expect(
       resolvePeriod(
-        state({ custom_from: '2024-01-01', custom_to: '2026-01-01', preset: 'custom' }),
+        state({ from: '2024-01-01', to: '2026-01-01', preset: 'custom' }),
         NOW,
       ).error,
-    ).toMatch(/366/)
+    ).toBe('range_too_long')
   })
 })

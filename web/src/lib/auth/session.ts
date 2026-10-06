@@ -1,4 +1,4 @@
-import type { User } from '@/features/auth/api/auth'
+import type { User } from '@time-manager/sdk'
 
 import { API_URL } from '@/lib/api/config'
 import { toApiError } from '@/lib/api/errors'

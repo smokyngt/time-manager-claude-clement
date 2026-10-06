@@ -1,6 +1,6 @@
 import { createContext } from 'react'
 
-import type { User } from '@/features/auth/api/auth'
+import type { User } from '@time-manager/sdk'
 
 export interface AuthContextValue {
   login: (credentials: { email: string; password: string }) => Promise<void>

@@ -36,7 +36,7 @@ Metrics.bind({
   poolMax: vaultConfig.store.number('DATABASE_POOL_MAX', 10),
 });
 
-await Envelope.bootstrap();
+if (!vaultConfig.disabled) await Envelope.bootstrap();
 
 const { build } = await import('@/app.js');
 const secure = vaultConfig.pki.enabled();

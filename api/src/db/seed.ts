@@ -8,6 +8,8 @@ import { Password } from '@/utils/password.js';
 import { db, sql } from './client.js';
 import { users } from './schema/index.js';
 
+vaultConfig.store.load(process.env);
+
 const email = vaultConfig.store.optional('SEED_ADMIN_EMAIL')?.trim().toLowerCase();
 const password = vaultConfig.store.optional('SEED_ADMIN_PASSWORD');
 

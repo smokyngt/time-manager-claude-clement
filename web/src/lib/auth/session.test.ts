@@ -11,12 +11,16 @@ import {
 } from '@/lib/auth/session'
 
 const user = {
+  archivedAt: null,
+  createdAt: 0,
   email: 'a@b.co',
-  first_name: 'A',
+  firstName: 'A',
   id: '1',
-  last_name: 'B',
-  phone_number: null,
+  lastName: 'B',
+  object: 'user' as const,
+  phoneNumber: null,
   role: 'employee' as const,
+  updatedAt: null,
 }
 
 function sessionResponse(token: string, expires_in = 900) {

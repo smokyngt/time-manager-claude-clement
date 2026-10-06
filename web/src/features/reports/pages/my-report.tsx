@@ -10,7 +10,7 @@ export function MyReport() {
       <h2 className="text-lg font-semibold tracking-tight" id="my-report-title">
         My time
       </h2>
-      <UserReportView user_id={user.id} />
+      <UserReportView userId={user.id} />
     </section>
   )
 }
