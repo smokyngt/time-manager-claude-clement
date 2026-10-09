@@ -3,7 +3,20 @@ import { VaultError } from '@/config/vault/url.js';
 
 export type VaultEnv = Record<string, string | undefined>;
 
-export const SECRET_KEYS: readonly string[] = ['DATABASE_URL'];
+export const SECRET_KEYS: readonly string[] = [
+  'DATABASE_URL',
+  'JWT_ACCESS_SECRET',
+  'JWT_REFRESH_SECRET',
+  'ENCRYPTION_KEY',
+  'ENCRYPTION_KEY_ID',
+  'ENCRYPTION_KEYS_PREVIOUS',
+  'HASH_KEY',
+  'SEED_ADMIN_EMAIL',
+  'SEED_ADMIN_PASSWORD',
+  'OAUTH_STATE_SECRET',
+  'MICROSOFT_CLIENT_SECRET',
+  'METRICS_TOKEN',
+];
 
 export const SENSITIVE_KEYS: readonly string[] = [
   'JWT_ACCESS_SECRET',

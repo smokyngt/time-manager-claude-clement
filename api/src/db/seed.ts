@@ -10,8 +10,8 @@ import { users } from './schema/index.js';
 
 vaultConfig.store.load(process.env);
 
-const email = vaultConfig.store.optional('SEED_ADMIN_EMAIL')?.trim().toLowerCase();
-const password = vaultConfig.store.optional('SEED_ADMIN_PASSWORD');
+const email = process.env.SEED_ADMIN_EMAIL?.trim().toLowerCase();
+const password = process.env.SEED_ADMIN_PASSWORD;
 
 if (email === undefined || password === undefined) {
   process.stderr.write('SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD are required\n');

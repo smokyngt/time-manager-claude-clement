@@ -1,4 +1,5 @@
 import { build } from '@/app.js';
+import { fileURLToPath } from 'node:url';
 
 const SERVER_URL = 'https://api.timemanager.example/';
 
@@ -8,7 +9,7 @@ const spec = { ...app.swagger(), servers: [{ description: 'Public API', url: SER
 const json = `${JSON.stringify(spec, null, 2)}\n`;
 const targets = ['../openapi.json', '../../docs/openapi/main.json'];
 for (const target of targets) {
-  await Bun.write(new URL(target, import.meta.url).pathname, json);
+  await Bun.write(fileURLToPath(new URL(target, import.meta.url)), json);
 }
 await app.close();
 process.stdout.write('openapi.json and docs/openapi/main.json written\n');
